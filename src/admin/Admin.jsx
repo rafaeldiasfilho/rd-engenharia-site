@@ -44,6 +44,8 @@ const clienteVazio = {
   uf: "SP",
   origem: "",
   observacoes: "",
+  aceita_lembretes: false,
+  aceite_lembretes_em: "",
 };
 
 const servicoVazio = {
@@ -59,7 +61,11 @@ const servicoVazio = {
   observacoes: "",
 };
 
-const hojeISO = () => new Date().toISOString().slice(0, 10);
+const hojeISO = () => {
+  const d = new Date();
+  const dois = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${dois(d.getMonth() + 1)}-${dois(d.getDate())}`;
+};
 
 function somarMeses(iso, meses) {
   if (!iso || !meses) return "";
@@ -176,15 +182,18 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
   const Linha = ({ s }) => {
     const cli = porId[s.cliente_id];
     if (!cli) return null;
-    const msg = `Olá, ${cli.nome}! Aqui é da RD Engenharia. O serviço "${s.tipo}" ${
-      s.dias < 0 ? "venceu" : "vence"
-    } em ${dataBR(s.vencimento)}. Podemos cuidar da renovação para você?`;
+    const msg = cli.aceita_lembretes
+      ? `Olá, ${cli.nome}! Aqui é da RD Engenharia. O serviço "${s.tipo}" ${
+          s.dias < 0 ? "venceu" : "vence"
+        } em ${dataBR(s.vencimento)}. Podemos cuidar da renovação para você?`
+      : `Olá, ${cli.nome}! Aqui é da RD Engenharia. Podemos avisar você por WhatsApp quando seus serviços estiverem perto do vencimento, para você não perder o prazo? Se preferir não receber, é só nos dizer.`;
     const zap = linkZap(cli.whatsapp || cli.telefone, msg);
     return (
       <li className="adm-linha">
         <div>
           <strong>{cli.nome}</strong>
           <span>{s.tipo}</span>
+          {!cli.aceita_lembretes && <small>Sem aceite de lembretes registrado. O botão pede a autorização.</small>}
           <small className={s.dias < 0 ? "adm-atraso" : ""}>
             {s.dias < 0 ? `Venceu há ${-s.dias} dia(s)` : s.dias === 0 ? "Vence hoje" : `Vence em ${s.dias} dia(s)`} ·{" "}
             {dataBR(s.vencimento)}
@@ -193,7 +202,7 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
         <div className="adm-acoes">
           {zap ? (
             <a className="btn btn-zap" href={zap} target="_blank" rel="noopener noreferrer">
-              Chamar no WhatsApp
+              {cli.aceita_lembretes ? "Chamar no WhatsApp" : "Pedir autorização"}
             </a>
           ) : (
             <span className="adm-sem">Sem telefone</span>
@@ -325,6 +334,23 @@ function FormCliente({ inicial, aoSalvar, aoCancelar }) {
           <input value={c.origem || ""} onChange={mudar("origem")} placeholder="Indicação, Instagram, site..." />
         </Campo>
       </div>
+      <label className="adm-aceite">
+        <input
+          type="checkbox"
+          checked={!!c.aceita_lembretes}
+          onChange={(e) =>
+            setC((x) => ({
+              ...x,
+              aceita_lembretes: e.target.checked,
+              aceite_lembretes_em: e.target.checked ? x.aceite_lembretes_em || hojeISO() : "",
+            }))
+          }
+        />
+        <span>
+          O cliente aceitou receber lembretes de vencimento por WhatsApp
+          {c.aceita_lembretes && c.aceite_lembretes_em ? ` (aceite em ${dataBR(c.aceite_lembretes_em)})` : ""}
+        </span>
+      </label>
       <Campo rotulo="Observações">
         <textarea rows="3" value={c.observacoes || ""} onChange={mudar("observacoes")} />
       </Campo>
@@ -506,6 +532,14 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
             <div>
               <dt>Endereço</dt>
               <dd>{endereco || "—"}</dd>
+            </div>
+            <div>
+              <dt>Lembretes por WhatsApp</dt>
+              <dd>
+                {cliente.aceita_lembretes
+                  ? `Aceitou${cliente.aceite_lembretes_em ? ` em ${dataBR(cliente.aceite_lembretes_em)}` : ""}`
+                  : "Sem aceite registrado"}
+              </dd>
             </div>
             {cliente.origem && (
               <div>

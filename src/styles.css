@@ -1344,3 +1344,22 @@ ol {
 .adm-backup {
   margin-top: 12px;
 }
+
+.adm-aceite {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  background: var(--papel);
+  cursor: pointer;
+}
+
+.adm-aceite input {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--verde);
+  flex: none;
+}

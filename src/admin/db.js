@@ -102,8 +102,8 @@ async function criarSupabase() {
 }
 
 export async function abrirBanco() {
+  // Modo demonstração: só no computador de quem desenvolve (VITE_DEMO=1 em modo dev); no site publicado fica desligado.
+  if (import.meta.env.DEV && import.meta.env.VITE_DEMO === "1") return criarDemo();
   if (URL && CHAVE) return criarSupabase();
-  // O modo demonstração só existe no computador de quem desenvolve; no site publicado fica desligado.
-  if (import.meta.env.DEV) return criarDemo();
   return { modo: "indisponivel" };
 }

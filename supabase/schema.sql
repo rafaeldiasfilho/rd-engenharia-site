@@ -35,6 +35,8 @@ create table if not exists public.clientes (
   uf text default 'SP',
   origem text,
   observacoes text,
+  aceita_lembretes boolean not null default false,
+  aceite_lembretes_em date,
   criado_em timestamptz not null default now()
 );
 
