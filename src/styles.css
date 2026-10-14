@@ -1374,3 +1374,10 @@ ol {
 .exemplo-planta-baixa{grid-row:span 2}
 .exemplo-cortes,.exemplo-quadros{grid-column:1/-1}
 @media(max-width:700px){.exemplos{grid-template-columns:minmax(0,1fr)}.exemplo-planta-baixa{grid-row:auto}}
+.exemplos-barra{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px}
+.exemplos-titulo{display:grid;gap:2px;text-align:center;min-width:0;flex:0 1 420px}
+.exemplos-titulo span{color:var(--cinza);font-size:.95rem}
+.exemplos-titulo small{color:var(--cinza);font-size:.8rem}
+.seta{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--linha);background:var(--branco);color:var(--tinta);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem}
+.seta:hover{border-color:var(--realce);color:var(--realce)}
+.seta:focus-visible{outline:3px solid var(--realce);outline-offset:2px}
