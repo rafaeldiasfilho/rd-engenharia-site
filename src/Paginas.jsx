@@ -30,9 +30,15 @@ function BotaoZap({ texto, rotulo }) {
 
 function Exemplos() {
   const [i, setI] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [trocou, setTrocou] = useState(false);
   const total = PROJETOS.length;
   const projeto = PROJETOS[i];
-  const vai = (d) => setI((n) => (n + d + total) % total);
+  const vai = (d) => {
+    setDir(d);
+    setTrocou(true);
+    setI((n) => (n + d + total) % total);
+  };
   return (
     <section className="secao" id="exemplos" aria-roledescription="carrossel" aria-label="Exemplos de projeto">
       <div className="container">
@@ -48,7 +54,7 @@ function Exemplos() {
               <Icone nome="fa-solid fa-chevron-left" />
             </button>
           )}
-          <div className="exemplos-titulo" aria-live="polite">
+          <div className={`exemplos-titulo ${trocou ? "troca" : ""}`} aria-live="polite" key={projeto.pasta}>
             <strong>{projeto.nome}</strong>
             <span>{projeto.resumo}</span>
             {total > 1 && (
@@ -63,9 +69,13 @@ function Exemplos() {
             </button>
           )}
         </div>
-        <div className="exemplos">
-          {projeto.itens.map((e) => (
-            <figure className={`exemplo ${e.forma ? "exemplo-" + e.forma : ""}`} key={e.arq}>
+        <div className={`exemplos ${trocou ? "troca" : ""}`} data-dir={dir}>
+          {projeto.itens.map((e, n) => (
+            <figure
+              className={`exemplo ${e.forma ? "exemplo-" + e.forma : ""}`}
+              key={`${projeto.pasta}-${e.arq}`}
+              style={{ "--n": n }}
+            >
               <a href={`/exemplos/${projeto.pasta}/${e.arq}.webp`} target="_blank" rel="noopener noreferrer">
                 <img
                   src={`/exemplos/${projeto.pasta}/${e.arq}.webp`}

@@ -1500,3 +1500,12 @@ ol {
 
 .dica-doc{color:var(--cinza);font-weight:400;font-size:.9rem;line-height:1.4}
 .cidade-fonte.centro{text-align:center;margin-top:16px}
+
+/* Transição ao trocar de projeto: as imagens entram em sequência, vindas do lado da seta */
+@keyframes exemplo-entra{from{opacity:0;transform:translateX(calc(var(--sentido,1) * 28px)) scale(.98)}to{opacity:1;transform:none}}
+@keyframes exemplo-titulo{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.exemplos[data-dir="1"]{--sentido:1}
+.exemplos[data-dir="-1"]{--sentido:-1}
+.exemplos.troca .exemplo{animation:exemplo-entra .45s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--n,0) * 70ms)}
+.exemplos-titulo.troca{animation:exemplo-titulo .3s ease both}
+@media (prefers-reduced-motion:reduce){.exemplos.troca .exemplo,.exemplos-titulo.troca{animation:none}}
