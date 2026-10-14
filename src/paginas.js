@@ -574,6 +574,14 @@ const ITENS_RESIDENCIA = [
   { arq: "quadros", forma: "largo", w: 901, h: 321, titulo: "Quadro de aberturas", texto: "Áreas, iluminação e ventilação de cada ambiente, conforme exigido na aprovação.", alt: "Quadro com áreas e aberturas de iluminação e ventilação dos ambientes" },
 ];
 
+const ITENS_COMPACTA = [
+  { arq: "planta-baixa", forma: "alto", w: 768, h: 1497, titulo: "Planta baixa", texto: "Casa térrea de cerca de 62 m², com 2 dormitórios, banheiro e cozinha integrada à sala, e área permeável no fundo do lote.", alt: "Planta baixa de uma casa térrea com dois dormitórios, banheiro, cozinha integrada à sala, área de serviço e área permeável" },
+  { arq: "cobertura-implantacao", w: 766, h: 838, titulo: "Cobertura e implantação", texto: "Posição da casa no lote de 10 × 22 m e desenho do telhado, com os recuos exigidos.", alt: "Plantas de cobertura e de implantação de uma casa térrea em lote retangular" },
+  { arq: "fachada", w: 544, h: 332, titulo: "Fachada frontal", texto: "Vista da frente da casa, com platibanda e esquadrias.", alt: "Fachada frontal de uma casa térrea com platibanda, porta e duas janelas" },
+  { arq: "cortes", forma: "largo", w: 1833, h: 515, titulo: "Cortes e detalhe da calçada", texto: "Cortes AA e BB, com pé-direito, forro e cobertura metálica, e detalhe da calçada.", alt: "Cortes AA e BB de uma casa térrea e detalhe da calçada com árvore" },
+  { arq: "quadros", forma: "largo", w: 893, h: 207, titulo: "Quadro de aberturas", texto: "Áreas, iluminação e ventilação de cada ambiente, conforme exigido na aprovação.", alt: "Quadro com as áreas e as aberturas de cada ambiente da casa" },
+];
+
 // Para incluir outro projeto: crie a pasta public/exemplos/<pasta> com os mesmos 5 arquivos
 // (qualquer quantidade de imagens; forma: "alto" ocupa duas linhas, "largo" ocupa a linha toda).
 // Exemplo de arquivos: (planta-baixa, cobertura-implantacao, fachada, cortes, quadros) e acrescente um item aqui.
@@ -583,6 +591,12 @@ export const PROJETOS = [
     nome: "Residência térrea",
     resumo: "105 m² · 2 suítes · terreno de 11 × 25 m",
     itens: ITENS_RESIDENCIA,
+  },
+  {
+    pasta: "residencia-compacta",
+    nome: "Casa térrea compacta",
+    resumo: "62 m² · 2 dormitórios · lote de 10 × 22 m",
+    itens: ITENS_COMPACTA,
   },
 ];
 
