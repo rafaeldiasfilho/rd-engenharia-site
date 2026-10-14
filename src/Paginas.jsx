@@ -62,7 +62,7 @@ function Exemplos() {
         </div>
         <div className="exemplos">
           {projeto.itens.map((e) => (
-            <figure className={`exemplo exemplo-${e.arq}`} key={e.arq}>
+            <figure className={`exemplo ${e.forma ? "exemplo-" + e.forma : ""}`} key={e.arq}>
               <a href={`/exemplos/${projeto.pasta}/${e.arq}.webp`} target="_blank" rel="noopener noreferrer">
                 <img
                   src={`/exemplos/${projeto.pasta}/${e.arq}.webp`}

@@ -507,15 +507,16 @@ export const RESULTADOS = {
 };
 
 const ITENS_RESIDENCIA = [
-  { arq: "planta-baixa", w: 829, h: 1631, titulo: "Planta baixa", texto: "Residência térrea de 105 m², com 2 suítes, closet e sala integrada à cozinha gourmet.", alt: "Planta baixa de uma residência térrea com duas suítes, closet, sala e cozinha integradas" },
+  { arq: "planta-baixa", forma: "alto", w: 829, h: 1631, titulo: "Planta baixa", texto: "Residência térrea de 105 m², com 2 suítes, closet e sala integrada à cozinha gourmet.", alt: "Planta baixa de uma residência térrea com duas suítes, closet, sala e cozinha integradas" },
   { arq: "cobertura-implantacao", w: 788, h: 895, titulo: "Cobertura e implantação", texto: "Posição da casa no terreno e desenho do telhado, com os recuos e beirais.", alt: "Plantas de cobertura e de implantação de uma residência térrea" },
   { arq: "fachada", w: 624, h: 392, titulo: "Fachada frontal", texto: "Vista da frente da casa, com telhado cerâmico e esquadrias.", alt: "Fachada frontal de uma residência térrea com telhado cerâmico" },
-  { arq: "cortes", w: 1864, h: 448, titulo: "Cortes e detalhe da calçada", texto: "Cortes AA e BB, com alturas e inclinação do telhado, e detalhe da calçada.", alt: "Cortes AA e BB e detalhe da calçada de uma residência térrea" },
-  { arq: "quadros", w: 901, h: 321, titulo: "Quadro de aberturas", texto: "Áreas, iluminação e ventilação de cada ambiente, conforme exigido na aprovação.", alt: "Quadro com áreas e aberturas de iluminação e ventilação dos ambientes" },
+  { arq: "cortes", forma: "largo", w: 1864, h: 448, titulo: "Cortes e detalhe da calçada", texto: "Cortes AA e BB, com alturas e inclinação do telhado, e detalhe da calçada.", alt: "Cortes AA e BB e detalhe da calçada de uma residência térrea" },
+  { arq: "quadros", forma: "largo", w: 901, h: 321, titulo: "Quadro de aberturas", texto: "Áreas, iluminação e ventilação de cada ambiente, conforme exigido na aprovação.", alt: "Quadro com áreas e aberturas de iluminação e ventilação dos ambientes" },
 ];
 
 // Para incluir outro projeto: crie a pasta public/exemplos/<pasta> com os mesmos 5 arquivos
-// (planta-baixa, cobertura-implantacao, fachada, cortes, quadros) e acrescente um item aqui.
+// (qualquer quantidade de imagens; forma: "alto" ocupa duas linhas, "largo" ocupa a linha toda).
+// Exemplo de arquivos: (planta-baixa, cobertura-implantacao, fachada, cortes, quadros) e acrescente um item aqui.
 export const PROJETOS = [
   {
     pasta: "residencia-terrea",

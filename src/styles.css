@@ -1371,9 +1371,10 @@ ol {
 .exemplo img{display:block;width:100%;height:auto}
 .exemplo figcaption{padding:12px 16px 16px;display:grid;gap:4px}
 .exemplo figcaption span{font-size:.92rem;color:var(--cinza)}
-.exemplo-planta-baixa{grid-row:span 2}
-.exemplo-cortes,.exemplo-quadros{grid-column:1/-1}
-@media(max-width:700px){.exemplos{grid-template-columns:minmax(0,1fr)}.exemplo-planta-baixa{grid-row:auto}}
+.exemplos{grid-auto-flow:row dense}
+.exemplo-alto{grid-row:span 2}
+.exemplo-largo{grid-column:1/-1}
+@media(max-width:700px){.exemplos{grid-template-columns:minmax(0,1fr)}.exemplo-alto{grid-row:auto}}
 .exemplos-barra{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px}
 .exemplos-titulo{display:grid;gap:2px;text-align:center;min-width:0;flex:0 1 420px}
 .exemplos-titulo span{color:var(--cinza);font-size:.95rem}
