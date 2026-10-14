@@ -1,6 +1,6 @@
 -- RD Engenharia: cadastro de clientes, serviços e vencimentos.
--- Rode este arquivo uma vez no Supabase (SQL Editor). Depois, em Authentication > Providers > Email,
--- desligue "Allow new users to sign up" e crie os usuários da equipe em Authentication > Users.
+-- Já aplicado no projeto Supabase "RdEngenharia". Mantido aqui como registro do que existe no banco.
+-- Depois: em Authentication, desligue o cadastro aberto de novos usuários e crie os usuários da equipe.
 
 create table if not exists public.equipe (
   email text primary key
@@ -72,3 +72,6 @@ create policy "equipe_ve_servicos" on public.servicos
 
 -- A tabela "equipe" não tem política: ninguém lê pelo site. Cadastre os e-mails pelo SQL Editor:
 -- insert into public.equipe (email) values ('email1@exemplo.com'), ('email2@exemplo.com');
+
+revoke execute on function public.eh_equipe() from public, anon;
+grant execute on function public.eh_equipe() to authenticated;
