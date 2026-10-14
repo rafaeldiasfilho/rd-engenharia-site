@@ -61,6 +61,15 @@ try {
         })),
       });
     }
+    if (pagina.tipo === "cidade") {
+      dados.push({
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        name: "RD Engenharia Segurança e Meio Ambiente",
+        url,
+        areaServed: { "@type": "City", name: pagina.cidade.nome },
+      });
+    }
     if (pagina.tipo === "guia") {
       dados.push({
         "@context": "https://schema.org",

@@ -1,6 +1,6 @@
 import Icone from "./Icone";
 import { useState } from "react";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, achaArea } from "./paginas";
+import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, CIDADES_DADOS, PROJETOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
@@ -610,9 +610,127 @@ function PaginaPrivacidade() {
   );
 }
 
+function PaginaCidade({ pagina }) {
+  const c = pagina.cidade;
+  const zapCidade = `Olá! Preciso de um serviço de engenharia ou segurança do trabalho em ${c.nome}.`;
+  const prioridades = c.rural
+    ? [
+        ["meio-ambiente-topografia", "Meio ambiente e topografia", "Com baixa densidade de população, o município tem muitos imóveis rurais. É comum precisar de CAR, georreferenciamento, levantamento topográfico e licenciamento ambiental."],
+        ["engenharia-civil", "Engenharia civil", "Projetos, regularização de obras, laudos e acompanhamento até o alvará e o habite-se na prefeitura."],
+        ["corpo-de-bombeiros", "Corpo de Bombeiros", "Comércios, galpões e empresas da cidade precisam do AVCB ou do CLCB, conforme o enquadramento."],
+        ["seguranca-do-trabalho", "Segurança do trabalho", "Empresas, fazendas e produtores com empregados precisam de PGR, laudos e treinamentos de NRs."],
+      ]
+    : [
+        ["corpo-de-bombeiros", "Corpo de Bombeiros", "Em cidade com muitos prédios, comércios e indústrias, o AVCB ou o CLCB é uma das exigências mais comuns. Cuidamos do projeto, da adequação e da renovação."],
+        ["seguranca-do-trabalho", "Segurança do trabalho", "Com mais empresas e empregados, PGR, LTCAT, laudos de insalubridade e periculosidade e treinamentos de NRs estão entre os pedidos mais frequentes."],
+        ["engenharia-civil", "Engenharia civil", "Projetos, regularização, laudos de vistoria e avaliação, e acompanhamento na prefeitura até o habite-se."],
+        ["meio-ambiente-topografia", "Meio ambiente e topografia", "Licenciamento ambiental, levantamentos topográficos e documentação de terrenos e propriedades."],
+      ];
+  const outras = CIDADES_DADOS.filter((o) => o.slug !== c.slug);
+  const faq = [
+    {
+      q: `A RD Engenharia atende em ${c.nome}?`,
+      a: c.sede
+        ? `Sim. A RD Engenharia fica em Ibirá, na Rua José Alves de Mello, 770, Centro, e atende empresas, produtores rurais e proprietários da cidade e da região.`
+        : `Sim. Atendemos ${c.nome} a partir de Ibirá. O primeiro contato é pelo WhatsApp e, quando o serviço exige, fazemos visita técnica no local.`,
+    },
+    {
+      q: "Preciso ir até o escritório?",
+      a: c.sede
+        ? "Não é obrigatório. Você pode resolver tudo pelo WhatsApp e, se preferir, passar no escritório em horário de atendimento."
+        : "Não. Você explica o caso pelo WhatsApp e envia os documentos por lá. Fazemos a visita técnica quando ela é necessária, como em laudos e levantamentos de terreno.",
+    },
+    {
+      q: `A prefeitura de ${c.nome} participa de algum serviço?`,
+      a: "Sim, em serviços de engenharia civil. Alvará de construção, habite-se e regularização de obras são emitidos pela prefeitura do município, e as regras e os documentos pedidos podem variar de uma cidade para outra. Confirmamos o que a sua prefeitura exige antes de começar.",
+    },
+  ];
+  return (
+    <>
+      <Topo
+        titulo={pagina.h1}
+        texto={`Laudos, projetos, licenças e documentos técnicos para empresas, produtores rurais e proprietários de ${c.nome}, com responsável técnico habilitado e atendimento direto pelo WhatsApp.`}
+        migalha={c.nome}
+      >
+        <BotaoZap texto={zapCidade} rotulo={`Pedir orçamento em ${c.nome}`} />
+      </Topo>
+
+      <section className="secao">
+        <div className="container">
+          <h2>{c.nome} em números</h2>
+          <dl className="cidade-numeros">
+            <div><dt>População (Censo 2022)</dt><dd>{c.pop} pessoas</dd></div>
+            <div><dt>Área do município</dt><dd>{c.area} km²</dd></div>
+            <div><dt>Densidade</dt><dd>{c.dens} hab/km²</dd></div>
+            <div><dt>PIB per capita (2023)</dt><dd>R$ {c.pib}</dd></div>
+          </dl>
+          <p className="cidade-fonte">
+            Fonte:{" "}
+            <a href={`https://www.ibge.gov.br/cidades-e-estados/sp/${c.ibge}.html`} target="_blank" rel="noopener noreferrer">
+              IBGE, Cidades e Estados
+            </a>
+            .
+          </p>
+        </div>
+      </section>
+
+      <section className="secao secao-cinza">
+        <div className="container">
+          <h2>O que costuma ser necessário em {c.nome}</h2>
+          <p className="cidade-intro">
+            {c.rural
+              ? `${c.nome} é um município de perfil mais rural e de cidade pequena. Por isso, estes são os serviços que mais fazem sentido por aqui, na ordem em que costumam aparecer.`
+              : `${c.nome} é uma cidade grande da região, com muitas empresas, comércios e prédios. Por isso, estes são os serviços que mais fazem sentido por aqui, na ordem em que costumam aparecer.`}
+          </p>
+          <div className="cidade-servicos">
+            {prioridades.map(([slug, nome, texto]) => (
+              <article key={slug}>
+                <h3>{nome}</h3>
+                <p>{texto}</p>
+                <a href={`/${slug}`}>Ver o que fazemos</a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="secao">
+        <div className="container container-faq">
+          <h2>Dúvidas sobre o atendimento em {c.nome}</h2>
+          <div className="faq-lista">
+            {faq.map((f) => (
+              <details className="faq-item" key={f.q}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </div>
+          <div className="centro">
+            <BotaoZap texto={zapCidade} rotulo="Falar com a RD pelo WhatsApp" />
+          </div>
+        </div>
+      </section>
+
+      <section className="secao secao-cinza">
+        <div className="container">
+          <h2>Outras cidades que atendemos</h2>
+          <ul className="cidade-outras">
+            {outras.map((o) => (
+              <li key={o.slug}>
+                <a href={`/cidades/${o.slug}`}>{o.nome}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
+  );
+}
+
 export default function PaginaView({ pagina }) {
   let corpo = null;
   if (pagina.tipo === "area") corpo = <PaginaArea pagina={pagina} />;
+  else if (pagina.tipo === "cidade") corpo = <PaginaCidade pagina={pagina} />;
   else if (pagina.tipo === "guia") corpo = <PaginaGuia pagina={pagina} />;
   else if (pagina.tipo === "quiz") corpo = <PaginaQuiz pagina={pagina} />;
   else if (pagina.tipo === "guias-indice") corpo = <PaginaGuias pagina={pagina} />;

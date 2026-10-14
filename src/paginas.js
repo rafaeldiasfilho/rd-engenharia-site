@@ -410,9 +410,31 @@ export const GUIAS = [
   },
 ];
 
+
+// Páginas por cidade. Números oficiais do IBGE (Censo 2022, área territorial 2025, PIB per capita 2023),
+// consultados em ibge.gov.br/cidades-e-estados/sp. Conteúdo local adicional deve ser revisado pela equipe.
+export const CIDADES_DADOS = [
+  { slug: "ibira", nome: "Ibirá", sede: true, pop: "11.690", area: "268,9", dens: "42,99", pib: "35.772,27", ibge: "ibira", rural: true },
+  { slug: "urupes", nome: "Urupes", pop: "13.744", area: "323,9", dens: "42,43", pib: "47.084,91", ibge: "urupes", rural: true },
+  { slug: "potirendaba", nome: "Potirendaba", pop: "18.496", area: "342,5", dens: "54,00", pib: "54.996,89", ibge: "potirendaba", rural: true },
+  { slug: "irapua", nome: "Irapuã", pop: "6.867", area: "257,6", dens: "26,66", pib: "41.126,49", ibge: "irapua", rural: true },
+  { slug: "catanduva", nome: "Catanduva", pop: "115.791", area: "291,9", dens: "398,46", pib: "60.712,43", ibge: "catanduva", rural: false },
+  { slug: "sao-jose-do-rio-preto", nome: "São José do Rio Preto", pop: "480.393", area: "431,9", dens: "1.112,17", pib: "54.934,44", ibge: "sao-jose-do-rio-preto", rural: false },
+];
+
+const paginaCidade = (c) => ({
+  tipo: "cidade",
+  slug: `cidades/${c.slug}`,
+  cidade: c,
+  title: `Engenharia, segurança do trabalho e meio ambiente em ${c.nome} | RD Engenharia`,
+  description: `Laudos, projetos, AVCB/CLCB, segurança do trabalho, CAR e topografia em ${c.nome}. Veja o que costuma ser exigido na cidade e peça orçamento pelo WhatsApp.`,
+  h1: `Engenharia e segurança do trabalho em ${c.nome}`,
+});
+
 export const PAGINAS = [
   ...AREAS,
   ...GUIAS,
+  ...CIDADES_DADOS.map(paginaCidade),
   {
     tipo: "quiz",
     slug: "o-que-preciso",

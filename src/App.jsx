@@ -1,7 +1,7 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
-import { AREAS, CIDADES } from "./paginas";
+import { AREAS, CIDADES, CIDADES_DADOS } from "./paginas";
 import { Casca, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 
@@ -251,7 +251,15 @@ export default function App() {
               </div>
               <div>
                 <dt>Regiões atendidas</dt>
-                <dd>{CIDADES.join(", ")} e cidades próximas</dd>
+                <dd>
+                  {CIDADES_DADOS.map((c, i) => (
+                    <span key={c.slug}>
+                      {i > 0 && ", "}
+                      <a href={`/cidades/${c.slug}`}>{c.nome}</a>
+                    </span>
+                  ))}{" "}
+                  e cidades próximas
+                </dd>
               </div>
               <div>
                 <dt>Instagram</dt>

@@ -1,6 +1,6 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
-import { AREAS } from "./paginas";
+import { AREAS, CIDADES_DADOS } from "./paginas";
 
 export const WHATSAPP = "5517997211208";
 export const zap = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
@@ -128,6 +128,16 @@ export function Rodape() {
             {AREAS.map((a) => (
               <li key={a.slug}>
                 <a href={`/${a.slug}`}>{a.nome}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h4>Cidades</h4>
+          <ul>
+            {CIDADES_DADOS.map((c) => (
+              <li key={c.slug}>
+                <a href={`/cidades/${c.slug}`}>{c.nome}</a>
               </li>
             ))}
           </ul>
