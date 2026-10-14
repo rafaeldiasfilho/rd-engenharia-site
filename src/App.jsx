@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { FAQ } from "./faq";
 
 const NAV_LINKS = [
   { id: "sobre", label: "Sobre" },
@@ -6,6 +7,7 @@ const NAV_LINKS = [
   { id: "servicos", label: "Serviços" },
   { id: "diferenciais", label: "Diferenciais" },
   { id: "portfolio", label: "Portfólio" },
+  { id: "duvidas", label: "Dúvidas" },
   { id: "contato", label: "Orçamento", cta: true },
 ];
 
@@ -77,15 +79,15 @@ const ABOUT_IMAGE = resolveRotatingImage(
 
 const HERO_STATS = [
   { key: "anos", label: "Anos de Experiência", valor: 10, sufixo: "+" },
-  { key: "projetos", label: "Projetos Realizados", valor: 200, sufixo: "+" },
-  { key: "especialidades", label: "Especialidades", valor: 15, sufixo: "" },
+  { key: "documentos", label: "Documentos Técnicos", valor: 200, sufixo: "+" },
+  { key: "projetos", label: "Projetos Realizados", valor: 30, sufixo: "+" },
   { key: "compromisso", label: "Compromisso Técnico", valor: 100, sufixo: "%" },
 ];
 
 const DIF_STATS = [
   { key: "mercado", label: "Anos no Mercado", valor: 10, sufixo: "+" },
-  { key: "entregues", label: "Projetos Entregues", valor: 200, sufixo: "+" },
-  { key: "crea", label: "Habilitação CREA", valor: 100, sufixo: "%" },
+  { key: "entregues", label: "Documentos Emitidos", valor: 200, sufixo: "+" },
+  { key: "projetos", label: "Projetos Realizados", valor: 30, sufixo: "+" },
   { key: "areas", label: "Áreas de Especialidade", valor: 3, sufixo: "" },
 ];
 
@@ -746,9 +748,54 @@ const CONTATOS = [
   {
     icone: "fa-solid fa-clock",
     titulo: "Atendimento",
-    texto: "Seg. a Sex. 08h-18h · Sáb. 08h-12h",
+    texto: "Seg. a Sex., das 7h às 17h",
+  },
+  {
+    icone: "fa-brands fa-instagram",
+    titulo: "Instagram",
+    texto: "@rd_engenhariaibira",
+    href: "https://www.instagram.com/rd_engenhariaibira/",
   },
 ];
+
+const WHATSAPP_PRINCIPAL = "5517997211208";
+
+const CIDADES_ATENDIDAS = [
+  "Ibirá",
+  "Urupes",
+  "Potirendaba",
+  "Irapuã",
+  "Catanduva",
+  "São José do Rio Preto",
+];
+
+const COMO_TRABALHAMOS = [
+  { icone: "fa-brands fa-whatsapp", titulo: "1. Você nos chama", texto: "Conte pelo WhatsApp o que precisa. Respondemos o mais rápido possível no horário de atendimento." },
+  { icone: "fa-solid fa-magnifying-glass", titulo: "2. Entendemos o caso", texto: "Analisamos a sua necessidade e os documentos que você já tem, para indicar o caminho correto." },
+  { icone: "fa-solid fa-file-signature", titulo: "3. Orçamento sem compromisso", texto: "Apresentamos o valor e as condições do serviço, de forma clara e por escrito." },
+  { icone: "fa-solid fa-circle-check", titulo: "4. Execução e entrega", texto: "Executamos o trabalho com responsável técnico habilitado e entregamos tudo regularizado, com ART." },
+];
+
+const dentroDoHorario = () => {
+  try {
+    const partes = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Sao_Paulo",
+      weekday: "short",
+      hour: "numeric",
+      hour12: false,
+    }).formatToParts(new Date());
+    const dia = partes.find((p) => p.type === "weekday").value;
+    const hora = Number(partes.find((p) => p.type === "hour").value) % 24;
+    return !["Sat", "Sun"].includes(dia) && hora >= 7 && hora < 17;
+  } catch {
+    return false;
+  }
+};
+
+const linkWhatsServico = (titulo) =>
+  `https://wa.me/${WHATSAPP_PRINCIPAL}?text=${encodeURIComponent(
+    `Olá! Gostaria de um orçamento para: ${titulo}.`
+  )}`;
 
 const SERVICOS_FORM_OPTIONS = [
   "Engenharia Civil",
@@ -775,6 +822,7 @@ export default function App() {
   const [abaPortfolio, setAbaPortfolio] = useState("todos");
   const [navAtiva, setNavAtiva] = useState("");
   const [navbarScroll, setNavbarScroll] = useState(false);
+  const [atendendo, setAtendendo] = useState(false);
   const [pedido, setPedido] = useState({ nome: "", servico: "", mensagem: "" });
 
   const [heroAnimados, setHeroAnimados] = useState(
@@ -793,6 +841,12 @@ export default function App() {
     if (abaPortfolio === "todos") return PORTFOLIO_ITENS_ROTATIVOS;
     return PORTFOLIO_ITENS_ROTATIVOS.filter((item) => item.categoria === abaPortfolio);
   }, [abaPortfolio]);
+
+  useEffect(() => {
+    setAtendendo(dentroDoHorario());
+    const id = setInterval(() => setAtendendo(dentroDoHorario()), 60000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -925,7 +979,6 @@ export default function App() {
     };
   }, []);
 
-  const WHATSAPP_PRINCIPAL = "5517997211208";
 
   const atualizarPedido = (campo) => (event) =>
     setPedido((atual) => ({ ...atual, [campo]: event.target.value }));
@@ -1009,7 +1062,11 @@ export default function App() {
 
           <div className="hero-content">
             <span className="hero-tag">
-              <i className="fa-solid fa-location-dot" /> Ibirá/SP · Engenharia de Alto Padrão
+              <i className="fa-solid fa-location-dot" /> Ibirá/SP · Atendemos toda a região
+            </span>
+            <span className={`status-atend ${atendendo ? "on" : ""}`}>
+              <i className="fa-solid fa-circle" />{" "}
+              {atendendo ? "Atendendo agora pelo WhatsApp" : "Fora do horário · respondemos no próximo dia útil"}
             </span>
             <h1>
               Soluções <span>Inteligentes</span> em Engenharia, Segurança e Meio Ambiente
@@ -1228,8 +1285,13 @@ export default function App() {
                       <span key={`${servico.titulo}-${tag}`}>{tag}</span>
                     ))}
                   </div>
-                  <a href="#contato" className="btn-saiba">
-                    Saiba Mais <i className="fa-solid fa-arrow-right" />
+                  <a
+                    href={linkWhatsServico(servico.titulo)}
+                    className="btn-saiba"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i className="fa-brands fa-whatsapp" /> Pedir orçamento deste serviço
                   </a>
                 </article>
               ))}
@@ -1318,6 +1380,56 @@ export default function App() {
                     <span>{item.tipo}</span>
                   </div>
                 </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="como-trabalhamos" className="secao secao-cinza">
+          <div className="container">
+            <div className="head-secao rv">
+              <h2>
+                Como <span>trabalhamos</span>
+              </h2>
+              <p>Um caminho simples, do primeiro contato até a entrega do serviço.</p>
+            </div>
+            <div className="etapas-grid">
+              {COMO_TRABALHAMOS.map((etapa) => (
+                <article className="etapa rv" key={etapa.titulo}>
+                  <i className={etapa.icone} />
+                  <h3>{etapa.titulo}</h3>
+                  <p>{etapa.texto}</p>
+                </article>
+              ))}
+            </div>
+            <div className="regioes rv">
+              <h3>
+                <i className="fa-solid fa-map-location-dot" /> Regiões atendidas
+              </h3>
+              <ul>
+                {CIDADES_ATENDIDAS.map((cidade) => (
+                  <li key={cidade}>{cidade}</li>
+                ))}
+                <li>e cidades próximas</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="duvidas" className="secao">
+          <div className="container container-faq">
+            <div className="head-secao rv">
+              <h2>
+                Dúvidas <span>frequentes</span>
+              </h2>
+              <p>Respostas rápidas para as perguntas mais comuns dos nossos clientes.</p>
+            </div>
+            <div className="faq-lista">
+              {FAQ.map((item) => (
+                <details className="faq-item" key={item.q}>
+                  <summary>{item.q}</summary>
+                  <p>{item.a}</p>
+                </details>
               ))}
             </div>
           </div>
@@ -1454,6 +1566,15 @@ export default function App() {
               >
                 <i className="fa-brands fa-whatsapp" />
               </a>
+              <a
+                href="https://www.instagram.com/rd_engenhariaibira/"
+                className="rede"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <i className="fa-brands fa-instagram" />
+              </a>
             </div>
           </div>
 
@@ -1471,6 +1592,9 @@ export default function App() {
               </li>
               <li>
                 <a href="#portfolio">Portfólio</a>
+              </li>
+              <li>
+                <a href="#duvidas">Dúvidas Frequentes</a>
               </li>
               <li>
                 <a href="#contato">Contato</a>
@@ -1508,6 +1632,12 @@ export default function App() {
               <i className="fa-solid fa-id-card" />
               <span>
                 Habilitados junto ao <strong>CREA-SP</strong>
+              </span>
+            </div>
+            <div className="cert">
+              <i className="fa-solid fa-user-tie" />
+              <span>
+                Responsável técnico: <strong>Rafael Antonio Dias</strong> · CREA-SP 5071022821
               </span>
             </div>
             <div className="cert">
