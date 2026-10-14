@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Icone from "./Icone";
+import { useDeslizar } from "./Deslizar";
 import { Ilustracao } from "./Ilustracoes";
 import { PROJETOS } from "./paginas";
 
@@ -10,20 +12,67 @@ const ABAS = [
 ];
 
 function Civil() {
-  const projeto = PROJETOS[0];
+  const total = PROJETOS.length;
+  const d = useDeslizar(total, { auto: 7000 });
+  const projeto = PROJETOS[d.i];
   const mostrar = projeto.itens.filter((i) => ["planta-baixa", "fachada"].includes(i.arq));
   return (
-    <div className="home-civil">
-      <div className="home-civil-imgs">
-        {mostrar.map((e) => (
-          <a key={e.arq} href={`/exemplos/${projeto.pasta}/${e.arq}.webp`} target="_blank" rel="noopener noreferrer">
-            <img src={`/exemplos/${projeto.pasta}/${e.arq}.webp`} width={e.w} height={e.h} loading="lazy" alt={e.alt} />
-          </a>
-        ))}
+    <div className="home-civil" {...d.pausarAoPassar} aria-roledescription="carrossel" aria-label="Projetos de engenharia civil">
+      <div
+        className={`home-civil-bloco ${d.trocou ? "troca" : ""} ${total > 1 ? "arrastavel" : ""}`}
+        data-dir={d.dir}
+        key={projeto.pasta}
+        ref={d.bloco}
+        {...d.gesto}
+      >
+        <div className="home-civil-imgs">
+          {mostrar.map((e) => (
+            <a
+              key={e.arq}
+              href={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
+              target="_blank"
+              rel="noopener noreferrer"
+              draggable={false}
+            >
+              <img
+                src={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
+                width={e.w}
+                height={e.h}
+                loading="lazy"
+                alt={e.alt}
+                draggable={false}
+              />
+            </a>
+          ))}
+        </div>
+        <p className="home-civil-txt" aria-live="polite">
+          <strong>{projeto.nome}</strong>. {projeto.resumo}. Projeto real, com os dados do cliente retirados.
+        </p>
       </div>
-      <p className="home-civil-txt">
-        <strong>{projeto.nome}</strong>. {projeto.resumo}. Projeto real, com os dados do cliente retirados.
-      </p>
+      {total > 1 && (
+        <div className="home-civil-nav">
+          <button type="button" className="seta seta-p" onClick={() => d.manual(-1)} aria-label="Projeto anterior">
+            <Icone nome="fa-solid fa-chevron-left" />
+          </button>
+          <span className="pontos" aria-hidden="true">
+            {PROJETOS.map((p, n) => (
+              <i key={p.pasta} className={n === d.i ? "ativo" : ""} />
+            ))}
+          </span>
+          <button type="button" className="seta seta-p" onClick={() => d.manual(1)} aria-label="Próximo projeto">
+            <Icone nome="fa-solid fa-chevron-right" />
+          </button>
+          <button
+            type="button"
+            className="seta seta-p"
+            onClick={d.alternar}
+            aria-pressed={d.rodando}
+            aria-label={d.rodando ? "Pausar a troca automática" : "Retomar a troca automática"}
+          >
+            <Icone nome={d.rodando ? "fa-solid fa-pause" : "fa-solid fa-play"} />
+          </button>
+        </div>
+      )}
       <p className="centro">
         <a className="btn btn-sec" href="/engenharia-civil#exemplos">
           Ver o projeto completo

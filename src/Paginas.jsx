@@ -1,5 +1,6 @@
 import Icone from "./Icone";
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { useDeslizar } from "./Deslizar";
 import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, CIDADES_DADOS, PROJETOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
@@ -29,102 +30,17 @@ function BotaoZap({ texto, rotulo }) {
 }
 
 function Exemplos() {
-  const [i, setI] = useState(0);
-  const [dir, setDir] = useState(1);
-  const [trocou, setTrocou] = useState(false);
-  const bloco = useRef(null);
-  const toque = useRef({ ativo: false, mov: false, x: 0, y: 0, dx: 0, id: null });
-  const ocupado = useRef(false);
   const total = PROJETOS.length;
-  const projeto = PROJETOS[i];
-
-  const reduzMovimento = () =>
-    typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // Troca de projeto: o bloco atual sai arrastado para um lado e o novo entra pelo outro.
-  const trocar = (d) => {
-    if (total < 2 || ocupado.current) return;
-    ocupado.current = true;
-    const el = bloco.current;
-    const concluir = () => {
-      setDir(d);
-      setTrocou(true);
-      setI((n) => (n + d + total) % total);
-      ocupado.current = false;
-    };
-    if (!el || reduzMovimento()) {
-      concluir();
-      return;
-    }
-    el.style.transition = "transform .22s ease-in, opacity .22s ease-in";
-    el.style.transform = `translateX(${-d * 40}%)`;
-    el.style.opacity = "0";
-    setTimeout(concluir, 220);
-  };
-
-  const encaixar = () => {
-    const el = bloco.current;
-    if (!el) return;
-    el.style.transition = "transform .25s cubic-bezier(.2,.7,.2,1), opacity .25s";
-    el.style.transform = "";
-    el.style.opacity = "";
-  };
-
-  const aoApertar = (e) => {
-    if (total < 2 || ocupado.current || (e.pointerType === "mouse" && e.button !== 0)) return;
-    toque.current = { ativo: true, mov: false, x: e.clientX, y: e.clientY, dx: 0, id: e.pointerId };
-  };
-  const aoMover = (e) => {
-    const t = toque.current;
-    if (!t.ativo || e.pointerId !== t.id) return;
-    const dx = e.clientX - t.x;
-    const dy = e.clientY - t.y;
-    if (!t.mov) {
-      if (Math.abs(dx) < 10 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
-      t.mov = true;
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId);
-      } catch {
-        /* sem captura, o arrasto segue funcionando dentro do bloco */
-      }
-    }
-    t.dx = dx;
-    const el = bloco.current;
-    if (el) {
-      el.style.transition = "none";
-      el.style.transform = `translateX(${dx}px)`;
-      el.style.opacity = String(Math.max(0.25, 1 - Math.abs(dx) / (el.offsetWidth * 1.1)));
-    }
-  };
-  const aoSoltar = (e) => {
-    const t = toque.current;
-    if (!t.ativo || e.pointerId !== t.id) return;
-    t.ativo = false;
-    if (!t.mov) return;
-    const largura = bloco.current ? bloco.current.offsetWidth : 600;
-    if (Math.abs(t.dx) > Math.min(110, largura * 0.2)) trocar(t.dx < 0 ? 1 : -1);
-    else encaixar();
-    setTimeout(() => {
-      toque.current.mov = false;
-    }, 0);
-  };
-  const aoCancelar = () => {
-    const t = toque.current;
-    if (!t.ativo) return;
-    t.ativo = false;
-    if (t.mov) encaixar();
-    t.mov = false;
-  };
-  // Depois de arrastar, o clique não deve abrir a imagem ampliada.
-  const aoClicarCaptura = (e) => {
-    if (toque.current.mov) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
-
+  const d = useDeslizar(total, { auto: 8000 });
+  const projeto = PROJETOS[d.i];
   return (
-    <section className="secao" id="exemplos" aria-roledescription="carrossel" aria-label="Exemplos de projeto">
+    <section
+      className="secao"
+      id="exemplos"
+      aria-roledescription="carrossel"
+      aria-label="Exemplos de projeto"
+      {...d.pausarAoPassar}
+    >
       <div className="container">
         <div className="head-secao">
           <h2>
@@ -137,35 +53,42 @@ function Exemplos() {
         </div>
         <div className="exemplos-barra">
           {total > 1 && (
-            <button type="button" className="seta" onClick={() => trocar(-1)} aria-label="Projeto anterior">
+            <button type="button" className="seta" onClick={() => d.manual(-1)} aria-label="Projeto anterior">
               <Icone nome="fa-solid fa-chevron-left" />
             </button>
           )}
-          <div className={`exemplos-titulo ${trocou ? "troca" : ""}`} aria-live="polite" key={projeto.pasta}>
+          <div className={`exemplos-titulo ${d.trocou ? "troca" : ""}`} aria-live="polite" key={projeto.pasta}>
             <strong>{projeto.nome}</strong>
             <span>{projeto.resumo}</span>
             {total > 1 && (
               <small>
-                Projeto {i + 1} de {total}
+                Projeto {d.i + 1} de {total}
               </small>
             )}
           </div>
           {total > 1 && (
-            <button type="button" className="seta" onClick={() => trocar(1)} aria-label="Próximo projeto">
+            <button type="button" className="seta" onClick={() => d.manual(1)} aria-label="Próximo projeto">
               <Icone nome="fa-solid fa-chevron-right" />
+            </button>
+          )}
+          {total > 1 && (
+            <button
+              type="button"
+              className="seta seta-pausa"
+              onClick={d.alternar}
+              aria-pressed={d.rodando}
+              aria-label={d.rodando ? "Pausar a troca automática" : "Retomar a troca automática"}
+            >
+              <Icone nome={d.rodando ? "fa-solid fa-pause" : "fa-solid fa-play"} />
             </button>
           )}
         </div>
         <div
-          className={`exemplos ${trocou ? "troca" : ""} ${total > 1 ? "arrastavel" : ""}`}
-          data-dir={dir}
+          className={`exemplos ${d.trocou ? "troca" : ""} ${total > 1 ? "arrastavel" : ""}`}
+          data-dir={d.dir}
           key={projeto.pasta}
-          ref={bloco}
-          onPointerDown={aoApertar}
-          onPointerMove={aoMover}
-          onPointerUp={aoSoltar}
-          onPointerCancel={aoCancelar}
-          onClickCapture={aoClicarCaptura}
+          ref={d.bloco}
+          {...d.gesto}
         >
           {projeto.itens.map((e) => (
             <figure className={`exemplo ${e.forma ? "exemplo-" + e.forma : ""}`} key={e.arq}>
