@@ -14,7 +14,7 @@ const vite = await createServer({
 });
 
 try {
-  const { render, PAGINAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
+  const { render, render404, PAGINAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
   const modelo = fs.readFileSync(path.join(dist, "index.html"), "utf8");
   const esc = (t) => t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   const jsonScript = (obj) =>
@@ -91,6 +91,11 @@ try {
     fs.mkdirSync(path.dirname(destino), { recursive: true });
     fs.writeFileSync(destino, html);
   }
+
+  const html404 = base
+    .replace("</head>", `    <title>Página não encontrada | RD Engenharia</title>\n    <meta name="robots" content="noindex" />\n  </head>`)
+    .replace('<div id="root"></div>', `<div id="root" data-erro="404">${render404()}</div>`);
+  fs.writeFileSync(path.join(dist, "404.html"), html404);
 
   const hoje = new Date().toISOString().slice(0, 10);
   const urls = ["", ...PAGINAS.filter((p) => p.tipo !== "privacidade").map((p) => p.slug)];

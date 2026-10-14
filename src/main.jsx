@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import PaginaView from "./Paginas";
+import PaginaView, { NaoEncontrada } from "./Paginas";
 import { achaPagina } from "./paginas";
 import "./styles.css";
 import { inject } from "@vercel/analytics";
@@ -12,7 +12,9 @@ const raiz = document.getElementById("root");
 const slug = window.location.pathname.replace(/^\/+|\/+$/g, "");
 const pagina = slug ? achaPagina(slug) : null;
 
-if (pagina) {
+if (raiz.dataset.erro) {
+  ReactDOM.hydrateRoot(raiz, <NaoEncontrada />);
+} else if (pagina) {
   ReactDOM.hydrateRoot(
     raiz,
     <React.StrictMode>

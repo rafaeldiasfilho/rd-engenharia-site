@@ -322,3 +322,27 @@ export default function PaginaView({ pagina }) {
   else corpo = <PaginaPrivacidade />;
   return <Casca>{corpo}</Casca>;
 }
+
+export function NaoEncontrada() {
+  return (
+    <Casca>
+      <section className="nao-encontrada">
+        <div className="container">
+          <h1>Página não encontrada</h1>
+          <p>O endereço pode ter mudado ou estar digitado errado.</p>
+          <a className="btn btn-zap" href="/">
+            Ir para o início
+          </a>
+          <a
+            className="btn btn-sec"
+            href={zap("Olá! Não encontrei o que procurava no site.")}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Falar no WhatsApp
+          </a>
+        </div>
+      </section>
+    </Casca>
+  );
+}

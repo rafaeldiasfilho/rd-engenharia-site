@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AREAS } from "./paginas";
 
 export const WHATSAPP = "5517997211208";
@@ -11,6 +11,38 @@ const NAV = [
   { href: "/meio-ambiente-topografia", label: "Meio ambiente e topografia" },
   { href: "/#duvidas", label: "Dúvidas" },
 ];
+
+function BotaoTema() {
+  const [escuro, setEscuro] = useState(false);
+
+  useEffect(() => {
+    const atual = document.documentElement.dataset.theme;
+    setEscuro(atual ? atual === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }, []);
+
+  const alternar = () => {
+    const proximo = escuro ? "light" : "dark";
+    document.documentElement.dataset.theme = proximo;
+    try {
+      localStorage.setItem("tema", proximo);
+    } catch {
+      // sem armazenamento: o tema vale só nesta visita
+    }
+    setEscuro(!escuro);
+  };
+
+  return (
+    <button
+      type="button"
+      className="tema-botao"
+      onClick={alternar}
+      aria-label={escuro ? "Usar tema claro" : "Usar tema escuro"}
+      title={escuro ? "Tema claro" : "Tema escuro"}
+    >
+      <i className={escuro ? "fa-solid fa-sun" : "fa-solid fa-moon"} />
+    </button>
+  );
+}
 
 export function Cabecalho() {
   const [aberto, setAberto] = useState(false);
@@ -41,6 +73,8 @@ export function Cabecalho() {
         >
           <i className="fa-brands fa-whatsapp" /> WhatsApp
         </a>
+
+        <BotaoTema />
 
         <button
           className="menu-botao"
@@ -117,8 +151,11 @@ export function Rodape() {
 export function Casca({ children }) {
   return (
     <>
+      <a className="pular" href="#conteudo">
+        Pular para o conteúdo
+      </a>
       <Cabecalho />
-      <main>{children}</main>
+      <main id="conteudo">{children}</main>
       <Rodape />
       <a
         className="zap-flutuante"
