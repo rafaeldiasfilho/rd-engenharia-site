@@ -628,7 +628,7 @@ export default function Admin() {
   useEffect(() => {
     abrirBanco().then(async (b) => {
       setBanco(b);
-      setUsuario(await b.auth.sessao());
+      setUsuario(b.modo === "indisponivel" ? null : await b.auth.sessao());
     });
   }, []);
 
