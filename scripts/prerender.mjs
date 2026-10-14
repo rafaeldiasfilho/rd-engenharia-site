@@ -97,6 +97,11 @@ try {
     .replace('<div id="root"></div>', `<div id="root" data-erro="404">${render404()}</div>`);
   fs.writeFileSync(path.join(dist, "404.html"), html404);
 
+  const htmlAdmin = base
+    .replace("</head>", `    <title>Área interna | RD Engenharia</title>\n    <meta name="robots" content="noindex, nofollow" />\n  </head>`);
+  fs.mkdirSync(path.join(dist, "admin"), { recursive: true });
+  fs.writeFileSync(path.join(dist, "admin", "index.html"), htmlAdmin);
+
   const hoje = new Date().toISOString().slice(0, 10);
   const urls = ["", ...PAGINAS.filter((p) => p.tipo !== "privacidade").map((p) => p.slug)];
   const sitemap =

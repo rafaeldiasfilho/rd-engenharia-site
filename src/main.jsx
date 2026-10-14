@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import PaginaView, { NaoEncontrada } from "./Paginas";
@@ -12,7 +12,15 @@ const raiz = document.getElementById("root");
 const slug = window.location.pathname.replace(/^\/+|\/+$/g, "");
 const pagina = slug ? achaPagina(slug) : null;
 
-if (raiz.dataset.erro) {
+const Admin = lazy(() => import("./admin/Admin"));
+
+if (slug === "admin") {
+  ReactDOM.createRoot(raiz).render(
+    <Suspense fallback={<p style={{ padding: 24 }}>Carregando...</p>}>
+      <Admin />
+    </Suspense>
+  );
+} else if (raiz.dataset.erro) {
   ReactDOM.hydrateRoot(raiz, <NaoEncontrada />);
 } else if (pagina) {
   ReactDOM.hydrateRoot(

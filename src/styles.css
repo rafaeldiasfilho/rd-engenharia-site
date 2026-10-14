@@ -1077,3 +1077,270 @@ ol {
 .escolha .icone {
   width: 0.9em;
 }
+
+/* Área interna */
+.adm-topo {
+  background: var(--branco);
+  border-bottom: 1px solid var(--linha);
+}
+
+.adm-topo-in {
+  width: min(1120px, 100% - 40px);
+  margin-inline: auto;
+  min-height: 64px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+
+.adm-topo nav {
+  display: flex;
+  gap: 6px;
+  margin-right: auto;
+}
+
+.adm-topo button {
+  font: inherit;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--tinta);
+  cursor: pointer;
+}
+
+.adm-topo nav button[aria-pressed="true"] {
+  background: var(--verde-claro);
+  color: var(--realce);
+  font-weight: 600;
+}
+
+.adm-usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--cinza);
+}
+
+.adm-conteudo {
+  width: min(1120px, 100% - 40px);
+  margin: 28px auto 80px;
+  display: grid;
+  gap: 16px;
+}
+
+.adm-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.adm-login .formulario {
+  width: min(420px, 100%);
+  border: 1px solid var(--linha);
+}
+
+.adm-login h1 {
+  font-size: 1.4rem;
+}
+
+.adm-aviso {
+  background: var(--verde-claro);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+}
+
+.adm-erro {
+  background: #fde8e8;
+  color: #8a1c1c;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+}
+
+.adm-resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.adm-resumo div {
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.adm-resumo strong {
+  display: block;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--realce);
+}
+
+.adm-resumo span {
+  color: var(--cinza);
+  font-size: 0.9rem;
+}
+
+.adm-titulo {
+  font-size: 1.2rem;
+  margin-top: 12px;
+}
+
+.adm-titulo-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.adm-titulo-linha label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.adm select,
+.adm input:not([type="checkbox"]),
+.adm textarea {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+  background: var(--papel);
+  color: var(--tinta);
+  min-width: 0;
+}
+
+.adm-lista {
+  display: grid;
+  gap: 10px;
+}
+
+.adm-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.adm-linha > div:first-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.adm-linha span,
+.adm-linha small {
+  color: var(--cinza);
+  font-size: 0.92rem;
+}
+
+.adm-atraso {
+  color: #b42318 !important;
+  font-weight: 600;
+}
+
+.adm-sem {
+  color: var(--cinza);
+  font-size: 0.88rem;
+}
+
+.adm-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.adm-acoes .btn {
+  padding: 9px 14px;
+}
+
+.adm-vazio {
+  color: var(--cinza);
+  padding: 8px 0;
+}
+
+.adm-barra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.adm-barra input {
+  flex: 1 1 260px;
+}
+
+.adm-form {
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.adm-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.adm-campo {
+  display: grid;
+  gap: 5px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.adm-campo input,
+.adm-campo select,
+.adm-campo textarea {
+  font-weight: 400;
+  width: 100%;
+}
+
+.adm-ficha {
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.adm-ficha h2 {
+  font-size: 1.3rem;
+}
+
+.adm-ficha dl {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.adm-ficha dt {
+  font-size: 0.82rem;
+  color: var(--cinza);
+}
+
+.adm-ficha dd {
+  margin: 0;
+}
+
+.adm-backup {
+  margin-top: 12px;
+}
