@@ -733,27 +733,15 @@ const CONTATOS = [
   },
   {
     icone: "fa-brands fa-whatsapp",
-    titulo: "Rafael Antonio Dias",
+    titulo: "WhatsApp — Rafael Antonio Dias",
     texto: "(17) 99721-1208",
-    href: "tel:+5517997211208",
+    href: "https://wa.me/5517997211208",
   },
   {
     icone: "fa-brands fa-whatsapp",
-    titulo: "Rafael Antonio Dias Filho",
+    titulo: "WhatsApp — Rafael Antonio Dias Filho",
     texto: "(17) 99659-0330",
-    href: "tel:+5517996590330",
-  },
-  {
-    icone: "fa-solid fa-envelope",
-    titulo: "E-mail — Rafael Dias",
-    texto: "rafaeldias.ibira@yahoo.com.br",
-    href: "mailto:rafaeldias.ibira@yahoo.com.br",
-  },
-  {
-    icone: "fa-solid fa-envelope",
-    titulo: "E-mail — Rafael Filho",
-    texto: "r.antoniodiasfilho@gmail.com",
-    href: "mailto:r.antoniodiasfilho@gmail.com",
+    href: "https://wa.me/5517996590330",
   },
   {
     icone: "fa-solid fa-clock",
@@ -787,7 +775,7 @@ export default function App() {
   const [abaPortfolio, setAbaPortfolio] = useState("todos");
   const [navAtiva, setNavAtiva] = useState("");
   const [navbarScroll, setNavbarScroll] = useState(false);
-  const [enviado, setEnviado] = useState(false);
+  const [pedido, setPedido] = useState({ nome: "", servico: "", mensagem: "" });
 
   const [heroAnimados, setHeroAnimados] = useState(
     HERO_STATS.reduce((acc, item) => ({ ...acc, [item.key]: 0 }), {})
@@ -937,11 +925,20 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!enviado) return undefined;
-    const timer = setTimeout(() => setEnviado(false), 4000);
-    return () => clearTimeout(timer);
-  }, [enviado]);
+  const WHATSAPP_PRINCIPAL = "5517997211208";
+
+  const atualizarPedido = (campo) => (event) =>
+    setPedido((atual) => ({ ...atual, [campo]: event.target.value }));
+
+  const enviarPeloWhatsApp = (event) => {
+    event.preventDefault();
+    const linhas = ["Olá! Gostaria de solicitar um orçamento."];
+    if (pedido.nome.trim()) linhas.push(`Nome: ${pedido.nome.trim()}`);
+    if (pedido.servico) linhas.push(`Serviço de interesse: ${pedido.servico}`);
+    if (pedido.mensagem.trim()) linhas.push(`Mensagem: ${pedido.mensagem.trim()}`);
+    const url = `https://wa.me/${WHATSAPP_PRINCIPAL}?text=${encodeURIComponent(linhas.join("\n"))}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   const trocarSlide = (indice) => {
     setSlideAtual((indice + SLIDES.length) % SLIDES.length);
@@ -974,7 +971,9 @@ export default function App() {
 
           <button
             className={`hamburger ${menuAberto ? "open" : ""}`}
-            aria-label="Abrir menu"
+            aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={menuAberto}
+            aria-controls="menu-mobile"
             onClick={() => setMenuAberto((valor) => !valor)}
           >
             <span />
@@ -984,7 +983,7 @@ export default function App() {
         </nav>
       </header>
 
-      <aside className={`nav-mobile ${menuAberto ? "open" : ""}`}>
+      <aside id="menu-mobile" className={`nav-mobile ${menuAberto ? "open" : ""}`}>
         {NAV_LINKS.map((item) => (
           <a key={item.id} href={`#${item.id}`} onClick={() => setMenuAberto(false)}>
             {item.cta ? "Solicitar Orçamento" : item.label}
@@ -1295,6 +1294,7 @@ export default function App() {
                 <button
                   key={cat.id}
                   className={`ptab ${abaPortfolio === cat.id ? "ativo" : ""}`}
+                  aria-pressed={abaPortfolio === cat.id}
                   onClick={() => setAbaPortfolio(cat.id)}
                 >
                   {cat.nome}
@@ -1345,7 +1345,13 @@ export default function App() {
                       </div>
                       <div className="ct-txt">
                         <strong>{item.titulo}</strong>
-                        {item.href ? <a href={item.href}>{item.texto}</a> : <span>{item.texto}</span>}
+                        {item.href ? (
+                          <a href={item.href} target="_blank" rel="noopener noreferrer">
+                            {item.texto}
+                          </a>
+                        ) : (
+                          <span>{item.texto}</span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -1361,37 +1367,33 @@ export default function App() {
                 </a>
               </article>
 
-              <form className="form-box contato-form rv-r" onSubmit={(event) => event.preventDefault()}>
-                <div className="frow">
-                  <div className="fg">
-                    <label htmlFor="nome">Nome Completo</label>
-                    <input id="nome" type="text" placeholder="Seu nome completo" />
-                  </div>
-                  <div className="fg">
-                    <label htmlFor="empresa">Empresa</label>
-                    <input id="empresa" type="text" placeholder="Nome da empresa" />
-                  </div>
-                </div>
+              <form className="form-box contato-form rv-r" onSubmit={enviarPeloWhatsApp}>
+                <h3 className="form-titulo">Peça seu orçamento pelo WhatsApp</h3>
+                <p className="form-aviso">
+                  Preencha se quiser. Ao clicar no botão, o WhatsApp abre com a sua mensagem pronta
+                  para enviar.
+                </p>
 
-                <div className="frow">
-                  <div className="fg">
-                    <label htmlFor="email">E-mail</label>
-                    <input id="email" type="email" placeholder="seu@email.com" />
-                  </div>
-                  <div className="fg">
-                    <label htmlFor="fone">Telefone</label>
-                    <input id="fone" type="tel" placeholder="(17) 9 9999-9999" />
-                  </div>
+                <div className="fg">
+                  <label htmlFor="nome">Seu nome</label>
+                  <input
+                    id="nome"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Como podemos te chamar?"
+                    value={pedido.nome}
+                    onChange={atualizarPedido("nome")}
+                  />
                 </div>
 
                 <div className="fg">
-                  <label htmlFor="servico">Serviço de Interesse</label>
-                  <select id="servico" defaultValue="">
-                    <option value="" disabled>
-                      Selecione um serviço...
-                    </option>
+                  <label htmlFor="servico">Serviço de interesse</label>
+                  <select id="servico" value={pedido.servico} onChange={atualizarPedido("servico")}>
+                    <option value="">Selecione um serviço...</option>
                     {SERVICOS_FORM_OPTIONS.map((opcao) => (
-                      <option key={opcao}>{opcao}</option>
+                      <option key={opcao} value={opcao}>
+                        {opcao}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -1400,33 +1402,22 @@ export default function App() {
                   <label htmlFor="msg">Mensagem</label>
                   <textarea
                     id="msg"
-                    rows="5"
+                    rows="4"
                     placeholder="Descreva brevemente seu projeto ou necessidade..."
+                    value={pedido.mensagem}
+                    onChange={atualizarPedido("mensagem")}
                   />
                 </div>
 
-                <button
-                  type="button"
-                  className={`btn-verde submit-btn ${enviado ? "ok" : ""}`}
-                  onClick={() => setEnviado(true)}
-                  disabled={enviado}
-                >
-                  {enviado ? (
-                    <>
-                      <i className="fa-solid fa-circle-check" /> Mensagem Enviada!
-                    </>
-                  ) : (
-                    <>
-                      <i className="fa-solid fa-paper-plane" /> Enviar Mensagem
-                    </>
-                  )}
+                <button type="submit" className="btn-verde submit-btn">
+                  <i className="fa-brands fa-whatsapp" /> Continuar no WhatsApp
                 </button>
               </form>
             </div>
 
             <div className="mapa-bloco rv">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29625.573766660804!2d-49.26042!3d-21.07569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94bef0b5c74b0f51%3A0x80f1f12c42ecefb0!2sIbir%C3%A1%2C%20SP!5e0!3m2!1spt!2sbr!4v1715720000000!5m2!1spt!2sbr"
+                src="https://www.google.com/maps?q=Rua+Jos%C3%A9+Alves+de+Mello+770+Ibir%C3%A1+SP&hl=pt-BR&z=16&output=embed"
                 width="100%"
                 height="380"
                 style={{ border: 0 }}
@@ -1454,15 +1445,6 @@ export default function App() {
               Qualidade, responsabilidade e inovação em cada projeto.
             </p>
             <div className="redes">
-              <a href="#" className="rede" aria-label="Instagram">
-                <i className="fa-brands fa-instagram" />
-              </a>
-              <a href="#" className="rede" aria-label="Facebook">
-                <i className="fa-brands fa-facebook-f" />
-              </a>
-              <a href="#" className="rede" aria-label="LinkedIn">
-                <i className="fa-brands fa-linkedin-in" />
-              </a>
               <a
                 href="https://wa.me/5517997211208"
                 className="rede"

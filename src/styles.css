@@ -232,11 +232,14 @@ h2 span {
   background: rgba(16, 19, 17, 0.99);
   border-bottom: 1px solid rgba(39, 140, 34, 0.4);
   transform: translateY(-110%);
-  transition: var(--transicao);
+  visibility: hidden;
+  transition: var(--transicao), visibility 0s linear 0.35s;
 }
 
 .nav-mobile.open {
   transform: translateY(0);
+  visibility: visible;
+  transition: var(--transicao), visibility 0s;
 }
 
 .nav-mobile a {
@@ -1812,4 +1815,21 @@ h2 span {
     height: 48px;
     font-size: 1.55rem;
   }
+}
+
+/* Formulário que continua no WhatsApp */
+.contato-form .form-titulo {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+}
+
+.contato-form .form-aviso {
+  margin: 0 0 18px;
+  font-size: 0.92rem;
+  opacity: 0.8;
+}
+
+.contato-form .submit-btn {
+  width: 100%;
+  justify-content: center;
 }
