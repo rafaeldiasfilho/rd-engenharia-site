@@ -1,13 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import PaginaView from "./Paginas";
+import { achaPagina } from "./paginas";
 import "./styles.css";
 import { inject } from "@vercel/analytics";
 
 inject();
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const raiz = document.getElementById("root");
+const slug = window.location.pathname.replace(/^\/+|\/+$/g, "");
+const pagina = slug ? achaPagina(slug) : null;
+
+if (pagina) {
+  ReactDOM.hydrateRoot(
+    raiz,
+    <React.StrictMode>
+      <PaginaView pagina={pagina} />
+    </React.StrictMode>
+  );
+} else {
+  ReactDOM.createRoot(raiz).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}

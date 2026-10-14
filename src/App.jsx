@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FAQ } from "./faq";
+import { AREAS } from "./paginas";
 
 const NAV_LINKS = [
   { id: "sobre", label: "Sobre" },
@@ -760,6 +761,22 @@ const CONTATOS = [
 
 const WHATSAPP_PRINCIPAL = "5517997211208";
 
+const AREA_DO_SERVICO = {
+  "Engenharia Civil": "engenharia-civil",
+  "Projetos Estruturais": "engenharia-civil",
+  "Gerenciamento de Obras": "engenharia-civil",
+  "Planejamento de Obras": "engenharia-civil",
+  "Laudos e Perícias": "engenharia-civil",
+  "Inspeções Técnicas": "engenharia-civil",
+  "Regularização Técnica": "engenharia-civil",
+  "Engenharia Ambiental": "meio-ambiente-topografia",
+  "Gestão Ambiental": "meio-ambiente-topografia",
+  Topografia: "meio-ambiente-topografia",
+  "Segurança do Trabalho": "seguranca-do-trabalho",
+  Treinamentos: "seguranca-do-trabalho",
+  "Corpo de Bombeiros": "corpo-de-bombeiros",
+};
+
 const CIDADES_ATENDIDAS = [
   "Ibirá",
   "Urupes",
@@ -1274,6 +1291,26 @@ export default function App() {
               </p>
             </div>
 
+            <div className="areas-home">
+              {AREAS.map((area) => (
+                <a className="area-card" key={area.slug} href={`/${area.slug}`}>
+                  <i className={area.icone} />
+                  <h3>{area.nome}</h3>
+                  <p>{area.curto}</p>
+                </a>
+              ))}
+            </div>
+
+            <div className="banner-guia">
+              <div>
+                <h3>Não sabe o que o seu caso precisa?</h3>
+                <p>Responda algumas perguntas e descubra os documentos mais prováveis.</p>
+              </div>
+              <a className="btn-verde" href="/o-que-preciso">
+                <i className="fa-solid fa-list-check" /> Fazer o guia rápido
+              </a>
+            </div>
+
             <div className="serv-grid serv-grid-amplo">
               {SERVICOS.map((servico) => (
                 <article className="serv-card rv" key={servico.titulo}>
@@ -1293,6 +1330,11 @@ export default function App() {
                   >
                     <i className="fa-brands fa-whatsapp" /> Pedir orçamento deste serviço
                   </a>
+                  {AREA_DO_SERVICO[servico.titulo] && (
+                    <a className="link-area" href={`/${AREA_DO_SERVICO[servico.titulo]}`}>
+                      Ver detalhes desta área
+                    </a>
+                  )}
                 </article>
               ))}
             </div>
@@ -1597,6 +1639,12 @@ export default function App() {
                 <a href="#duvidas">Dúvidas Frequentes</a>
               </li>
               <li>
+                <a href="/o-que-preciso">O que o meu caso precisa?</a>
+              </li>
+              <li>
+                <a href="/privacidade">Política de Privacidade</a>
+              </li>
+              <li>
                 <a href="#contato">Contato</a>
               </li>
             </ul>
@@ -1606,22 +1654,22 @@ export default function App() {
             <h4>Serviços</h4>
             <ul>
               <li>
-                <a href="#servicos">Engenharia Civil</a>
+                <a href="/engenharia-civil">Engenharia Civil</a>
               </li>
               <li>
-                <a href="#servicos">Engenharia Ambiental</a>
+                <a href="/meio-ambiente-topografia">Engenharia Ambiental</a>
               </li>
               <li>
-                <a href="#servicos">Segurança do Trabalho</a>
+                <a href="/seguranca-do-trabalho">Segurança do Trabalho</a>
               </li>
               <li>
-                <a href="#servicos">Corpo de Bombeiros</a>
+                <a href="/corpo-de-bombeiros">Corpo de Bombeiros</a>
               </li>
               <li>
-                <a href="#servicos">Topografia</a>
+                <a href="/meio-ambiente-topografia">Topografia</a>
               </li>
               <li>
-                <a href="#servicos">Laudos e Perícias</a>
+                <a href="/engenharia-civil">Laudos e Perícias</a>
               </li>
             </ul>
           </div>
