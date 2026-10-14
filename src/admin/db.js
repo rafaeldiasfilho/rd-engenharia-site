@@ -58,7 +58,6 @@ function criarDemo() {
     clientes: tabela("rd_demo_clientes"),
     servicos: tabela("rd_demo_servicos"),
     lembretes: tabela("rd_demo_lembretes"),
-    processos: tabela("rd_demo_processos"),
   };
 }
 
@@ -101,7 +100,6 @@ async function criarSupabase() {
     clientes: tabela("clientes", { coluna: "nome", asc: true }),
     servicos: tabela("servicos", { coluna: "criado_em", asc: false }),
     lembretes: tabela("lembretes_site", { coluna: "criado_em", asc: false }),
-    processos: tabela("processos", { coluna: "atualizado_em", asc: false }),
   };
 }
 

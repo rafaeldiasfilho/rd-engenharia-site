@@ -80,7 +80,6 @@ try {
       `<meta property="og:title" content="${esc(pagina.title)}" />`,
       `<meta property="og:description" content="${esc(pagina.description)}" />`,
       `<meta property="og:url" content="${url}" />`,
-      ...(pagina.tipo === "acompanhe" ? [`<meta name="robots" content="noindex" />`] : []),
       ...dados.map(jsonScript),
     ].join("\n    ");
 
@@ -104,7 +103,7 @@ try {
   fs.writeFileSync(path.join(dist, "admin", "index.html"), htmlAdmin);
 
   const hoje = new Date().toISOString().slice(0, 10);
-  const urls = ["", ...PAGINAS.filter((p) => !["privacidade", "acompanhe"].includes(p.tipo)).map((p) => p.slug)];
+  const urls = ["", ...PAGINAS.filter((p) => !["privacidade"].includes(p.tipo)).map((p) => p.slug)];
   const sitemap =
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls

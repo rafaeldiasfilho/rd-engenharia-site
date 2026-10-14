@@ -649,19 +649,6 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
   );
 }
 
-const STATUS_PROC = {
-  recebido: "Recebido",
-  em_andamento: "Em andamento",
-  protocolado: "Protocolado",
-  aguardando_orgao: "Aguardando o órgão",
-  concluido: "Concluído",
-};
-
-// 32 símbolos (sem I, O, 0 e 1) para o código não gerar confusão ao ser ditado ou digitado.
-const ALFABETO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-const gerarCodigo = () =>
-  Array.from(crypto.getRandomValues(new Uint8Array(8)), (n) => ALFABETO[n % 32]).join("");
-
 const mesAno = (iso) => (iso ? iso.slice(0, 7).split("-").reverse().join("/") : "sem data");
 
 function LembretesSite({ lista, tratar, converter, excluir }) {
@@ -727,145 +714,12 @@ function LembretesSite({ lista, tratar, converter, excluir }) {
   );
 }
 
-function Processos({ lista, clientes, criar, atualizar, excluir }) {
-  const [novo, setNovo] = useState({ servico_tipo: TIPOS_SERVICO[0], cliente_id: "", mensagem: "" });
-  const [rascunho, setRascunho] = useState({});
-  const porId = useMemo(() => Object.fromEntries(clientes.map((c) => [c.id, c])), [clientes]);
-  return (
-    <>
-      <h2 className="adm-titulo">Acompanhamento de processos</h2>
-      <p className="adm-vazio">
-        Cada processo recebe um código. O cliente digita o código em /acompanhe e vê só o serviço, a etapa e a
-        mensagem abaixo. Não escreva dados pessoais na mensagem.
-      </p>
-      <form
-        className="adm-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          criar({ ...novo, cliente_id: novo.cliente_id || null, codigo: gerarCodigo(), status: "recebido" });
-          setNovo({ servico_tipo: TIPOS_SERVICO[0], cliente_id: "", mensagem: "" });
-        }}
-      >
-        <div className="adm-grade">
-          <Campo rotulo="Serviço">
-            <select value={novo.servico_tipo} onChange={(e) => setNovo({ ...novo, servico_tipo: e.target.value })}>
-              {TIPOS_SERVICO.map((t) => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
-          </Campo>
-          <Campo rotulo="Cliente (opcional)">
-            <select value={novo.cliente_id} onChange={(e) => setNovo({ ...novo, cliente_id: e.target.value })}>
-              <option value="">—</option>
-              {clientes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nome}
-                </option>
-              ))}
-            </select>
-          </Campo>
-        </div>
-        <Campo rotulo="Mensagem para o cliente (opcional, até 400 caracteres)">
-          <input
-            maxLength={400}
-            value={novo.mensagem}
-            onChange={(e) => setNovo({ ...novo, mensagem: e.target.value })}
-            placeholder="Ex.: Recebemos os documentos e vamos iniciar o levantamento."
-          />
-        </Campo>
-        <div className="adm-acoes">
-          <button className="btn btn-zap" type="submit">
-            Criar processo e gerar código
-          </button>
-        </div>
-      </form>
-
-      {lista.length ? (
-        <ul className="adm-lista">
-          {lista.map((p) => {
-            const cli = porId[p.cliente_id];
-            const texto = `Olá${cli ? ", " + cli.nome : ""}! Aqui é da RD Engenharia. Você pode acompanhar o seu processo (${p.servico_tipo}) em https://rdibiraengenharia.com.br/acompanhe com o código ${p.codigo}.`;
-            const zap = cli ? linkZap(cli.whatsapp || cli.telefone, texto) : "";
-            const msg = rascunho[p.id] ?? p.mensagem ?? "";
-            return (
-              <li className="adm-linha" key={p.id}>
-                <div>
-                  <strong>
-                    <code>{p.codigo}</code> · {p.servico_tipo}
-                  </strong>
-                  <span>{cli ? cli.nome : "Sem cliente vinculado"}</span>
-                  <small>Atualizado em {dataBR(String(p.atualizado_em || p.criado_em || "").slice(0, 10))}</small>
-                  <label className="adm-campo">
-                    <span>Etapa</span>
-                    <select value={p.status} onChange={(e) => atualizar({ ...p, status: e.target.value })}>
-                      {Object.entries(STATUS_PROC).map(([id, nome]) => (
-                        <option key={id} value={id}>
-                          {nome}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="adm-campo">
-                    <span>Mensagem para o cliente</span>
-                    <input
-                      maxLength={400}
-                      value={msg}
-                      onChange={(e) => setRascunho({ ...rascunho, [p.id]: e.target.value })}
-                    />
-                  </label>
-                </div>
-                <div className="adm-acoes">
-                  {msg !== (p.mensagem ?? "") && (
-                    <button
-                      className="btn btn-sec"
-                      type="button"
-                      onClick={() => {
-                        atualizar({ ...p, mensagem: msg });
-                        setRascunho({ ...rascunho, [p.id]: undefined });
-                      }}
-                    >
-                      Salvar mensagem
-                    </button>
-                  )}
-                  {zap ? (
-                    <a className="btn btn-zap" href={zap} target="_blank" rel="noopener noreferrer">
-                      Enviar código pelo WhatsApp
-                    </a>
-                  ) : (
-                    <button
-                      className="btn btn-sec"
-                      type="button"
-                      onClick={() => navigator.clipboard?.writeText(texto)}
-                    >
-                      Copiar mensagem com o código
-                    </button>
-                  )}
-                  <button
-                    className="btn btn-sec"
-                    type="button"
-                    onClick={() => window.confirm(`Excluir o processo ${p.codigo}?`) && excluir(p.id)}
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p className="adm-vazio">Nenhum processo criado ainda.</p>
-      )}
-    </>
-  );
-}
-
 export default function Admin() {
   const [banco, setBanco] = useState(null);
   const [usuario, setUsuario] = useState(undefined);
   const [clientes, setClientes] = useState([]);
   const [servicos, setServicos] = useState([]);
   const [lembretes, setLembretes] = useState([]);
-  const [processos, setProcessos] = useState([]);
   const [aba, setAba] = useState("painel");
   const [clienteId, setClienteId] = useState(null);
   const [novo, setNovo] = useState(false);
@@ -881,16 +735,14 @@ export default function Admin() {
   const carregar = useCallback(async () => {
     if (!banco) return;
     try {
-      const [c, s, l, p] = await Promise.all([
+      const [c, s, l] = await Promise.all([
         banco.clientes.listar(),
         banco.servicos.listar(),
         banco.lembretes.listar(),
-        banco.processos.listar(),
       ]);
       setClientes(c);
       setServicos(s);
       setLembretes(l);
-      setProcessos(p);
       setErro("");
     } catch (e) {
       setErro(e.message);
@@ -944,9 +796,6 @@ export default function Admin() {
             </button>
             <button type="button" aria-pressed={aba === "lembretes"} onClick={() => irPara("lembretes")}>
               Pedidos do site{lembretes.filter((l) => !l.tratado).length ? ` (${lembretes.filter((l) => !l.tratado).length})` : ""}
-            </button>
-            <button type="button" aria-pressed={aba === "processos"} onClick={() => irPara("processos")}>
-              Processos
             </button>
           </nav>
           <div className="adm-usuario">
@@ -1042,14 +891,6 @@ export default function Admin() {
                 await banco.lembretes.salvar({ ...l, tratado: true });
               })
             }
-          />
-        ) : aba === "processos" ? (
-          <Processos
-            lista={processos}
-            clientes={clientes}
-            criar={(p) => executar(() => banco.processos.salvar(p))}
-            atualizar={(p) => executar(() => banco.processos.salvar(p))}
-            excluir={(id) => executar(() => banco.processos.excluir(id))}
           />
         ) : (
           <>

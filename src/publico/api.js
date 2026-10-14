@@ -17,14 +17,3 @@ export async function enviarLembrete(dados) {
   });
   if (!r.ok) throw new Error("falha");
 }
-
-export async function consultarProcesso(codigo) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/consultar_processo`, {
-    method: "POST",
-    headers: cabecalho,
-    body: JSON.stringify({ p_codigo: codigo }),
-  });
-  if (!r.ok) throw new Error("falha");
-  const lista = await r.json();
-  return lista[0] || null;
-}

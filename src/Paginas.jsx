@@ -1,9 +1,9 @@
 import Icone from "./Icone";
 import { useState } from "react";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, VISUAL, FOTO_RESPONSAVEL, STATUS_PROCESSO, DOCUMENTOS_LEMBRETE, achaArea } from "./paginas";
+import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
-import { enviarLembrete, consultarProcesso } from "./publico/api";
+import { enviarLembrete } from "./publico/api";
 
 function Topo({ titulo, texto, migalha, children }) {
   return (
@@ -560,101 +560,6 @@ function PaginaLembrete({ pagina }) {
   );
 }
 
-const dataHoraBR = (iso) => {
-  try {
-    return new Date(iso).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
-  } catch {
-    return "";
-  }
-};
-
-function PaginaAcompanhe({ pagina }) {
-  const [codigo, setCodigo] = useState("");
-  const [estado, setEstado] = useState("parado");
-  const [proc, setProc] = useState(null);
-
-  const consultar = async (e) => {
-    e.preventDefault();
-    const c = codigo.trim().toUpperCase();
-    if (c.length < 8) {
-      setEstado("curto");
-      return;
-    }
-    setEstado("buscando");
-    try {
-      const r = await consultarProcesso(c);
-      setProc(r);
-      setEstado(r ? "achou" : "naoachou");
-    } catch {
-      setEstado("erro");
-    }
-  };
-
-  const indice = proc ? STATUS_PROCESSO.findIndex(([id]) => id === proc.status) : -1;
-  return (
-    <>
-      <Topo
-        titulo={pagina.h1}
-        texto="Digite o código que enviamos pelo WhatsApp para ver em que etapa está o seu serviço."
-        migalha="Acompanhe"
-      />
-      <section className="secao">
-        <div className="container container-faq">
-          <form className="form-publico form-codigo" onSubmit={consultar}>
-            <label>
-              <span>Código do processo</span>
-              <input
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                maxLength={8}
-                autoComplete="off"
-                autoCapitalize="characters"
-                spellCheck={false}
-                placeholder="Ex.: K7M2Q9XA"
-              />
-            </label>
-            <button className="btn btn-zap" type="submit" disabled={estado === "buscando"}>
-              {estado === "buscando" ? "Consultando..." : "Consultar"}
-            </button>
-          </form>
-          {estado === "curto" && <p className="erro-form">O código tem 8 letras e números.</p>}
-          {estado === "erro" && (
-            <p className="erro-form">Não foi possível consultar agora. Tente novamente em instantes.</p>
-          )}
-          {estado === "naoachou" && (
-            <p className="erro-form">
-              Não encontramos esse código. Confira se digitou igual ao da mensagem ou{" "}
-              <a href={zap("Olá! Não consegui consultar o meu processo pelo site.")} target="_blank" rel="noopener noreferrer">
-                chame a RD no WhatsApp
-              </a>
-              .
-            </p>
-          )}
-          {estado === "achou" && proc && (
-            <div className="processo" aria-live="polite">
-              <h2>{proc.servico_tipo}</h2>
-              <ol className="processo-etapas">
-                {STATUS_PROCESSO.map(([id, nome], n) => (
-                  <li key={id} className={n < indice ? "feito" : n === indice ? "atual" : ""}>
-                    <span aria-hidden="true">{n < indice ? "✓" : n + 1}</span>
-                    {nome}
-                  </li>
-                ))}
-              </ol>
-              {proc.mensagem && <p className="processo-msg">{proc.mensagem}</p>}
-              <p className="processo-data">Atualizado em {dataHoraBR(proc.atualizado_em)}</p>
-              <BotaoZap
-                texto={`Olá! Estou acompanhando o processo ${codigo.trim().toUpperCase()} (${proc.servico_tipo}) e tenho uma dúvida.`}
-                rotulo="Tirar dúvida pelo WhatsApp"
-              />
-            </div>
-          )}
-        </div>
-      </section>
-    </>
-  );
-}
-
 function PaginaPrivacidade() {
   return (
     <>
@@ -677,11 +582,6 @@ function PaginaPrivacidade() {
             mês do vencimento (se informado) e a data da sua autorização. Usamos esses dados somente para avisar você
             sobre o prazo e oferecer a renovação. Eles ficam em banco de dados protegido, com acesso restrito à nossa
             equipe, e você pode pedir a exclusão a qualquer momento pelo WhatsApp.
-          </p>
-          <h2>Acompanhamento de processo</h2>
-          <p>
-            Ao consultar um processo pelo código, o site mostra apenas o tipo de serviço, a etapa e uma mensagem
-            curta, sem nome, endereço ou documentos. O código é enviado por nós ao cliente.
           </p>
           <h2>Estatísticas de visita</h2>
           <p>
@@ -717,7 +617,6 @@ export default function PaginaView({ pagina }) {
   else if (pagina.tipo === "quiz") corpo = <PaginaQuiz pagina={pagina} />;
   else if (pagina.tipo === "guias-indice") corpo = <PaginaGuias pagina={pagina} />;
   else if (pagina.tipo === "lembrete") corpo = <PaginaLembrete pagina={pagina} />;
-  else if (pagina.tipo === "acompanhe") corpo = <PaginaAcompanhe pagina={pagina} />;
   else corpo = <PaginaPrivacidade />;
   return <Casca>{corpo}</Casca>;
 }

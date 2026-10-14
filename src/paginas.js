@@ -438,27 +438,12 @@ export const PAGINAS = [
     h1: "Lembrete de vencimento dos seus documentos",
   },
   {
-    tipo: "acompanhe",
-    slug: "acompanhe",
-    title: "Acompanhe o seu processo | RD Engenharia",
-    description: "Veja em que etapa está o seu serviço usando o código que a RD Engenharia enviou pelo WhatsApp.",
-    h1: "Acompanhe o seu processo",
-  },
-  {
     tipo: "privacidade",
     slug: "privacidade",
     title: "Política de Privacidade | RD Engenharia",
     description: "Como o site da RD Engenharia trata os dados de quem entra em contato.",
     h1: "Política de Privacidade",
   },
-];
-
-export const STATUS_PROCESSO = [
-  ["recebido", "Recebido"],
-  ["em_andamento", "Em andamento"],
-  ["protocolado", "Protocolado"],
-  ["aguardando_orgao", "Aguardando o órgão"],
-  ["concluido", "Concluído"],
 ];
 
 export const DOCUMENTOS_LEMBRETE = [

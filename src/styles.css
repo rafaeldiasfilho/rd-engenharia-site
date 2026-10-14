@@ -1485,17 +1485,4 @@ ol {
 [data-theme="dark"] .erro-form{color:#ff8a80}
 .aviso-ok{max-width:520px;margin:0 auto;background:var(--verde-claro);border-radius:var(--raio);padding:24px;display:grid;gap:12px}
 .aviso-ok h2{margin:0}
-.form-codigo{grid-template-columns:minmax(0,1fr) auto;align-items:end}
-.form-codigo input{letter-spacing:.2em;font-weight:700;text-transform:uppercase}
-.processo{max-width:560px;margin:28px auto 0;background:var(--branco);border:1px solid var(--linha);border-radius:var(--raio);padding:24px;display:grid;gap:14px}
-.processo h2{margin:0;font-size:1.3rem}
-.processo-etapas{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.processo-etapas li{display:flex;align-items:center;gap:10px;color:var(--cinza)}
-.processo-etapas li span{width:26px;height:26px;border-radius:50%;border:2px solid var(--linha);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex:none}
-.processo-etapas li.feito{color:var(--tinta)}
-.processo-etapas li.feito span{background:var(--realce);border-color:var(--realce);color:var(--branco)}
-.processo-etapas li.atual{color:var(--tinta);font-weight:700}
-.processo-etapas li.atual span{border-color:var(--realce);color:var(--realce)}
-.processo-msg{margin:0;padding:12px;background:var(--verde-claro);border-radius:8px}
-.processo-data{margin:0;color:var(--cinza);font-size:.9rem}
-@media(max-width:480px){.form-codigo{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:480px){
