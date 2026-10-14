@@ -4,7 +4,7 @@ import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, VISUAL, achaArea }
 import { Casca, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 
-function Topo({ titulo, texto, migalha }) {
+function Topo({ titulo, texto, migalha, children }) {
   return (
     <section className="pagina-topo">
       <div className="container">
@@ -13,6 +13,7 @@ function Topo({ titulo, texto, migalha }) {
         </p>
         <h1>{titulo}</h1>
         {texto && <p>{texto}</p>}
+        {children}
       </div>
     </section>
   );
@@ -32,7 +33,7 @@ function Exemplos() {
   const projeto = PROJETOS[i];
   const vai = (d) => setI((n) => (n + d + total) % total);
   return (
-    <section className="secao" aria-roledescription="carrossel" aria-label="Exemplos de projeto">
+    <section className="secao" id="exemplos" aria-roledescription="carrossel" aria-label="Exemplos de projeto">
       <div className="container">
         <div className="head-secao">
           <h2>
@@ -96,46 +97,26 @@ function PaginaArea({ pagina }) {
   const outras = AREAS.filter((a) => a.slug !== pagina.slug);
   return (
     <>
-      <Topo titulo={pagina.h1} texto={pagina.intro} migalha={pagina.nome} />
-      {visual && (
-        <section className="secao secao-resumo">
-          <div className="container">
-            <div className="resumo">
+      <Topo titulo={pagina.h1} texto={pagina.intro} migalha={pagina.nome}>
+        {visual && (
+          <div className="topo-resumo">
+            <dl>
               <div>
-                <h2>Para quem</h2>
-                <p>{visual.quem}</p>
+                <dt>Para quem</dt>
+                <dd>{visual.quem}</dd>
               </div>
               <div>
-                <h2>O que você recebe</h2>
-                <p>{visual.recebe}</p>
+                <dt>Você recebe</dt>
+                <dd>{visual.recebe}</dd>
               </div>
-              <div>
-                <h2>Prazo e valor</h2>
-                <p>Informados no orçamento, depois de conhecermos o seu caso.</p>
-              </div>
-            </div>
-            <div className="head-secao">
-              <h2>
-                Como é o <span>atendimento</span>
-              </h2>
-            </div>
-            <ol className="etapas-area">
-              {visual.etapas.map((e, n) => (
-                <li key={e.t}>
-                  <span className="etapa-num" aria-hidden="true">
-                    {n + 1}
-                  </span>
-                  <strong>{e.t}</strong>
-                  <span>{e.d}</span>
-                </li>
-              ))}
-            </ol>
-            <div className="centro">
-              <BotaoZap texto={`Olá! Gostaria de um orçamento na área de ${pagina.nome}.`} rotulo="Começar pelo WhatsApp" />
+            </dl>
+            <div className="topo-acao">
+              <BotaoZap texto={`Olá! Gostaria de um orçamento na área de ${pagina.nome}.`} rotulo="Pedir orçamento" />
+              <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
             </div>
           </div>
-        </section>
-      )}
+        )}
+      </Topo>
       <section className="secao">
         <div className="container">
           <div className="head-secao">
@@ -181,25 +162,45 @@ function PaginaArea({ pagina }) {
 
       {pagina.slug === "engenharia-civil" && <Exemplos />}
 
-      <section className="secao secao-cinza">
-        <div className="container container-faq">
+      <section className="secao secao-cinza" id="atendimento">
+        <div className="container">
           <div className="head-secao">
             <h2>
-              Para agilizar, <span>separe</span>
+              Do primeiro contato à <span>entrega</span>
             </h2>
-            <p>Ter estas informações em mãos ajuda a fazermos o orçamento com mais precisão.</p>
+            <p>Veja o caminho e o que ter em mãos para agilizar o orçamento.</p>
           </div>
-          <ul className="lista-docs">
-            {pagina.documentos.map((d) => (
-              <li key={d}>
-                <Icone nome="fa-solid fa-circle-check" /> {d}
-              </li>
-            ))}
-          </ul>
-          <p className="aviso-lembrete">
-            <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento pelo WhatsApp, para
-            não perder o prazo de renovação dos documentos.
-          </p>
+          <div className="atendimento">
+            {visual && (
+              <ol className="linha-etapas">
+                {visual.etapas.map((e, n) => (
+                  <li key={e.t}>
+                    <span className="etapa-num" aria-hidden="true">
+                      {n + 1}
+                    </span>
+                    <div>
+                      <strong>{e.t}</strong>
+                      <span>{e.d}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+            <div className="separe">
+              <h3>Para agilizar, separe</h3>
+              <ul className="lista-docs">
+                {pagina.documentos.map((d) => (
+                  <li key={d}>
+                    <Icone nome="fa-solid fa-circle-check" /> {d}
+                  </li>
+                ))}
+              </ul>
+              <p className="aviso-lembrete">
+                <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento pelo WhatsApp, para
+                não perder o prazo de renovação dos documentos.
+              </p>
+            </div>
+          </div>
           <div className="centro">
             <BotaoZap texto={`Olá! Gostaria de um orçamento na área de ${pagina.nome}.`} rotulo="Falar no WhatsApp" />
           </div>

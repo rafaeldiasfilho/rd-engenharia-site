@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
 import { AREAS, CIDADES } from "./paginas";
 import { Casca, zap } from "./Layout";
+import ExemplosHome from "./ExemplosHome";
 
 const NECESSIDADES = [
   {
@@ -133,6 +134,8 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      <ExemplosHome />
 
       <section className="bloco bloco-branco" id="como-funciona">
         <div className="wrap">
