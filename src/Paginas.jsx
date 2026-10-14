@@ -1,7 +1,8 @@
 import Icone from "./Icone";
 import { useState } from "react";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, achaArea } from "./paginas";
+import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, VISUAL, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
+import { Ilustracao } from "./Ilustracoes";
 
 function Topo({ titulo, texto, migalha }) {
   return (
@@ -91,10 +92,50 @@ function Exemplos() {
 }
 
 function PaginaArea({ pagina }) {
+  const visual = VISUAL[pagina.slug];
   const outras = AREAS.filter((a) => a.slug !== pagina.slug);
   return (
     <>
       <Topo titulo={pagina.h1} texto={pagina.intro} migalha={pagina.nome} />
+      {visual && (
+        <section className="secao secao-resumo">
+          <div className="container">
+            <div className="resumo">
+              <div>
+                <h2>Para quem</h2>
+                <p>{visual.quem}</p>
+              </div>
+              <div>
+                <h2>O que você recebe</h2>
+                <p>{visual.recebe}</p>
+              </div>
+              <div>
+                <h2>Prazo e valor</h2>
+                <p>Informados no orçamento, depois de conhecermos o seu caso.</p>
+              </div>
+            </div>
+            <div className="head-secao">
+              <h2>
+                Como é o <span>atendimento</span>
+              </h2>
+            </div>
+            <ol className="etapas-area">
+              {visual.etapas.map((e, n) => (
+                <li key={e.t}>
+                  <span className="etapa-num" aria-hidden="true">
+                    {n + 1}
+                  </span>
+                  <strong>{e.t}</strong>
+                  <span>{e.d}</span>
+                </li>
+              ))}
+            </ol>
+            <div className="centro">
+              <BotaoZap texto={`Olá! Gostaria de um orçamento na área de ${pagina.nome}.`} rotulo="Começar pelo WhatsApp" />
+            </div>
+          </div>
+        </section>
+      )}
       <section className="secao">
         <div className="container">
           <div className="head-secao">
@@ -123,6 +164,20 @@ function PaginaArea({ pagina }) {
           </div>
         </div>
       </section>
+
+      {pagina.slug !== "engenharia-civil" && (
+        <section className="secao">
+          <div className="container">
+            <div className="head-secao">
+              <h2>
+                Veja na <span>prática</span>
+              </h2>
+              <p>Exemplos ilustrativos para você entender o que entregamos.</p>
+            </div>
+            <Ilustracao slug={pagina.slug} />
+          </div>
+        </section>
+      )}
 
       {pagina.slug === "engenharia-civil" && <Exemplos />}
 

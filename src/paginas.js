@@ -525,3 +525,47 @@ export const PROJETOS = [
     itens: ITENS_RESIDENCIA,
   },
 ];
+
+// Resumo rápido e etapas de cada área (sem prazos nem valores fixos).
+export const VISUAL = {
+  "seguranca-do-trabalho": {
+    quem: "Empresas com empregados, de qualquer porte.",
+    recebe: "Programas e laudos assinados por profissional habilitado, prontos para uma fiscalização.",
+    etapas: [
+      { t: "Conversa no WhatsApp", d: "Você conta o ramo da empresa e quantos funcionários tem." },
+      { t: "Visita ao local", d: "Olhamos os ambientes, as máquinas e as tarefas de cada função." },
+      { t: "Elaboração", d: "Preparamos o programa ou o laudo com base no que foi visto." },
+      { t: "Entrega e acompanhamento", d: "Entregamos os documentos e avisamos antes de vencerem." },
+    ],
+  },
+  "corpo-de-bombeiros": {
+    quem: "Comércios, indústrias, escolas, clínicas e condomínios.",
+    recebe: "Projeto, protocolo e licença do Corpo de Bombeiros (AVCB ou CLCB), conforme o enquadramento.",
+    etapas: [
+      { t: "Enquadramento", d: "Com área, altura e uso do imóvel, definimos qual licença é exigida." },
+      { t: "Levantamento no imóvel", d: "Medimos e anotamos o que já existe de proteção contra incêndio." },
+      { t: "Projeto e protocolo", d: "Elaboramos o projeto e protocolamos junto ao Corpo de Bombeiros." },
+      { t: "Vistoria e licença", d: "Orientamos as adequações e acompanhamos até a emissão." },
+    ],
+  },
+  "engenharia-civil": {
+    quem: "Quem vai construir, reformar, vender ou regularizar um imóvel.",
+    recebe: "Projetos, regularização, laudos e documentos prontos para a prefeitura, com ART.",
+    etapas: [
+      { t: "Conversa e documentos", d: "Você envia matrícula, fotos e conta o que pretende fazer." },
+      { t: "Visita e levantamento", d: "Medimos o imóvel e verificamos a situação real da obra." },
+      { t: "Projeto ou regularização", d: "Elaboramos os projetos e protocolamos na prefeitura." },
+      { t: "Alvará ou habite-se", d: "Acompanhamos o processo até a liberação dos documentos." },
+    ],
+  },
+  "meio-ambiente-topografia": {
+    quem: "Proprietários rurais, empresas e quem vai dividir ou vender um terreno.",
+    recebe: "Cadastros, levantamentos e certificações, conforme o caso.",
+    etapas: [
+      { t: "Análise dos documentos", d: "Conferimos matrícula, CCIR e a finalidade do trabalho." },
+      { t: "Trabalho de campo", d: "Medimos a área com equipamento de precisão." },
+      { t: "Elaboração", d: "Montamos mapas, memoriais e o cadastro ou pedido de licença." },
+      { t: "Entrega e acompanhamento", d: "Conduzimos o processo no órgão responsável até a conclusão." },
+    ],
+  },
+};
