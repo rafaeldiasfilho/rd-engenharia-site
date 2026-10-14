@@ -142,6 +142,12 @@ export function Rodape() {
               <a href="/guias">Guias</a>
             </li>
             <li>
+              <a href="/lembrete-de-vencimento">Lembrete de vencimento</a>
+            </li>
+            <li>
+              <a href="/acompanhe">Acompanhe o seu processo</a>
+            </li>
+            <li>
               <a href="/#duvidas">Dúvidas frequentes</a>
             </li>
             <li>

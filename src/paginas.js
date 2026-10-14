@@ -430,12 +430,46 @@ export const PAGINAS = [
     h1: "Guias e artigos",
   },
   {
+    tipo: "lembrete",
+    slug: "lembrete-de-vencimento",
+    title: "Lembrete de vencimento dos seus documentos | RD Engenharia",
+    description:
+      "Peça um aviso por WhatsApp antes do vencimento do AVCB, laudos, PGR e outros documentos, para não perder o prazo de renovação.",
+    h1: "Lembrete de vencimento dos seus documentos",
+  },
+  {
+    tipo: "acompanhe",
+    slug: "acompanhe",
+    title: "Acompanhe o seu processo | RD Engenharia",
+    description: "Veja em que etapa está o seu serviço usando o código que a RD Engenharia enviou pelo WhatsApp.",
+    h1: "Acompanhe o seu processo",
+  },
+  {
     tipo: "privacidade",
     slug: "privacidade",
     title: "Política de Privacidade | RD Engenharia",
     description: "Como o site da RD Engenharia trata os dados de quem entra em contato.",
     h1: "Política de Privacidade",
   },
+];
+
+export const STATUS_PROCESSO = [
+  ["recebido", "Recebido"],
+  ["em_andamento", "Em andamento"],
+  ["protocolado", "Protocolado"],
+  ["aguardando_orgao", "Aguardando o órgão"],
+  ["concluido", "Concluído"],
+];
+
+export const DOCUMENTOS_LEMBRETE = [
+  "AVCB ou CLCB (Corpo de Bombeiros)",
+  "PGR (gerenciamento de riscos)",
+  "LTCAT / PPP",
+  "Laudo de insalubridade ou periculosidade",
+  "Treinamento de NR (CIPA, NR-35, NR-10 etc.)",
+  "Alvará ou licença",
+  "CAR, licença ambiental ou outorga",
+  "Outro documento",
 ];
 
 export const achaPagina = (slug) => PAGINAS.find((p) => p.slug === slug);
@@ -569,3 +603,6 @@ export const VISUAL = {
     ],
   },
 };
+
+// Foto do responsável técnico. Quando houver o arquivo em public/ (ex.: "/rafael.webp"), coloque o caminho aqui.
+export const FOTO_RESPONSAVEL = null;

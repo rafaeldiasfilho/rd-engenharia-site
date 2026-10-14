@@ -1,8 +1,9 @@
 import Icone from "./Icone";
 import { useState } from "react";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, VISUAL, achaArea } from "./paginas";
+import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, PROJETOS, VISUAL, FOTO_RESPONSAVEL, STATUS_PROCESSO, DOCUMENTOS_LEMBRETE, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
+import { enviarLembrete, consultarProcesso } from "./publico/api";
 
 function Topo({ titulo, texto, migalha, children }) {
   return (
@@ -114,6 +115,19 @@ function PaginaArea({ pagina }) {
               <BotaoZap texto={`Olá! Gostaria de um orçamento na área de ${pagina.nome}.`} rotulo="Pedir orçamento" />
               <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
             </div>
+            <div className="assina">
+              {FOTO_RESPONSAVEL ? (
+                <img src={FOTO_RESPONSAVEL} width="56" height="56" alt="Rafael Antonio Dias" />
+              ) : (
+                <span className="assina-sigla" aria-hidden="true">
+                  RD
+                </span>
+              )}
+              <p>
+                <strong>Quem assina: Rafael Antonio Dias</strong>
+                <span>Engenheiro civil e ambiental · CREA-SP 5071022821</span>
+              </p>
+            </div>
           </div>
         )}
       </Topo>
@@ -187,6 +201,9 @@ function PaginaArea({ pagina }) {
               </ol>
             )}
             <div className="separe">
+              <p className="so-impressao">
+                RD Engenharia Segurança e Meio Ambiente · WhatsApp (17) 99721-1208 · {pagina.nome}
+              </p>
               <h3>Para agilizar, separe</h3>
               <ul className="lista-docs">
                 {pagina.documentos.map((d) => (
@@ -196,9 +213,12 @@ function PaginaArea({ pagina }) {
                 ))}
               </ul>
               <p className="aviso-lembrete">
-                <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento pelo WhatsApp, para
-                não perder o prazo de renovação dos documentos.
+                <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o
+                prazo de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
               </p>
+              <button type="button" className="btn btn-sec nao-imprime" onClick={() => window.print()}>
+                Imprimir ou salvar esta lista em PDF
+              </button>
             </div>
           </div>
           <div className="centro">
@@ -418,6 +438,223 @@ function PaginaQuiz({ pagina }) {
   );
 }
 
+function ultimoDiaDoMes(anoMes) {
+  const [a, m] = anoMes.split("-").map(Number);
+  const d = new Date(Date.UTC(a, m, 0)).getUTCDate();
+  return `${anoMes}-${String(d).padStart(2, "0")}`;
+}
+
+function PaginaLembrete({ pagina }) {
+  const [f, setF] = useState({ nome: "", whatsapp: "", documento: DOCUMENTOS_LEMBRETE[0], mes: "", aceite: false, site: "" });
+  const [estado, setEstado] = useState("parado");
+  const [erro, setErro] = useState("");
+  const mudar = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
+
+  const enviar = async (e) => {
+    e.preventDefault();
+    setErro("");
+    if (f.site) return; // campo-armadilha para robôs
+    let numero = f.whatsapp.replace(/\D/g, "");
+    if (numero.length === 10 || numero.length === 11) numero = "55" + numero;
+    if (numero.length < 12 || numero.length > 13) {
+      setErro("Confira o número do WhatsApp. Informe o DDD e o número, por exemplo (17) 99999-9999.");
+      return;
+    }
+    if (f.nome.trim().length < 2) {
+      setErro("Informe o seu nome.");
+      return;
+    }
+    if (!f.aceite) {
+      setErro("Marque a autorização para receber os lembretes.");
+      return;
+    }
+    setEstado("enviando");
+    try {
+      await enviarLembrete({
+        nome: f.nome.trim(),
+        whatsapp: numero,
+        documento: f.documento,
+        vencimento: f.mes ? ultimoDiaDoMes(f.mes) : null,
+        consentimento: true,
+      });
+      setEstado("ok");
+    } catch {
+      setEstado("parado");
+      setErro("Não foi possível enviar agora. Tente de novo ou chame a RD pelo WhatsApp.");
+    }
+  };
+
+  return (
+    <>
+      <Topo
+        titulo={pagina.h1}
+        texto="Deixe o seu contato e o vencimento do documento. Avisamos pelo WhatsApp com antecedência, para você renovar sem correria."
+        migalha="Lembrete de vencimento"
+      />
+      <section className="secao">
+        <div className="container container-faq">
+          {estado === "ok" ? (
+            <div className="aviso-ok" role="status">
+              <h2>Pedido recebido</h2>
+              <p>
+                Obrigado! Guardamos o seu pedido e vamos avisar você pelo WhatsApp antes do vencimento. Se quiser
+                desistir a qualquer momento, é só nos dizer.
+              </p>
+              <a className="btn btn-sec" href="/">
+                Voltar ao início
+              </a>
+            </div>
+          ) : (
+            <form className="form-publico" onSubmit={enviar} noValidate>
+              <label>
+                <span>Seu nome</span>
+                <input value={f.nome} onChange={mudar("nome")} autoComplete="name" maxLength={120} required />
+              </label>
+              <label>
+                <span>WhatsApp com DDD</span>
+                <input
+                  value={f.whatsapp}
+                  onChange={mudar("whatsapp")}
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="(17) 99999-9999"
+                  required
+                />
+              </label>
+              <label>
+                <span>Qual documento?</span>
+                <select value={f.documento} onChange={mudar("documento")}>
+                  {DOCUMENTOS_LEMBRETE.map((d) => (
+                    <option key={d}>{d}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>Mês do vencimento (se souber)</span>
+                <input type="month" value={f.mes} onChange={mudar("mes")} />
+              </label>
+              <label className="oculto" aria-hidden="true">
+                <span>Não preencha este campo</span>
+                <input tabIndex={-1} autoComplete="off" value={f.site} onChange={mudar("site")} />
+              </label>
+              <label className="aceite">
+                <input type="checkbox" checked={f.aceite} onChange={mudar("aceite")} />
+                <span>
+                  Autorizo a RD Engenharia a me enviar lembretes por WhatsApp sobre o vencimento deste documento. Posso
+                  pedir a exclusão dos meus dados quando quiser. Veja a <a href="/privacidade">política de privacidade</a>.
+                </span>
+              </label>
+              {erro && (
+                <p className="erro-form" role="alert">
+                  {erro}
+                </p>
+              )}
+              <button className="btn btn-zap" type="submit" disabled={estado === "enviando"}>
+                {estado === "enviando" ? "Enviando..." : "Quero ser avisado"}
+              </button>
+            </form>
+          )}
+        </div>
+      </section>
+    </>
+  );
+}
+
+const dataHoraBR = (iso) => {
+  try {
+    return new Date(iso).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+  } catch {
+    return "";
+  }
+};
+
+function PaginaAcompanhe({ pagina }) {
+  const [codigo, setCodigo] = useState("");
+  const [estado, setEstado] = useState("parado");
+  const [proc, setProc] = useState(null);
+
+  const consultar = async (e) => {
+    e.preventDefault();
+    const c = codigo.trim().toUpperCase();
+    if (c.length < 8) {
+      setEstado("curto");
+      return;
+    }
+    setEstado("buscando");
+    try {
+      const r = await consultarProcesso(c);
+      setProc(r);
+      setEstado(r ? "achou" : "naoachou");
+    } catch {
+      setEstado("erro");
+    }
+  };
+
+  const indice = proc ? STATUS_PROCESSO.findIndex(([id]) => id === proc.status) : -1;
+  return (
+    <>
+      <Topo
+        titulo={pagina.h1}
+        texto="Digite o código que enviamos pelo WhatsApp para ver em que etapa está o seu serviço."
+        migalha="Acompanhe"
+      />
+      <section className="secao">
+        <div className="container container-faq">
+          <form className="form-publico form-codigo" onSubmit={consultar}>
+            <label>
+              <span>Código do processo</span>
+              <input
+                value={codigo}
+                onChange={(e) => setCodigo(e.target.value.toUpperCase())}
+                maxLength={8}
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                placeholder="Ex.: K7M2Q9XA"
+              />
+            </label>
+            <button className="btn btn-zap" type="submit" disabled={estado === "buscando"}>
+              {estado === "buscando" ? "Consultando..." : "Consultar"}
+            </button>
+          </form>
+          {estado === "curto" && <p className="erro-form">O código tem 8 letras e números.</p>}
+          {estado === "erro" && (
+            <p className="erro-form">Não foi possível consultar agora. Tente novamente em instantes.</p>
+          )}
+          {estado === "naoachou" && (
+            <p className="erro-form">
+              Não encontramos esse código. Confira se digitou igual ao da mensagem ou{" "}
+              <a href={zap("Olá! Não consegui consultar o meu processo pelo site.")} target="_blank" rel="noopener noreferrer">
+                chame a RD no WhatsApp
+              </a>
+              .
+            </p>
+          )}
+          {estado === "achou" && proc && (
+            <div className="processo" aria-live="polite">
+              <h2>{proc.servico_tipo}</h2>
+              <ol className="processo-etapas">
+                {STATUS_PROCESSO.map(([id, nome], n) => (
+                  <li key={id} className={n < indice ? "feito" : n === indice ? "atual" : ""}>
+                    <span aria-hidden="true">{n < indice ? "✓" : n + 1}</span>
+                    {nome}
+                  </li>
+                ))}
+              </ol>
+              {proc.mensagem && <p className="processo-msg">{proc.mensagem}</p>}
+              <p className="processo-data">Atualizado em {dataHoraBR(proc.atualizado_em)}</p>
+              <BotaoZap
+                texto={`Olá! Estou acompanhando o processo ${codigo.trim().toUpperCase()} (${proc.servico_tipo}) e tenho uma dúvida.`}
+                rotulo="Tirar dúvida pelo WhatsApp"
+              />
+            </div>
+          )}
+        </div>
+      </section>
+    </>
+  );
+}
+
 function PaginaPrivacidade() {
   return (
     <>
@@ -430,10 +667,21 @@ function PaginaPrivacidade() {
           </p>
           <h2>Quais dados coletamos</h2>
           <p>
-            O site não possui cadastro, login nem banco de dados. Quando você preenche o formulário de orçamento ou usa
-            o guia "O que preciso?", as informações digitadas (como nome, cidade e a descrição do serviço) são usadas
-            apenas para montar uma mensagem de WhatsApp. Elas são enviadas por você, ao clicar no botão, diretamente
-            para o nosso número, e não ficam guardadas no site.
+            Quando você preenche o formulário de orçamento ou usa o guia "O que preciso?", as informações digitadas
+            (como nome, cidade e a descrição do serviço) são usadas apenas para montar uma mensagem de WhatsApp. Elas
+            são enviadas por você, ao clicar no botão, diretamente para o nosso número, e não ficam guardadas no site.
+          </p>
+          <h2>Lembrete de vencimento</h2>
+          <p>
+            Se você pedir o lembrete de vencimento, guardamos o seu nome, o número de WhatsApp, o tipo de documento, o
+            mês do vencimento (se informado) e a data da sua autorização. Usamos esses dados somente para avisar você
+            sobre o prazo e oferecer a renovação. Eles ficam em banco de dados protegido, com acesso restrito à nossa
+            equipe, e você pode pedir a exclusão a qualquer momento pelo WhatsApp.
+          </p>
+          <h2>Acompanhamento de processo</h2>
+          <p>
+            Ao consultar um processo pelo código, o site mostra apenas o tipo de serviço, a etapa e uma mensagem
+            curta, sem nome, endereço ou documentos. O código é enviado por nós ao cliente.
           </p>
           <h2>Estatísticas de visita</h2>
           <p>
@@ -468,6 +716,8 @@ export default function PaginaView({ pagina }) {
   else if (pagina.tipo === "guia") corpo = <PaginaGuia pagina={pagina} />;
   else if (pagina.tipo === "quiz") corpo = <PaginaQuiz pagina={pagina} />;
   else if (pagina.tipo === "guias-indice") corpo = <PaginaGuias pagina={pagina} />;
+  else if (pagina.tipo === "lembrete") corpo = <PaginaLembrete pagina={pagina} />;
+  else if (pagina.tipo === "acompanhe") corpo = <PaginaAcompanhe pagina={pagina} />;
   else corpo = <PaginaPrivacidade />;
   return <Casca>{corpo}</Casca>;
 }

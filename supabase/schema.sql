@@ -77,3 +77,60 @@ create policy "equipe_ve_servicos" on public.servicos
 
 revoke execute on function public.eh_equipe() from public, anon;
 grant execute on function public.eh_equipe() to authenticated;
+
+-- ============================================================
+-- Lembrete de vencimento (formulário público) e acompanhamento de processo
+-- ============================================================
+create table if not exists public.lembretes_site (
+  id uuid primary key default gen_random_uuid(),
+  nome text not null,
+  whatsapp text not null,
+  documento text not null,
+  vencimento date,
+  consentimento boolean not null,
+  consentimento_em timestamptz not null default now(),
+  tratado boolean not null default false,
+  criado_em timestamptz not null default now()
+);
+-- (as constraints de tamanho/formato estão nas migrations aplicadas no projeto)
+alter table public.lembretes_site enable row level security;
+
+drop policy if exists "site_cria_lembrete" on public.lembretes_site;
+create policy "site_cria_lembrete" on public.lembretes_site
+  for insert to anon with check (consentimento = true and tratado = false);
+
+drop policy if exists "equipe_gerencia_lembretes" on public.lembretes_site;
+create policy "equipe_gerencia_lembretes" on public.lembretes_site
+  for all to authenticated using (public.eh_equipe()) with check (public.eh_equipe());
+
+revoke all on public.lembretes_site from anon;
+grant insert (nome, whatsapp, documento, vencimento, consentimento) on public.lembretes_site to anon;
+
+create table if not exists public.processos (
+  id uuid primary key default gen_random_uuid(),
+  codigo text not null unique check (codigo ~ '^[A-Z2-9]{8}$'),
+  cliente_id uuid references public.clientes(id) on delete set null,
+  servico_tipo text not null,
+  status text not null default 'recebido'
+    check (status in ('recebido','em_andamento','protocolado','aguardando_orgao','concluido')),
+  mensagem text,
+  atualizado_em timestamptz not null default now(),
+  criado_em timestamptz not null default now()
+);
+alter table public.processos enable row level security;
+
+drop policy if exists "equipe_gerencia_processos" on public.processos;
+create policy "equipe_gerencia_processos" on public.processos
+  for all to authenticated using (public.eh_equipe()) with check (public.eh_equipe());
+
+-- Consulta pública: só devolve o andamento de quem tem o código (não expõe nome nem contato).
+create or replace function public.consultar_processo(p_codigo text)
+returns table(servico_tipo text, status text, mensagem text, atualizado_em timestamptz)
+language sql stable security definer set search_path = public as $$
+  select p.servico_tipo, p.status, p.mensagem, p.atualizado_em
+  from public.processos p
+  where p.codigo = upper(btrim(p_codigo))
+  limit 1;
+$$;
+revoke execute on function public.consultar_processo(text) from public;
+grant execute on function public.consultar_processo(text) to anon, authenticated;
