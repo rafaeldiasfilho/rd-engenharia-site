@@ -1,8 +1,10 @@
 // Camada de dados da área interna. Usa o Supabase quando as variáveis de ambiente existem;
 // sem elas, funciona em modo demonstração (dados só neste navegador), útil para testar a tela.
 
-const URL = import.meta.env.VITE_SUPABASE_URL;
-const CHAVE = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// URL e chave publicável do projeto Supabase "RdEngenharia". Ambas são públicas por desenho (vão para o
+// navegador de qualquer forma); quem protege os dados são as regras de acesso (RLS) do banco.
+const URL = import.meta.env.VITE_SUPABASE_URL || "https://lmeukcvqltafmjzmtmip.supabase.co";
+const CHAVE = import.meta.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_zbcFqqHt6tSM-sCBWPml7A_ITsU25KS";
 
 const novoId = () =>
   typeof crypto !== "undefined" && crypto.randomUUID
