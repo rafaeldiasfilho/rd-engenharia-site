@@ -25,3 +25,10 @@ npm run preview  # confere o resultado do build
 - `src/styles.css`: estilos
 - `public/`: favicon, `robots.txt` e `sitemap.xml`
 - `index.html`: metadados de SEO e dados estruturados da empresa
+
+## Estrutura do site
+
+- Página inicial (`src/App.jsx`) e páginas internas por área, guias, guia "o que preciso?" e privacidade (`src/paginas.js`, `src/Paginas.jsx`). Cada página é gerada como HTML estático no build (`scripts/prerender.mjs`) para o Google ler o conteúdo.
+- Perguntas frequentes em `src/faq.js` (usadas também no JSON-LD).
+- Área interna em `/admin` (`src/admin`): clientes, serviços e vencimentos, com login pelo Supabase. O esquema do banco está em `supabase/schema.sql`. Só e-mails cadastrados na tabela `equipe` acessam os dados.
+- Para testar a área interna sem o banco: `VITE_DEMO=1 npm run dev` (dados só no navegador).
