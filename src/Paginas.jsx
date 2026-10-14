@@ -1,3 +1,4 @@
+import Icone from "./Icone";
 import { useState } from "react";
 import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
@@ -19,7 +20,7 @@ function Topo({ titulo, texto, migalha }) {
 function BotaoZap({ texto, rotulo }) {
   return (
     <a className="btn btn-zap" href={zap(texto)} target="_blank" rel="noopener noreferrer">
-      <i className="fa-brands fa-whatsapp" /> {rotulo}
+      <Icone nome="fa-brands fa-whatsapp" /> {rotulo}
     </a>
   );
 }
@@ -50,7 +51,7 @@ function PaginaArea({ pagina }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fa-brands fa-whatsapp" /> Pedir orçamento
+                  <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
                 </a>
               </article>
             ))}
@@ -69,12 +70,12 @@ function PaginaArea({ pagina }) {
           <ul className="lista-docs">
             {pagina.documentos.map((d) => (
               <li key={d}>
-                <i className="fa-solid fa-circle-check" /> {d}
+                <Icone nome="fa-solid fa-circle-check" /> {d}
               </li>
             ))}
           </ul>
           <p className="aviso-lembrete">
-            <i className="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento pelo WhatsApp, para
+            <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento pelo WhatsApp, para
             não perder o prazo de renovação dos documentos.
           </p>
           <div className="centro">
@@ -119,7 +120,7 @@ function PaginaArea({ pagina }) {
           <div className="areas-grid">
             {outras.map((a) => (
               <a className="area-card" key={a.slug} href={`/${a.slug}`}>
-                <i className={a.icone} />
+                <Icone nome={a.icone} />
                 <h3>{a.nome}</h3>
                 <p>{a.curto}</p>
               </a>
@@ -135,7 +136,7 @@ function PaginaGuia({ pagina }) {
   const area = achaArea(pagina.area);
   return (
     <>
-      <Topo titulo={pagina.h1} migalha="Guia" />
+      <Topo titulo={pagina.h1} migalha={<a href="/guias">Guias</a>} />
       <section className="secao">
         <div className="container container-faq artigo">
           {pagina.paragrafos.map((p) => (
@@ -156,6 +157,30 @@ function PaginaGuia({ pagina }) {
               Veja todos os serviços de <a href={`/${area.slug}`}>{area.nome}</a>.
             </p>
           )}
+        </div>
+      </section>
+    </>
+  );
+}
+
+function PaginaGuias({ pagina }) {
+  return (
+    <>
+      <Topo
+        titulo={pagina.h1}
+        texto="Explicações curtas e em linguagem simples sobre os documentos mais pedidos."
+        migalha="Guias"
+      />
+      <section className="secao">
+        <div className="container">
+          <div className="areas-grid">
+            {GUIAS.map((g) => (
+              <a className="area-card" key={g.slug} href={`/${g.slug}`}>
+                <h3>{g.h1}</h3>
+                <p>{achaArea(g.area)?.nome}</p>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
     </>
@@ -208,7 +233,7 @@ function PaginaQuiz({ pagina }) {
                 aria-pressed={perfilId === p.id}
                 onClick={() => escolher(p.id)}
               >
-                <i className={p.icone} />
+                <Icone nome={p.icone} />
                 {p.nome}
               </button>
             ))}
@@ -319,6 +344,7 @@ export default function PaginaView({ pagina }) {
   if (pagina.tipo === "area") corpo = <PaginaArea pagina={pagina} />;
   else if (pagina.tipo === "guia") corpo = <PaginaGuia pagina={pagina} />;
   else if (pagina.tipo === "quiz") corpo = <PaginaQuiz pagina={pagina} />;
+  else if (pagina.tipo === "guias-indice") corpo = <PaginaGuias pagina={pagina} />;
   else corpo = <PaginaPrivacidade />;
   return <Casca>{corpo}</Casca>;
 }

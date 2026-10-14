@@ -1,3 +1,4 @@
+import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
 import { AREAS, CIDADES } from "./paginas";
@@ -100,14 +101,14 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-brands fa-whatsapp" /> Pedir orçamento
+                <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
               </a>
               <a className="btn btn-sec btn-grande" href="/o-que-preciso">
                 Não sei o que preciso
               </a>
             </div>
             <p className={`status ${atendendo ? "on" : ""}`}>
-              <i className="fa-solid fa-circle" />{" "}
+              <Icone nome="fa-solid fa-circle" />{" "}
               {atendendo
                 ? "Atendendo agora. Seg. a sex., das 7h às 17h"
                 : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
@@ -124,7 +125,7 @@ export default function App() {
                       <strong>{n.titulo}</strong>
                       <small>{n.frase}</small>
                     </span>
-                    <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+                    <Icone nome="fa-solid fa-chevron-right" />
                   </a>
                 </li>
               ))}
@@ -187,7 +188,7 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-brands fa-whatsapp" /> (17) 99721-1208
+                <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
               </a>
             </article>
             <article>
@@ -199,7 +200,7 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-brands fa-whatsapp" /> (17) 99659-0330
+                <Icone nome="fa-brands fa-whatsapp" /> (17) 99659-0330
               </a>
             </article>
           </div>
@@ -291,7 +292,7 @@ export default function App() {
               <textarea rows="4" value={pedido.mensagem} onChange={mudar("mensagem")} />
             </label>
             <button className="btn btn-zap btn-grande" type="submit">
-              <i className="fa-brands fa-whatsapp" /> Continuar no WhatsApp
+              <Icone nome="fa-brands fa-whatsapp" /> Continuar no WhatsApp
             </button>
           </form>
         </div>

@@ -323,6 +323,91 @@ export const GUIAS = [
       "Para começar, separe a matrícula do imóvel, o CCIR e o ITR atualizados, e informe o que você pretende fazer: vender, dividir ou apenas regularizar.",
     ],
   },
+  {
+    tipo: "guia",
+    slug: "guias/laudo-de-insalubridade-como-funciona",
+    title: "Laudo de insalubridade: como funciona? | Guia RD Engenharia",
+    description:
+      "Entenda o que é o laudo de insalubridade, quem pode elaborá-lo, como os graus do adicional são definidos e quando a empresa precisa dele.",
+    h1: "Laudo de insalubridade: como funciona?",
+    area: "seguranca-do-trabalho",
+    servico: "Laudo de insalubridade",
+    paragrafos: [
+      "A insalubridade é a exposição do trabalhador a agentes nocivos à saúde acima dos limites previstos na NR-15, como ruído, calor, agentes químicos, poeira e agentes biológicos. Quando ela existe e não é neutralizada, o trabalhador tem direito a um adicional sobre o salário.",
+      "O laudo de insalubridade é o documento técnico que comprova se há ou não essa exposição. A CLT prevê que a caracterização seja feita por perícia de médico do trabalho ou de engenheiro de segurança do trabalho registrado no órgão competente.",
+      "O trabalho começa com uma visita ao local, observando as tarefas, o tempo de exposição e os equipamentos usados. Quando necessário, são feitas medições, como a do nível de ruído. Os resultados são comparados com os limites da norma.",
+      "Se houver insalubridade, o laudo indica o grau (mínimo, médio ou máximo), que define o percentual do adicional, calculado conforme a CLT. O laudo também registra se há medidas que eliminam ou neutralizam o agente, como o uso correto de EPI com certificado de aprovação, o que pode afastar o direito ao adicional.",
+      "Para a empresa, o laudo serve para pagar o adicional corretamente, quando devido, e para se defender em ações trabalhistas. Ele deve ser atualizado quando mudam o ambiente, as máquinas ou as atividades.",
+    ],
+  },
+  {
+    tipo: "guia",
+    slug: "guias/o-que-e-art-anotacao-de-responsabilidade-tecnica",
+    title: "O que é ART (Anotação de Responsabilidade Técnica)? | Guia RD Engenharia",
+    description:
+      "Entenda o que é a ART, quando ela é obrigatória e por que ela protege quem contrata um serviço de engenharia.",
+    h1: "O que é ART e quando ela é obrigatória?",
+    area: "engenharia-civil",
+    servico: "Serviço de engenharia com ART",
+    paragrafos: [
+      "A ART, ou Anotação de Responsabilidade Técnica, é o documento que registra no CREA qual profissional é responsável por um serviço de engenharia. Ela está prevista na Lei 6.496/1977.",
+      "Em geral, a ART é exigida em projetos, obras, laudos, perícias, topografia, projetos de incêndio e outros serviços técnicos regulamentados. Sem ela, o serviço pode ficar sem validade perante órgãos como prefeituras e o Corpo de Bombeiros, e o profissional e o contratante ficam expostos a problemas.",
+      "Para quem contrata, a ART mostra quem assinou o trabalho, qual é o serviço contratado e o período de execução. Se houver erro ou dano, é possível identificar quem responde tecnicamente por ele, e isso protege o cliente.",
+      "A ART é emitida pelo profissional, no sistema do CREA, e vinculada ao contrato. Ela é paga por serviço, e o valor é definido pelo conselho. Por isso, vale sempre pedir a ART junto com o orçamento e guardar uma cópia.",
+      "Desconfie de quem oferece serviços de engenharia sem ART ou sem registro no CREA. Você pode conferir o registro do profissional no site do conselho.",
+    ],
+  },
+  {
+    tipo: "guia",
+    slug: "guias/habite-se-o-que-e-e-como-conseguir",
+    title: "Habite-se: o que é e como conseguir | Guia RD Engenharia",
+    description:
+      "Entenda o que é o habite-se, para que serve e que documentos costumam ser necessários para conseguir o seu na prefeitura.",
+    h1: "Habite-se: o que é e como conseguir",
+    area: "engenharia-civil",
+    servico: "Habite-se e regularização de obra",
+    paragrafos: [
+      "O habite-se é o documento da prefeitura que atesta que a obra foi concluída de acordo com o projeto aprovado e pode ser usada. Ele é pedido para ligar serviços em definitivo, para averbar a construção na matrícula do imóvel e para vender ou financiar.",
+      "Cada município tem as suas regras, mas, em geral, o processo exige o projeto aprovado e o alvará de construção, a ART ou RRT do responsável técnico, a vistoria da prefeitura e a regularização da obra junto à Receita Federal e ao INSS. Em imóveis que exigem, também é preciso apresentar a licença do Corpo de Bombeiros.",
+      "Quando a obra foi construída sem projeto, ou com diferenças em relação ao que foi aprovado, o primeiro passo é levantar o que existe no local e fazer o projeto como construído (as-built). Depois, verifica-se se a obra atende às regras de uso e ocupação do solo do município.",
+      "Em alguns casos, pode ser necessário adequar a construção antes da aprovação, ou pagar multas previstas na legislação municipal. A viabilidade e os custos dependem de cada caso, por isso a análise dos documentos vem primeiro.",
+      "Se você já tem plantas, alvará ou certidões, separe tudo. Isso acelera a análise e evita retrabalho.",
+    ],
+  },
+  {
+    tipo: "guia",
+    slug: "guias/car-cadastro-ambiental-rural",
+    title: "CAR: o que é o Cadastro Ambiental Rural | Guia RD Engenharia",
+    description:
+      "Entenda o que é o CAR, quem precisa fazer, o que ele contém e por que ele importa para o produtor rural.",
+    h1: "CAR: o que é e por que o produtor rural precisa dele",
+    area: "meio-ambiente-topografia",
+    servico: "CAR (Cadastro Ambiental Rural)",
+    paragrafos: [
+      "O CAR, ou Cadastro Ambiental Rural, é um registro eletrônico e obrigatório para os imóveis rurais, criado pelo Código Florestal (Lei 12.651/2012). Ele reúne, em um mapa, os limites da propriedade, as áreas de vegetação nativa, as áreas de preservação permanente e a reserva legal.",
+      "O cadastro é feito no sistema oficial, o SICAR, a partir de informações declaradas pelo proprietário ou possuidor, com apoio de imagens de satélite e de um levantamento do imóvel. Por ser autodeclaratório, as informações precisam ser corretas, porque o órgão ambiental pode analisá-las depois.",
+      "O CAR é a base da regularização ambiental da propriedade. Quando há áreas que precisam ser recuperadas, ele é a porta de entrada para os programas de regularização previstos em lei. Em geral, o produtor também precisa comprovar o CAR para obter crédito rural.",
+      "Ter o CAR não significa que a propriedade está regular. Significa que ela está cadastrada e pode ser analisada. Por isso, vale revisar se os dados batem com a realidade do imóvel, principalmente se a propriedade foi dividida ou vendida.",
+      "Para começar, separe a matrícula, o CCIR e o ITR do imóvel, e informe a localização da propriedade. Se você já tem o recibo de inscrição do CAR, também ajuda.",
+    ],
+  },
+  {
+    tipo: "guia",
+    slug: "guias/ltcat-e-ppp-para-que-servem",
+    title: "LTCAT e PPP: para que servem | Guia RD Engenharia",
+    description:
+      "Entenda a diferença entre LTCAT e PPP, quem precisa emitir e como eles se relacionam com a aposentadoria especial.",
+    h1: "LTCAT e PPP: para que servem e como se relacionam",
+    area: "seguranca-do-trabalho",
+    servico: "LTCAT e PPP",
+    paragrafos: [
+      "O LTCAT (Laudo Técnico das Condições do Ambiente de Trabalho) é o documento que identifica os agentes nocivos presentes no trabalho, como ruído, calor, poeira e produtos químicos, e avalia a exposição dos trabalhadores a eles.",
+      "O PPP (Perfil Profissiográfico Previdenciário) é o documento individual de cada trabalhador, emitido pela empresa. Ele resume o histórico do trabalhador e as exposições a agentes nocivos ao longo do tempo, com base nas informações do LTCAT e de outros programas de segurança.",
+      "Os dois documentos são usados pela Previdência para avaliar se o trabalhador teve atividade especial, que pode reduzir o tempo necessário para a aposentadoria. Por isso, as informações precisam ser verdadeiras e atualizadas: erros prejudicam o trabalhador e geram risco para a empresa.",
+      "A empresa deve emitir o PPP quando o trabalhador pede e quando o contrato termina, e manter o LTCAT atualizado quando há mudança no ambiente, nas máquinas ou nas atividades.",
+      "A elaboração do LTCAT exige visita ao local e profissional habilitado. Se a sua empresa nunca fez o laudo, ou se o último é muito antigo, vale revisar.",
+    ],
+  },
 ];
 
 export const PAGINAS = [
@@ -335,6 +420,14 @@ export const PAGINAS = [
     description:
       "Responda algumas perguntas e descubra quais documentos e serviços técnicos o seu caso provavelmente exige. Depois peça orçamento pelo WhatsApp.",
     h1: "Descubra o que o seu caso precisa",
+  },
+  {
+    tipo: "guias-indice",
+    slug: "guias",
+    title: "Guias e artigos | RD Engenharia",
+    description:
+      "Guias curtos sobre PGR, LTCAT, laudos, AVCB, CLCB, ART, habite-se, CAR e georreferenciamento, escritos pela equipe da RD Engenharia.",
+    h1: "Guias e artigos",
   },
   {
     tipo: "privacidade",

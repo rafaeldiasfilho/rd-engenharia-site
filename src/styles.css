@@ -342,13 +342,13 @@ ol {
   color: var(--cinza);
 }
 
-.status i {
+.status .icone {
   font-size: 0.55rem;
   color: #a7aea9;
   vertical-align: middle;
 }
 
-.status.on i {
+.status.on .icone {
   color: #2fb344;
 }
 
@@ -396,7 +396,7 @@ ol {
   margin-top: 2px;
 }
 
-.escolha i {
+.escolha .icone {
   color: var(--realce);
   flex: none;
 }
@@ -712,7 +712,48 @@ ol {
   padding: 18px 0 28px;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   font-size: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 76px;
+}
+
+.rodape-fim p {
   opacity: 0.7;
+}
+
+.tema {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tema span {
+  opacity: 0.7;
+  margin-right: 4px;
+}
+
+.tema button {
+  font: inherit;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: #d4dbd5;
+  cursor: pointer;
+}
+
+.tema button:hover {
+  border-color: #fff;
+}
+
+.tema button[aria-pressed="true"] {
+  background: #fff;
+  border-color: #fff;
+  color: #17211b;
+  font-weight: 600;
 }
 
 @media (max-width: 760px) {
@@ -813,7 +854,7 @@ ol {
   background: var(--verde-claro);
 }
 
-.area-card i {
+.area-card .icone {
   color: var(--realce);
   font-size: 1.4rem;
 }
@@ -831,7 +872,7 @@ ol {
   padding: 12px 16px;
 }
 
-.lista-docs i {
+.lista-docs .icone {
   color: var(--realce);
   margin-right: 8px;
 }
@@ -842,7 +883,7 @@ ol {
   padding: 14px 18px;
 }
 
-.aviso-lembrete i {
+.aviso-lembrete .icone {
   color: var(--realce);
   margin-right: 6px;
 }
@@ -898,7 +939,7 @@ ol {
   transition: border-color 0.2s, background 0.2s;
 }
 
-.perfil i {
+.perfil .icone {
   font-size: 1.4rem;
   color: var(--realce);
 }
@@ -991,21 +1032,6 @@ ol {
 }
 
 /* Alternar tema e acessibilidade */
-.tema-botao {
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--linha);
-  border-radius: var(--raio);
-  background: var(--branco);
-  color: var(--tinta);
-  font-size: 1.05rem;
-  cursor: pointer;
-}
-
-.tema-botao:hover {
-  border-color: var(--realce);
-}
-
 .pular {
   position: absolute;
   left: 12px;
@@ -1039,4 +1065,15 @@ ol {
 
 .nao-encontrada .btn + .btn {
   margin-left: 10px;
+}
+
+.icone {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  flex: none;
+}
+
+.escolha .icone {
+  width: 0.9em;
 }

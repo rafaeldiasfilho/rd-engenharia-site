@@ -1,3 +1,4 @@
+import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { AREAS } from "./paginas";
 
@@ -12,35 +13,45 @@ const NAV = [
   { href: "/#duvidas", label: "Dúvidas" },
 ];
 
-function BotaoTema() {
-  const [escuro, setEscuro] = useState(false);
+const TEMAS = [
+  { id: "auto", rotulo: "Automático" },
+  { id: "light", rotulo: "Claro" },
+  { id: "dark", rotulo: "Escuro" },
+];
+
+function SeletorTema() {
+  const [tema, setTema] = useState("auto");
 
   useEffect(() => {
-    const atual = document.documentElement.dataset.theme;
-    setEscuro(atual ? atual === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches);
+    try {
+      const salvo = localStorage.getItem("tema");
+      if (salvo === "light" || salvo === "dark") setTema(salvo);
+    } catch {
+      // sem armazenamento: segue o sistema
+    }
   }, []);
 
-  const alternar = () => {
-    const proximo = escuro ? "light" : "dark";
-    document.documentElement.dataset.theme = proximo;
+  const escolher = (id) => {
+    setTema(id);
+    if (id === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", id);
     try {
-      localStorage.setItem("tema", proximo);
+      if (id === "auto") localStorage.removeItem("tema");
+      else localStorage.setItem("tema", id);
     } catch {
-      // sem armazenamento: o tema vale só nesta visita
+      // o tema vale só nesta visita
     }
-    setEscuro(!escuro);
   };
 
   return (
-    <button
-      type="button"
-      className="tema-botao"
-      onClick={alternar}
-      aria-label={escuro ? "Usar tema claro" : "Usar tema escuro"}
-      title={escuro ? "Tema claro" : "Tema escuro"}
-    >
-      <i className={escuro ? "fa-solid fa-sun" : "fa-solid fa-moon"} />
-    </button>
+    <div className="tema" role="group" aria-label="Aparência do site">
+      <span>Aparência</span>
+      {TEMAS.map((t) => (
+        <button key={t.id} type="button" aria-pressed={tema === t.id} onClick={() => escolher(t.id)}>
+          {t.rotulo}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -71,10 +82,8 @@ export function Cabecalho() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <i className="fa-brands fa-whatsapp" /> WhatsApp
+          <Icone nome="fa-brands fa-whatsapp" /> WhatsApp
         </a>
-
-        <BotaoTema />
 
         <button
           className="menu-botao"
@@ -83,7 +92,7 @@ export function Cabecalho() {
           aria-controls="menu-mobile"
           onClick={() => setAberto((v) => !v)}
         >
-          <i className={aberto ? "fa-solid fa-xmark" : "fa-solid fa-bars"} />
+          <Icone nome={aberto ? "fa-solid fa-xmark" : "fa-solid fa-bars"} />
         </button>
       </div>
 
@@ -94,7 +103,7 @@ export function Cabecalho() {
           </a>
         ))}
         <a className="btn btn-zap" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-          <i className="fa-brands fa-whatsapp" /> Chamar no WhatsApp
+          <Icone nome="fa-brands fa-whatsapp" /> Chamar no WhatsApp
         </a>
       </nav>
     </header>
@@ -130,6 +139,9 @@ export function Rodape() {
               <a href="/o-que-preciso">Descubra o que o seu caso precisa</a>
             </li>
             <li>
+              <a href="/guias">Guias</a>
+            </li>
+            <li>
               <a href="/#duvidas">Dúvidas frequentes</a>
             </li>
             <li>
@@ -143,7 +155,10 @@ export function Rodape() {
           </ul>
         </div>
       </div>
-      <p className="rodape-fim">© RD Engenharia Segurança e Meio Ambiente</p>
+      <div className="rodape-fim">
+        <p>© RD Engenharia Segurança e Meio Ambiente</p>
+        <SeletorTema />
+      </div>
     </footer>
   );
 }
@@ -164,7 +179,7 @@ export function Casca({ children }) {
         rel="noopener noreferrer"
         aria-label="Falar pelo WhatsApp"
       >
-        <i className="fa-brands fa-whatsapp" />
+        <Icone nome="fa-brands fa-whatsapp" />
       </a>
     </>
   );
