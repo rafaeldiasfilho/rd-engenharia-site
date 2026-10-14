@@ -1,6 +1,6 @@
 import Icone from "./Icone";
 import { useState } from "react";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, achaArea } from "./paginas";
+import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, EXEMPLOS, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
 
 function Topo({ titulo, texto, migalha }) {
@@ -58,6 +58,35 @@ function PaginaArea({ pagina }) {
           </div>
         </div>
       </section>
+
+      {pagina.slug === "engenharia-civil" && (
+        <section className="secao">
+          <div className="container">
+            <div className="head-secao">
+              <h2>
+                Exemplo de <span>projeto</span>
+              </h2>
+              <p>Projeto arquitetônico de uma residência térrea, com os dados do cliente retirados. Toque para ampliar.</p>
+            </div>
+            <div className="exemplos">
+              {EXEMPLOS.map((e) => (
+                <figure className={`exemplo exemplo-${e.arq}`} key={e.arq}>
+                  <a href={`/exemplos/${e.arq}.webp`} target="_blank" rel="noopener noreferrer">
+                    <img src={`/exemplos/${e.arq}.webp`} width={e.w} height={e.h} loading="lazy" alt={e.alt} />
+                  </a>
+                  <figcaption>
+                    <strong>{e.titulo}</strong>
+                    <span>{e.texto}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+            <div className="centro">
+              <BotaoZap texto="Olá! Vi o exemplo de projeto no site e gostaria de um projeto para a minha obra." rotulo="Quero um projeto assim" />
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="secao secao-cinza">
         <div className="container container-faq">

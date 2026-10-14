@@ -1363,3 +1363,14 @@ ol {
   accent-color: var(--verde);
   flex: none;
 }
+
+/* Exemplos de projeto */
+.exemplos{display:grid;gap:20px;grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:28px;align-items:start}
+.exemplo{margin:0;background:var(--branco);border:1px solid var(--linha);border-radius:12px;overflow:hidden;min-width:0}
+.exemplo a{display:block;background:#fff}
+.exemplo img{display:block;width:100%;height:auto}
+.exemplo figcaption{padding:12px 16px 16px;display:grid;gap:4px}
+.exemplo figcaption span{font-size:.92rem;color:var(--cinza)}
+.exemplo-planta-baixa{grid-row:span 2}
+.exemplo-cortes,.exemplo-quadros{grid-column:1/-1}
+@media(max-width:700px){.exemplos{grid-template-columns:minmax(0,1fr)}.exemplo-planta-baixa{grid-row:auto}}
