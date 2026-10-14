@@ -1,145 +1,6 @@
 import { useState } from "react";
 import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, achaArea } from "./paginas";
-
-const WHATSAPP = "5517997211208";
-const zap = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
-
-const NAV = [
-  { href: "/seguranca-do-trabalho", label: "Segurança" },
-  { href: "/corpo-de-bombeiros", label: "Bombeiros" },
-  { href: "/engenharia-civil", label: "Eng. Civil" },
-  { href: "/meio-ambiente-topografia", label: "Meio Ambiente" },
-  { href: "/o-que-preciso", label: "O que preciso?" },
-];
-
-function Cabecalho() {
-  const [aberto, setAberto] = useState(false);
-  return (
-    <>
-      <header className="navbar scrolled">
-        <nav className="nav-wrap">
-          <a className="logo" href="/">
-            <span className="logo-icone">RD</span>
-            <span className="logo-txt">
-              <strong>RD Engenharia</strong>
-              <small>Segurança e Meio Ambiente</small>
-            </span>
-          </a>
-          <ul className="nav-links">
-            {NAV.map((item) => (
-              <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
-            <li>
-              <a
-                className="nav-cta"
-                href={zap("Olá! Gostaria de solicitar um orçamento.")}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Orçamento
-              </a>
-            </li>
-          </ul>
-          <button
-            className={`hamburger ${aberto ? "open" : ""}`}
-            aria-label={aberto ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={aberto}
-            aria-controls="menu-mobile"
-            onClick={() => setAberto((v) => !v)}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-        </nav>
-      </header>
-      <aside id="menu-mobile" className={`nav-mobile ${aberto ? "open" : ""}`}>
-        <a href="/">Início</a>
-        {NAV.map((item) => (
-          <a key={item.href} href={item.href}>
-            {item.label}
-          </a>
-        ))}
-        <a href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-          Orçamento pelo WhatsApp
-        </a>
-      </aside>
-    </>
-  );
-}
-
-function Rodape() {
-  return (
-    <footer className="footer">
-      <div className="container footer-grid">
-        <div className="footer-brand">
-          <a href="/" className="logo">
-            <span className="logo-icone">RD</span>
-            <span className="logo-txt">
-              <strong>RD Engenharia</strong>
-              <small>Seg. e Meio Ambiente</small>
-            </span>
-          </a>
-          <p>Rua José Alves de Mello, 770, Centro, Ibirá/SP. Atendimento de segunda a sexta, das 7h às 17h.</p>
-        </div>
-        <div className="footer-col">
-          <h4>Áreas</h4>
-          <ul>
-            {AREAS.map((a) => (
-              <li key={a.slug}>
-                <a href={`/${a.slug}`}>{a.nome}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="footer-col">
-          <h4>Mais</h4>
-          <ul>
-            <li>
-              <a href="/o-que-preciso">O que o meu caso precisa?</a>
-            </li>
-            <li>
-              <a href="/#duvidas">Dúvidas frequentes</a>
-            </li>
-            <li>
-              <a href="/privacidade">Política de Privacidade</a>
-            </li>
-          </ul>
-          <div className="cert">
-            <i className="fa-solid fa-user-tie" />
-            <span>
-              Responsável técnico: <strong>Rafael Antonio Dias</strong> · CREA-SP 5071022821
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="footer-bottom">
-        <p>© RD Engenharia Segurança e Meio Ambiente. Todos os direitos reservados.</p>
-      </div>
-    </footer>
-  );
-}
-
-function Casca({ children }) {
-  return (
-    <>
-      <Cabecalho />
-      <main>{children}</main>
-      <Rodape />
-      <a
-        className="wpp-float"
-        href={zap("Olá! Gostaria de um orçamento.")}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Falar pelo WhatsApp"
-      >
-        <i className="fa-brands fa-whatsapp" />
-      </a>
-    </>
-  );
-}
+import { Casca, zap } from "./Layout";
 
 function Topo({ titulo, texto, migalha }) {
   return (
@@ -157,7 +18,7 @@ function Topo({ titulo, texto, migalha }) {
 
 function BotaoZap({ texto, rotulo }) {
   return (
-    <a className="btn-verde" href={zap(texto)} target="_blank" rel="noopener noreferrer">
+    <a className="btn btn-zap" href={zap(texto)} target="_blank" rel="noopener noreferrer">
       <i className="fa-brands fa-whatsapp" /> {rotulo}
     </a>
   );
@@ -184,7 +45,7 @@ function PaginaArea({ pagina }) {
                   <strong>Para quem:</strong> {item.quem}
                 </p>
                 <a
-                  className="btn-saiba"
+                  className="btn btn-sec"
                   href={zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
