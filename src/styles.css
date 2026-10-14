@@ -1497,3 +1497,6 @@ ol {
 .cidade-servicos h3,.cidade-servicos p{margin:0}
 .cidade-outras{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
 .cidade-outras a{display:inline-block;padding:8px 14px;border:1px solid var(--linha);border-radius:999px;background:var(--branco)}
+
+.dica-doc{color:var(--cinza);font-weight:400;font-size:.9rem;line-height:1.4}
+.cidade-fonte.centro{text-align:center;margin-top:16px}

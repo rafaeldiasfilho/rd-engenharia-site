@@ -1,7 +1,7 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
-import { AREAS, CIDADES, CIDADES_DADOS } from "./paginas";
+import { AREAS, CIDADES, CIDADES_DADOS, URL_AVALIACOES_GOOGLE } from "./paginas";
 import { Casca, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 
@@ -259,6 +259,14 @@ export default function App() {
                     </span>
                   ))}{" "}
                   e cidades próximas
+                </dd>
+              </div>
+              <div>
+                <dt>Avaliações</dt>
+                <dd>
+                  <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+                    Ver no Google
+                  </a>
                 </dd>
               </div>
               <div>

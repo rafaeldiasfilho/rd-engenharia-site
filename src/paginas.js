@@ -415,11 +415,11 @@ export const GUIAS = [
 // consultados em ibge.gov.br/cidades-e-estados/sp. Conteúdo local adicional deve ser revisado pela equipe.
 export const CIDADES_DADOS = [
   { slug: "ibira", nome: "Ibirá", sede: true, pop: "11.690", area: "268,9", dens: "42,99", pib: "35.772,27", ibge: "ibira", rural: true },
-  { slug: "urupes", nome: "Urupes", pop: "13.744", area: "323,9", dens: "42,43", pib: "47.084,91", ibge: "urupes", rural: true },
-  { slug: "potirendaba", nome: "Potirendaba", pop: "18.496", area: "342,5", dens: "54,00", pib: "54.996,89", ibge: "potirendaba", rural: true },
-  { slug: "irapua", nome: "Irapuã", pop: "6.867", area: "257,6", dens: "26,66", pib: "41.126,49", ibge: "irapua", rural: true },
-  { slug: "catanduva", nome: "Catanduva", pop: "115.791", area: "291,9", dens: "398,46", pib: "60.712,43", ibge: "catanduva", rural: false },
-  { slug: "sao-jose-do-rio-preto", nome: "São José do Rio Preto", pop: "480.393", area: "431,9", dens: "1.112,17", pib: "54.934,44", ibge: "sao-jose-do-rio-preto", rural: false },
+  { slug: "urupes", nome: "Urupes", min: 20, pop: "13.744", area: "323,9", dens: "42,43", pib: "47.084,91", ibge: "urupes", rural: true },
+  { slug: "potirendaba", nome: "Potirendaba", min: 20, pop: "18.496", area: "342,5", dens: "54,00", pib: "54.996,89", ibge: "potirendaba", rural: true },
+  { slug: "irapua", nome: "Irapuã", min: 30, pop: "6.867", area: "257,6", dens: "26,66", pib: "41.126,49", ibge: "irapua", rural: true },
+  { slug: "catanduva", nome: "Catanduva", min: 40, pop: "115.791", area: "291,9", dens: "398,46", pib: "60.712,43", ibge: "catanduva", rural: false },
+  { slug: "sao-jose-do-rio-preto", nome: "São José do Rio Preto", min: 45, pop: "480.393", area: "431,9", dens: "1.112,17", pib: "54.934,44", ibge: "sao-jose-do-rio-preto", rural: false },
 ];
 
 const paginaCidade = (c) => ({
@@ -478,6 +478,25 @@ export const DOCUMENTOS_LEMBRETE = [
   "CAR, licença ambiental ou outorga",
   "Outro documento",
 ];
+
+export const URL_AVALIACOES_GOOGLE = "https://maps.google.com/?cid=11067848269869846630";
+
+// Orientação de prazo mostrada na página do lembrete. Cada documento traz a própria validade;
+// a norma só fixa prazo em alguns casos. Confirmamos o prazo exato de cada caso na renovação.
+export const DICAS_LEMBRETE = {
+  "AVCB ou CLCB (Corpo de Bombeiros)":
+    "A validade varia conforme o risco da edificação e está impressa no certificado. A renovação leva tempo, por isso vale começar com antecedência.",
+  "PGR (gerenciamento de riscos)":
+    "A NR-1 pede que a avaliação de riscos seja revista, no máximo, a cada 2 anos, e antes disso quando algo muda no trabalho.",
+  "LTCAT / PPP":
+    "Não tem prazo fixo de validade. O LTCAT é atualizado quando muda o ambiente, as máquinas ou as atividades.",
+  "Laudo de insalubridade ou periculosidade":
+    "Não tem prazo fixo. Vale revisar quando mudam o ambiente, os processos ou os equipamentos.",
+  "Treinamento de NR (CIPA, NR-35, NR-10 etc.)":
+    "NR-35 e NR-10 pedem reciclagem a cada 2 anos. O treinamento da CIPA é renovado a cada mandato. Confira a data no certificado.",
+  "Alvará ou licença": "A validade e a renovação dependem da prefeitura. Informe a data que consta no documento.",
+  "CAR, licença ambiental ou outorga": "O prazo depende do órgão que emitiu. Informe a data que consta no documento.",
+};
 
 export const achaPagina = (slug) => PAGINAS.find((p) => p.slug === slug);
 export const achaArea = (slug) => AREAS.find((p) => p.slug === slug);

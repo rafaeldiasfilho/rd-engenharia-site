@@ -183,9 +183,13 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
     const cli = porId[s.cliente_id];
     if (!cli) return null;
     const msg = cli.aceita_lembretes
-      ? `Olá, ${cli.nome}! Aqui é da RD Engenharia. O serviço "${s.tipo}" ${
-          s.dias < 0 ? "venceu" : "vence"
-        } em ${dataBR(s.vencimento)}. Podemos cuidar da renovação para você?`
+      ? `Olá, ${cli.nome}! Aqui é da RD Engenharia. ${
+          s.dias < 0
+            ? `Passando para avisar que o seu documento "${s.tipo}" venceu em ${dataBR(s.vencimento)}.`
+            : `Passando para avisar que o seu documento "${s.tipo}" vence em ${dataBR(s.vencimento)}${
+                s.dias <= 60 ? `, daqui a ${s.dias} dia(s)` : ""
+              }.`
+        } A renovação leva um tempo, então vale começar logo. Posso cuidar disso para você?`
       : `Olá, ${cli.nome}! Aqui é da RD Engenharia. Podemos avisar você por WhatsApp quando seus serviços estiverem perto do vencimento, para você não perder o prazo? Se preferir não receber, é só nos dizer.`;
     const zap = linkZap(cli.whatsapp || cli.telefone, msg);
     return (

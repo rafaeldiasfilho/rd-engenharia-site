@@ -1,6 +1,6 @@
 import Icone from "./Icone";
 import { useState } from "react";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, CIDADES_DADOS, PROJETOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, achaArea } from "./paginas";
+import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, CIDADES_DADOS, PROJETOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, achaArea } from "./paginas";
 import { Casca, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
@@ -528,6 +528,7 @@ function PaginaLembrete({ pagina }) {
                     <option key={d}>{d}</option>
                   ))}
                 </select>
+                {DICAS_LEMBRETE[f.documento] && <small className="dica-doc">{DICAS_LEMBRETE[f.documento]}</small>}
               </label>
               <label>
                 <span>Mês do vencimento (se souber)</span>
@@ -632,7 +633,7 @@ function PaginaCidade({ pagina }) {
       q: `A RD Engenharia atende em ${c.nome}?`,
       a: c.sede
         ? `Sim. A RD Engenharia fica em Ibirá, na Rua José Alves de Mello, 770, Centro, e atende empresas, produtores rurais e proprietários da cidade e da região.`
-        : `Sim. Atendemos ${c.nome} a partir de Ibirá. O primeiro contato é pelo WhatsApp e, quando o serviço exige, fazemos visita técnica no local.`,
+        : `Sim. Atendemos ${c.nome} a partir de Ibirá, a cerca de ${c.min} minutos de viagem. O primeiro contato é pelo WhatsApp e, quando o serviço exige, fazemos visita técnica no local.`,
     },
     {
       q: "Preciso ir até o escritório?",
@@ -663,6 +664,7 @@ function PaginaCidade({ pagina }) {
             <div><dt>Área do município</dt><dd>{c.area} km²</dd></div>
             <div><dt>Densidade</dt><dd>{c.dens} hab/km²</dd></div>
             <div><dt>PIB per capita (2023)</dt><dd>R$ {c.pib}</dd></div>
+            {c.min && <div><dt>Distância de Ibirá</dt><dd>cerca de {c.min} min</dd></div>}
           </dl>
           <p className="cidade-fonte">
             Fonte:{" "}
@@ -708,6 +710,11 @@ function PaginaCidade({ pagina }) {
           <div className="centro">
             <BotaoZap texto={zapCidade} rotulo="Falar com a RD pelo WhatsApp" />
           </div>
+          <p className="cidade-fonte centro">
+            <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+              Veja o que os clientes dizem no Google
+            </a>
+          </p>
         </div>
       </section>
 
