@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import PaginaView, { NaoEncontrada } from "./Paginas";
+import PaginaView, { NaoEncontrada } from "./Paginas.jsx";
 import { achaPagina } from "./paginas";
 import "./styles.css";
 import { inject } from "@vercel/analytics";

@@ -165,8 +165,10 @@ ol {
   color: #fff;
 }
 
-.btn-zap:hover {
-  background: var(--verde-esc);
+@media (hover: hover) and (pointer: fine) {
+  .btn-zap:hover {
+    background: var(--verde-esc);
+  }
 }
 
 .btn-sec {
@@ -175,8 +177,10 @@ ol {
   border-color: var(--realce);
 }
 
-.btn-sec:hover {
-  background: var(--verde-claro);
+@media (hover: hover) and (pointer: fine) {
+  .btn-sec:hover {
+    background: var(--verde-claro);
+  }
 }
 
 .btn-grande {
@@ -248,8 +252,10 @@ ol {
   border-bottom: 2px solid transparent;
 }
 
-.menu a:hover {
-  border-color: var(--realce);
+@media (hover: hover) and (pointer: fine) {
+  .menu a:hover {
+    border-color: var(--realce);
+  }
 }
 
 .topo-zap {
@@ -374,13 +380,16 @@ ol {
   justify-content: space-between;
   gap: 16px;
   padding: 16px 4px;
-  transition: background 0.2s, padding 0.2s;
+  border-radius: 8px;
+  /* só cor e sombra: o realce cresce sem animar padding (layout) */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.escolha a:hover {
-  background: var(--verde-claro);
-  padding-inline: 12px;
-  border-radius: 8px;
+@media (hover: hover) and (pointer: fine) {
+  .escolha a:hover {
+    background: var(--verde-claro);
+    box-shadow: 0 0 0 8px var(--verde-claro);
+  }
 }
 
 .escolha strong {
@@ -701,9 +710,11 @@ ol {
   margin-top: 6px;
 }
 
-.rodape a:hover {
-  color: #fff;
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  .rodape a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
 }
 
 .rodape-fim {
@@ -745,8 +756,10 @@ ol {
   cursor: pointer;
 }
 
-.tema button:hover {
-  border-color: #fff;
+@media (hover: hover) and (pointer: fine) {
+  .tema button:hover {
+    border-color: #fff;
+  }
 }
 
 .tema button[aria-pressed="true"] {
@@ -849,9 +862,11 @@ ol {
   transition: border-color 0.2s, background 0.2s;
 }
 
-.area-card:hover {
-  border-color: var(--realce);
-  background: var(--verde-claro);
+@media (hover: hover) and (pointer: fine) {
+  .area-card:hover {
+    border-color: var(--realce);
+    background: var(--verde-claro);
+  }
 }
 
 .area-card .icone {
@@ -944,10 +959,16 @@ ol {
   color: var(--realce);
 }
 
-.perfil:hover,
 .perfil.ativo {
   border-color: var(--realce);
   background: var(--verde-claro);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .perfil:hover {
+    border-color: var(--realce);
+    background: var(--verde-claro);
+  }
 }
 
 .situacoes {
@@ -1380,7 +1401,9 @@ ol {
 .exemplos-titulo span{color:var(--cinza);font-size:.95rem}
 .exemplos-titulo small{color:var(--cinza);font-size:.8rem}
 .seta{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--linha);background:var(--branco);color:var(--tinta);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem}
-.seta:hover{border-color:var(--realce);color:var(--realce)}
+@media (hover: hover) and (pointer: fine) {
+  .seta:hover{border-color:var(--realce);color:var(--realce)}
+}
 .seta:focus-visible{outline:3px solid var(--realce);outline-offset:2px}
 
 /* Resumo rápido, etapas e ilustrações */
@@ -1436,7 +1459,9 @@ ol {
 
 /* Exemplos interativos */
 .legenda button{font:inherit;color:inherit;background:var(--branco);border:1px solid var(--linha);border-radius:99px;padding:6px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.legenda button:hover{border-color:var(--realce)}
+@media (hover: hover) and (pointer: fine) {
+  .legenda button:hover{border-color:var(--realce)}
+}
 .legenda button[aria-pressed="true"]{border-color:var(--realce);background:var(--verde-claro);font-weight:600}
 .legenda button:focus-visible{outline:3px solid var(--realce);outline-offset:2px}
 .ilustra-explica{min-height:3.2em;margin:12px auto 0;max-width:46ch;text-align:center;font-size:.98rem}
@@ -1445,7 +1470,9 @@ ol {
 .na-pratica-sub{margin:-4px 0 18px;color:var(--cinza)}
 .abas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
 .abas button{font:inherit;color:inherit;background:var(--branco);border:1px solid var(--linha);border-radius:99px;padding:9px 16px;cursor:pointer}
-.abas button:hover{border-color:var(--realce)}
+@media (hover: hover) and (pointer: fine) {
+  .abas button:hover{border-color:var(--realce)}
+}
 .abas button[aria-pressed="true"]{background:var(--realce);border-color:var(--realce);color:var(--branco);font-weight:600}
 .abas button:focus-visible{outline:3px solid var(--realce);outline-offset:2px}
 .aba-conteudo{min-height:300px}
@@ -1506,8 +1533,8 @@ ol {
 @keyframes exemplo-titulo{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .exemplos[data-dir="1"],.home-civil-bloco[data-dir="1"]{--sentido:1}
 .exemplos[data-dir="-1"],.home-civil-bloco[data-dir="-1"]{--sentido:-1}
-.exemplos.troca,.home-civil-bloco.troca{animation:exemplos-lado .34s cubic-bezier(.2,.7,.2,1) both}
-.exemplos-titulo.troca{animation:exemplo-titulo .3s ease both}
+.exemplos.troca,.home-civil-bloco.troca{animation:exemplos-lado .34s cubic-bezier(.23,1,.32,1) both}
+.exemplos-titulo.troca{animation:exemplo-titulo .26s cubic-bezier(.23,1,.32,1) both}
 .exemplos.arrastavel,.home-civil-bloco.arrastavel{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform}
 .exemplos.arrastavel:active,.home-civil-bloco.arrastavel:active{cursor:grabbing}
 @media (prefers-reduced-motion:reduce){.exemplos.troca,.home-civil-bloco.troca,.exemplos-titulo.troca{animation:none}}
@@ -1517,3 +1544,41 @@ ol {
 .pontos{display:inline-flex;gap:8px}
 .pontos i{width:8px;height:8px;border-radius:50%;background:var(--linha)}
 .pontos i.ativo{background:var(--realce)}
+
+/* Fonte própria: IBM Plex Sans variável (subconjunto latin), sem depender do Google Fonts */
+@font-face{
+  font-family:"IBM Plex Sans";
+  font-style:normal;
+  font-weight:400 700;
+  font-display:swap;
+  src:url(/fonts/ibm-plex-sans-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* Feedback ao toque: o controle afunda um pouco quando pressionado (só transform, 160 ms) */
+:root{--ease-out:cubic-bezier(.23,1,.32,1)}
+.btn,.abas button,.legenda button,.seta,.menu-botao,.tema button,.zap-flutuante,.cidade-outras a{
+  transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform 160ms var(--ease-out);
+}
+.btn:active,.abas button:active,.legenda button:active,.menu-botao:active,.tema button:active,.cidade-outras a:active{transform:scale(.97)}
+.seta:active,.zap-flutuante:active{transform:scale(.94)}
+@media (prefers-reduced-motion:reduce){
+  .btn:active,.abas button:active,.legenda button:active,.menu-botao:active,.tema button:active,.cidade-outras a:active,.seta:active,.zap-flutuante:active{transform:none}
+}
+
+/* Alvos de toque de pelo menos 44 px em telas de toque */
+.topo-zap{min-height:44px}
+@media (pointer:coarse){
+  .rodape li a{display:block;padding-block:10px}
+  .rodape li + li{margin-top:0}
+  .contato-dados dd a,.mais-link{display:inline-block;padding:10px 6px}
+  .contato-dados dd a{margin-left:0}
+  .cidade-outras a{padding:12px 16px}
+  .tema button{min-height:44px;padding-inline:16px}
+}
+
+/* Planta alta no celular: não ocupa a tela inteira; a imagem completa abre ao tocar */
+@media(max-width:600px){
+  .home-civil-imgs img,.exemplo img{max-height:420px;object-fit:contain}
+  .home-civil-imgs a,.exemplo a{background:#fff}
+}
