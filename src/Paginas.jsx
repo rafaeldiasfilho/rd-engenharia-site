@@ -1,339 +1,371 @@
 import Icone from "./Icone";
 import { useState } from "react";
 import { useDeslizar } from "./Deslizar";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, CIDADES, CIDADES_DADOS, PROJETOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, achaArea } from "./paginas";
-import { Casca, zap } from "./Layout";
+import { AREAS, GUIAS, PERFIS, RESULTADOS, PROJETOS, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, achaArea } from "./paginas";
+import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
+import Foto from "./Foto";
+import { foto, FOTOS_PRATICA, FOTOS_EM_USO, caminho } from "./fotos";
 
-function Topo({ titulo, texto, migalha, children }) {
+const pad = (n) => String(n + 1).padStart(2, "0");
+
+// Cabeçalho de seção: número, rótulo, título grande e frase de apoio.
+function Secao({ id, n, rotulo, titulo, lead, className = "", children }) {
   return (
-    <section className="pagina-topo">
+    <section className={`sec ${className}`} id={id} aria-labelledby={`${id}-t`}>
       <div className="container">
-        <p className="migalha">
-          <a href="/">Início</a> / {migalha}
-        </p>
-        <h1>{titulo}</h1>
-        {texto && <p>{texto}</p>}
+        <header className="sec-cab rev">
+          <p className="sec-n">
+            <span>{n}</span> {rotulo}
+          </p>
+          <h2 id={`${id}-t`} className="sec-titulo">
+            {titulo}
+          </h2>
+          {lead && <p className="lead">{lead}</p>}
+        </header>
         {children}
       </div>
     </section>
   );
 }
 
-function BotaoZap({ texto, rotulo }) {
+// Abertura das páginas internas simples (guias, quiz, lembrete, privacidade, créditos).
+function Topo({ migalha, eyebrow, titulo, texto, children }) {
   return (
-    <a className="btn btn-zap" href={zap(texto)} target="_blank" rel="noopener noreferrer">
-      <Icone nome="fa-brands fa-whatsapp" /> {rotulo}
-    </a>
+    <header className="hero-int">
+      <div className="container">
+        <Migalha itens={migalha} />
+        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+        <h1 className="display-m">{titulo}</h1>
+        {texto && <p className="lead">{texto}</p>}
+        {children}
+      </div>
+    </header>
   );
 }
+
+const REL_GERAL = {
+  quiz: { href: "/o-que-preciso", tag: "Guia rápido", titulo: "Descubra o que o seu caso precisa", texto: "Responda em menos de um minuto e veja os documentos que costumam ser exigidos." },
+  guias: { href: "/guias", tag: "Guias", titulo: "Guias em linguagem simples", texto: "Explicações curtas sobre PGR, AVCB, CAR, habite-se e outros documentos." },
+  lembrete: { href: "/lembrete-de-vencimento", tag: "Lembrete", titulo: "Lembrete de vencimento", texto: "Receba um aviso no WhatsApp antes de o documento vencer." },
+};
+const relArea = (a) => ({ href: `/${a.slug}`, tag: "Serviço", titulo: a.nome, texto: a.curto });
+const relGuia = (g) => ({ href: `/${g.slug}`, tag: "Guia", titulo: g.h1 });
 
 function Exemplos() {
   const total = PROJETOS.length;
   const d = useDeslizar(total, { auto: 8000 });
   const projeto = PROJETOS[d.i];
   return (
-    <section
-      className="secao"
-      id="exemplos"
-      aria-roledescription="carrossel"
-      aria-label="Exemplos de projeto"
-      {...d.pausarAoPassar}
-    >
-      <div className="container">
-        <div className="head-secao">
-          <h2>
-            Exemplos de <span>projeto</span>
-          </h2>
-          <p>
-            Projetos arquitetônicos reais, com os dados dos clientes retirados. Toque numa imagem para ampliar
-            {total > 1 ? " e arraste para o lado para ver outro projeto" : ""}.
-          </p>
-        </div>
-        <div className="exemplos-barra">
+    <div aria-roledescription="carrossel" aria-label="Exemplos de projeto" {...d.pausarAoPassar}>
+      <div className="exemplos-barra">
+        {total > 1 && (
+          <button type="button" className="seta" onClick={() => d.manual(-1)} aria-label="Projeto anterior">
+            <Icone nome="fa-solid fa-chevron-left" />
+          </button>
+        )}
+        <div className={`exemplos-titulo ${d.trocou ? "troca" : ""}`} aria-live="polite" key={projeto.pasta}>
+          <strong>{projeto.nome}</strong>
+          <span>{projeto.resumo}</span>
           {total > 1 && (
-            <button type="button" className="seta" onClick={() => d.manual(-1)} aria-label="Projeto anterior">
-              <Icone nome="fa-solid fa-chevron-left" />
-            </button>
-          )}
-          <div className={`exemplos-titulo ${d.trocou ? "troca" : ""}`} aria-live="polite" key={projeto.pasta}>
-            <strong>{projeto.nome}</strong>
-            <span>{projeto.resumo}</span>
-            {total > 1 && (
-              <small>
-                Projeto {d.i + 1} de {total}
-              </small>
-            )}
-          </div>
-          {total > 1 && (
-            <button type="button" className="seta" onClick={() => d.manual(1)} aria-label="Próximo projeto">
-              <Icone nome="fa-solid fa-chevron-right" />
-            </button>
-          )}
-          {total > 1 && (
-            <button
-              type="button"
-              className="seta seta-pausa"
-              onClick={d.alternar}
-              aria-pressed={d.rodando}
-              aria-label={d.rodando ? "Pausar a troca automática" : "Retomar a troca automática"}
-            >
-              <Icone nome={d.rodando ? "fa-solid fa-pause" : "fa-solid fa-play"} />
-            </button>
+            <small>
+              Projeto {d.i + 1} de {total}
+            </small>
           )}
         </div>
-        <div
-          className={`exemplos ${d.trocou ? "troca" : ""} ${total > 1 ? "arrastavel" : ""}`}
-          data-dir={d.dir}
-          key={projeto.pasta}
-          ref={d.bloco}
-          {...d.gesto}
-        >
-          {projeto.itens.map((e) => (
-            <figure className={`exemplo ${e.forma ? "exemplo-" + e.forma : ""}`} key={e.arq}>
-              <a
-                href={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
-                target="_blank"
-                rel="noopener noreferrer"
-                draggable={false}
-              >
-                <img
-                  src={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
-                  width={e.w}
-                  height={e.h}
-                  loading="lazy"
-                  alt={e.alt}
-                  draggable={false}
-                />
-              </a>
-              <figcaption>
-                <strong>{e.titulo}</strong>
-                <span>{e.texto}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <div className="centro">
-          <BotaoZap
-            texto="Olá! Vi os exemplos de projeto no site e gostaria de um projeto para a minha obra."
-            rotulo="Quero um projeto assim"
-          />
-        </div>
+        {total > 1 && (
+          <button type="button" className="seta" onClick={() => d.manual(1)} aria-label="Próximo projeto">
+            <Icone nome="fa-solid fa-chevron-right" />
+          </button>
+        )}
+        {total > 1 && (
+          <button
+            type="button"
+            className="seta seta-pausa"
+            onClick={d.alternar}
+            aria-pressed={d.rodando}
+            aria-label={d.rodando ? "Pausar a troca automática" : "Retomar a troca automática"}
+          >
+            <Icone nome={d.rodando ? "fa-solid fa-pause" : "fa-solid fa-play"} />
+          </button>
+        )}
       </div>
-    </section>
+      <div
+        className={`exemplos ${d.trocou ? "troca" : ""} ${total > 1 ? "arrastavel" : ""}`}
+        data-dir={d.dir}
+        key={projeto.pasta}
+        ref={d.bloco}
+        {...d.gesto}
+      >
+        {projeto.itens.map((e) => (
+          <figure className={`exemplo ${e.forma ? "exemplo-" + e.forma : ""}`} key={e.arq}>
+            <a href={`/exemplos/${projeto.pasta}/${e.arq}.webp`} target="_blank" rel="noopener noreferrer" draggable={false}>
+              <img
+                src={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
+                width={e.w}
+                height={e.h}
+                loading="lazy"
+                alt={e.alt}
+                draggable={false}
+              />
+            </a>
+            <figcaption>
+              <strong>{e.titulo}</strong>
+              <span>{e.texto}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <p className="nota-fina">
+        Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque numa imagem para
+        ampliar{total > 1 ? " e arraste para o lado para ver outro projeto" : ""}.
+      </p>
+      <div className="acoes">
+        <BotaoZap texto="Olá! Vi os exemplos de projeto no site e gostaria de um projeto para a minha obra." rotulo="Quero um projeto assim" />
+      </div>
+    </div>
   );
 }
 
 function PaginaArea({ pagina }) {
   const visual = VISUAL[pagina.slug];
+  const principal = foto(pagina.slug);
+  const retrato = principal && principal.forma === "retrato";
+  const apoio = (FOTOS_PRATICA[pagina.slug] || []).filter((s) => foto(s));
+  const guias = GUIAS.filter((g) => g.area === pagina.slug);
   const outras = AREAS.filter((a) => a.slug !== pagina.slug);
+  const relacionadas = [...guias.slice(0, 2).map(relGuia), ...outras.map(relArea)].slice(0, 3);
+  const zapArea = `Olá! Gostaria de um orçamento na área de ${pagina.nome}.`;
+  const civil = pagina.slug === "engenharia-civil";
+  const equip = EQUIPAMENTOS[pagina.slug];
+  const fotosEquip = [`equip-${pagina.slug}`, `equip-${pagina.slug}-2`].filter((s) => foto(s));
+
   return (
     <>
-      <Topo titulo={pagina.h1} texto={pagina.intro} migalha={pagina.nome}>
-        {visual && (
-          <div className="topo-resumo">
-            <dl>
-              <div>
-                <dt>Para quem</dt>
-                <dd>{visual.quem}</dd>
-              </div>
-              <div>
-                <dt>Você recebe</dt>
-                <dd>{visual.recebe}</dd>
-              </div>
-            </dl>
-            <div className="topo-acao">
-              <BotaoZap texto={`Olá! Gostaria de um orçamento na área de ${pagina.nome}.`} rotulo="Pedir orçamento" />
-              <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
-            </div>
-            <div className="assina">
-              {FOTO_RESPONSAVEL ? (
-                <img src={FOTO_RESPONSAVEL} width="56" height="56" alt="Rafael Antonio Dias" />
-              ) : (
-                <span className="assina-sigla" aria-hidden="true">
-                  RD
-                </span>
-              )}
-              <p>
-                <strong>Quem assina: Rafael Antonio Dias</strong>
-                <span>Engenheiro civil e ambiental · CREA-SP 5071022821</span>
-              </p>
-            </div>
-          </div>
-        )}
-      </Topo>
-      <section className="secao">
+      <header className="hero-int hero-area">
         <div className="container">
-          <div className="head-secao">
-            <h2>
-              O que <span>fazemos</span>
-            </h2>
+          <Migalha itens={[{ rotulo: "Serviços", href: "/#servicos" }, { rotulo: pagina.nome }]} />
+          <div className={`hero-area-grade ${retrato ? "com-retrato" : ""}`}>
+            <div>
+              <p className="eyebrow">Serviço</p>
+              <h1 className="display-m">{pagina.h1}</h1>
+              <p className="lead">{pagina.intro}</p>
+              <div className="acoes">
+                <BotaoZap className="btn-grande" texto={zapArea} rotulo="Pedir orçamento" />
+                <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
+              </div>
+            </div>
+            {retrato && <Foto slot={pagina.slug} eager sizes="(min-width: 900px) 420px, 80vw" className="hero-retrato" />}
           </div>
-          <div className="itens-grid">
-            {pagina.itens.map((item) => (
-              <article className="item-card" key={item.nome}>
-                <h3>{item.nome}</h3>
+          {principal && !retrato && (
+            <Foto slot={pagina.slug} eager sizes="(min-width: 1200px) 1120px, 100vw" className="hero-largo" aspecto="16 / 8" />
+          )}
+        </div>
+      </header>
+
+      <SecoesNav
+        itens={[
+          { id: "o-que-fazemos", rotulo: "O que fazemos" },
+          { id: "equipamentos", rotulo: "Equipamentos" },
+          { id: "na-pratica", rotulo: "Na prática" },
+          { id: "atendimento", rotulo: "Como atendemos" },
+          { id: "duvidas", rotulo: "Dúvidas" },
+          { id: "proximo-passo", rotulo: "Falar no WhatsApp" },
+        ]}
+      />
+
+      {visual && (
+        <section className="resumo-ed" aria-label="Resumo">
+          <div className="container resumo-ed-grade">
+            <div className="rev">
+              <p className="rotulo-mini">Para quem</p>
+              <p>{visual.quem}</p>
+            </div>
+            <div className="rev">
+              <p className="rotulo-mini">Você recebe</p>
+              <p>{visual.recebe}</p>
+            </div>
+            <div className="assina rev">
+              <p className="rotulo-mini">Quem assina</p>
+              <div className="assina-linha">
+                {FOTO_RESPONSAVEL ? (
+                  <img src={FOTO_RESPONSAVEL} width="56" height="56" alt="Rafael Antonio Dias" />
+                ) : (
+                  <span className="assina-sigla" aria-hidden="true">
+                    RD
+                  </span>
+                )}
+                <p>
+                  <strong>Rafael Antonio Dias</strong>
+                  <span>Engenheiro civil e ambiental · CREA-SP 5071022821</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <Secao id="o-que-fazemos" n="01" rotulo="Serviços" titulo={<>O que fazemos nesta área.</>}>
+        <ol className="linhas">
+          {pagina.itens.map((item, n) => (
+            <li className="linha rev" key={item.nome}>
+              <span className="linha-n">{pad(n)}</span>
+              <h3>{item.nome}</h3>
+              <div className="linha-texto">
                 <p>{item.texto}</p>
                 <p className="item-quem">
                   <strong>Para quem:</strong> {item.quem}
                 </p>
                 <a
-                  className="btn btn-sec"
+                  className="btn btn-sec btn-peq"
                   href={zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
                 </a>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Secao>
 
-      {pagina.slug !== "engenharia-civil" && (
-        <section className="secao">
-          <div className="container">
-            <div className="head-secao">
-              <h2>
-                Veja na <span>prática</span>
-              </h2>
-              <p>Exemplos ilustrativos para você entender o que entregamos.</p>
-            </div>
-            <Ilustracao slug={pagina.slug} />
-          </div>
-        </section>
-      )}
-
-      {pagina.slug === "engenharia-civil" && <Exemplos />}
-
-      <section className="secao secao-cinza" id="atendimento">
-        <div className="container">
-          <div className="head-secao">
-            <h2>
-              Do primeiro contato à <span>entrega</span>
-            </h2>
-            <p>Veja o caminho e o que ter em mãos para agilizar o orçamento.</p>
-          </div>
-          <div className="atendimento">
-            {visual && (
-              <ol className="linha-etapas">
-                {visual.etapas.map((e, n) => (
-                  <li key={e.t}>
-                    <span className="etapa-num" aria-hidden="true">
-                      {n + 1}
-                    </span>
-                    <div>
-                      <strong>{e.t}</strong>
-                      <span>{e.d}</span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            )}
-            <div className="separe">
-              <p className="so-impressao">
-                RD Engenharia Segurança e Meio Ambiente · WhatsApp (17) 99721-1208 · {pagina.nome}
-              </p>
-              <h3>Para agilizar, separe</h3>
-              <ul className="lista-docs">
-                {pagina.documentos.map((d) => (
-                  <li key={d}>
-                    <Icone nome="fa-solid fa-circle-check" /> {d}
-                  </li>
+      {equip && (
+        <Secao id="equipamentos" n="02" rotulo="Equipamentos" titulo="Equipamentos que costumam ser usados." className="sec-alt">
+          <div className={`equip ${fotosEquip.length ? "com-fotos" : ""}`}>
+            <div className="equip-texto rev">
+              <p className="lead">{equip.texto}</p>
+              <ul className="equip-lista">
+                {equip.itens.map((i) => (
+                  <li key={i}>{i}</li>
                 ))}
               </ul>
-              <p className="aviso-lembrete">
-                <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o
-                prazo de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
-              </p>
-              <button type="button" className="btn btn-sec nao-imprime" onClick={() => window.print()}>
-                Imprimir ou salvar esta lista em PDF
-              </button>
+              <p className="nota-fina">{NOTA_EQUIPAMENTOS}</p>
             </div>
+            {fotosEquip.length > 0 && (
+              <div className="equip-fotos rev">
+                {fotosEquip.map((s) => (
+                  <Foto key={s} slot={s} sizes="(min-width: 900px) 380px, 100vw" aspecto="4 / 3" />
+                ))}
+              </div>
+            )}
           </div>
-          <div className="centro">
-            <BotaoZap texto={`Olá! Gostaria de um orçamento na área de ${pagina.nome}.`} rotulo="Falar no WhatsApp" />
-          </div>
-        </div>
-      </section>
+        </Secao>
+      )}
 
-      <section className="secao">
-        <div className="container container-faq">
-          <div className="head-secao">
-            <h2>
-              Dúvidas <span>frequentes</span>
-            </h2>
-          </div>
-          <div className="faq-lista">
-            {pagina.faq.map((f) => (
-              <details className="faq-item" key={f.q}>
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
-              </details>
+      <Secao
+        id="na-pratica"
+        n="03"
+        rotulo="Na prática"
+        titulo={civil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
+        lead={civil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
+      >
+        {civil ? <Exemplos /> : <Ilustracao slug={pagina.slug} />}
+        {apoio.length > 0 && (
+          <div className={`duo ${apoio.length === 1 ? "duo-um" : ""} rev`}>
+            {apoio.map((s) => (
+              <Foto key={s} slot={s} sizes="(min-width: 900px) 540px, 100vw" aspecto="4 / 3" />
             ))}
           </div>
-          <p className="centro mais-links">
-            Também pode ajudar: {" "}
-            {GUIAS.filter((g) => g.area === pagina.slug).map((g) => (
-              <a key={g.slug} href={`/${g.slug}`}>
-                {g.h1}
-              </a>
+        )}
+      </Secao>
+
+      <Secao id="atendimento" n="04" rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
+        {visual && (
+          <ol className="etapas-ed">
+            {visual.etapas.map((e, n) => (
+              <li key={e.t} className="rev">
+                <span className="etapa-big" aria-hidden="true">
+                  {n + 1}
+                </span>
+                <h3>{e.t}</h3>
+                <p>{e.d}</p>
+              </li>
             ))}
+          </ol>
+        )}
+        <div className="separe rev">
+          <p className="so-impressao">
+            RD Engenharia Segurança e Meio Ambiente · WhatsApp (17) 99721-1208 · {pagina.nome}
           </p>
-        </div>
-      </section>
-
-      <section className="secao secao-cinza">
-        <div className="container">
-          <div className="head-secao">
-            <h2>
-              Outras <span>áreas</span>
-            </h2>
-          </div>
-          <div className="areas-grid">
-            {outras.map((a) => (
-              <a className="area-card" key={a.slug} href={`/${a.slug}`}>
-                <Icone nome={a.icone} />
-                <h3>{a.nome}</h3>
-                <p>{a.curto}</p>
-              </a>
+          <h3>Para agilizar, separe</h3>
+          <ul className="lista-docs">
+            {pagina.documentos.map((d) => (
+              <li key={d}>
+                <Icone nome="fa-solid fa-circle-check" /> {d}
+              </li>
             ))}
-          </div>
+          </ul>
+          <p className="aviso-lembrete">
+            <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o prazo
+            de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
+          </p>
+          <button type="button" className="btn btn-sec nao-imprime" onClick={() => window.print()}>
+            Imprimir ou salvar esta lista em PDF
+          </button>
         </div>
-      </section>
+      </Secao>
+
+      <Secao id="duvidas" n="05" rotulo="Dúvidas" titulo="Perguntas frequentes.">
+        <div className="faq-lista rev">
+          {pagina.faq.map((f) => (
+            <details className="faq-item" key={f.q}>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </Secao>
+
+      <Final zapTexto={zapArea} relacionadas={relacionadas} />
     </>
   );
 }
 
 function PaginaGuia({ pagina }) {
   const area = achaArea(pagina.area);
+  const outrosGuias = GUIAS.filter((g) => g.area === pagina.area && g.slug !== pagina.slug);
+  const relacionadas = [area && relArea(area), ...outrosGuias.slice(0, 1).map(relGuia), REL_GERAL.quiz].filter(Boolean);
   return (
     <>
-      <Topo titulo={pagina.h1} migalha={<a href="/guias">Guias</a>} />
-      <section className="secao">
-        <div className="container container-faq artigo">
-          {pagina.paragrafos.map((p) => (
-            <p key={p.slice(0, 40)}>{p}</p>
+      <Topo migalha={[{ rotulo: "Guias", href: "/guias" }, { rotulo: pagina.h1 }]} eyebrow={area ? `Guia · ${area.nome}` : "Guia"} titulo={pagina.h1} />
+      <SecoesNav
+        rotulo="Neste guia"
+        itens={[
+          { id: "guia", rotulo: "O guia" },
+          { id: "aviso", rotulo: "Importante" },
+          { id: "proximo-passo", rotulo: "Próximo passo" },
+        ]}
+      />
+      <section className="sec artigo-sec" id="guia" aria-label="Texto do guia">
+        <div className="container container-leitura artigo">
+          {pagina.paragrafos.map((p, n) => (
+            <p key={p.slice(0, 40)} className={n === 0 ? "artigo-abre" : ""}>
+              {p}
+            </p>
           ))}
+        </div>
+      </section>
+      <section className="sec-fina" id="aviso" aria-label="Aviso">
+        <div className="container container-leitura">
           <p className="aviso-guia">
-            Este guia tem caráter informativo e reflete a legislação conhecida em 2026. As regras podem mudar, e por
-            isso confirmamos a norma vigente em cada caso.
+            Este guia tem caráter informativo e reflete a legislação conhecida em 2026. As regras podem mudar, e por isso
+            confirmamos a norma vigente em cada caso.
           </p>
-          <div className="centro">
-            <BotaoZap
-              texto={`Olá! Li o guia do site e gostaria de um orçamento para: ${pagina.servico}.`}
-              rotulo="Pedir orçamento deste serviço"
-            />
-          </div>
           {area && (
-            <p className="centro mais-links">
+            <p className="mais-links">
               Veja todos os serviços de <a href={`/${area.slug}`}>{area.nome}</a>.
             </p>
           )}
         </div>
       </section>
+      <Final
+        titulo="Quer isso resolvido para o seu caso?"
+        zapTexto={`Olá! Li o guia do site e gostaria de um orçamento para: ${pagina.servico}.`}
+        zapRotulo="Pedir orçamento deste serviço"
+        relacionadas={relacionadas}
+      />
     </>
   );
 }
@@ -342,22 +374,41 @@ function PaginaGuias({ pagina }) {
   return (
     <>
       <Topo
+        migalha={[{ rotulo: "Guias" }]}
+        eyebrow="Guias"
         titulo={pagina.h1}
         texto="Explicações curtas e em linguagem simples sobre os documentos mais pedidos."
-        migalha="Guias"
       />
-      <section className="secao">
-        <div className="container">
-          <div className="areas-grid">
-            {GUIAS.map((g) => (
-              <a className="area-card" key={g.slug} href={`/${g.slug}`}>
-                <h3>{g.h1}</h3>
-                <p>{achaArea(g.area)?.nome}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+      <SecoesNav
+        rotulo="Áreas dos guias"
+        itens={[...AREAS.map((a) => ({ id: `guias-${a.slug}`, rotulo: a.nome })), { id: "proximo-passo", rotulo: "Próximo passo" }]}
+      />
+      {AREAS.map((a, n) => {
+        const lista = GUIAS.filter((g) => g.area === a.slug);
+        if (!lista.length) return null;
+        return (
+          <Secao key={a.slug} id={`guias-${a.slug}`} n={pad(n)} rotulo="Área" titulo={a.nome} className={n % 2 ? "sec-alt" : ""}>
+            <ul className="linhas">
+              {lista.map((g, i) => (
+                <li className="linha linha-link rev" key={g.slug}>
+                  <span className="linha-n">{pad(i)}</span>
+                  <h3>
+                    <a href={`/${g.slug}`}>{g.h1}</a>
+                  </h3>
+                  <span className="linha-seta" aria-hidden="true">
+                    →
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Secao>
+        );
+      })}
+      <Final
+        titulo="Não achou o seu caso?"
+        zapTexto="Olá! Li os guias do site e tenho uma dúvida."
+        relacionadas={[REL_GERAL.quiz, REL_GERAL.lembrete, relArea(AREAS[0])]}
+      />
     </>
   );
 }
@@ -392,13 +443,16 @@ function PaginaQuiz({ pagina }) {
   return (
     <>
       <Topo
+        migalha={[{ rotulo: "O que preciso?" }]}
+        eyebrow="Guia rápido"
         titulo={pagina.h1}
         texto="Responda em menos de um minuto. O guia mostra o que o seu caso provavelmente exige, e depois você fala com a gente pelo WhatsApp."
-        migalha="O que preciso?"
       />
-      <section className="secao">
-        <div className="container container-faq">
-          <h2 className="quiz-passo">1. Qual é a sua situação?</h2>
+      <section className="sec quiz" aria-label="Perguntas">
+        <div className="container container-leitura">
+          <h2 className="quiz-passo">
+            <span>1</span> Qual é a sua situação?
+          </h2>
           <div className="perfis">
             {PERFIS.map((p) => (
               <button
@@ -416,7 +470,9 @@ function PaginaQuiz({ pagina }) {
 
           {perfil && (
             <>
-              <h2 className="quiz-passo">2. Marque o que se aplica ao seu caso</h2>
+              <h2 className="quiz-passo">
+                <span>2</span> Marque o que se aplica ao seu caso
+              </h2>
               <div className="situacoes">
                 {perfil.situacoes.map((s, i) => (
                   <label className="situacao" key={s.texto}>
@@ -430,7 +486,9 @@ function PaginaQuiz({ pagina }) {
 
           {resultados.length > 0 && (
             <>
-              <h2 className="quiz-passo">3. O que você provavelmente precisa</h2>
+              <h2 className="quiz-passo">
+                <span>3</span> O que você provavelmente precisa
+              </h2>
               <div className="resultados">
                 {resultados.map((r) => (
                   <article className="resultado" key={r.id}>
@@ -448,24 +506,24 @@ function PaginaQuiz({ pagina }) {
                 <label htmlFor="cidade-quiz">Sua cidade (opcional)</label>
                 <input
                   id="cidade-quiz"
-                  list="cidades-atendidas"
+                 
                   value={cidade}
                   onChange={(e) => setCidade(e.target.value)}
-                  placeholder="Ex.: Catanduva"
+                  placeholder="Ex.: Ibirá"
                 />
-                <datalist id="cidades-atendidas">
-                  {CIDADES.map((c) => (
-                    <option key={c} value={c} />
-                  ))}
-                </datalist>
               </div>
-              <div className="centro">
-                <BotaoZap texto={mensagem} rotulo="Enviar para a RD pelo WhatsApp" />
+              <div className="acoes">
+                <BotaoZap className="btn-grande" texto={mensagem} rotulo="Enviar para a RD pelo WhatsApp" />
               </div>
             </>
           )}
         </div>
       </section>
+      <Final
+        titulo="Prefere conversar direto?"
+        zapTexto="Olá! Tenho uma dúvida sobre o que o meu caso precisa."
+        relacionadas={[REL_GERAL.guias, REL_GERAL.lembrete, relArea(AREAS[1])]}
+      />
     </>
   );
 }
@@ -519,12 +577,13 @@ function PaginaLembrete({ pagina }) {
   return (
     <>
       <Topo
+        migalha={[{ rotulo: "Lembrete de vencimento" }]}
+        eyebrow="Serviço gratuito"
         titulo={pagina.h1}
         texto="Deixe o seu contato e o vencimento do documento. Avisamos pelo WhatsApp com antecedência, para você renovar sem correria."
-        migalha="Lembrete de vencimento"
       />
-      <section className="secao">
-        <div className="container container-faq">
+      <section className="sec" aria-label="Formulário do lembrete">
+        <div className="container container-leitura">
           {estado === "ok" ? (
             <div className="aviso-ok" role="status">
               <h2>Pedido recebido</h2>
@@ -582,13 +641,18 @@ function PaginaLembrete({ pagina }) {
                   {erro}
                 </p>
               )}
-              <button className="btn btn-zap" type="submit" disabled={estado === "enviando"}>
+              <button className="btn btn-zap btn-grande" type="submit" disabled={estado === "enviando"}>
                 {estado === "enviando" ? "Enviando..." : "Quero ser avisado"}
               </button>
             </form>
           )}
         </div>
       </section>
+      <Final
+        titulo="Prefere falar com a gente?"
+        zapTexto="Olá! Tenho uma dúvida sobre o lembrete de vencimento."
+        relacionadas={[REL_GERAL.guias, REL_GERAL.quiz, relArea(AREAS[1])]}
+      />
     </>
   );
 }
@@ -596,10 +660,10 @@ function PaginaLembrete({ pagina }) {
 function PaginaPrivacidade() {
   return (
     <>
-      <Topo titulo="Política de Privacidade" migalha="Privacidade" />
-      <section className="secao">
-        <div className="container container-faq artigo">
-          <p>
+      <Topo migalha={[{ rotulo: "Privacidade" }]} eyebrow="Transparência" titulo="Política de Privacidade" />
+      <section className="sec artigo-sec">
+        <div className="container container-leitura artigo">
+          <p className="artigo-abre">
             Esta página explica, de forma simples, como o site da RD Engenharia Segurança e Meio Ambiente trata as
             informações de quem entra em contato.
           </p>
@@ -639,129 +703,107 @@ function PaginaPrivacidade() {
           </p>
         </div>
       </section>
+      <Final
+        titulo="Dúvida sobre os seus dados?"
+        zapTexto="Olá! Tenho uma dúvida sobre a política de privacidade do site."
+        relacionadas={[REL_GERAL.lembrete, REL_GERAL.guias, REL_GERAL.quiz]}
+      />
     </>
   );
 }
 
-function PaginaCidade({ pagina }) {
-  const c = pagina.cidade;
-  const zapCidade = `Olá! Preciso de um serviço de engenharia ou segurança do trabalho em ${c.nome}.`;
-  const prioridades = c.rural
-    ? [
-        ["meio-ambiente-topografia", "Meio ambiente e topografia", "Com baixa densidade de população, o município tem muitos imóveis rurais. É comum precisar de CAR, georreferenciamento, levantamento topográfico e licenciamento ambiental."],
-        ["engenharia-civil", "Engenharia civil", "Projetos, regularização de obras, laudos e acompanhamento até o alvará e o habite-se na prefeitura."],
-        ["corpo-de-bombeiros", "Corpo de Bombeiros", "Comércios, galpões e empresas da cidade precisam do AVCB ou do CLCB, conforme o enquadramento."],
-        ["seguranca-do-trabalho", "Segurança do trabalho", "Empresas, fazendas e produtores com empregados precisam de PGR, laudos e treinamentos de NRs."],
-      ]
-    : [
-        ["corpo-de-bombeiros", "Corpo de Bombeiros", "Em cidade com muitos prédios, comércios e indústrias, o AVCB ou o CLCB é uma das exigências mais comuns. Cuidamos do projeto, da adequação e da renovação."],
-        ["seguranca-do-trabalho", "Segurança do trabalho", "Com mais empresas e empregados, PGR, LTCAT, laudos de insalubridade e periculosidade e treinamentos de NRs estão entre os pedidos mais frequentes."],
-        ["engenharia-civil", "Engenharia civil", "Projetos, regularização, laudos de vistoria e avaliação, e acompanhamento na prefeitura até o habite-se."],
-        ["meio-ambiente-topografia", "Meio ambiente e topografia", "Licenciamento ambiental, levantamentos topográficos e documentação de terrenos e propriedades."],
-      ];
-  const outras = CIDADES_DADOS.filter((o) => o.slug !== c.slug);
-  const faq = [
-    {
-      q: `A RD Engenharia atende em ${c.nome}?`,
-      a: c.sede
-        ? `Sim. A RD Engenharia fica em Ibirá, na Rua José Alves de Mello, 770, Centro, e atende empresas, produtores rurais e proprietários da cidade e da região.`
-        : `Sim. Atendemos ${c.nome} a partir de Ibirá, a cerca de ${c.min} minutos de viagem. O primeiro contato é pelo WhatsApp e, quando o serviço exige, fazemos visita técnica no local.`,
-    },
-    {
-      q: "Preciso ir até o escritório?",
-      a: c.sede
-        ? "Não é obrigatório. Você pode resolver tudo pelo WhatsApp e, se preferir, passar no escritório em horário de atendimento."
-        : "Não. Você explica o caso pelo WhatsApp e envia os documentos por lá. Fazemos a visita técnica quando ela é necessária, como em laudos e levantamentos de terreno.",
-    },
-    {
-      q: `A prefeitura de ${c.nome} participa de algum serviço?`,
-      a: "Sim, em serviços de engenharia civil. Alvará de construção, habite-se e regularização de obras são emitidos pela prefeitura do município, e as regras e os documentos pedidos podem variar de uma cidade para outra. Confirmamos o que a sua prefeitura exige antes de começar.",
-    },
-  ];
+function PaginaCreditos() {
   return (
     <>
       <Topo
-        titulo={pagina.h1}
-        texto={`Laudos, projetos, licenças e documentos técnicos para empresas, produtores rurais e proprietários de ${c.nome}, com responsável técnico habilitado e atendimento direto pelo WhatsApp.`}
-        migalha={c.nome}
-      >
-        <BotaoZap texto={zapCidade} rotulo={`Pedir orçamento em ${c.nome}`} />
-      </Topo>
-
-      <section className="secao">
+        migalha={[{ rotulo: "Créditos das imagens" }]}
+        eyebrow="Transparência"
+        titulo="Créditos das imagens"
+        texto="A RD Engenharia ainda não tem fotos próprias no site. As fotos abaixo são ilustrativas, de domínio público ou CC0, e não mostram trabalhos da empresa."
+      />
+      <section className="sec" aria-label="Lista de créditos">
         <div className="container">
-          <h2>{c.nome} em números</h2>
-          <dl className="cidade-numeros">
-            <div><dt>População (Censo 2022)</dt><dd>{c.pop} pessoas</dd></div>
-            <div><dt>Área do município</dt><dd>{c.area} km²</dd></div>
-            <div><dt>Densidade</dt><dd>{c.dens} hab/km²</dd></div>
-            <div><dt>PIB per capita (2023)</dt><dd>R$ {c.pib}</dd></div>
-            {c.min && <div><dt>Distância de Ibirá</dt><dd>cerca de {c.min} min</dd></div>}
-          </dl>
-          <p className="cidade-fonte">
-            Fonte:{" "}
-            <a href={`https://www.ibge.gov.br/cidades-e-estados/sp/${c.ibge}.html`} target="_blank" rel="noopener noreferrer">
-              IBGE, Cidades e Estados
-            </a>
-            .
-          </p>
-        </div>
-      </section>
-
-      <section className="secao secao-cinza">
-        <div className="container">
-          <h2>O que costuma ser necessário em {c.nome}</h2>
-          <p className="cidade-intro">
-            {c.rural
-              ? `${c.nome} é um município de perfil mais rural e de cidade pequena. Por isso, estes são os serviços que mais fazem sentido por aqui, na ordem em que costumam aparecer.`
-              : `${c.nome} é uma cidade grande da região, com muitas empresas, comércios e prédios. Por isso, estes são os serviços que mais fazem sentido por aqui, na ordem em que costumam aparecer.`}
-          </p>
-          <div className="cidade-servicos">
-            {prioridades.map(([slug, nome, texto]) => (
-              <article key={slug}>
-                <h3>{nome}</h3>
-                <p>{texto}</p>
-                <a href={`/${slug}`}>Ver o que fazemos</a>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="secao">
-        <div className="container container-faq">
-          <h2>Dúvidas sobre o atendimento em {c.nome}</h2>
-          <div className="faq-lista">
-            {faq.map((f) => (
-              <details className="faq-item" key={f.q}>
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
-              </details>
-            ))}
-          </div>
-          <div className="centro">
-            <BotaoZap texto={zapCidade} rotulo="Falar com a RD pelo WhatsApp" />
-          </div>
-          <p className="cidade-fonte centro">
-            <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
-              Veja o que os clientes dizem no Google
-            </a>
-          </p>
-        </div>
-      </section>
-
-      <section className="secao secao-cinza">
-        <div className="container">
-          <h2>Outras cidades que atendemos</h2>
-          <ul className="cidade-outras">
-            {outras.map((o) => (
-              <li key={o.slug}>
-                <a href={`/cidades/${o.slug}`}>{o.nome}</a>
+          <ul className="creditos">
+            {FOTOS_EM_USO.map((f) => (
+              <li key={f.arq} className="rev">
+                <img src={caminho(f, f.pequena)} width={f.w} height={f.h} loading="lazy" alt={f.alt} />
+                <dl>
+                  <div>
+                    <dt>Arquivo</dt>
+                    <dd>{f.arquivo}</dd>
+                  </div>
+                  <div>
+                    <dt>Autor</dt>
+                    <dd>{f.autor}</dd>
+                  </div>
+                  <div>
+                    <dt>Licença</dt>
+                    <dd>{f.licenca}</dd>
+                  </div>
+                  <div>
+                    <dt>Página de origem</dt>
+                    <dd>
+                      <a href={f.fonte} target="_blank" rel="noopener noreferrer">
+                        Wikimedia Commons
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
               </li>
             ))}
           </ul>
+          <div className="container-leitura creditos-outros">
+            <h2>Outros materiais</h2>
+            <p>
+              A marca (logotipo) é da RD Engenharia. Os desenhos de projeto da página de engenharia civil são trabalhos reais da RD, com os dados dos
+              clientes retirados. As ilustrações interativas e o modelo de PGR são exemplos inventados, feitos para o
+              site. Os ícones são do Font Awesome Free (licença CC BY 4.0) e a fonte é a IBM Plex Sans (licença SIL
+              Open Font).
+            </p>
+          </div>
         </div>
       </section>
+      <Final
+        titulo="Quer ver o trabalho real?"
+        texto="Os desenhos de projeto da página de engenharia civil são da RD. Para outros serviços, conte o seu caso pelo WhatsApp."
+        zapTexto="Olá! Gostaria de conhecer melhor o trabalho da RD Engenharia."
+        relacionadas={[relArea(AREAS[2]), REL_GERAL.guias, REL_GERAL.quiz]}
+      />
+    </>
+  );
+}
+
+function PaginaOnde({ pagina }) {
+  const zapOnde = "Olá! Gostaria de saber se vocês atendem o meu endereço.";
+  return (
+    <>
+      <header className="hero-int hero-area">
+        <div className="container">
+          <Migalha itens={[{ rotulo: "Onde atendemos" }]} />
+          <p className="eyebrow">Onde atendemos</p>
+          <h1 className="display-m">{pagina.h1}</h1>
+          <p className="lead">
+            Isso vale para todos os serviços. Conte a sua situação pelo WhatsApp e combinamos a melhor forma de atender você.
+          </p>
+          <div className="acoes">
+            <BotaoZap className="btn-grande" texto={zapOnde} rotulo="Perguntar pelo WhatsApp" />
+          </div>
+          <Foto slot="onde-atendemos" eager sizes="(min-width: 1200px) 1120px, 100vw" className="hero-largo" aspecto="16 / 8" />
+        </div>
+      </header>
+
+      <Secao
+        id="atendimento-regiao"
+        n="01"
+        rotulo="Região"
+        titulo="Presencial e online, em Ibirá e região."
+        lead="Não tem certeza se o seu endereço está na região? Chame no WhatsApp e confirmamos."
+      />
+
+      <Final
+        zapTexto={zapOnde}
+        relacionadas={[relArea(AREAS[0]), relArea(AREAS[2]), REL_GERAL.quiz]}
+      />
     </>
   );
 }
@@ -769,33 +811,40 @@ function PaginaCidade({ pagina }) {
 export default function PaginaView({ pagina }) {
   let corpo = null;
   if (pagina.tipo === "area") corpo = <PaginaArea pagina={pagina} />;
-  else if (pagina.tipo === "cidade") corpo = <PaginaCidade pagina={pagina} />;
+  else if (pagina.tipo === "onde") corpo = <PaginaOnde pagina={pagina} />;
   else if (pagina.tipo === "guia") corpo = <PaginaGuia pagina={pagina} />;
   else if (pagina.tipo === "quiz") corpo = <PaginaQuiz pagina={pagina} />;
   else if (pagina.tipo === "guias-indice") corpo = <PaginaGuias pagina={pagina} />;
   else if (pagina.tipo === "lembrete") corpo = <PaginaLembrete pagina={pagina} />;
+  else if (pagina.tipo === "creditos") corpo = <PaginaCreditos />;
   else corpo = <PaginaPrivacidade />;
-  return <Casca>{corpo}</Casca>;
+  return <Casca atual={pagina.slug}>{corpo}</Casca>;
 }
 
 export function NaoEncontrada() {
   return (
-    <Casca>
+    <Casca atual="404">
       <section className="nao-encontrada">
         <div className="container">
-          <h1>Página não encontrada</h1>
-          <p>O endereço pode ter mudado ou estar digitado errado.</p>
-          <a className="btn btn-zap" href="/">
-            Ir para o início
-          </a>
-          <a
-            className="btn btn-sec"
-            href={zap("Olá! Não encontrei o que procurava no site.")}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Falar no WhatsApp
-          </a>
+          <p className="eyebrow">Erro 404</p>
+          <h1 className="display-m">Página não encontrada.</h1>
+          <p className="lead">O endereço pode ter mudado ou estar digitado errado. Veja por onde seguir:</p>
+          <div className="acoes">
+            <a className="btn btn-zap btn-grande" href="/">
+              Ir para o início
+            </a>
+            <a className="btn btn-sec btn-grande" href="/guias">
+              Ver os guias
+            </a>
+            <a
+              className="btn btn-sec btn-grande"
+              href={zap("Olá! Não encontrei o que procurava no site.")}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Falar no WhatsApp
+            </a>
+          </div>
         </div>
       </section>
     </Casca>

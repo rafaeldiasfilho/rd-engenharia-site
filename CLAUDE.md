@@ -6,7 +6,7 @@ Instruções para o Claude Code neste repositório. Site institucional da **RD E
 
 - O único canal de atendimento é o **WhatsApp**. Formulários só montam a mensagem e abrem a conversa. Não criar telefone fixo, e-mail de contato nem "acompanhe seu processo" (foi removido de propósito: o cliente pergunta o andamento pelo WhatsApp).
 - **Sem preços e sem prazos fixos** nos textos. Normas citadas conforme o conhecimento de 2026, sempre com a ressalva de que a equipe confirma cada caso.
-- **Não inventar** informação sobre a empresa, clientes, depoimentos, números, fotos ou avaliações. Se faltar dado, perguntar ao Rafael. Itens pendentes dele: foto do responsável (`FOTO_RESPONSAVEL` em `src/paginas.js`, hoje `null`), fotos e depoimentos reais, revisão dos textos pelo pai, perfil do Google (Google Business Profile) e Search Console.
+- **Não inventar** informação sobre a empresa, clientes, depoimentos, números, fotos ou avaliações. Se faltar dado, perguntar ao Rafael. Itens pendentes dele: foto do responsável (`FOTO_RESPONSAVEL` em `src/paginas.js`, hoje `null`), fotos e depoimentos reais, revisão dos textos pelo pai, Search Console. A nota do Google (5,0, 8 avaliações, verificada em 20/10/2026) já está no site (`NOTA_GOOGLE`), sem nomes nem textos de avaliações e sem AggregateRating.
 - Projetos de exemplo são **anonimizados** (sem endereço, nome ou matrícula) e levam marca d'água "RD Engenharia – exemplo". Nunca publicar planta de cliente sem anonimizar.
 - Acessibilidade: respeitar `prefers-reduced-motion`, manter `aria-label`/`aria-pressed` nos controles novos, não depender só de cor.
 
@@ -17,7 +17,7 @@ React 18 + Vite 5, JavaScript (sem TypeScript). Site estático: `npm run build` 
 ```bash
 npm install
 npm run dev        # desenvolvimento
-npm run build      # build + prerender (deve gerar todas as páginas, hoje 22)
+npm run build      # build + prerender (deve gerar todas as páginas, hoje 18)
 npm run preview    # serve o dist/ em localhost:4173
 VITE_DEMO=1 npm run dev   # área /admin sem banco (dados só no navegador)
 ```
@@ -26,8 +26,8 @@ VITE_DEMO=1 npm run dev   # área /admin sem banco (dados só no navegador)
 
 | Quero mudar | Arquivo |
 |---|---|
-| Página inicial (seções, contato, links de cidades) | `src/App.jsx` |
-| Textos das áreas, guias, cidades, projetos, quiz, dicas do lembrete | `src/paginas.js` |
+| Página inicial (seções, contato, onde atendemos) | `src/App.jsx` |
+| Textos das áreas, guias, equipamentos de referência, projetos, quiz, dicas do lembrete | `src/paginas.js` |
 | Como as páginas internas são desenhadas | `src/Paginas.jsx` |
 | Abas de exemplos da página inicial | `src/ExemplosHome.jsx` |
 | Arrastar/trocar automático (carrosséis) | `src/Deslizar.jsx` (hook `useDeslizar`) |
@@ -41,7 +41,7 @@ VITE_DEMO=1 npm run dev   # área /admin sem banco (dados só no navegador)
 | Redirecionamentos e URLs limpas | `vercel.json` |
 | Imagens dos exemplos | `public/exemplos/<pasta>/*.webp` |
 
-Cidades atendidas ficam em `CIDADES_DADOS` (`src/paginas.js`); cada uma gera a página `/cidades/<slug>` (por exemplo `/cidades/urupes`) e entra no rodapé, na página inicial e no sitemap automaticamente. Projetos de exemplo ficam em `PROJETOS`; para adicionar um, criar a pasta em `public/exemplos/<pasta>/` com `.webp` anonimizados e acrescentar o objeto em `PROJETOS`.
+Não há páginas por cidade: a página única `/onde-atendemos` lista as cidades (constante `CIDADES` em `src/paginas.js`), e `/cidades` e `/cidades/:slug` redirecionam para ela em `vercel.json`. Fotos ficam em `public/fotos/otim/` e são declaradas em `src/fotos.js` (que alimenta `/creditos`). Projetos de exemplo ficam em `PROJETOS`; para adicionar um, criar a pasta em `public/exemplos/<pasta>/` com `.webp` anonimizados e acrescentar o objeto em `PROJETOS`.
 
 ## Como trabalhamos (fluxo padrão)
 

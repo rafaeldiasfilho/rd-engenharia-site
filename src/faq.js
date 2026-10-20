@@ -42,8 +42,8 @@ export const FAQ = [
     a: "A ART (Anotação de Responsabilidade Técnica) é o documento que registra, junto ao CREA, o profissional responsável por um serviço de engenharia. Ela protege o cliente e o profissional e é exigida em projetos, laudos, obras e outros serviços técnicos regulamentados.",
   },
   {
-    q: "Em quais cidades vocês atendem?",
-    a: "Atendemos Ibirá, Urupes, Potirendaba, Irapuã, Catanduva, São José do Rio Preto e cidades próximas. Se a sua cidade não está na lista, chame no WhatsApp e verificamos.",
+    q: "Onde vocês atendem?",
+    a: "Atendemos presencialmente e online em Ibirá e região. Se tiver dúvida se o seu endereço está na região, chame no WhatsApp e verificamos.",
   },
   {
     q: "Quanto custa e quanto tempo leva?",

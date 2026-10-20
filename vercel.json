@@ -2,6 +2,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
+    { "source": "/cidades", "destination": "/onde-atendemos", "permanent": true },
+    { "source": "/cidades/:slug", "destination": "/onde-atendemos", "permanent": true },
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "rdengenhariaibira.com.br" }],

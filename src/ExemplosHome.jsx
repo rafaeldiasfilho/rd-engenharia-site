@@ -3,6 +3,8 @@ import Icone from "./Icone";
 import { useDeslizar } from "./Deslizar";
 import { Ilustracao } from "./Ilustracoes";
 import { PROJETOS } from "./paginas";
+import Foto from "./Foto";
+import { foto, FOTOS_PRATICA } from "./fotos";
 
 const ABAS = [
   { slug: "engenharia-civil", nome: "Engenharia civil" },
@@ -74,7 +76,7 @@ function Civil() {
         </div>
       )}
       <p className="centro">
-        <a className="btn btn-sec" href="/engenharia-civil#exemplos">
+        <a className="btn btn-sec" href="/engenharia-civil#na-pratica">
           Ver o projeto completo
         </a>
       </p>
@@ -84,22 +86,39 @@ function Civil() {
 
 export default function ExemplosHome() {
   const [aba, setAba] = useState(ABAS[0].slug);
+  const apoio = (FOTOS_PRATICA[aba] || []).filter((x) => foto(x));
   return (
-    <section className="bloco" id="na-pratica">
-      <div className="wrap">
-        <h2 className="titulo-bloco">Veja na prática</h2>
-        <p className="na-pratica-sub">Escolha uma área para ver um exemplo do que entregamos.</p>
-        <div className="abas" role="group" aria-label="Áreas">
+    <section className="sec sec-alt" id="na-pratica" aria-labelledby="pratica-t">
+      <div className="container">
+        <header className="sec-cab rev">
+          <p className="sec-n">
+            <span>01</span> Na prática
+          </p>
+          <h2 id="pratica-t" className="sec-titulo">
+            Veja o que entregamos.
+          </h2>
+          <p className="lead">Escolha uma área para ver um exemplo. Os projetos de engenharia civil são reais, com os dados dos clientes retirados.</p>
+        </header>
+        <div className="abas rev" role="group" aria-label="Áreas">
           {ABAS.map((a) => (
             <button key={a.slug} type="button" aria-pressed={aba === a.slug} onClick={() => setAba(a.slug)}>
               {a.nome}
             </button>
           ))}
         </div>
-        <div className="aba-conteudo">{aba === "engenharia-civil" ? <Civil /> : <Ilustracao slug={aba} />}</div>
+        <div className="aba-conteudo">
+          {aba === "engenharia-civil" ? <Civil /> : <Ilustracao slug={aba} />}
+          {aba !== "engenharia-civil" && apoio.length > 0 && (
+            <div className={`duo ${apoio.length === 1 ? "duo-um" : ""}`}>
+              {apoio.map((x) => (
+                <Foto key={x} slot={x} sizes="(min-width: 900px) 540px, 100vw" aspecto="4 / 3" />
+              ))}
+            </div>
+          )}
+        </div>
         <p className="centro">
-          <a className="mais-link" href={`/${aba}`}>
-            Ver todos os serviços desta área
+          <a className="link-seta" href={`/${aba}`}>
+            Ver todos os serviços desta área <span aria-hidden="true">→</span>
           </a>
         </p>
       </div>

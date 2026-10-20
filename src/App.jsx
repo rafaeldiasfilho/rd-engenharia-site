@@ -1,9 +1,10 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
-import { AREAS, CIDADES, CIDADES_DADOS, URL_AVALIACOES_GOOGLE } from "./paginas";
-import { Casca, zap } from "./Layout";
+import { AREAS, URL_AVALIACOES_GOOGLE, NOTA_GOOGLE } from "./paginas";
+import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
+import Foto from "./Foto";
 
 const NECESSIDADES = [
   {
@@ -46,6 +47,15 @@ const FORMACAO = [
 
 const SERVICOS_FORM = AREAS.map((a) => a.nome);
 
+const SECOES_HOME = [
+  { id: "na-pratica", rotulo: "Na prática" },
+  { id: "como-funciona", rotulo: "Como funciona" },
+  { id: "onde-atendemos", rotulo: "Onde atendemos" },
+  { id: "quem-somos", rotulo: "Quem somos" },
+  { id: "duvidas", rotulo: "Dúvidas" },
+  { id: "contato", rotulo: "Contato" },
+];
+
 const dentroDoHorario = () => {
   try {
     const partes = new Intl.DateTimeFormat("en-US", {
@@ -85,65 +95,107 @@ export default function App() {
   };
 
   return (
-    <Casca>
-      <section className="heroi">
-        <div className="wrap heroi-grade">
-          <div>
-            <h1>Engenharia, segurança do trabalho e meio ambiente para a nossa região</h1>
-            <p className="heroi-texto">
-              Laudos, projetos e licenças para empresas, produtores rurais e proprietários de Ibirá,
-              Catanduva, São José do Rio Preto e cidades próximas. Fale direto com o responsável
-              técnico pelo WhatsApp.
+    <Casca atual="">
+      <header className="heroi">
+        <div className="container">
+          <p className="eyebrow">RD Engenharia · Ibirá/SP</p>
+          <h1 className="display">
+            Engenharia, segurança do trabalho e meio ambiente para a nossa região.
+          </h1>
+          <div className="heroi-baixo">
+            <p className="lead">
+              Laudos, projetos e licenças para empresas, produtores rurais e proprietários de Ibirá e região, presencial e online. Fale direto com o responsável técnico pelo WhatsApp.
             </p>
-            <div className="heroi-botoes">
-              <a
-                className="btn btn-zap btn-grande"
-                href={zap("Olá! Gostaria de solicitar um orçamento.")}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
-              </a>
-              <a className="btn btn-sec btn-grande" href="/o-que-preciso">
-                Não sei o que preciso
-              </a>
+            <div>
+              <div className="acoes">
+                <a
+                  className="btn btn-zap btn-grande"
+                  href={zap("Olá! Gostaria de solicitar um orçamento.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
+                </a>
+                <a className="btn btn-sec btn-grande" href="/o-que-preciso">
+                  Não sei o que preciso
+                </a>
+              </div>
+              <p className={`status ${atendendo ? "on" : ""}`}>
+                <Icone nome="fa-solid fa-circle" />{" "}
+                {atendendo
+                  ? "Atendendo agora. Seg. a sex., das 7h às 17h"
+                  : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
+              </p>
             </div>
-            <p className={`status ${atendendo ? "on" : ""}`}>
-              <Icone nome="fa-solid fa-circle" />{" "}
-              {atendendo
-                ? "Atendendo agora. Seg. a sex., das 7h às 17h"
-                : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
-            </p>
           </div>
-
-          <div className="escolha" id="areas">
-            <h2>Do que você precisa?</h2>
-            <ul>
-              {NECESSIDADES.map((n) => (
+          <div className="escolhas-bloco" id="servicos">
+            <h2 className="escolhas-t">Do que você precisa?</h2>
+            <ol className="escolhas">
+              {NECESSIDADES.map((n, i) => (
                 <li key={n.slug}>
                   <a href={`/${n.slug}`}>
-                    <span>
+                    <span className="escolha-n" aria-hidden="true">
+                      0{i + 1}
+                    </span>
+                    <span className="escolha-texto">
                       <strong>{n.titulo}</strong>
                       <small>{n.frase}</small>
                     </span>
-                    <Icone nome="fa-solid fa-chevron-right" />
+                    <span className="escolha-seta" aria-hidden="true">
+                      →
+                    </span>
                   </a>
                 </li>
               ))}
-            </ul>
+            </ol>
           </div>
+          <ul className="prova">
+            <li>
+              <strong>CREA-SP</strong>
+              <span>Todo serviço é assinado por profissional habilitado</span>
+            </li>
+            <li>
+              <strong>ART</strong>
+              <span>Anotação de Responsabilidade Técnica nos trabalhos que a exigem</span>
+            </li>
+            <li>
+              <strong>WhatsApp</strong>
+              <span>Você conversa direto com quem vai executar</span>
+            </li>
+            <li>
+              <strong>Desde 2017</strong>
+              <span>CNPJ ativo desde 29/05/2017, em Ibirá/SP</span>
+            </li>
+          </ul>
         </div>
-      </section>
+      </header>
+
+      <div className="faixa-foto">
+        <div className="container">
+          <Foto slot="home-hero" sizes="(min-width: 1200px) 1120px, 100vw" className="hero-largo hero-home" aspecto="16 / 8" />
+        </div>
+      </div>
+
+      <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
 
       <ExemplosHome />
 
-      <section className="bloco bloco-branco" id="como-funciona">
-        <div className="wrap">
-          <h2 className="titulo-bloco">Como funciona</h2>
-          <ol className="etapas">
+      <section className="sec" id="como-funciona" aria-labelledby="como-t">
+        <div className="container">
+          <header className="sec-cab rev">
+            <p className="sec-n">
+              <span>02</span> Como funciona
+            </p>
+            <h2 id="como-t" className="sec-titulo">
+              Quatro passos, sem surpresa.
+            </h2>
+          </header>
+          <ol className="etapas-ed">
             {ETAPAS.map((e, i) => (
-              <li key={e.titulo}>
-                <span className="etapa-n">{i + 1}</span>
+              <li key={e.titulo} className="rev">
+                <span className="etapa-big" aria-hidden="true">
+                  {i + 1}
+                </span>
                 <h3>{e.titulo}</h3>
                 <p>{e.texto}</p>
               </li>
@@ -152,29 +204,52 @@ export default function App() {
         </div>
       </section>
 
-      <section className="bloco" id="quem-somos">
-        <div className="wrap quem-grade">
-          <div>
-            <h2 className="titulo-bloco">Quem responde pelo seu serviço</h2>
-            <p className="quem-texto">
-              A RD Engenharia é uma empresa familiar de Ibirá. Todo serviço é assinado por
-              profissional habilitado no CREA-SP, e você conversa direto com quem vai executar.
+      <section className="sec sec-alt" id="onde-atendemos" aria-labelledby="onde-t">
+        <div className="container">
+          <header className="sec-cab rev">
+            <p className="sec-n">
+              <span>03</span> Onde atendemos
             </p>
-            <p className="numeros">
-              <span>
-                <strong>10+</strong> anos de experiência
-              </span>
-              <span>
-                <strong>200+</strong> documentos técnicos
-              </span>
-              <span>
-                <strong>30+</strong> projetos
-              </span>
-            </p>
+            <h2 id="onde-t" className="sec-titulo">
+              Atendemos presencialmente e online em Ibirá e região.
+            </h2>
+            <p className="lead">Conte onde fica o seu imóvel ou a sua empresa pelo WhatsApp e confirmamos o atendimento.</p>
+          </header>
+          <div className="acoes rev">
+            <a className="btn btn-sec btn-grande" href="/onde-atendemos">
+              Ver onde atendemos
+            </a>
           </div>
+        </div>
+      </section>
 
+      <section className="sec" id="quem-somos" aria-labelledby="quem-t">
+        <div className="container">
+          <header className="sec-cab rev">
+            <p className="sec-n">
+              <span>04</span> Quem somos
+            </p>
+            <h2 id="quem-t" className="sec-titulo">
+              Quem responde pelo seu serviço.
+            </h2>
+            <p className="lead">
+              A RD Engenharia é uma empresa familiar de Ibirá. Todo serviço é assinado por profissional habilitado no
+              CREA-SP, e você conversa direto com quem vai executar.
+            </p>
+          </header>
+          <p className="numeros rev">
+            <span>
+              <strong>10+</strong> anos de experiência
+            </span>
+            <span>
+              <strong>200+</strong> documentos técnicos
+            </span>
+            <span>
+              <strong>30+</strong> projetos
+            </span>
+          </p>
           <div className="pessoas">
-            <article>
+            <article className="rev">
               <h3>Rafael Antonio Dias</h3>
               <p className="pessoa-cargo">
                 Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
@@ -194,7 +269,7 @@ export default function App() {
                 <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
               </a>
             </article>
-            <article>
+            <article className="rev">
               <h3>Rafael Antonio Dias Filho</h3>
               <p className="pessoa-cargo">Técnico em edificações · Projetos e atendimento</p>
               <a
@@ -210,10 +285,17 @@ export default function App() {
         </div>
       </section>
 
-      <section className="bloco bloco-branco" id="duvidas">
-        <div className="wrap wrap-estreito">
-          <h2 className="titulo-bloco">Dúvidas frequentes</h2>
-          <div className="faq-lista">
+      <section className="sec sec-alt" id="duvidas" aria-labelledby="duvidas-t">
+        <div className="container">
+          <header className="sec-cab rev">
+            <p className="sec-n">
+              <span>05</span> Dúvidas
+            </p>
+            <h2 id="duvidas-t" className="sec-titulo">
+              Dúvidas frequentes.
+            </h2>
+          </header>
+          <div className="faq-lista rev">
             {FAQ.map((item) => (
               <details className="faq-item" key={item.q}>
                 <summary>{item.q}</summary>
@@ -224,10 +306,15 @@ export default function App() {
         </div>
       </section>
 
-      <section className="bloco bloco-escuro" id="contato">
-        <div className="wrap contato-grade">
+      <section className="bloco-escuro" id="contato" aria-labelledby="contato-t">
+        <div className="container contato-grade">
           <div>
-            <h2 className="titulo-bloco">Peça seu orçamento</h2>
+            <p className="sec-n">
+              <span>06</span> Contato
+            </p>
+            <h2 id="contato-t" className="sec-titulo">
+              Peça seu orçamento.
+            </h2>
             <p className="contato-texto">
               Preencha e continue no WhatsApp. A mensagem já vai pronta, sem compromisso.
             </p>
@@ -250,22 +337,17 @@ export default function App() {
                 <dd>Segunda a sexta, das 7h às 17h</dd>
               </div>
               <div>
-                <dt>Regiões atendidas</dt>
+                <dt>Onde atendemos</dt>
                 <dd>
-                  {CIDADES_DADOS.map((c, i) => (
-                    <span key={c.slug}>
-                      {i > 0 && ", "}
-                      <a href={`/cidades/${c.slug}`}>{c.nome}</a>
-                    </span>
-                  ))}{" "}
-                  e cidades próximas
+                  Presencialmente e online em Ibirá e região.
+                  <a href="/onde-atendemos">Ver onde atendemos</a>
                 </dd>
               </div>
               <div>
                 <dt>Avaliações</dt>
                 <dd>
                   <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
-                    Ver no Google
+                    {NOTA_GOOGLE}
                   </a>
                 </dd>
               </div>
@@ -287,12 +369,7 @@ export default function App() {
             </label>
             <label>
               Cidade
-              <input value={pedido.cidade} onChange={mudar("cidade")} list="cidades-form" />
-              <datalist id="cidades-form">
-                {CIDADES.map((c) => (
-                  <option key={c} value={c} />
-                ))}
-              </datalist>
+              <input value={pedido.cidade} onChange={mudar("cidade")} />
             </label>
             <label>
               Área do serviço

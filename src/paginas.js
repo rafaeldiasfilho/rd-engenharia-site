@@ -13,7 +13,7 @@ export const AREAS = [
     curto: "PGR, LTCAT, laudos de insalubridade e periculosidade e treinamentos.",
     title: "Segurança do Trabalho em Ibirá e região | PGR, LTCAT e Laudos | RD Engenharia",
     description:
-      "PGR, LTCAT, laudos de insalubridade e periculosidade, APR e treinamentos de NRs para empresas de Ibirá, Catanduva, Rio Preto e região. Peça orçamento pelo WhatsApp.",
+      "PGR, LTCAT, laudos de insalubridade e periculosidade, APR e treinamentos de NRs para empresas de Ibirá e região. Peça orçamento pelo WhatsApp.",
     h1: "Segurança do Trabalho para empresas da região",
     intro:
       "Elaboramos os programas e laudos exigidos pelas Normas Regulamentadoras para que a sua empresa trabalhe em dia com a lei e, principalmente, com menos risco de acidente. Atendemos comércios, indústrias, fazendas, clínicas e prefeituras.",
@@ -85,7 +85,7 @@ export const AREAS = [
     curto: "Projetos de segurança contra incêndio, AVCB e CLCB.",
     title: "AVCB e CLCB em Ibirá e região | Projeto de Incêndio | RD Engenharia",
     description:
-      "Projeto de segurança contra incêndio (PSCIP), AVCB e CLCB para comércios, indústrias e imóveis de Ibirá, Catanduva, Rio Preto e região. Peça orçamento pelo WhatsApp.",
+      "Projeto de segurança contra incêndio (PSCIP), AVCB e CLCB para comércios, indústrias e imóveis de Ibirá e região. Peça orçamento pelo WhatsApp.",
     h1: "Projeto de incêndio, AVCB e CLCB",
     intro:
       "Cuidamos do projeto e da regularização da segurança contra incêndio do seu imóvel junto ao Corpo de Bombeiros do Estado de São Paulo, do enquadramento correto até a documentação final.",
@@ -145,7 +145,7 @@ export const AREAS = [
     curto: "Projetos, regularização de obras, laudos, inspeções e gerenciamento.",
     title: "Engenharia Civil e Regularização de Obras em Ibirá e região | RD Engenharia",
     description:
-      "Projetos, regularização de obra (as-built e habite-se), laudos, perícias, inspeção predial e gerenciamento de obras em Ibirá, Catanduva, Rio Preto e região.",
+      "Projetos, regularização de obra (as-built e habite-se), laudos, perícias, inspeção predial e gerenciamento de obras em Ibirá e região.",
     h1: "Engenharia civil, projetos e regularização",
     intro:
       "Da planta ao habite-se: projetos, acompanhamento de obras, regularização de imóveis construídos sem documentação e laudos técnicos, sempre com ART de responsável técnico habilitado no CREA-SP.",
@@ -211,7 +211,7 @@ export const AREAS = [
     curto: "CAR, licenciamento, outorga, resíduos, topografia e georreferenciamento.",
     title: "CAR, Georreferenciamento e Topografia em Ibirá e região | RD Engenharia",
     description:
-      "CAR, georreferenciamento de imóvel rural, topografia, licenciamento ambiental, outorga e gestão de resíduos em Ibirá, Catanduva, Rio Preto e região.",
+      "CAR, georreferenciamento de imóvel rural, topografia, licenciamento ambiental, outorga e gestão de resíduos em Ibirá e região.",
     h1: "Meio ambiente, topografia e imóvel rural",
     intro:
       "Regularização ambiental, levantamentos de terreno e documentação de propriedades rurais e urbanas. Unimos a parte ambiental e a topografia para resolver o processo de ponta a ponta.",
@@ -411,30 +411,16 @@ export const GUIAS = [
 ];
 
 
-// Páginas por cidade. Números oficiais do IBGE (Censo 2022, área territorial 2025, PIB per capita 2023),
-// consultados em ibge.gov.br/cidades-e-estados/sp. Conteúdo local adicional deve ser revisado pela equipe.
-export const CIDADES_DADOS = [
-  { slug: "ibira", nome: "Ibirá", sede: true, pop: "11.690", area: "268,9", dens: "42,99", pib: "35.772,27", ibge: "ibira", rural: true },
-  { slug: "urupes", nome: "Urupes", min: 20, pop: "13.744", area: "323,9", dens: "42,43", pib: "47.084,91", ibge: "urupes", rural: true },
-  { slug: "potirendaba", nome: "Potirendaba", min: 20, pop: "18.496", area: "342,5", dens: "54,00", pib: "54.996,89", ibge: "potirendaba", rural: true },
-  { slug: "irapua", nome: "Irapuã", min: 30, pop: "6.867", area: "257,6", dens: "26,66", pib: "41.126,49", ibge: "irapua", rural: true },
-  { slug: "catanduva", nome: "Catanduva", min: 40, pop: "115.791", area: "291,9", dens: "398,46", pib: "60.712,43", ibge: "catanduva", rural: false },
-  { slug: "sao-jose-do-rio-preto", nome: "São José do Rio Preto", min: 45, pop: "480.393", area: "431,9", dens: "1.112,17", pib: "54.934,44", ibge: "sao-jose-do-rio-preto", rural: false },
-];
-
-const paginaCidade = (c) => ({
-  tipo: "cidade",
-  slug: `cidades/${c.slug}`,
-  cidade: c,
-  title: `Engenharia, segurança do trabalho e meio ambiente em ${c.nome} | RD Engenharia`,
-  description: `Laudos, projetos, AVCB/CLCB, segurança do trabalho, CAR e topografia em ${c.nome}. Veja o que costuma ser exigido na cidade e peça orçamento pelo WhatsApp.`,
-  h1: `Engenharia e segurança do trabalho em ${c.nome}`,
-});
-
 export const PAGINAS = [
   ...AREAS,
   ...GUIAS,
-  ...CIDADES_DADOS.map(paginaCidade),
+  {
+    tipo: "onde",
+    slug: "onde-atendemos",
+    title: "Onde atendemos: Ibirá e região, presencial e online | RD Engenharia",
+    description: "Atendemos presencialmente e online em Ibirá e região. Conte onde fica o seu imóvel ou a sua empresa pelo WhatsApp e confirmamos o atendimento.",
+    h1: "Atendemos presencialmente e online em Ibirá e região",
+  },
   {
     tipo: "quiz",
     slug: "o-que-preciso",
@@ -466,6 +452,13 @@ export const PAGINAS = [
     description: "Como o site da RD Engenharia trata os dados de quem entra em contato.",
     h1: "Política de Privacidade",
   },
+  {
+    tipo: "creditos",
+    slug: "creditos",
+    title: "Créditos das imagens | RD Engenharia",
+    description: "Origem, autor e licença de cada foto ilustrativa usada no site da RD Engenharia.",
+    h1: "Créditos das imagens",
+  },
 ];
 
 export const DOCUMENTOS_LEMBRETE = [
@@ -479,7 +472,10 @@ export const DOCUMENTOS_LEMBRETE = [
   "Outro documento",
 ];
 
-export const URL_AVALIACOES_GOOGLE = "https://maps.google.com/?cid=11067848269869846630";
+export const URL_AVALIACOES_GOOGLE =
+  "https://www.google.com/maps/place/RD+Engenharia+Seguran%C3%A7a+e+Meio+Ambiente/@-21.0824485,-49.2433844,1046m/data=!3m2!1e3!4b1!4m6!3m5!1s0x94bc3184084c66fb:0x9998e55c89839066!8m2!3d-21.0824485!4d-49.2433844!16s%2Fg%2F11fky31jy7";
+// Nota verificada no perfil do Google em 20/10/2026. Atualizar à mão; não usar marcação AggregateRating.
+export const NOTA_GOOGLE = "5,0 no Google · 8 avaliações";
 
 // Orientação de prazo mostrada na página do lembrete. Cada documento traz a própria validade;
 // a norma só fixa prazo em alguns casos. Confirmamos o prazo exato de cada caso na renovação.
@@ -501,7 +497,6 @@ export const DICAS_LEMBRETE = {
 export const achaPagina = (slug) => PAGINAS.find((p) => p.slug === slug);
 export const achaArea = (slug) => AREAS.find((p) => p.slug === slug);
 
-export const CIDADES = ["Ibirá", "Urupes", "Potirendaba", "Irapuã", "Catanduva", "São José do Rio Preto"];
 
 // Guia "o que preciso?": cada situação aponta para os documentos/serviços prováveis.
 export const PERFIS = [
@@ -646,3 +641,53 @@ export const VISUAL = {
 
 // Foto do responsável técnico. Quando houver o arquivo em public/ (ex.: "/rafael.webp"), coloque o caminho aqui.
 export const FOTO_RESPONSAVEL = null;
+
+// Equipamentos que COSTUMAM ser usados em serviços desse tipo (lista geral de referência).
+// Nunca afirmar que a RD possui ou usa algum deles; sem marcas e sem preços.
+export const NOTA_EQUIPAMENTOS = "Lista geral de referência, não é o inventário da RD.";
+export const EQUIPAMENTOS = {
+  "seguranca-do-trabalho": {
+    texto:
+      "Para saber se o ambiente de trabalho está dentro dos limites das normas, o profissional costuma medir o que está no ar e no entorno do trabalhador, como ruído, calor, luz e poeira. Em serviços como PGR, LTCAT e laudos de insalubridade, costumam ser usados aparelhos de medição específicos, conferidos antes e depois da medida. Os métodos seguem normas como a NR-15 e as Normas de Higiene Ocupacional (NHO) da Fundacentro.",
+    itens: [
+      "Dosímetro de ruído e medidor de nível de som (decibelímetro)",
+      "Medidor de calor (IBUTG, com termômetros de globo e de bulbo úmido)",
+      "Luxímetro, para medir a iluminação do posto de trabalho",
+      "Bomba de amostragem de ar com filtro, para coletar poeira e outros agentes",
+      "Calibradores, para conferir os aparelhos de ruído e a vazão das bombas",
+    ],
+  },
+  "corpo-de-bombeiros": {
+    texto:
+      "O projeto de segurança contra incêndio define quais proteções o imóvel precisa ter, de acordo com as Instruções Técnicas do Corpo de Bombeiros do Estado de São Paulo. Na vistoria, os bombeiros costumam conferir se esses sistemas estão instalados e funcionando. Por isso, o levantamento do imóvel e o projeto tratam de cada um deles.",
+    itens: [
+      "Extintores de incêndio, de tipos adequados ao risco",
+      "Hidrantes e mangotinhos (rede de água e mangueiras)",
+      "Iluminação de emergência nas rotas de saída",
+      "Sistema de detecção e alarme de incêndio (detectores, acionadores e central)",
+      "Sinalização de emergência e, quando exigido, para-raios (SPDA) com laudo",
+    ],
+  },
+  "engenharia-civil": {
+    texto:
+      "Para regularizar uma obra, laudar um imóvel ou investigar trincas e infiltrações, o engenheiro costuma começar medindo o que existe e observando sinais que não aparecem a olho nu. Em serviços como esses, costumam ser usados instrumentos de medição e de ensaio, muitos deles sem necessidade de quebrar a construção. O resultado entra no relatório técnico com ART.",
+    itens: [
+      "Trena e medidor de distância a laser, para o desenho \"como construído\"",
+      "Nível e estação total, para medidas e alturas do terreno e da obra",
+      "Fissurômetro e medidor de umidade, para acompanhar trincas e infiltrações",
+      "Câmera termográfica, que ajuda a achar infiltração sem quebrar a parede",
+      "Esclerômetro e aparelho de ultrassom, para avaliar a qualidade do concreto",
+    ],
+  },
+  "meio-ambiente-topografia": {
+    texto:
+      "Medir um terreno ou um imóvel rural com precisão exige aparelhos que usam satélites e instrumentos de campo, seguindo as normas do INCRA e da ABNT. No georreferenciamento, o Manual Técnico do INCRA descreve os métodos aceitos, como receptores GNSS, estação total e, em certos casos, drones. Na parte ambiental, a coleta de amostras segue guias técnicos nacionais.",
+    itens: [
+      "Receptor GNSS (GPS de precisão), com correção em tempo real (RTK) ou por ponto preciso (PPP)",
+      "Estação total, com prisma, balizas e trena",
+      "Nível e mira, para medir diferenças de altura",
+      "Aeronave remotamente pilotada (drone) com câmera, nos casos em que o método é permitido",
+      "Frascos e amostradores para coleta de água e sedimento",
+    ],
+  },
+};

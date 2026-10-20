@@ -31,13 +31,21 @@ try {
 
   for (const pagina of PAGINAS) {
     const url = `${SITE_URL}/${pagina.slug}`;
+    // Nível do meio da trilha: áreas ficam em "Serviços", guias em "Guias".
+    const nivelMeio =
+      pagina.tipo === "area"
+        ? { nome: "Serviços", url: `${SITE_URL}/#servicos` }
+        : pagina.tipo === "guia"
+          ? { nome: "Guias", url: `${SITE_URL}/guias` }
+          : null;
     const dados = [
       {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Início", item: `${SITE_URL}/` },
-          { "@type": "ListItem", position: 2, name: pagina.h1, item: url },
+          ...(nivelMeio ? [{ "@type": "ListItem", position: 2, name: nivelMeio.nome, item: nivelMeio.url }] : []),
+          { "@type": "ListItem", position: nivelMeio ? 3 : 2, name: pagina.tipo === "area" ? pagina.nome : pagina.h1, item: url },
         ],
       },
     ];
@@ -49,7 +57,7 @@ try {
         description: pagina.description,
         url,
         provider: { "@type": "ProfessionalService", name: "RD Engenharia Segurança e Meio Ambiente", url: `${SITE_URL}/` },
-        areaServed: ["Ibirá", "Urupes", "Potirendaba", "Irapuã", "Catanduva", "São José do Rio Preto"],
+        areaServed: { "@type": "City", name: "Ibirá" },
       });
       dados.push({
         "@context": "https://schema.org",
@@ -59,15 +67,6 @@ try {
           name: f.q,
           acceptedAnswer: { "@type": "Answer", text: f.a },
         })),
-      });
-    }
-    if (pagina.tipo === "cidade") {
-      dados.push({
-        "@context": "https://schema.org",
-        "@type": "ProfessionalService",
-        name: "RD Engenharia Segurança e Meio Ambiente",
-        url,
-        areaServed: { "@type": "City", name: pagina.cidade.nome },
       });
     }
     if (pagina.tipo === "guia") {
