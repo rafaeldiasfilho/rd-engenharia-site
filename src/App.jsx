@@ -4,7 +4,7 @@ import { FAQ } from "./faq";
 import { AREAS, URL_AVALIACOES_GOOGLE, NOTA_GOOGLE } from "./paginas";
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
-import Foto from "./Foto";
+import Carrossel from "./Carrossel";
 
 const NECESSIDADES = [
   {
@@ -128,6 +128,15 @@ export default function App() {
               </p>
             </div>
           </div>
+          <Carrossel
+            chave="home"
+            rotulo="As quatro áreas de atuação da RD Engenharia"
+            aspecto="16 / 8"
+            auto={6000}
+            prioridade
+            className="carrossel-hero"
+            sizes="(min-width: 900px) 800px, 88vw"
+          />
           <div className="escolhas-bloco" id="servicos">
             <h2 className="escolhas-t">Do que você precisa?</h2>
             <ol className="escolhas">
@@ -169,12 +178,6 @@ export default function App() {
           </ul>
         </div>
       </header>
-
-      <div className="faixa-foto">
-        <div className="container">
-          <Foto slot="home-hero" sizes="(min-width: 1200px) 1120px, 100vw" className="hero-largo hero-home" aspecto="16 / 8" />
-        </div>
-      </div>
 
       <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
 

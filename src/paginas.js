@@ -424,9 +424,9 @@ export const PAGINAS = [
   {
     tipo: "quiz",
     slug: "o-que-preciso",
-    title: "O que minha empresa ou imóvel precisa? Guia rápido | RD Engenharia",
+    title: "O que minha empresa ou imóvel precisa? Passo a passo | RD Engenharia",
     description:
-      "Responda algumas perguntas e descubra quais documentos e serviços técnicos o seu caso provavelmente exige. Depois peça orçamento pelo WhatsApp.",
+      "Responda uma pergunta por vez e descubra quais documentos e serviços técnicos o seu caso provavelmente exige. Depois peça orçamento pelo WhatsApp.",
     h1: "Descubra o que o seu caso precisa",
   },
   {

@@ -1,133 +1,179 @@
-// Mapa de fotos do site: slot -> foto. Para trocar uma foto, edite só este arquivo
-// (e coloque o arquivo em public/fotos/otim/). Se um slot for null ou o arquivo faltar,
-// a página usa a ilustração ou o desenho de projeto no lugar, sem quebrar o layout.
-// Todas as fotos abaixo são de terceiros (CC0 / domínio público, Wikimedia Commons)
+// Mapa de fotos do site. Para trocar uma foto, edite só este arquivo (e coloque o .webp em
+// public/fotos/otim/). Todas as fotos são de terceiros (Wikimedia Commons CC0 e Unsplash License)
 // e NÃO são trabalhos da RD Engenharia. Cada uma aparece com a legenda "Imagem ilustrativa".
+// A página /creditos é gerada daqui e lista só as fotos que estão em uso.
+// Unsplash License NÃO é CC0: nunca rotular como CC0. Autores do Unsplash lidos na página de cada foto em 20/10/2026.
 
 const COMMONS = "https://commons.wikimedia.org/wiki/File:";
+const UNSPLASH_LICENCA = "https://unsplash.com/license";
 
-// Cada foto tem duas larguras: a pequena (celular) e a grande (tela larga).
+const unsplash = (id, autor) => ({
+  autor,
+  licenca: "Unsplash License",
+  licencaUrl: UNSPLASH_LICENCA,
+  fonte: `https://unsplash.com/photos/${id}`,
+  fonteNome: "Unsplash",
+});
+
+const commons = (arquivo, autor) => ({
+  licenca: "CC0",
+  autor,
+  arquivo,
+  fonte: COMMONS + encodeURIComponent(arquivo.replace(/ /g, "_")).replace(/%2C/g, ","),
+  fonteNome: "Wikimedia Commons",
+});
+
+// Cada foto tem um arquivo único em public/fotos/otim/<arq>.webp.
 export const FOTOS = {
-  "topografia-estacao-total": {
-    arq: "topografia-estacao-total", pequena: 760, grande: 1400, w: 1400, h: 1050,
-    alt: "Estação total sobre um tripé amarelo em uma clareira de floresta, com duas maletas vermelhas ao pé do tripé",
-    autor: "Stamboliyski", licenca: "CC0", arquivo: "Bjorn22.JPG",
-    fonte: COMMONS + "Bjorn22.JPG",
+  "capacete-vermelho-epi": {
+    arq: "capacete-vermelho-epi", w: 1600, h: 900,
+    alt: "Capacete de segurança vermelho sobre o asfalto, com uma obra desfocada ao fundo",
+    ...unsplash("9OB46apMbC4", "Ümit Yıldırım"),
   },
-  "bombeiros-saida-emergencia": {
-    arq: "bombeiros-saida-emergencia", pequena: 760, grande: 1400, w: 1400, h: 788,
+  "trabalhador-altura-cinto-seguranca": {
+    arq: "trabalhador-altura-cinto-seguranca", w: 1600, h: 1008,
+    alt: "Trabalhador em viga metálica com cinto de segurança e talabarte, de capacete com viseira",
+    ...unsplash("niSnhfMjiMI", "Jeriden Villegas"),
+  },
+  "capacetes-amarelos-epi": {
+    arq: "capacetes-amarelos-epi", w: 1600, h: 1067,
+    alt: "Quatro capacetes de segurança amarelos sobre um piso de madeira escura",
+    ...unsplash("YSxcf6C_SEg", "Silvia Brazzoduro"),
+  },
+  "extintor-parede-concreto-pictograma": {
+    arq: "extintor-parede-concreto-pictograma", w: 1600, h: 1067,
+    alt: "Extintor de incêndio vermelho fixado em parede de concreto, com a placa de sinalização de extintor acima",
+    ...unsplash("GCmVg5lztwI", "Jakub Żerdzicki"),
+  },
+  "sirene-alarme-incendio-teto": {
+    arq: "sirene-alarme-incendio-teto", w: 1600, h: 1065,
+    alt: "Sirene e luz de alarme de incêndio fixadas no forro de um ambiente interno",
+    ...unsplash("Ea4OPjLDt5k", "Etienne Girardet"),
+  },
+  "luminaria-saida-emergencia-verde": {
+    arq: "luminaria-saida-emergencia-verde", w: 1600, h: 1201,
+    alt: "Luminária de saída de emergência verde, com figura em movimento e seta, em parede escura",
+    ...unsplash("SKrgZQgYy2g", "Andrew Teoh"),
+  },
+  "luminaria-emergencia-corredor": {
+    arq: "luminaria-emergencia-corredor", w: 1600, h: 1200,
+    alt: "Luminária de emergência com pictograma de saída verde, instalada em viga de um corredor",
+    ...unsplash("J2094d0y5Xc", "Haberdoedas"),
+  },
+  "tubulacao-sprinklers-teto-estacionamento": {
+    arq: "tubulacao-sprinklers-teto-estacionamento", w: 1600, h: 1067,
+    alt: "Tubulação vermelha de combate a incêndio com chuveiros automáticos no teto de concreto de um estacionamento",
+    ...unsplash("YkPY2Awkra8", "Valentin Lacoste"),
+  },
+  "tubulacao-incendio-teto-vermelha": {
+    arq: "tubulacao-incendio-teto-vermelha", w: 1600, h: 1200,
+    alt: "Tubulação vermelha de incêndio e eletrodutos no teto de concreto de uma edificação",
+    ...unsplash("eENezYdWSIg", "Nopparuj Lamaikul"),
+  },
+  "escada-saida-emergencia-sinalizada": {
+    arq: "escada-saida-emergencia-sinalizada", w: 1600, h: 901,
     alt: "Escada interna ao lado de uma porta de saída de emergência com a placa verde iluminada acima dela",
-    autor: "诺尔0", licenca: "CC0", arquivo: "Stair Corner with Emergency Exit.jpg",
-    fonte: COMMONS + "Stair_Corner_with_Emergency_Exit.jpg",
+    ...commons("Stair Corner with Emergency Exit.jpg", "诺尔0"),
   },
-  "civil-casa-alvenaria": {
-    arq: "civil-casa-alvenaria", pequena: 760, grande: 1400, w: 1400, h: 1050,
-    alt: "Casa de alvenaria com telhado cerâmico, varanda e pintura branca, cercada de gramado e morros ao fundo",
-    autor: "DAR7", licenca: "CC0",
-    arquivo: "Casa de alvenaria e tijolo no município de Campos Novos, Santa Catarina, Brasil (2).jpg",
-    fonte: COMMONS + "Casa_de_alvenaria_e_tijolo_no_município_de_Campos_Novos,_Santa_Catarina,_Brasil_(2).jpg",
+  "sobrado-alvenaria-em-obra": {
+    arq: "sobrado-alvenaria-em-obra", w: 1600, h: 1204,
+    alt: "Sobrado de tijolos com telhado de telhas em construção, com andaime de madeira e areia na frente",
+    ...unsplash("VggmWsUgA10", "Divaris Shirichena"),
   },
-  "seguranca-epi": {
-    arq: "seguranca-epi", pequena: 760, grande: 1400, w: 1400, h: 993,
-    alt: "Equipamentos de proteção individual sobre uma mesa de madeira clara: capacete laranja, colete refletivo, protetor auricular e luvas",
-    autor: "CANVA", licenca: "CC0", arquivo: "EPIs de segurança do trabalhador.png",
-    fonte: COMMONS + "EPIs_de_segurança_do_trabalhador.png",
+  "casa-alvenaria-tijolo-telhado-metalico": {
+    arq: "casa-alvenaria-tijolo-telhado-metalico", w: 1600, h: 767,
+    alt: "Casa de tijolos aparentes em construção, já com a estrutura e o telhado metálico, sob céu azul",
+    ...unsplash("zizZk3AMhpI", "Divaris Shirichena"),
   },
-  "seguranca-luva": {
-    arq: "seguranca-luva", pequena: 760, grande: 1400, w: 1400, h: 1050,
-    alt: "Mão com luva de proteção de couro branco e tecido amarelo com faixa refletiva, sobre uma rua de asfalto",
-    autor: "Petey21", licenca: "CC0", arquivo: "Yellow-work-glove.jpg",
-    fonte: COMMONS + "Yellow-work-glove.jpg",
+  "edificio-estrutura-concreto-pavimentos": {
+    arq: "edificio-estrutura-concreto-pavimentos", w: 1600, h: 1009,
+    alt: "Edifício de vários pavimentos com estrutura de concreto e escoramento, em construção, sob céu azul",
+    ...unsplash("PlBsJ5MybGc", "Tolu Olubode"),
   },
-  "civil-casa-obra": {
-    arq: "civil-casa-obra", pequena: 760, grande: 1225, w: 1225, h: 740,
-    alt: "Casa simples em construção no interior do Brasil, com paredes rebocadas, telhado de telha cerâmica, porta e janela ainda sem acabamento",
-    autor: "Almanaque Lusofonista", licenca: "Domínio público", arquivo: "Minha casa, Minha Vida BRASIL.JPG",
-    fonte: COMMONS + "Minha_casa,_Minha_Vida_BRASIL.JPG",
+  "obra-alvenaria-guindaste": {
+    arq: "obra-alvenaria-guindaste", w: 1600, h: 1200,
+    alt: "Edifício residencial de alvenaria com andaimes e guindaste de torre em obra",
+    ...commons("Construction site Daumstraße north 2019-10-29 10.jpg", "Leonhard Lenz"),
   },
-  "civil-andaime": {
-    arq: "civil-andaime", pequena: 760, grande: 1400, w: 1400, h: 1050,
-    alt: "Andaimes metálicos com pranchas de madeira em volta de uma construção de tijolos, sob céu azul (imagem genérica de obra)",
-    autor: "Baltimore Heritage", licenca: "CC0", arquivo: "Back with scaffolding, 1232 Druid Hill Avenue (32483635746).jpg",
-    fonte: COMMONS + "Back_with_scaffolding,_1232_Druid_Hill_Avenue_(32483635746).jpg",
+  "estacao-total-prisma-tripes": {
+    arq: "estacao-total-prisma-tripes", w: 1600, h: 1200,
+    alt: "Estação total e prisma topográficos sobre tripés amarelos, ao lado de cones de sinalização",
+    ...commons("Surveying prism and total station, for land surveying, in Shibuya-ku.jpg", "Syced"),
   },
-  "rural-montanhas-mg": {
-    arq: "rural-montanhas-mg", pequena: 760, grande: 1400, w: 1400, h: 788,
-    alt: "Vale de pasto verde cercado por morros e montanhas, sob céu azul com nuvens (paisagem rural de Minas Gerais)",
-    autor: "Themium", licenca: "CC0", arquivo: "Vista Rural de Gonçalves, Minas Gerais.jpg",
-    fonte: COMMONS + "Vista_Rural_de_Gonçalves,_Minas_Gerais.jpg",
+  "rio-mata-vista-aerea": {
+    arq: "rio-mata-vista-aerea", w: 1300, h: 867,
+    alt: "Vista aérea de um rio de águas azul-turquesa entre mata densa e rochas",
+    ...unsplash("Zj9bdiD4wno", "Christian Thöni"),
   },
-  "lavouras-pivos-aerea": {
-    arq: "lavouras-pivos-aerea", pequena: 760, grande: 1400, w: 1400, h: 930,
-    alt: "Vista aérea, feita de satélite, de lavouras com irrigação em círculos e talhões retangulares, cortadas por um curso d'água",
-    autor: "Tripulação da Expedição 26 da ISS (NASA)", licenca: "Domínio público",
-    arquivo: "Agricultural Fields near Perdizes, Minas Gerais, Brazil.JPG",
-    fonte: COMMONS + "Agricultural_Fields_near_Perdizes,_Minas_Gerais,_Brazil.JPG",
-  },
-  "mata-ciliar-corrego": {
-    arq: "mata-ciliar-corrego", pequena: 760, grande: 1400, w: 1400, h: 788,
-    alt: "Córrego de águas calmas cercado por vegetação densa, com o céu refletido na água",
-    autor: "Matt9019", licenca: "CC0", arquivo: "Rio do Meio jusante.jpg",
-    fonte: COMMONS + "Rio_do_Meio_jusante.jpg",
-  },
-  "rural-pasto-gado": {
-    arq: "rural-pasto-gado", pequena: 760, grande: 1400, w: 1400, h: 857,
-    alt: "Rebanho de gado branco em um pasto verde, com um morro de topo plano ao fundo",
-    autor: "Miguelrangeljr", licenca: "Domínio público", arquivo: "Bois morro do diabo.jpg",
-    fonte: COMMONS + "Bois_morro_do_diabo.jpg",
-  },
-  "bombeiros-detector-fumaca": {
-    arq: "bombeiros-detector-fumaca", pequena: 760, grande: 1200, w: 1200, h: 948,
-    alt: "Detector de fumaça branco preso ao teto texturizado de um ambiente interno",
-    autor: "Georg Pik", licenca: "Domínio público", arquivo: "Smoke detector (1).JPG",
-    fonte: COMMONS + "Smoke_detector_(1).JPG",
-  },
-  "bombeiros-sprinkler": {
-    arq: "bombeiros-sprinkler", pequena: 560, grande: 900, w: 900, h: 938,
-    alt: "Bico de sprinkler de latão com elo fusível, pendurado no teto de um ambiente interno",
-    autor: "Stebanoid", licenca: "CC0", arquivo: "Fusable link sprinkler head.jpg",
-    fonte: COMMONS + "Fusable_link_sprinkler_head.jpg",
-  },
-  "seguranca-capacete": {
-    arq: "seguranca-capacete", pequena: 760, grande: 1200, w: 1200, h: 900,
-    alt: "Capacete de segurança amarelo, com aba frontal, sobre fundo branco",
-    autor: "Batholith", licenca: "Domínio público", arquivo: "Hard hat 20111111.jpg",
-    fonte: COMMONS + "Hard_hat_20111111.jpg",
+  "notebook-mesa-ao-ar-livre": {
+    arq: "notebook-mesa-ao-ar-livre", w: 1600, h: 1067,
+    alt: "Notebook e caderno sobre uma mesa ao ar livre, em área arborizada",
+    ...unsplash("Ul_En6LL8Sc", "An Shved"),
   },
 };
 
-// Slot (lugar no site) -> foto. Valor null = sem foto: a página usa a ilustração.
+// Slot (lugar do site) -> foto única. Valor null = sem foto.
 export const SLOTS = {
-  "home-hero": "rural-montanhas-mg",
-  "seguranca-do-trabalho": "seguranca-epi",
-  "seguranca-do-trabalho-2": "seguranca-luva",
-  "corpo-de-bombeiros": "bombeiros-saida-emergencia",
-  "engenharia-civil": "civil-casa-alvenaria",
-  "engenharia-civil-2": "civil-casa-obra",
-  "engenharia-civil-3": "civil-andaime",
-  "meio-ambiente-topografia": "topografia-estacao-total",
-  "meio-ambiente-topografia-2": "lavouras-pivos-aerea",
-  "meio-ambiente-topografia-3": "mata-ciliar-corrego",
-  "onde-atendemos": "rural-pasto-gado",
-  "equip-seguranca-do-trabalho": "seguranca-capacete",
-  "equip-corpo-de-bombeiros": "bombeiros-detector-fumaca",
-  "equip-corpo-de-bombeiros-2": "bombeiros-sprinkler",
+  "onde-atendemos": "notebook-mesa-ao-ar-livre",
 };
 
-// Fotos de apoio por área, na ordem em que aparecem na seção "Na prática".
-export const FOTOS_PRATICA = {
-  "seguranca-do-trabalho": ["seguranca-do-trabalho-2"],
-  "corpo-de-bombeiros": [],
-  "engenharia-civil": ["engenharia-civil-2", "engenharia-civil-3"],
-  "meio-ambiente-topografia": ["meio-ambiente-topografia-2", "meio-ambiente-topografia-3"],
+// Carrosséis: chave = lugar do site; cada slide aponta para uma foto de FOTOS, com legenda curta e,
+// opcionalmente, link para a página da área. Um carrossel sem fotos não aparece na página.
+// "equip-*": só equipamento GENÉRICO de referência (nunca o inventário da RD) e só quando há 3 ou mais
+// fotos que combinam de verdade com a lista da página. Faltam fotos para segurança do trabalho, civil e
+// topografia, então esses carrosséis ficam ocultos.
+export const CARROSSEIS = {
+  home: [
+    { foto: "capacete-vermelho-epi", legenda: "Segurança do trabalho", href: "/seguranca-do-trabalho" },
+    { foto: "extintor-parede-concreto-pictograma", legenda: "Corpo de Bombeiros", href: "/corpo-de-bombeiros" },
+    { foto: "edificio-estrutura-concreto-pavimentos", legenda: "Engenharia civil", href: "/engenharia-civil" },
+    { foto: "estacao-total-prisma-tripes", legenda: "Topografia e georreferenciamento", href: "/meio-ambiente-topografia" },
+    { foto: "rio-mata-vista-aerea", legenda: "Meio ambiente", href: "/meio-ambiente-topografia" },
+  ],
+  "area-seguranca-do-trabalho": [
+    { foto: "capacete-vermelho-epi", legenda: "Capacete: proteção da cabeça (EPI)" },
+    { foto: "trabalhador-altura-cinto-seguranca", legenda: "Trabalho em altura, com cinto e talabarte" },
+    { foto: "capacetes-amarelos-epi", legenda: "Capacetes de segurança" },
+  ],
+  "area-corpo-de-bombeiros": [
+    { foto: "tubulacao-sprinklers-teto-estacionamento", legenda: "Rede de combate a incêndio com chuveiros automáticos" },
+    { foto: "tubulacao-incendio-teto-vermelha", legenda: "Tubulação de incêndio em edificação" },
+    { foto: "escada-saida-emergencia-sinalizada", legenda: "Rota de saída sinalizada" },
+  ],
+  "area-engenharia-civil": [
+    { foto: "edificio-estrutura-concreto-pavimentos", legenda: "Estrutura de concreto em obra" },
+    { foto: "obra-alvenaria-guindaste", legenda: "Obra de edifício em alvenaria" },
+    { foto: "sobrado-alvenaria-em-obra", legenda: "Sobrado em construção" },
+    { foto: "casa-alvenaria-tijolo-telhado-metalico", legenda: "Casa de tijolos com telhado metálico" },
+  ],
+  "area-meio-ambiente-topografia": [
+    { foto: "estacao-total-prisma-tripes", legenda: "Estação total e prisma, usados em topografia" },
+    { foto: "rio-mata-vista-aerea", legenda: "Rio e mata: o que a área ambiental protege" },
+  ],
+  "equip-corpo-de-bombeiros": [
+    { foto: "extintor-parede-concreto-pictograma", legenda: "Extintor de incêndio com a sinalização" },
+    { foto: "sirene-alarme-incendio-teto", legenda: "Sirene e luz de alarme de incêndio" },
+    { foto: "luminaria-saida-emergencia-verde", legenda: "Luminária de saída de emergência" },
+    { foto: "luminaria-emergencia-corredor", legenda: "Iluminação de emergência em corredor" },
+  ],
 };
+
+export const slidesDe = (chave) =>
+  (CARROSSEIS[chave] || []).filter((s) => FOTOS[s.foto]).map((s) => ({ ...s, f: FOTOS[s.foto] }));
 
 export const foto = (slot) => {
   const id = SLOTS[slot];
   return id ? FOTOS[id] || null : null;
 };
 
-export const caminho = (f, largura) => `/fotos/otim/${f.arq}-${largura}.webp`;
+export const caminho = (f) => `/fotos/otim/${f.arq}.webp`;
 
-// Lista para a página de créditos: só as fotos que estão em uso em algum slot (sem repetir).
-export const FOTOS_EM_USO = [...new Set(Object.values(SLOTS).filter((id) => id && FOTOS[id]))].map((id) => FOTOS[id]);
+// Legenda curta com a licença correta de cada foto.
+export const aviso = (f) => `Imagem ilustrativa (${f.licenca}), não é um trabalho da RD.`;
+
+// Lista para a página de créditos: só as fotos em uso (slots e carrosséis), sem repetir.
+const idsEmUso = new Set([
+  ...Object.values(SLOTS).filter(Boolean),
+  ...Object.values(CARROSSEIS).flatMap((l) => l.map((s) => s.foto)),
+]);
+export const FOTOS_EM_USO = [...idsEmUso].filter((id) => FOTOS[id]).map((id) => FOTOS[id]);

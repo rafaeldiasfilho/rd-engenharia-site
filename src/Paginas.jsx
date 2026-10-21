@@ -1,12 +1,14 @@
 import Icone from "./Icone";
 import { useState } from "react";
 import { useDeslizar } from "./Deslizar";
-import { AREAS, GUIAS, PERFIS, RESULTADOS, PROJETOS, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, achaArea } from "./paginas";
+import { AREAS, GUIAS, PROJETOS, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, achaArea } from "./paginas";
 import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
 import Foto from "./Foto";
-import { foto, FOTOS_PRATICA, FOTOS_EM_USO, caminho } from "./fotos";
+import Carrossel from "./Carrossel";
+import Assistente from "./Assistente";
+import { slidesDe, FOTOS_EM_USO, caminho } from "./fotos";
 
 const pad = (n) => String(n + 1).padStart(2, "0");
 
@@ -46,7 +48,7 @@ function Topo({ migalha, eyebrow, titulo, texto, children }) {
 }
 
 const REL_GERAL = {
-  quiz: { href: "/o-que-preciso", tag: "Guia rápido", titulo: "Descubra o que o seu caso precisa", texto: "Responda em menos de um minuto e veja os documentos que costumam ser exigidos." },
+  quiz: { href: "/o-que-preciso", tag: "Passo a passo", titulo: "Descubra o que o seu caso precisa", texto: "Responda uma pergunta por vez e veja o que costuma ser exigido no seu caso." },
   guias: { href: "/guias", tag: "Guias", titulo: "Guias em linguagem simples", texto: "Explicações curtas sobre PGR, AVCB, CAR, habite-se e outros documentos." },
   lembrete: { href: "/lembrete-de-vencimento", tag: "Lembrete", titulo: "Lembrete de vencimento", texto: "Receba um aviso no WhatsApp antes de o documento vencer." },
 };
@@ -130,23 +132,20 @@ function Exemplos() {
 
 function PaginaArea({ pagina }) {
   const visual = VISUAL[pagina.slug];
-  const principal = foto(pagina.slug);
-  const retrato = principal && principal.forma === "retrato";
-  const apoio = (FOTOS_PRATICA[pagina.slug] || []).filter((s) => foto(s));
   const guias = GUIAS.filter((g) => g.area === pagina.slug);
   const outras = AREAS.filter((a) => a.slug !== pagina.slug);
   const relacionadas = [...guias.slice(0, 2).map(relGuia), ...outras.map(relArea)].slice(0, 3);
   const zapArea = `Olá! Gostaria de um orçamento na área de ${pagina.nome}.`;
   const civil = pagina.slug === "engenharia-civil";
   const equip = EQUIPAMENTOS[pagina.slug];
-  const fotosEquip = [`equip-${pagina.slug}`, `equip-${pagina.slug}-2`].filter((s) => foto(s));
+  const temFotosEquip = slidesDe(`equip-${pagina.slug}`).length > 0;
 
   return (
     <>
       <header className="hero-int hero-area">
         <div className="container">
           <Migalha itens={[{ rotulo: "Serviços", href: "/#servicos" }, { rotulo: pagina.nome }]} />
-          <div className={`hero-area-grade ${retrato ? "com-retrato" : ""}`}>
+          <div className="hero-area-grade">
             <div>
               <p className="eyebrow">Serviço</p>
               <h1 className="display-m">{pagina.h1}</h1>
@@ -156,11 +155,16 @@ function PaginaArea({ pagina }) {
                 <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
               </div>
             </div>
-            {retrato && <Foto slot={pagina.slug} eager sizes="(min-width: 900px) 420px, 80vw" className="hero-retrato" />}
           </div>
-          {principal && !retrato && (
-            <Foto slot={pagina.slug} eager sizes="(min-width: 1200px) 1120px, 100vw" className="hero-largo" aspecto="16 / 8" />
-          )}
+          <Carrossel
+            chave={`area-${pagina.slug}`}
+            rotulo={`Fotos ilustrativas da área de ${pagina.nome}`}
+            aspecto="16 / 8"
+            auto={7000}
+            prioridade
+            className="carrossel-hero area-carrossel"
+            sizes="(min-width: 900px) 800px, 88vw"
+          />
         </div>
       </header>
 
@@ -233,7 +237,7 @@ function PaginaArea({ pagina }) {
 
       {equip && (
         <Secao id="equipamentos" n="02" rotulo="Equipamentos" titulo="Equipamentos que costumam ser usados." className="sec-alt">
-          <div className={`equip ${fotosEquip.length ? "com-fotos" : ""}`}>
+          <div className={`equip ${temFotosEquip ? "com-fotos" : ""}`}>
             <div className="equip-texto rev">
               <p className="lead">{equip.texto}</p>
               <ul className="equip-lista">
@@ -241,16 +245,20 @@ function PaginaArea({ pagina }) {
                   <li key={i}>{i}</li>
                 ))}
               </ul>
-              <p className="nota-fina">{NOTA_EQUIPAMENTOS}</p>
             </div>
-            {fotosEquip.length > 0 && (
+            {temFotosEquip && (
               <div className="equip-fotos rev">
-                {fotosEquip.map((s) => (
-                  <Foto key={s} slot={s} sizes="(min-width: 900px) 380px, 100vw" aspecto="4 / 3" />
-                ))}
+                <Carrossel
+                  chave={`equip-${pagina.slug}`}
+                  rotulo={`Equipamentos de referência usados em serviços de ${pagina.nome}`}
+                  aspecto="4 / 3"
+                  className="car-cheio"
+                  sizes="(min-width: 900px) 420px, 100vw"
+                />
               </div>
             )}
           </div>
+          <p className="nota-fina equip-nota">{NOTA_EQUIPAMENTOS}</p>
         </Secao>
       )}
 
@@ -262,13 +270,6 @@ function PaginaArea({ pagina }) {
         lead={civil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
       >
         {civil ? <Exemplos /> : <Ilustracao slug={pagina.slug} />}
-        {apoio.length > 0 && (
-          <div className={`duo ${apoio.length === 1 ? "duo-um" : ""} rev`}>
-            {apoio.map((s) => (
-              <Foto key={s} slot={s} sizes="(min-width: 900px) 540px, 100vw" aspecto="4 / 3" />
-            ))}
-          </div>
-        )}
       </Secao>
 
       <Secao id="atendimento" n="04" rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
@@ -379,6 +380,17 @@ function PaginaGuias({ pagina }) {
         titulo={pagina.h1}
         texto="Explicações curtas e em linguagem simples sobre os documentos mais pedidos."
       />
+      <section className="sec-fina" aria-label="Passo a passo">
+        <div className="container">
+          <a className="banda-passo" href="/o-que-preciso">
+            <span>
+              <small>Passo a passo</small>
+              <strong>Não sabe qual guia ler? Descubra o que o seu caso precisa.</strong>
+            </span>
+            <i aria-hidden="true">→</i>
+          </a>
+        </div>
+      </section>
       <SecoesNav
         rotulo="Áreas dos guias"
         itens={[...AREAS.map((a) => ({ id: `guias-${a.slug}`, rotulo: a.nome })), { id: "proximo-passo", rotulo: "Próximo passo" }]}
@@ -388,16 +400,14 @@ function PaginaGuias({ pagina }) {
         if (!lista.length) return null;
         return (
           <Secao key={a.slug} id={`guias-${a.slug}`} n={pad(n)} rotulo="Área" titulo={a.nome} className={n % 2 ? "sec-alt" : ""}>
-            <ul className="linhas">
+            <ul className="guia-cards">
               {lista.map((g, i) => (
-                <li className="linha linha-link rev" key={g.slug}>
-                  <span className="linha-n">{pad(i)}</span>
-                  <h3>
-                    <a href={`/${g.slug}`}>{g.h1}</a>
-                  </h3>
-                  <span className="linha-seta" aria-hidden="true">
-                    →
-                  </span>
+                <li className="rev" key={g.slug}>
+                  <a href={`/${g.slug}`}>
+                    <small>{pad(i)}</small>
+                    <strong>{g.h1}</strong>
+                    <i aria-hidden="true">→</i>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -414,109 +424,17 @@ function PaginaGuias({ pagina }) {
 }
 
 function PaginaQuiz({ pagina }) {
-  const [perfilId, setPerfilId] = useState("");
-  const [marcadas, setMarcadas] = useState({});
-  const [cidade, setCidade] = useState("");
-  const perfil = PERFIS.find((p) => p.id === perfilId);
-
-  const escolher = (id) => {
-    setPerfilId(id);
-    setMarcadas({});
-  };
-  const alternar = (indice) => setMarcadas((m) => ({ ...m, [indice]: !m[indice] }));
-
-  const ids = [];
-  if (perfil) {
-    perfil.situacoes.forEach((s, i) => {
-      if (marcadas[i]) s.itens.forEach((id) => !ids.includes(id) && ids.push(id));
-    });
-  }
-  const resultados = ids.map((id) => ({ id, ...RESULTADOS[id] }));
-  const mensagem = [
-    "Olá! Fiz o guia do site e acho que preciso de:",
-    ...resultados.map((r) => `- ${r.nome}`),
-    cidade.trim() ? `Cidade: ${cidade.trim()}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-
   return (
     <>
       <Topo
         migalha={[{ rotulo: "O que preciso?" }]}
-        eyebrow="Guia rápido"
+        eyebrow="Passo a passo"
         titulo={pagina.h1}
-        texto="Responda em menos de um minuto. O guia mostra o que o seu caso provavelmente exige, e depois você fala com a gente pelo WhatsApp."
+        texto="Responda uma pergunta por vez. No fim, você vê o que o seu caso provavelmente exige e fala com a gente pelo WhatsApp."
       />
       <section className="sec quiz" aria-label="Perguntas">
         <div className="container container-leitura">
-          <h2 className="quiz-passo">
-            <span>1</span> Qual é a sua situação?
-          </h2>
-          <div className="perfis">
-            {PERFIS.map((p) => (
-              <button
-                type="button"
-                key={p.id}
-                className={`perfil ${perfilId === p.id ? "ativo" : ""}`}
-                aria-pressed={perfilId === p.id}
-                onClick={() => escolher(p.id)}
-              >
-                <Icone nome={p.icone} />
-                {p.nome}
-              </button>
-            ))}
-          </div>
-
-          {perfil && (
-            <>
-              <h2 className="quiz-passo">
-                <span>2</span> Marque o que se aplica ao seu caso
-              </h2>
-              <div className="situacoes">
-                {perfil.situacoes.map((s, i) => (
-                  <label className="situacao" key={s.texto}>
-                    <input type="checkbox" checked={!!marcadas[i]} onChange={() => alternar(i)} />
-                    <span>{s.texto}</span>
-                  </label>
-                ))}
-              </div>
-            </>
-          )}
-
-          {resultados.length > 0 && (
-            <>
-              <h2 className="quiz-passo">
-                <span>3</span> O que você provavelmente precisa
-              </h2>
-              <div className="resultados">
-                {resultados.map((r) => (
-                  <article className="resultado" key={r.id}>
-                    <h3>{r.nome}</h3>
-                    <p>{r.texto}</p>
-                    <a href={`/${r.area}`}>Ver detalhes</a>
-                  </article>
-                ))}
-              </div>
-              <p className="aviso-guia">
-                Este resultado é uma orientação inicial e não substitui a análise técnica. Confirmamos o que é
-                realmente exigido no seu caso.
-              </p>
-              <div className="quiz-cidade">
-                <label htmlFor="cidade-quiz">Sua cidade (opcional)</label>
-                <input
-                  id="cidade-quiz"
-                 
-                  value={cidade}
-                  onChange={(e) => setCidade(e.target.value)}
-                  placeholder="Ex.: Ibirá"
-                />
-              </div>
-              <div className="acoes">
-                <BotaoZap className="btn-grande" texto={mensagem} rotulo="Enviar para a RD pelo WhatsApp" />
-              </div>
-            </>
-          )}
+          <Assistente />
         </div>
       </section>
       <Final
@@ -713,45 +631,80 @@ function PaginaPrivacidade() {
 }
 
 function PaginaCreditos() {
+  const grupos = [
+    { titulo: "CC0 (Wikimedia Commons)", licenca: "CC0", texto: "Domínio público: uso livre, sem exigência de crédito. Mantemos o autor e a origem por transparência." },
+    { titulo: "Unsplash License", licenca: "Unsplash License", texto: "Licença própria do Unsplash, que permite uso comercial sem pedir autorização. Não é CC0. Texto completo em", link: { href: "https://unsplash.com/license", rotulo: "unsplash.com/license" } },
+  ];
   return (
     <>
       <Topo
         migalha={[{ rotulo: "Créditos das imagens" }]}
         eyebrow="Transparência"
         titulo="Créditos das imagens"
-        texto="A RD Engenharia ainda não tem fotos próprias no site. As fotos abaixo são ilustrativas, de domínio público ou CC0, e não mostram trabalhos da empresa."
+        texto="A RD Engenharia ainda não tem fotos próprias no site. As fotos abaixo são ilustrativas, de terceiros, e não mostram trabalhos da empresa."
       />
       <section className="sec" aria-label="Lista de créditos">
         <div className="container">
-          <ul className="creditos">
-            {FOTOS_EM_USO.map((f) => (
-              <li key={f.arq} className="rev">
-                <img src={caminho(f, f.pequena)} width={f.w} height={f.h} loading="lazy" alt={f.alt} />
-                <dl>
-                  <div>
-                    <dt>Arquivo</dt>
-                    <dd>{f.arquivo}</dd>
-                  </div>
-                  <div>
-                    <dt>Autor</dt>
-                    <dd>{f.autor}</dd>
-                  </div>
-                  <div>
-                    <dt>Licença</dt>
-                    <dd>{f.licenca}</dd>
-                  </div>
-                  <div>
-                    <dt>Página de origem</dt>
-                    <dd>
-                      <a href={f.fonte} target="_blank" rel="noopener noreferrer">
-                        Wikimedia Commons
+          {grupos.map((g) => {
+            const lista = FOTOS_EM_USO.filter((f) => f.licenca === g.licenca);
+            if (!lista.length) return null;
+            return (
+              <div key={g.licenca} className="creditos-grupo">
+                <h2>{g.titulo}</h2>
+                <p className="creditos-nota">
+                  {g.texto}
+                  {g.link && (
+                    <>
+                      {" "}
+                      <a href={g.link.href} target="_blank" rel="noopener noreferrer">
+                        {g.link.rotulo}
                       </a>
-                    </dd>
-                  </div>
-                </dl>
-              </li>
-            ))}
-          </ul>
+                      .
+                    </>
+                  )}
+                </p>
+                <ul className="creditos">
+                  {lista.map((f) => (
+                    <li key={f.arq} className="rev">
+                      <img src={caminho(f)} width={f.w} height={f.h} loading="lazy" alt={f.alt} />
+                      <dl>
+                        {f.arquivo && (
+                          <div>
+                            <dt>Arquivo</dt>
+                            <dd>{f.arquivo}</dd>
+                          </div>
+                        )}
+                        <div>
+                          <dt>Autor</dt>
+                          <dd>{f.autor || "Consta na página da foto (não anotado aqui)"}</dd>
+                        </div>
+                        <div>
+                          <dt>Licença</dt>
+                          <dd>
+                            {f.licencaUrl ? (
+                              <a href={f.licencaUrl} target="_blank" rel="noopener noreferrer">
+                                {f.licenca}
+                              </a>
+                            ) : (
+                              f.licenca
+                            )}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Página de origem</dt>
+                          <dd>
+                            <a href={f.fonte} target="_blank" rel="noopener noreferrer">
+                              {f.fonteNome}
+                            </a>
+                          </dd>
+                        </div>
+                      </dl>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
           <div className="container-leitura creditos-outros">
             <h2>Outros materiais</h2>
             <p>

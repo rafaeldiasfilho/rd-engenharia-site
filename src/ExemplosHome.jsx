@@ -3,8 +3,6 @@ import Icone from "./Icone";
 import { useDeslizar } from "./Deslizar";
 import { Ilustracao } from "./Ilustracoes";
 import { PROJETOS } from "./paginas";
-import Foto from "./Foto";
-import { foto, FOTOS_PRATICA } from "./fotos";
 
 const ABAS = [
   { slug: "engenharia-civil", nome: "Engenharia civil" },
@@ -86,7 +84,6 @@ function Civil() {
 
 export default function ExemplosHome() {
   const [aba, setAba] = useState(ABAS[0].slug);
-  const apoio = (FOTOS_PRATICA[aba] || []).filter((x) => foto(x));
   return (
     <section className="sec sec-alt" id="na-pratica" aria-labelledby="pratica-t">
       <div className="container">
@@ -108,13 +105,6 @@ export default function ExemplosHome() {
         </div>
         <div className="aba-conteudo">
           {aba === "engenharia-civil" ? <Civil /> : <Ilustracao slug={aba} />}
-          {aba !== "engenharia-civil" && apoio.length > 0 && (
-            <div className={`duo ${apoio.length === 1 ? "duo-um" : ""}`}>
-              {apoio.map((x) => (
-                <Foto key={x} slot={x} sizes="(min-width: 900px) 540px, 100vw" aspecto="4 / 3" />
-              ))}
-            </div>
-          )}
         </div>
         <p className="centro">
           <a className="link-seta" href={`/${aba}`}>
