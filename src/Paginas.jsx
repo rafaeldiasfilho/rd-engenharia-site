@@ -1,13 +1,13 @@
 import Icone from "./Icone";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDeslizar } from "./Deslizar";
-import { AREAS, GUIAS, PROJETOS, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, achaArea } from "./paginas";
+import { AREAS, GUIAS, PROJETOS, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, achaArea } from "./paginas";
 import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
-import Foto from "./Foto";
 import Carrossel from "./Carrossel";
 import Assistente from "./Assistente";
+import DocsIlustracao from "./DocsIlustracao";
 import { slidesDe, FOTOS_EM_USO, caminho } from "./fotos";
 
 const pad = (n) => String(n + 1).padStart(2, "0");
@@ -57,7 +57,7 @@ const relGuia = (g) => ({ href: `/${g.slug}`, tag: "Guia", titulo: g.h1 });
 
 function Exemplos() {
   const total = PROJETOS.length;
-  const d = useDeslizar(total, { auto: 8000 });
+  const d = useDeslizar(total);
   const projeto = PROJETOS[d.i];
   return (
     <div aria-roledescription="carrossel" aria-label="Exemplos de projeto" {...d.pausarAoPassar}>
@@ -79,17 +79,6 @@ function Exemplos() {
         {total > 1 && (
           <button type="button" className="seta" onClick={() => d.manual(1)} aria-label="Próximo projeto">
             <Icone nome="fa-solid fa-chevron-right" />
-          </button>
-        )}
-        {total > 1 && (
-          <button
-            type="button"
-            className="seta seta-pausa"
-            onClick={d.alternar}
-            aria-pressed={d.rodando}
-            aria-label={d.rodando ? "Pausar a troca automática" : "Retomar a troca automática"}
-          >
-            <Icone nome={d.rodando ? "fa-solid fa-pause" : "fa-solid fa-play"} />
           </button>
         )}
       </div>
@@ -130,7 +119,82 @@ function Exemplos() {
   );
 }
 
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+// Imprime só a folha com a lista de documentos. A folha é montada à parte, no fim do <body>, e o CSS de
+// impressão (`body.imprimindo`) esconde o resto do site. Assim a impressão não depende do tamanho nem
+// do layout da página. Na tela a folha fica escondida.
+let imprimindo = false; // só uma impressão por vez
+const LOGO_IMPRESSAO = "/marca/marca-lockup.webp";
+
+// Carrega o logo antes do clique, para o print() poder ser chamado na hora.
+function precarregarLogo() {
+  const img = new Image();
+  img.src = LOGO_IMPRESSAO;
+}
+
+function imprimirLista(pagina) {
+  if (imprimindo) return;
+  imprimindo = true;
+  const data = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+  const folha = document.createElement("div"); // só esta folha é removida por esta chamada
+  folha.className = "folha-impressao";
+  folha.innerHTML =
+    `<header class="fi-topo"><img src="${LOGO_IMPRESSAO}" width="120" height="66" alt="RD Engenharia" />` +
+    `<div><p class="fi-empresa">RD Engenharia Segurança e Meio Ambiente</p><p class="fi-data">${esc(data)}</p></div></header>` +
+    `<h1>Lista de documentos necessários</h1><p class="fi-area">Área: ${esc(pagina.nome)}</p>` +
+    `<ul class="fi-lista">${pagina.documentos.map((d) => `<li><span class="fi-caixa"></span>${esc(d)}</li>`).join("")}</ul>` +
+    `<p class="fi-nota">Lista de orientação geral. Confirmamos com você o que cada caso realmente exige.</p>` +
+    `<footer class="fi-rodape"><p>RD IBIRA ENGENHARIA, SEGURANCA E MEIO AMBIENTE LTDA. · CNPJ 27.839.324/0001-74</p><p>${esc(ENDERECO)} · WhatsApp (17) 99721-1208</p></footer>`;
+  document.body.appendChild(folha);
+  document.body.classList.add("imprimindo");
+
+  const mql = window.matchMedia ? window.matchMedia("print") : null;
+  let prazo = 0;
+  let limpou = false;
+  const limpar = () => {
+    if (limpou) return;
+    limpou = true;
+    clearTimeout(prazo);
+    window.removeEventListener("afterprint", limpar);
+    if (mql && mql.removeEventListener) mql.removeEventListener("change", aoMudarMidia);
+    document.body.classList.remove("imprimindo");
+    folha.remove();
+    imprimindo = false;
+  };
+  // Alguns navegadores (iOS Safari) não disparam afterprint: a mudança da mídia "print" e um prazo cobrem isso.
+  function aoMudarMidia(e) {
+    if (!e.matches) limpar();
+  }
+  window.addEventListener("afterprint", limpar);
+  if (mql && mql.addEventListener) mql.addEventListener("change", aoMudarMidia);
+
+  const imprimir = () => {
+    try {
+      window.print();
+    } finally {
+      // Onde print() bloqueia (desktop) já acabou; onde não bloqueia, dá tempo de o diálogo abrir.
+      prazo = setTimeout(limpar, 30000);
+    }
+  };
+  const logo = folha.querySelector("img");
+  if (!logo || (logo.complete && logo.naturalWidth > 0)) {
+    imprimir(); // logo já em cache (pré-carregado): imprime na hora
+  } else {
+    let seguiu = false;
+    const seguir = () => {
+      if (seguiu) return;
+      seguiu = true;
+      imprimir();
+    };
+    logo.addEventListener("load", seguir);
+    logo.addEventListener("error", seguir); // sem o logo a lista sai igual
+    setTimeout(seguir, 1500);
+  }
+}
+
 function PaginaArea({ pagina }) {
+  useEffect(precarregarLogo, []);
   const visual = VISUAL[pagina.slug];
   const guias = GUIAS.filter((g) => g.area === pagina.slug);
   const outras = AREAS.filter((a) => a.slug !== pagina.slug);
@@ -160,7 +224,6 @@ function PaginaArea({ pagina }) {
             chave={`area-${pagina.slug}`}
             rotulo={`Fotos ilustrativas da área de ${pagina.nome}`}
             aspecto="16 / 8"
-            auto={7000}
             prioridade
             className="carrossel-hero area-carrossel"
             sizes="(min-width: 900px) 800px, 88vw"
@@ -287,24 +350,26 @@ function PaginaArea({ pagina }) {
           </ol>
         )}
         <div className="separe rev">
-          <p className="so-impressao">
-            RD Engenharia Segurança e Meio Ambiente · WhatsApp (17) 99721-1208 · {pagina.nome}
-          </p>
-          <h3>Para agilizar, separe</h3>
-          <ul className="lista-docs">
-            {pagina.documentos.map((d) => (
-              <li key={d}>
-                <Icone nome="fa-solid fa-circle-check" /> {d}
-              </li>
-            ))}
-          </ul>
-          <p className="aviso-lembrete">
-            <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o prazo
-            de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
-          </p>
-          <button type="button" className="btn btn-sec nao-imprime" onClick={() => window.print()}>
-            Imprimir ou salvar esta lista em PDF
-          </button>
+          <div className="separe-grade">
+            <div className="separe-texto">
+              <h3>Para agilizar, separe</h3>
+              <ul className="lista-docs">
+                {pagina.documentos.map((d) => (
+                  <li key={d}>
+                    <Icone nome="fa-solid fa-circle-check" /> {d}
+                  </li>
+                ))}
+              </ul>
+              <p className="aviso-lembrete">
+                <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o prazo
+                de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
+              </p>
+              <button type="button" className="btn btn-sec nao-imprime" onClick={() => imprimirLista(pagina)}>
+                Imprimir ou salvar esta lista em PDF
+              </button>
+            </div>
+            <DocsIlustracao slug={pagina.slug} />
+          </div>
         </div>
       </Secao>
 
@@ -633,6 +698,7 @@ function PaginaPrivacidade() {
 function PaginaCreditos() {
   const grupos = [
     { titulo: "CC0 (Wikimedia Commons)", licenca: "CC0", texto: "Domínio público: uso livre, sem exigência de crédito. Mantemos o autor e a origem por transparência." },
+    { titulo: "Domínio público (Wikimedia Commons)", licenca: "Domínio público", texto: "Fotos de um instituto público dos EUA (NIOSH), sem restrição de uso. Mantemos o autor e a origem por transparência." },
     { titulo: "Unsplash License", licenca: "Unsplash License", texto: "Licença própria do Unsplash, que permite uso comercial sem pedir autorização. Não é CC0. Texto completo em", link: { href: "https://unsplash.com/license", rotulo: "unsplash.com/license" } },
   ];
   return (
@@ -741,7 +807,6 @@ function PaginaOnde({ pagina }) {
           <div className="acoes">
             <BotaoZap className="btn-grande" texto={zapOnde} rotulo="Perguntar pelo WhatsApp" />
           </div>
-          <Foto slot="onde-atendemos" eager sizes="(min-width: 1200px) 1120px, 100vw" className="hero-largo" aspecto="16 / 8" />
         </div>
       </header>
 
@@ -752,6 +817,41 @@ function PaginaOnde({ pagina }) {
         titulo="Presencial e online, em Ibirá e região."
         lead="Não tem certeza se o seu endereço está na região? Chame no WhatsApp e confirmamos."
       />
+
+      <section className="sec sec-alt" id="mapa" aria-labelledby="mapa-t">
+        <div className="container mapa-grade">
+          <div className="rev">
+            <p className="sec-n">
+              <span>02</span> Onde fica
+            </p>
+            <h2 id="mapa-t" className="sec-titulo">
+              Nosso endereço.
+            </h2>
+            <p className="lead">{ENDERECO}</p>
+            <p className="mapa-horario">Segunda a sexta, das 7h às 17h.</p>
+            <div className="acoes">
+              <a className="btn btn-zap btn-grande" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
+                Como chegar
+              </a>
+              <a className="btn btn-sec btn-grande" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+                Ver no Google Maps
+              </a>
+            </div>
+          </div>
+          <figure className="mapa rev">
+            <div className="mapa-caixa">
+              <iframe
+                title="Mapa com a localização da RD Engenharia em Ibirá/SP"
+                src={MAPA_EMBED}
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                allowFullScreen
+              />
+            </div>
+            <figcaption>O mapa é fornecido pelo Google.</figcaption>
+          </figure>
+        </div>
+      </section>
 
       <Final
         zapTexto={zapOnde}

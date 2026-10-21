@@ -1,7 +1,7 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
-import { AREAS, URL_AVALIACOES_GOOGLE, NOTA_GOOGLE } from "./paginas";
+import { AREAS, URL_AVALIACOES_GOOGLE, NOTA_GOOGLE, ENDERECO } from "./paginas";
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 import Carrossel from "./Carrossel";
@@ -132,7 +132,6 @@ export default function App() {
             chave="home"
             rotulo="As quatro áreas de atuação da RD Engenharia"
             aspecto="16 / 8"
-            auto={6000}
             prioridade
             className="carrossel-hero"
             sizes="(min-width: 900px) 800px, 88vw"
@@ -242,13 +241,13 @@ export default function App() {
           </header>
           <p className="numeros rev">
             <span>
-              <strong>10+</strong> anos de experiência
+              <strong>500+</strong> documentos técnicos
             </span>
             <span>
-              <strong>200+</strong> documentos técnicos
+              <strong>70+</strong> projetos
             </span>
             <span>
-              <strong>30+</strong> projetos
+              <strong>Desde 2017</strong> em Ibirá/SP
             </span>
           </p>
           <div className="pessoas">
@@ -325,9 +324,9 @@ export default function App() {
               <div>
                 <dt>Endereço</dt>
                 <dd>
-                  Rua José Alves de Mello, 770, Centro, Ibirá/SP{" "}
+                  {ENDERECO}{" "}
                   <a
-                    href="https://www.google.com/maps/search/?api=1&query=Rua+Jos%C3%A9+Alves+de+Mello+770+Ibir%C3%A1+SP"
+                    href={URL_AVALIACOES_GOOGLE}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

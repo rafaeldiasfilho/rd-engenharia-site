@@ -1161,9 +1161,6 @@ img {
   margin-top: 20px;
 }
 
-.so-impressao {
-  display: none;
-}
 
 
 /* Quem somos */
@@ -2558,42 +2555,6 @@ img {
   }
 }
 
-/* Impressão da lista "Para agilizar, separe" */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  .separe,
-  .separe * {
-    visibility: visible;
-  }
-  .separe {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 24px;
-    border: 0;
-    background: #fff;
-  }
-  .so-impressao {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 16px;
-    font-size: 12pt;
-  }
-  .nao-imprime,
-  .aviso-lembrete {
-    display: none !important;
-  }
-  .lista-docs li {
-    font-size: 13pt;
-    padding: 10px 0;
-    border-bottom: 1px solid #999;
-  }
-}
-
-
 /* Área interna */
 .adm-topo {
   background: var(--branco);
@@ -3207,13 +3168,14 @@ img {
 .car-controles {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
   margin-top: 8px;
   padding-inline: calc((100% - var(--sw)) / 2);
 }
 
 .car-contador {
+  order: 2;
   margin: 0;
   min-width: 3.6em;
   color: var(--cinza);
@@ -3224,7 +3186,7 @@ img {
 .car-pontos {
   display: flex;
   align-items: center;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
 }
 
 .car-pontos button {
@@ -3258,54 +3220,10 @@ img {
   transform: scale(0.8);
 }
 
-.car-botoes {
-  display: flex;
-  gap: 8px;
-}
-
-.car-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid var(--linha);
-  border-radius: 50%;
-  background: var(--branco);
-  color: var(--tinta);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: transform 160ms var(--ease), border-color 200ms var(--ease), opacity 200ms var(--ease);
-}
-
-.car-btn:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-.car-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.car-btn:focus-visible,
 .car-pontos button:focus-visible,
 .car-legenda a:focus-visible {
   outline: 3px solid var(--realce);
   outline-offset: 2px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .car-btn:hover:not(:disabled) {
-    border-color: var(--realce);
-  }
-}
-
-/* No toque, deslizar basta: as setas saem e sobram pontos e pausa */
-@media (hover: none) and (pointer: coarse) {
-  .car-ant,
-  .car-prox {
-    display: none;
-  }
 }
 
 @media (min-width: 900px) {
@@ -3342,7 +3260,6 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .car-img img,
   .car-pontos i,
-  .car-btn,
   .car-legenda a {
     transition: none;
   }
@@ -3757,4 +3674,212 @@ img {
 .creditos-nota a {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* Lista de documentos: texto + ilustração de exemplo */
+.separe-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+
+.separe-grade .lista-docs {
+  grid-template-columns: 1fr;
+}
+
+.docs-ilustra {
+  margin: 0;
+  min-width: 0;
+}
+
+.docs-ilustra svg {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  margin-inline: auto;
+}
+
+.docs-ilustra figcaption {
+  margin-top: 10px;
+  color: var(--cinza);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .separe-grade {
+    grid-template-columns: 1fr;
+  }
+  .docs-ilustra {
+    order: -1;
+  }
+}
+
+/* Onde atendemos: mapa */
+.mapa-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+
+.mapa-horario {
+  color: var(--cinza);
+}
+
+.mapa {
+  margin: 0;
+  min-width: 0;
+}
+
+.mapa-caixa {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  border-radius: clamp(16px, 2.2vw, 24px);
+  background: var(--linha);
+}
+
+.mapa-caixa iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+[data-theme="dark"] .mapa-caixa iframe {
+  filter: invert(0.92) hue-rotate(180deg) contrast(0.9);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mapa-caixa iframe {
+    filter: invert(0.92) hue-rotate(180deg) contrast(0.9);
+  }
+}
+
+.mapa figcaption {
+  margin-top: 10px;
+  color: var(--cinza);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 900px) {
+  .mapa-grade {
+    grid-template-columns: 1fr;
+  }
+  .mapa-caixa {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* Impressão da lista de documentos: só a folha montada por imprimirLista() (Paginas.jsx) */
+.folha-impressao {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+
+  body.imprimindo {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body.imprimindo > *:not(.folha-impressao) {
+    display: none !important;
+  }
+
+  body.imprimindo .folha-impressao {
+    display: block !important;
+    color: #111;
+    background: #fff;
+    font-family: "IBM Plex Sans", Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.45;
+  }
+
+  .folha-impressao .fi-topo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #1f6b2a;
+  }
+
+  .folha-impressao .fi-topo img {
+    width: 30mm;
+    height: auto;
+  }
+
+  .folha-impressao p {
+    margin: 0;
+  }
+
+  .folha-impressao .fi-empresa {
+    font-weight: 700;
+    font-size: 13pt;
+  }
+
+  .folha-impressao .fi-data {
+    color: #444;
+    font-size: 10.5pt;
+  }
+
+  .folha-impressao h1 {
+    margin: 22px 0 4px;
+    font-size: 20pt;
+    line-height: 1.15;
+    color: #111;
+  }
+
+  .folha-impressao .fi-area {
+    color: #1f6b2a;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .folha-impressao .fi-lista {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .folha-impressao .fi-lista li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 9px 0;
+    border-bottom: 1px solid #bbb;
+    break-inside: avoid;
+    font-size: 12.5pt;
+  }
+
+  .folha-impressao .fi-caixa {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-top: 4px;
+    border: 1.5px solid #333;
+    border-radius: 3px;
+  }
+
+  .folha-impressao .fi-nota {
+    margin-top: 18px;
+    color: #444;
+    font-size: 10.5pt;
+  }
+
+  .folha-impressao .fi-rodape {
+    margin-top: 28px;
+    padding-top: 10px;
+    border-top: 1px solid #999;
+    color: #333;
+    font-size: 9.5pt;
+  }
 }

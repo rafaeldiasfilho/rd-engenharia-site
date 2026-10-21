@@ -13,7 +13,7 @@ const ABAS = [
 
 function Civil() {
   const total = PROJETOS.length;
-  const d = useDeslizar(total, { auto: 7000 });
+  const d = useDeslizar(total);
   const projeto = PROJETOS[d.i];
   const mostrar = projeto.itens.filter((i) => ["planta-baixa", "fachada"].includes(i.arq));
   return (
@@ -61,15 +61,6 @@ function Civil() {
           </span>
           <button type="button" className="seta seta-p" onClick={() => d.manual(1)} aria-label="Próximo projeto">
             <Icone nome="fa-solid fa-chevron-right" />
-          </button>
-          <button
-            type="button"
-            className="seta seta-p"
-            onClick={d.alternar}
-            aria-pressed={d.rodando}
-            aria-label={d.rodando ? "Pausar a troca automática" : "Retomar a troca automática"}
-          >
-            <Icone nome={d.rodando ? "fa-solid fa-pause" : "fa-solid fa-play"} />
           </button>
         </div>
       )}

@@ -474,6 +474,10 @@ export const DOCUMENTOS_LEMBRETE = [
 
 export const URL_AVALIACOES_GOOGLE =
   "https://www.google.com/maps/place/RD+Engenharia+Seguran%C3%A7a+e+Meio+Ambiente/@-21.0824485,-49.2433844,1046m/data=!3m2!1e3!4b1!4m6!3m5!1s0x94bc3184084c66fb:0x9998e55c89839066!8m2!3d-21.0824485!4d-49.2433844!16s%2Fg%2F11fky31jy7";
+// Endereço da empresa e links do Google Maps (o mesmo cartão do Google usado nas avaliações).
+export const ENDERECO = "Rua José Alves de Mello, 770, Centro, Ibirá/SP";
+export const URL_COMO_CHEGAR = "https://www.google.com/maps/dir/?api=1&destination=-21.0824485,-49.2433844";
+export const MAPA_EMBED = "https://maps.google.com/maps?q=-21.0824485,-49.2433844&z=16&output=embed";
 // Nota verificada no perfil do Google em 20/10/2026. Atualizar à mão; não usar marcação AggregateRating.
 export const NOTA_GOOGLE = "5,0 no Google · 8 avaliações";
 

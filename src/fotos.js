@@ -15,8 +15,8 @@ const unsplash = (id, autor) => ({
   fonteNome: "Unsplash",
 });
 
-const commons = (arquivo, autor) => ({
-  licenca: "CC0",
+const commons = (arquivo, autor, licenca = "CC0") => ({
+  licenca,
   autor,
   arquivo,
   fonte: COMMONS + encodeURIComponent(arquivo.replace(/ /g, "_")).replace(/%2C/g, ","),
@@ -54,11 +54,6 @@ export const FOTOS = {
     arq: "luminaria-saida-emergencia-verde", w: 1600, h: 1201,
     alt: "Luminária de saída de emergência verde, com figura em movimento e seta, em parede escura",
     ...unsplash("SKrgZQgYy2g", "Andrew Teoh"),
-  },
-  "luminaria-emergencia-corredor": {
-    arq: "luminaria-emergencia-corredor", w: 1600, h: 1200,
-    alt: "Luminária de emergência com pictograma de saída verde, instalada em viga de um corredor",
-    ...unsplash("J2094d0y5Xc", "Haberdoedas"),
   },
   "tubulacao-sprinklers-teto-estacionamento": {
     arq: "tubulacao-sprinklers-teto-estacionamento", w: 1600, h: 1067,
@@ -105,23 +100,100 @@ export const FOTOS = {
     alt: "Vista aérea de um rio de águas azul-turquesa entre mata densa e rochas",
     ...unsplash("Zj9bdiD4wno", "Christian Thöni"),
   },
-  "notebook-mesa-ao-ar-livre": {
-    arq: "notebook-mesa-ao-ar-livre", w: 1600, h: 1067,
-    alt: "Notebook e caderno sobre uma mesa ao ar livre, em área arborizada",
-    ...unsplash("Ul_En6LL8Sc", "An Shved"),
+  "dosimetro-ruido-calibrador-acustico": {
+    arq: "dosimetro-ruido-calibrador-acustico", w: 1600, h: 1200,
+    alt: "Dosímetro de ruído classe 2 e calibrador de microfone, lado a lado sobre uma superfície cinza",
+    ...commons("Noise Dosimeters 02.jpg", "Chuck Kardous (NIOSH)", "Domínio público"),
+  },
+  "medidor-nivel-sonoro-com-celular": {
+    arq: "medidor-nivel-sonoro-com-celular", w: 1600, h: 1060,
+    alt: "Calibrador acústico ligado a um smartphone que mostra um medidor de nível sonoro, sobre uma mesa de madeira",
+    ...commons("NIOSHSLM Calibration.jpg", "Chuck Kardous (NIOSH)", "Domínio público"),
+  },
+  "medidor-nivel-sonoro-portatil": {
+    arq: "medidor-nivel-sonoro-portatil", w: 1600, h: 1200,
+    alt: "Medidor de nível sonoro portátil segurado com uma das mãos, com um caminhão ao fundo",
+    ...commons("TrasportationNoiseMeasurement.jpg", "Chuck Kardous (NIOSH)", "Domínio público"),
+  },
+  "extintor-em-caixa-com-sinalizacao": {
+    arq: "extintor-em-caixa-com-sinalizacao", w: 1600, h: 1067,
+    alt: "Extintor dentro de um abrigo vermelho de parede, com a placa de sinalização de extintor ao lado",
+    ...unsplash("9eHynv5JG9o", "Jacob Mejicanos"),
+  },
+  "abrigo-mangueira-incendio-vermelho": {
+    arq: "abrigo-mangueira-incendio-vermelho", w: 1600, h: 1067,
+    alt: "Abrigo plástico vermelho de mangueira de incêndio em parede branca",
+    ...unsplash("lPh_joRZA6A", "Pix Tresa"),
+  },
+  "caixa-mangueira-e-registro-recalque": {
+    arq: "caixa-mangueira-e-registro-recalque", w: 1600, h: 1200,
+    alt: "Caixa de mangueira de incêndio e válvula de registro na parede",
+    ...unsplash("jv1BTz-X4wg", "Syed Hussaini"),
+  },
+  "acionador-manual-alarme-vermelho": {
+    arq: "acionador-manual-alarme-vermelho", w: 1600, h: 1067,
+    alt: "Acionador manual de alarme de incêndio vermelho, com o pictograma de fogo",
+    ...unsplash("YfDOeb52PRA", "Zonduurzaam Deventer"),
+  },
+  "detector-fumaca-teto": {
+    arq: "detector-fumaca-teto", w: 1600, h: 1067,
+    alt: "Detector de fumaça branco fixado no teto de concreto (foto em preto e branco)",
+    ...unsplash("2uyCMNGYhnM", "Yosuke Ota"),
+  },
+  "receptor-gnss-tripe-obra-guindaste": {
+    arq: "receptor-gnss-tripe-obra-guindaste", w: 1600, h: 1200,
+    alt: "Receptor GNSS sobre um tripé, com uma obra e um guindaste desfocados ao fundo",
+    ...unsplash("OO4laKg2HS0", "Valerie V"),
+  },
+  "receptor-gnss-sobre-tripe-gramado": {
+    arq: "receptor-gnss-sobre-tripe-gramado", w: 1600, h: 1067,
+    alt: "Receptor GNSS sobre um tripé em um campo gramado, com mata ao fundo",
+    ...unsplash("zSrksQgp4W0", "Valerie V"),
+  },
+  "receptor-gnss-rtk-floresta": {
+    arq: "receptor-gnss-rtk-floresta", w: 1600, h: 1067,
+    alt: "Receptor GNSS RTK preso a um bastão, em primeiro plano, com floresta desfocada ao fundo",
+    ...unsplash("ReMVJ5gCTi0", "Valerie V"),
+  },
+  "estacao-total-tripe-amarelo-campo": {
+    arq: "estacao-total-tripe-amarelo-campo", w: 1600, h: 1067,
+    alt: "Estação total em um tripé amarelo, em campo aberto, com ruínas de pedra ao fundo",
+    ...unsplash("-tcGBtU7O6Q", "Dave Meckler"),
+  },
+  "drone-multirotor-camera": {
+    arq: "drone-multirotor-camera", w: 1600, h: 1200,
+    alt: "Drone multirotor branco com câmera, em voo, com montanhas desfocadas ao fundo",
+    ...unsplash("duNHkmSkW6M", "Jared Brashier"),
+  },
+  "estacao-total-amarela-campo": {
+    arq: "estacao-total-amarela-campo", w: 1600, h: 1070,
+    alt: "Estação total amarela montada em um tripé, em campo, com árvores ao fundo",
+    ...unsplash("MK2ZSaI0W2k", "Nasim Uddin"),
+  },
+  "nivel-laser-linha-verde": {
+    arq: "nivel-laser-linha-verde", w: 1600, h: 1067,
+    alt: "Nível a laser projetando uma linha verde horizontal em uma parede com perfis metálicos",
+    ...unsplash("vQtHGJ2ekVE", "Thanh Nguyen"),
+  },
+  "trena-aco-5-metros": {
+    arq: "trena-aco-5-metros", w: 1600, h: 1200,
+    alt: "Trena de aço de 5 metros, com a fita estendida, sobre fundo branco",
+    ...unsplash("M779tNeoSKc", "William Warby"),
+  },
+  "nivel-bolha-trena-ferramentas": {
+    arq: "nivel-bolha-trena-ferramentas", w: 1600, h: 1067,
+    alt: "Nível de bolha azul e amarelo de 600 mm, trena e outras ferramentas de bancada sobre madeira",
+    ...unsplash("WiHrohmLYL8", "Jametlene Reskp"),
   },
 };
 
 // Slot (lugar do site) -> foto única. Valor null = sem foto.
-export const SLOTS = {
-  "onde-atendemos": "notebook-mesa-ao-ar-livre",
-};
+export const SLOTS = {};
 
 // Carrosséis: chave = lugar do site; cada slide aponta para uma foto de FOTOS, com legenda curta e,
 // opcionalmente, link para a página da área. Um carrossel sem fotos não aparece na página.
 // "equip-*": só equipamento GENÉRICO de referência (nunca o inventário da RD) e só quando há 3 ou mais
-// fotos que combinam de verdade com a lista da página. Faltam fotos para segurança do trabalho, civil e
-// topografia, então esses carrosséis ficam ocultos.
+// fotos que combinam de verdade com a lista da página (marcas visíveis são permitidas aqui; pessoas não).
 export const CARROSSEIS = {
   home: [
     { foto: "capacete-vermelho-epi", legenda: "Segurança do trabalho", href: "/seguranca-do-trabalho" },
@@ -150,11 +222,33 @@ export const CARROSSEIS = {
     { foto: "estacao-total-prisma-tripes", legenda: "Estação total e prisma, usados em topografia" },
     { foto: "rio-mata-vista-aerea", legenda: "Rio e mata: o que a área ambiental protege" },
   ],
+  "equip-seguranca-do-trabalho": [
+    { foto: "dosimetro-ruido-calibrador-acustico", legenda: "Dosímetro de ruído e calibrador acústico" },
+    { foto: "medidor-nivel-sonoro-portatil", legenda: "Medidor de nível sonoro (decibelímetro) portátil" },
+    { foto: "medidor-nivel-sonoro-com-celular", legenda: "Calibrador acústico e medidor de nível sonoro no celular" },
+  ],
   "equip-corpo-de-bombeiros": [
     { foto: "extintor-parede-concreto-pictograma", legenda: "Extintor de incêndio com a sinalização" },
+    { foto: "extintor-em-caixa-com-sinalizacao", legenda: "Extintor em abrigo, com sinalização" },
+    { foto: "abrigo-mangueira-incendio-vermelho", legenda: "Abrigo de mangueira de incêndio" },
+    { foto: "caixa-mangueira-e-registro-recalque", legenda: "Caixa de mangueira e registro de recalque" },
+    { foto: "acionador-manual-alarme-vermelho", legenda: "Acionador manual de alarme de incêndio" },
+    { foto: "detector-fumaca-teto", legenda: "Detector de fumaça no teto" },
     { foto: "sirene-alarme-incendio-teto", legenda: "Sirene e luz de alarme de incêndio" },
     { foto: "luminaria-saida-emergencia-verde", legenda: "Luminária de saída de emergência" },
-    { foto: "luminaria-emergencia-corredor", legenda: "Iluminação de emergência em corredor" },
+  ],
+  "equip-engenharia-civil": [
+    { foto: "estacao-total-amarela-campo", legenda: "Estação total, usada para medidas e alturas" },
+    { foto: "nivel-laser-linha-verde", legenda: "Nível a laser de linha" },
+    { foto: "trena-aco-5-metros", legenda: "Trena de aço" },
+    { foto: "nivel-bolha-trena-ferramentas", legenda: "Nível de bolha e trena" },
+  ],
+  "equip-meio-ambiente-topografia": [
+    { foto: "receptor-gnss-tripe-obra-guindaste", legenda: "Receptor GNSS (GPS de precisão) sobre tripé" },
+    { foto: "receptor-gnss-sobre-tripe-gramado", legenda: "Receptor GNSS sobre tripé, em campo" },
+    { foto: "receptor-gnss-rtk-floresta", legenda: "Receptor GNSS RTK em bastão" },
+    { foto: "estacao-total-tripe-amarelo-campo", legenda: "Estação total em tripé" },
+    { foto: "drone-multirotor-camera", legenda: "Drone com câmera (aeronave remotamente pilotada)" },
   ],
 };
 

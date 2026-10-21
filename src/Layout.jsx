@@ -1,6 +1,6 @@
 import Icone from "./Icone";
 import { useEffect, useRef, useState } from "react";
-import { AREAS } from "./paginas";
+import { AREAS, URL_AVALIACOES_GOOGLE, ENDERECO } from "./paginas";
 
 export const WHATSAPP = "5517997211208";
 export const zap = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
@@ -324,7 +324,11 @@ export function Rodape() {
           </a>
           <p className="rodape-marca">RD IBIRA ENGENHARIA, SEGURANCA E MEIO AMBIENTE LTDA.</p>
           <p>CNPJ 27.839.324/0001-74 · ativo desde 29/05/2017</p>
-          <p>Rua José Alves de Mello, 770, Centro, Ibirá/SP</p>
+          <p>
+            <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+              {ENDERECO}
+            </a>
+          </p>
           <p>Segunda a sexta, das 7h às 17h</p>
           <p>Responsável técnico: Rafael Antonio Dias · CREA-SP 5071022821</p>
         </div>

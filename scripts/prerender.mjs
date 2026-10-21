@@ -21,6 +21,8 @@ try {
     `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, "\\u003c")}</script>`;
 
   // Remove do modelo (home) tudo o que é específico da página inicial.
+  // Entidade do negócio (ProfessionalService, com hasMap e geo) do index.html: vai em todas as páginas.
+  const negocio = (modelo.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/) || [""])[0];
   const base = modelo
     .replace(/<title>[\s\S]*?<\/title>/, "")
     .replace(/<meta\s+name="description"[\s\S]*?\/>/, "")
@@ -89,6 +91,7 @@ try {
       `<meta property="og:description" content="${esc(pagina.description)}" />`,
       `<meta property="og:url" content="${url}" />`,
       ...dados.map(jsonScript),
+      negocio,
     ].join("\n    ");
 
     const html = base
