@@ -2,25 +2,59 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/cidades", "destination": "/onde-atendemos", "permanent": true },
-    { "source": "/cidades/:slug", "destination": "/onde-atendemos", "permanent": true },
+    {
+      "source": "/cidades",
+      "destination": "/onde-atendemos",
+      "permanent": true
+    },
+    {
+      "source": "/cidades/:slug",
+      "destination": "/onde-atendemos",
+      "permanent": true
+    },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "rdengenhariaibira.com.br" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "rdengenhariaibira.com.br"
+        }
+      ],
       "destination": "https://rdibiraengenharia.com.br/:path*",
       "permanent": true
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.rdengenhariaibira.com.br" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.rdengenhariaibira.com.br"
+        }
+      ],
       "destination": "https://rdibiraengenharia.com.br/:path*",
       "permanent": true
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.rdibiraengenharia.com.br" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.rdibiraengenharia.com.br"
+        }
+      ],
       "destination": "https://rdibiraengenharia.com.br/:path*",
       "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/imprimir/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

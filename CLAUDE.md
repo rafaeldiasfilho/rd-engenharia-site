@@ -30,7 +30,7 @@ VITE_DEMO=1 npm run dev   # área /admin sem banco (dados só no navegador)
 | Textos das áreas, guias, equipamentos de referência, projetos, quiz, dicas do lembrete | `src/paginas.js` |
 | Como as páginas internas são desenhadas | `src/Paginas.jsx` |
 | Abas de exemplos da página inicial | `src/ExemplosHome.jsx` |
-| Arrastar/trocar automático (carrosséis) | `src/Deslizar.jsx` (hook `useDeslizar`) |
+| Arrastar/trocar automático (carrosséis) | `src/Carrossel.jsx` (único componente de carrossel) |
 | Cabeçalho e rodapé | `src/Layout.jsx` |
 | Perguntas frequentes (também no JSON-LD) | `src/faq.js` |
 | Ícones (Font Awesome, importados um a um) | `src/Icone.jsx` |

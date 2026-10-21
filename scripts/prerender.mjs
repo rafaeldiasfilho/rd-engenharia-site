@@ -14,7 +14,7 @@ const vite = await createServer({
 });
 
 try {
-  const { render, render404, PAGINAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
+  const { render, render404, renderImpressao, PAGINAS, AREAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
   const modelo = fs.readFileSync(path.join(dist, "index.html"), "utf8");
   const esc = (t) => t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   const jsonScript = (obj) =>
@@ -103,6 +103,16 @@ try {
     fs.writeFileSync(destino, html);
   }
 
+  // Páginas de impressão da lista de documentos: noindex, fora do sitemap, sem JSON-LD nem canonical.
+  for (const area of AREAS) {
+    const htmlImp = base
+      .replace("</head>", `    <title>Lista de documentos | ${esc(area.nome)} | RD Engenharia</title>\n    <meta name="robots" content="noindex, nofollow" />\n  </head>`)
+      .replace('<div id="root"></div>', `<div id="root">${renderImpressao(area)}</div>`);
+    const dest = path.join(dist, "imprimir", area.slug, "index.html");
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, htmlImp);
+  }
+
   const html404 = base
     .replace("</head>", `    <title>Página não encontrada | RD Engenharia</title>\n    <meta name="robots" content="noindex" />\n  </head>`)
     .replace('<div id="root"></div>', `<div id="root" data-erro="404">${render404()}</div>`);
@@ -122,7 +132,7 @@ try {
       .join("\n") +
     `\n</urlset>\n`;
   fs.writeFileSync(path.join(dist, "sitemap.xml"), sitemap);
-  console.log(`Pré-renderizadas ${PAGINAS.length} páginas.`);
+  console.log(`Pré-renderizadas ${PAGINAS.length} páginas (mais ${AREAS.length} de impressão, fora do sitemap).`);
 } finally {
   await vite.close();
 }

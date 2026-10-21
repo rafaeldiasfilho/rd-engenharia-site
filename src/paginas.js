@@ -8,6 +8,7 @@ export const AREAS = [
   {
     tipo: "area",
     slug: "seguranca-do-trabalho",
+    situacoes: ["Contratei funcionários e não sei por onde começar: PGR, laudos ou treinamentos?","A empresa responde a uma ação trabalhista que pede laudo de insalubridade ou periculosidade.","Um empregado precisa do PPP e a empresa não tem o LTCAT.","Minha equipe trabalha com eletricidade, em altura ou em espaço confinado e precisa de treinamento."],
     nome: "Segurança do Trabalho",
     icone: "fa-solid fa-helmet-safety",
     curto: "PGR, LTCAT, laudos de insalubridade e periculosidade e treinamentos.",
@@ -20,36 +21,42 @@ export const AREAS = [
     itens: [
       {
         nome: "PGR — Programa de Gerenciamento de Riscos",
+        exemplo: {"titulo":"PGR","sub":"Programa de Gerenciamento de Riscos","corpo":"tabela","art":true},
         texto:
           "Documento da NR-1 que identifica os perigos do ambiente de trabalho, avalia os riscos e define as medidas de prevenção. É a base dos demais programas de segurança.",
         quem: "Empresas que contratam empregados, em geral. Microempresas e empresas de pequeno porte de menor risco podem ter tratamento simplificado.",
       },
       {
         nome: "PCMSO — integração com o programa médico",
+        exemplo: {"titulo":"PCMSO","sub":"Programa de controle médico","corpo":"checklist"},
         texto:
           "O PCMSO (NR-7) é coordenado por médico do trabalho. Orientamos a empresa e integramos as informações do PGR com o programa médico, para que os documentos conversem entre si.",
         quem: "Empresas com empregados.",
       },
       {
         nome: "LTCAT e PPP",
+        exemplo: {"titulo":"LTCAT","sub":"Condições do ambiente de trabalho","corpo":"grafico","art":true},
         texto:
           "O LTCAT documenta os agentes nocivos presentes no trabalho e serve de base para o PPP, usado pela Previdência no reconhecimento de atividade especial para aposentadoria.",
         quem: "Empresas com trabalhadores expostos a agentes nocivos, como ruído, calor, poeira e produtos químicos.",
       },
       {
         nome: "Laudo de insalubridade (NR-15) e de periculosidade (NR-16)",
+        exemplo: {"titulo":"LAUDO","sub":"Insalubridade e periculosidade","corpo":"medicao","art":true},
         texto:
           "Avaliação técnica no local de trabalho para definir se há direito a adicional de insalubridade ou de periculosidade. Também é usado em defesa da empresa em ações trabalhistas.",
         quem: "Empresas que lidam com agentes nocivos, inflamáveis, explosivos ou eletricidade, e empresas que respondem a ações trabalhistas.",
       },
       {
         nome: "APR, Mapa de Risco e AET",
+        exemplo: {"titulo":"APR","sub":"Análise preliminar de riscos","corpo":"mapa"},
         texto:
           "Análise Preliminar de Riscos para tarefas específicas, mapa de riscos do ambiente e Análise Ergonômica do Trabalho, conforme a atividade.",
         quem: "Empresas com tarefas de risco, obras e postos de trabalho com exigência ergonômica.",
       },
       {
         nome: "Treinamentos de NRs",
+        exemplo: {"titulo":"CERTIFICADO","sub":"Treinamento de Norma Regulamentadora","corpo":"certificado"},
         texto:
           "Capacitações como NR-5 (CIPA), NR-6 (EPI), NR-10 (eletricidade), NR-12 (máquinas), NR-18 (construção), NR-33 (espaço confinado) e NR-35 (trabalho em altura), além de primeiros socorros e combate a incêndio.",
         quem: "Colaboradores e gestores de empresas cuja atividade exige a capacitação.",
@@ -80,6 +87,7 @@ export const AREAS = [
   {
     tipo: "area",
     slug: "corpo-de-bombeiros",
+    situacoes: ["Meu AVCB venceu ou está perto de vencer.","Vou abrir um comércio e não sei se preciso de AVCB ou de CLCB.","O imóvel precisa de projeto de rota de fuga, hidrantes ou alarme de incêndio.","O imóvel não tem licença do Corpo de Bombeiros."],
     nome: "Corpo de Bombeiros (AVCB e CLCB)",
     icone: "fa-solid fa-fire-extinguisher",
     curto: "Projetos de segurança contra incêndio, AVCB e CLCB.",
@@ -92,24 +100,28 @@ export const AREAS = [
     itens: [
       {
         nome: "PSCIP — Projeto de Segurança Contra Incêndio e Pânico",
+        exemplo: {"titulo":"PSCIP","sub":"Projeto de segurança contra incêndio","corpo":"planta","art":true},
         texto:
           "Projeto técnico que define as medidas de proteção exigidas para o seu imóvel, como extintores, sinalização, iluminação de emergência, alarme e hidrantes, conforme as Instruções Técnicas do Corpo de Bombeiros.",
         quem: "Edificações e áreas de risco que não se enquadram em processo simplificado.",
       },
       {
         nome: "AVCB — Auto de Vistoria do Corpo de Bombeiros",
+        exemplo: {"titulo":"AVCB","sub":"Auto de vistoria","corpo":"selo"},
         texto:
           "Documento que comprova que a edificação cumpre as medidas de segurança contra incêndio, emitido após vistoria do Corpo de Bombeiros.",
         quem: "Comércios, indústrias, escolas, clínicas, condomínios e outros imóveis cuja ocupação exija o documento.",
       },
       {
         nome: "CLCB — Certificado de Licença do Corpo de Bombeiros",
+        exemplo: {"titulo":"CLCB","sub":"Certificado de licença","corpo":"checklist"},
         texto:
           "Licença com processo mais simples, para edificações menores e de baixo risco. O enquadramento depende de área, altura e tipo de ocupação, e fazemos essa análise para você.",
         quem: "Estabelecimentos de pequeno porte e baixo risco, conforme a legislação paulista.",
       },
       {
         nome: "Projetos específicos",
+        exemplo: {"titulo":"PROJETO","sub":"Rota de fuga, hidrantes e alarme","corpo":"rota","art":true},
         texto:
           "Rota de fuga, hidrantes, sprinklers (chuveiros automáticos), detecção e alarme de incêndio, com ART do responsável técnico.",
         quem: "Imóveis em que o projeto exige sistemas fixos de proteção.",
@@ -140,6 +152,7 @@ export const AREAS = [
   {
     tipo: "area",
     slug: "engenharia-civil",
+    situacoes: ["Construí sem projeto aprovado e quero regularizar.","Vou vender ou financiar o imóvel e preciso de laudo de vistoria ou de avaliação.","Vejo trincas ou infiltração e quero saber a causa.","Vou construir ou reformar e preciso de projeto e de alvará."],
     nome: "Engenharia Civil e Regularização",
     icone: "fa-solid fa-building",
     curto: "Projetos, regularização de obras, laudos, inspeções e gerenciamento.",
@@ -152,30 +165,35 @@ export const AREAS = [
     itens: [
       {
         nome: "Projetos arquitetônicos, estruturais e complementares",
+        exemplo: {"titulo":"PROJETO","sub":"Planta e memorial descritivo","corpo":"planta","art":true},
         texto:
           "Projeto arquitetônico, fundações, projeto estrutural, drenagem, memorial descritivo e memória de cálculo, seguindo as normas da ABNT.",
         quem: "Quem vai construir, ampliar ou reformar.",
       },
       {
         nome: "Regularização de obra e habite-se",
+        exemplo: {"titulo":"AS-BUILT","sub":"Levantamento do que foi construído","corpo":"asbuilt","art":true},
         texto:
           "Levantamento do que foi construído (as-built), ART ou RRT, alvará, habite-se e demais documentos junto à prefeitura. As regras variam de município para município.",
         quem: "Proprietários de imóveis construídos sem projeto aprovado ou sem habite-se.",
       },
       {
         nome: "Gerenciamento e planejamento de obras",
+        exemplo: {"titulo":"CRONOGRAMA","sub":"Cronograma físico-financeiro","corpo":"gantt"},
         texto:
           "Orçamento, cronograma físico-financeiro, diário de obra, controle de qualidade e boletim de medição para acompanhar custo, prazo e qualidade da obra.",
         quem: "Construtoras, empresas e proprietários que querem controle sobre a obra.",
       },
       {
         nome: "Inspeção predial e laudos de patologias",
+        exemplo: {"titulo":"INSPEÇÃO","sub":"Laudo de patologias","corpo":"fachada","art":true},
         texto:
           "Inspeção de fachada, estrutura, impermeabilização e instalações, com relatório técnico e orientação de manutenção preventiva.",
         quem: "Condomínios, comércios e proprietários que notam trincas, infiltração ou desgaste.",
       },
       {
         nome: "Laudos e perícias",
+        exemplo: {"titulo":"LAUDO","sub":"Vistoria e avaliação de imóvel","corpo":"laudo","art":true},
         texto:
           "Laudo de vistoria, de avaliação de imóvel, estrutural e perícia, para fins de financiamento, seguro, negociação ou processo judicial.",
         quem: "Quem precisa de um parecer técnico formal sobre um imóvel.",
@@ -206,6 +224,7 @@ export const AREAS = [
   {
     tipo: "area",
     slug: "meio-ambiente-topografia",
+    situacoes: ["Vou vender ou dividir o imóvel rural e preciso de georreferenciamento.","Nunca fiz o CAR da propriedade.","Uso água de poço, represa ou rio e quero saber se preciso de outorga.","Preciso de planta ou das medidas do terreno antes de construir ou dividir."],
     nome: "Meio Ambiente, Topografia e Imóvel Rural",
     icone: "fa-solid fa-leaf",
     curto: "CAR, licenciamento, outorga, resíduos, topografia e georreferenciamento.",
@@ -218,30 +237,35 @@ export const AREAS = [
     itens: [
       {
         nome: "CAR — Cadastro Ambiental Rural",
+        exemplo: {"titulo":"CAR","sub":"Cadastro ambiental rural","corpo":"car"},
         texto:
           "Cadastro eletrônico obrigatório dos imóveis rurais, previsto no Código Florestal, que reúne as informações ambientais da propriedade e é base para a regularização ambiental.",
         quem: "Proprietários e possuidores de imóveis rurais.",
       },
       {
         nome: "Georreferenciamento de imóvel rural",
+        exemplo: {"titulo":"MEMORIAL","sub":"Georreferenciamento do imóvel","corpo":"terreno","art":true},
         texto:
           "Levantamento que define os limites do imóvel com coordenadas oficiais e é certificado junto ao INCRA, exigido em situações como desmembramento e transferência de propriedade.",
         quem: "Quem vai vender, dividir ou regularizar um imóvel rural.",
       },
       {
         nome: "Topografia",
+        exemplo: {"titulo":"LEVANTAMENTO","sub":"Planta e curvas de nível","corpo":"curvas","art":true},
         texto:
           "Levantamento planialtimétrico, locação de obras, divisão de glebas, planta cadastral, curvas de nível e cálculo de volume.",
         quem: "Quem vai construir, dividir um terreno ou precisa conhecer as medidas e o relevo da área.",
       },
       {
         nome: "Licenciamento ambiental e outorga",
+        exemplo: {"titulo":"LICENÇA","sub":"Licenciamento e outorga","corpo":"fluxo"},
         texto:
           "Orientação e condução de licenças (prévia, de instalação e de operação) e da outorga de uso da água, conforme a atividade e o órgão responsável.",
         quem: "Empreendimentos e atividades que impactam o meio ambiente ou usam recursos hídricos.",
       },
       {
         nome: "Gestão de resíduos e gestão ambiental",
+        exemplo: {"titulo":"PGRS","sub":"Plano de gestão de resíduos","corpo":"tabela"},
         texto:
           "PGRS e PGRSS, inventário e manifesto de resíduos e planos de ação ambiental para empresas, clínicas, indústrias e propriedades.",
         quem: "Empresas que geram resíduos e precisam comprovar o destino correto.",
@@ -652,7 +676,7 @@ export const NOTA_EQUIPAMENTOS = "Lista geral de referência, não é o inventá
 export const EQUIPAMENTOS = {
   "seguranca-do-trabalho": {
     texto:
-      "Para saber se o ambiente de trabalho está dentro dos limites das normas, o profissional costuma medir o que está no ar e no entorno do trabalhador, como ruído, calor, luz e poeira. Em serviços como PGR, LTCAT e laudos de insalubridade, costumam ser usados aparelhos de medição específicos, conferidos antes e depois da medida. Os métodos seguem normas como a NR-15 e as Normas de Higiene Ocupacional (NHO) da Fundacentro.",
+      "Para saber se o ambiente de trabalho está dentro dos limites das normas, o profissional pode medir o que está no ar e no entorno do trabalhador, como ruído, calor, luz e poeira. Em serviços como PGR, LTCAT e laudos de insalubridade, podem ser usados aparelhos de medição específicos, conferidos antes e depois da medida. Os métodos seguem normas como a NR-15 e as Normas de Higiene Ocupacional (NHO) da Fundacentro.",
     itens: [
       "Dosímetro de ruído e medidor de nível de som (decibelímetro)",
       "Medidor de calor (IBUTG, com termômetros de globo e de bulbo úmido)",
@@ -663,7 +687,7 @@ export const EQUIPAMENTOS = {
   },
   "corpo-de-bombeiros": {
     texto:
-      "O projeto de segurança contra incêndio define quais proteções o imóvel precisa ter, de acordo com as Instruções Técnicas do Corpo de Bombeiros do Estado de São Paulo. Na vistoria, os bombeiros costumam conferir se esses sistemas estão instalados e funcionando. Por isso, o levantamento do imóvel e o projeto tratam de cada um deles.",
+      "O projeto de segurança contra incêndio define quais proteções o imóvel precisa ter, de acordo com as Instruções Técnicas do Corpo de Bombeiros do Estado de São Paulo. Na vistoria, os bombeiros podem conferir se esses sistemas estão instalados e funcionando. Por isso, o levantamento do imóvel e o projeto tratam de cada um deles.",
     itens: [
       "Extintores de incêndio, de tipos adequados ao risco",
       "Hidrantes e mangotinhos (rede de água e mangueiras)",
@@ -674,7 +698,7 @@ export const EQUIPAMENTOS = {
   },
   "engenharia-civil": {
     texto:
-      "Para regularizar uma obra, laudar um imóvel ou investigar trincas e infiltrações, o engenheiro costuma começar medindo o que existe e observando sinais que não aparecem a olho nu. Em serviços como esses, costumam ser usados instrumentos de medição e de ensaio, muitos deles sem necessidade de quebrar a construção. O resultado entra no relatório técnico com ART.",
+      "Para regularizar uma obra, laudar um imóvel ou investigar trincas e infiltrações, o engenheiro pode começar medindo o que existe e observando sinais que não aparecem a olho nu. Em serviços como esses, podem ser usados instrumentos de medição e de ensaio, muitos deles sem necessidade de quebrar a construção. O resultado entra no relatório técnico com ART.",
     itens: [
       "Trena e medidor de distância a laser, para o desenho \"como construído\"",
       "Nível e estação total, para medidas e alturas do terreno e da obra",
@@ -695,3 +719,22 @@ export const EQUIPAMENTOS = {
     ],
   },
 };
+
+// Desenhos dos projetos reais como slides do Carrossel (uma imagem por slide).
+// destaques = true: só planta baixa e fachada (usado na página inicial).
+export const slidesProjetos = (destaques = false) =>
+  PROJETOS.flatMap((p) =>
+    p.itens
+      .filter((e) => !destaques || ["planta-baixa", "fachada"].includes(e.arq))
+      .map((e) => ({
+        key: `${p.pasta}-${e.arq}`,
+        src: `/exemplos/${p.pasta}/${e.arq}.webp`,
+        imgHref: `/exemplos/${p.pasta}/${e.arq}.webp`,
+        w: e.w,
+        h: e.h,
+        alt: e.alt,
+        legenda: `${p.nome} · ${e.titulo}`,
+        nota: e.texto,
+        contem: true,
+      }))
+  );

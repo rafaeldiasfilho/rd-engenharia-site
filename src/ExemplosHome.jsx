@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Icone from "./Icone";
-import { useDeslizar } from "./Deslizar";
+import Carrossel from "./Carrossel";
+import IconeArea from "./Icones";
 import { Ilustracao } from "./Ilustracoes";
-import { PROJETOS } from "./paginas";
+import { slidesProjetos } from "./paginas";
 
 const ABAS = [
   { slug: "engenharia-civil", nome: "Engenharia civil" },
@@ -12,58 +12,15 @@ const ABAS = [
 ];
 
 function Civil() {
-  const total = PROJETOS.length;
-  const d = useDeslizar(total);
-  const projeto = PROJETOS[d.i];
-  const mostrar = projeto.itens.filter((i) => ["planta-baixa", "fachada"].includes(i.arq));
   return (
-    <div className="home-civil" {...d.pausarAoPassar} aria-roledescription="carrossel" aria-label="Projetos de engenharia civil">
-      <div
-        className={`home-civil-bloco ${d.trocou ? "troca" : ""} ${total > 1 ? "arrastavel" : ""}`}
-        data-dir={d.dir}
-        key={projeto.pasta}
-        ref={d.bloco}
-        {...d.gesto}
-      >
-        <div className="home-civil-imgs">
-          {mostrar.map((e) => (
-            <a
-              key={e.arq}
-              href={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
-              target="_blank"
-              rel="noopener noreferrer"
-              draggable={false}
-            >
-              <img
-                src={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
-                width={e.w}
-                height={e.h}
-                loading="lazy"
-                alt={e.alt}
-                draggable={false}
-              />
-            </a>
-          ))}
-        </div>
-        <p className="home-civil-txt" aria-live="polite">
-          <strong>{projeto.nome}</strong>. {projeto.resumo}. Projeto real, com os dados do cliente retirados.
-        </p>
-      </div>
-      {total > 1 && (
-        <div className="home-civil-nav">
-          <button type="button" className="seta seta-p" onClick={() => d.manual(-1)} aria-label="Projeto anterior">
-            <Icone nome="fa-solid fa-chevron-left" />
-          </button>
-          <span className="pontos" aria-hidden="true">
-            {PROJETOS.map((p, n) => (
-              <i key={p.pasta} className={n === d.i ? "ativo" : ""} />
-            ))}
-          </span>
-          <button type="button" className="seta seta-p" onClick={() => d.manual(1)} aria-label="Próximo projeto">
-            <Icone nome="fa-solid fa-chevron-right" />
-          </button>
-        </div>
-      )}
+    <div className="home-civil">
+      <Carrossel
+        itens={slidesProjetos(true)}
+        rotulo="Desenhos de projetos reais de engenharia civil"
+        aspecto="4 / 3"
+        className="car-projetos"
+      />
+      <p className="nota-fina">Projetos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem para ampliar.</p>
       <p className="centro">
         <a className="btn btn-sec" href="/engenharia-civil#na-pratica">
           Ver o projeto completo
@@ -90,7 +47,7 @@ export default function ExemplosHome() {
         <div className="abas rev" role="group" aria-label="Áreas">
           {ABAS.map((a) => (
             <button key={a.slug} type="button" aria-pressed={aba === a.slug} onClick={() => setAba(a.slug)}>
-              {a.nome}
+              <IconeArea slug={a.slug} tamanho={20} /> {a.nome}
             </button>
           ))}
         </div>

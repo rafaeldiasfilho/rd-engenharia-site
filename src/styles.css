@@ -2936,7 +2936,7 @@ img {
   margin-top: 0;
 }
 
-/* Equipamentos que costumam ser usados */
+/* Equipamentos que podem ser usados */
 .equip {
   display: grid;
   gap: clamp(28px, 4vw, 56px);
@@ -3775,9 +3775,360 @@ img {
   }
 }
 
-/* Impressão da lista de documentos: só a folha montada por imprimirLista() (Paginas.jsx) */
-.folha-impressao {
-  display: none;
+
+/* ===== Rodada 4 ===== */
+
+/* Carrossel: arrastar com o mouse */
+@media (pointer: fine) {
+  .car-faixa {
+    cursor: grab;
+  }
+}
+
+.car-faixa.arrastando {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.car-faixa.arrastando a {
+  pointer-events: none;
+}
+
+.car-img.contem {
+  background: #fff;
+}
+
+.car-img.contem img {
+  object-fit: contain;
+  outline: none;
+}
+
+.car-img > a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.car-projetos .car-img {
+  border: 1px solid var(--linha);
+}
+
+/* Ícones das áreas */
+.icone-tile {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--verde-claro);
+  color: var(--realce);
+}
+
+.eyebrow-icone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.escolhas a {
+  grid-template-columns: 52px minmax(0, 1fr) 1.6rem;
+  align-items: center;
+}
+
+.escolha-texto .escolha-n {
+  display: block;
+  margin-bottom: 2px;
+  padding: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.menu-item-area {
+  display: flex !important;
+  align-items: center;
+  gap: 14px;
+}
+
+.menu-item-area .icone-tile {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.menu-mobile-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-mobile-area .icone-area,
+.rodape-area .icone-area {
+  flex: none;
+  color: var(--realce);
+}
+
+.rodape-area {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rel-lista .rel-icone {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 14px;
+}
+
+.ass-area {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+.ass-areas a {
+  gap: 8px;
+}
+
+.abas button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Situações comuns */
+.situacoes-lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.situacoes-lista li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 22px;
+  border: 1px solid var(--linha);
+  border-radius: 20px;
+  background: var(--branco);
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.situacoes-lista .icone-area {
+  flex: none;
+  margin-top: 2px;
+  color: var(--realce);
+}
+
+.situacoes-ajuda {
+  margin-top: 20px;
+  color: var(--cinza);
+}
+
+.situacoes-ajuda a {
+  color: var(--realce);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .situacoes-lista {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Folha de exemplo ao lado de cada serviço */
+.linha.com-folha {
+  grid-template-columns: 64px minmax(0, 1fr) minmax(0, 1.3fr) 170px;
+}
+
+.folha-ex {
+  margin: 0;
+  align-self: start;
+}
+
+.folha-ex svg {
+  display: block;
+  width: 100%;
+  max-width: 170px;
+  height: auto;
+}
+
+.folha-ex figcaption {
+  margin-top: 8px;
+  color: var(--cinza);
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+  .linha.com-folha {
+    grid-template-columns: 64px minmax(0, 1fr) minmax(0, 1.3fr);
+  }
+  .linha.com-folha .folha-ex {
+    grid-column: 2 / -1;
+  }
+  .linha.com-folha .folha-ex svg {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 760px) {
+  .linha.com-folha {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+  .linha.com-folha .folha-ex {
+    grid-column: 2;
+  }
+}
+
+/* Início: números maiores */
+.numeros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.numeros span {
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid var(--linha);
+  border-radius: 22px;
+  background: var(--branco);
+  color: var(--cinza);
+  font-size: 1.05rem;
+}
+
+.numeros strong {
+  margin-bottom: 8px;
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+}
+
+@media (max-width: 700px) {
+  .numeros {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Página de impressão da lista de documentos (/imprimir/<área>) */
+.imprimir {
+  min-height: 100vh;
+  padding: 24px 16px 56px;
+  background: #e9ece7;
+  color: #111;
+}
+
+.imprimir-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  max-width: 794px;
+  margin: 0 auto 20px;
+}
+
+.imprimir-barra p {
+  flex: 1 1 100%;
+  margin: 0;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.folha-doc {
+  max-width: 794px;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 56px);
+  border-radius: 6px;
+  background: #fff;
+  color: #111;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.12);
+  font-size: 12pt;
+  line-height: 1.45;
+}
+
+.folha-doc p {
+  margin: 0;
+}
+
+.fd-topo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #1f6b2a;
+}
+
+.fd-topo img {
+  width: 30mm;
+  height: auto;
+}
+
+.fd-empresa {
+  font-weight: 700;
+  font-size: 13pt;
+}
+
+.fd-data {
+  color: #444;
+  font-size: 10.5pt;
+}
+
+.folha-doc h1 {
+  margin: 22px 0 4px;
+  font-size: 20pt;
+  line-height: 1.15;
+  color: #111;
+}
+
+.fd-area {
+  margin-bottom: 14px;
+  color: #1f6b2a;
+  font-weight: 600;
+}
+
+.fd-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd-lista li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #bbb;
+  break-inside: avoid;
+  font-size: 12.5pt;
+}
+
+.fd-caixa {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 4px;
+  border: 1.5px solid #333;
+  border-radius: 3px;
+}
+
+.fd-nota {
+  margin-top: 18px;
+  color: #444;
+  font-size: 10.5pt;
+}
+
+.fd-rodape {
+  margin-top: 28px;
+  padding-top: 10px;
+  border-top: 1px solid #999;
+  color: #333;
+  font-size: 9.5pt;
 }
 
 @media print {
@@ -3786,100 +4137,34 @@ img {
     margin: 16mm;
   }
 
-  body.imprimindo {
+  html,
+  body {
     background: #fff !important;
-    color: #111 !important;
   }
 
-  body.imprimindo > *:not(.folha-impressao) {
+  .imprimir {
+    min-height: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .imprimir-barra {
     display: none !important;
   }
 
-  body.imprimindo .folha-impressao {
-    display: block !important;
-    color: #111;
-    background: #fff;
-    font-family: "IBM Plex Sans", Arial, sans-serif;
-    font-size: 12pt;
-    line-height: 1.45;
-  }
-
-  .folha-impressao .fi-topo {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #1f6b2a;
-  }
-
-  .folha-impressao .fi-topo img {
-    width: 30mm;
-    height: auto;
-  }
-
-  .folha-impressao p {
-    margin: 0;
-  }
-
-  .folha-impressao .fi-empresa {
-    font-weight: 700;
-    font-size: 13pt;
-  }
-
-  .folha-impressao .fi-data {
-    color: #444;
-    font-size: 10.5pt;
-  }
-
-  .folha-impressao h1 {
-    margin: 22px 0 4px;
-    font-size: 20pt;
-    line-height: 1.15;
-    color: #111;
-  }
-
-  .folha-impressao .fi-area {
-    color: #1f6b2a;
-    font-weight: 600;
-    margin-bottom: 14px;
-  }
-
-  .folha-impressao .fi-lista {
-    margin: 0;
+  .folha-doc {
+    max-width: none;
     padding: 0;
-    list-style: none;
+    border-radius: 0;
+    box-shadow: none;
   }
+}
 
-  .folha-impressao .fi-lista li {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 9px 0;
-    border-bottom: 1px solid #bbb;
-    break-inside: avoid;
-    font-size: 12.5pt;
-  }
+.escolha-icone {
+  width: 56px;
+  height: 56px;
+}
 
-  .folha-impressao .fi-caixa {
-    flex: none;
-    width: 14px;
-    height: 14px;
-    margin-top: 4px;
-    border: 1.5px solid #333;
-    border-radius: 3px;
-  }
-
-  .folha-impressao .fi-nota {
-    margin-top: 18px;
-    color: #444;
-    font-size: 10.5pt;
-  }
-
-  .folha-impressao .fi-rodape {
-    margin-top: 28px;
-    padding-top: 10px;
-    border-top: 1px solid #999;
-    color: #333;
-    font-size: 9.5pt;
-  }
+.escolhas a {
+  grid-template-columns: 56px minmax(0, 1fr) 1.6rem;
 }

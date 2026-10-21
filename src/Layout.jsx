@@ -1,4 +1,5 @@
 import Icone from "./Icone";
+import IconeArea from "./Icones";
 import { useEffect, useRef, useState } from "react";
 import { AREAS, URL_AVALIACOES_GOOGLE, ENDERECO } from "./paginas";
 
@@ -135,9 +136,14 @@ export function Cabecalho({ atual = "" }) {
             <ul id="menu-servicos-lista" className={`${servicos ? "aberto" : ""} ${teclado.current ? "teclado" : ""}`} hidden={!servicos}>
               {AREAS.map((a) => (
                 <li key={a.slug}>
-                  <a href={`/${a.slug}`} aria-current={cur(atual === a.slug)}>
-                    <strong>{a.nome}</strong>
-                    <small>{a.curto}</small>
+                  <a href={`/${a.slug}`} aria-current={cur(atual === a.slug)} className="menu-item-area">
+                    <span className="icone-tile">
+                      <IconeArea slug={a.slug} tamanho={22} />
+                    </span>
+                    <span>
+                      <strong>{a.nome}</strong>
+                      <small>{a.curto}</small>
+                    </span>
                   </a>
                 </li>
               ))}
@@ -175,8 +181,8 @@ export function Cabecalho({ atual = "" }) {
       <nav id="menu-mobile" className={`menu-mobile ${aberto ? "aberto" : ""}`} aria-label="Menu" hidden={!aberto}>
         <p className="menu-mobile-titulo">Serviços</p>
         {AREAS.map((a) => (
-          <a key={a.slug} href={`/${a.slug}`} aria-current={cur(atual === a.slug)} onClick={() => setAberto(false)}>
-            {a.nome}
+          <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(atual === a.slug)} onClick={() => setAberto(false)}>
+            <IconeArea slug={a.slug} tamanho={22} /> {a.nome}
           </a>
         ))}
         <p className="menu-mobile-titulo">Mais</p>
@@ -299,6 +305,11 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
               {relacionadas.slice(0, 3).map((r) => (
                 <li key={r.href} className="rev">
                   <a href={r.href}>
+                    {r.area && (
+                      <span className="icone-tile rel-icone">
+                        <IconeArea slug={r.area} tamanho={24} />
+                      </span>
+                    )}
                     <small>{r.tag}</small>
                     <strong>{r.titulo}</strong>
                     {r.texto && <span>{r.texto}</span>}
@@ -337,7 +348,9 @@ export function Rodape() {
           <ul>
             {AREAS.map((a) => (
               <li key={a.slug}>
-                <a href={`/${a.slug}`}>{a.nome}</a>
+                <a href={`/${a.slug}`} className="rodape-area">
+                  <IconeArea slug={a.slug} tamanho={18} /> {a.nome}
+                </a>
               </li>
             ))}
           </ul>

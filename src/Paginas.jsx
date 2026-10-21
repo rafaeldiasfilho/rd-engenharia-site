@@ -1,13 +1,13 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
-import { useDeslizar } from "./Deslizar";
-import { AREAS, GUIAS, PROJETOS, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, achaArea } from "./paginas";
+import { AREAS, GUIAS, slidesProjetos, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, achaArea } from "./paginas";
 import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
 import Carrossel from "./Carrossel";
 import Assistente from "./Assistente";
-import DocsIlustracao from "./DocsIlustracao";
+import DocsIlustracao, { FolhaExemplo } from "./DocsIlustracao";
+import IconeArea from "./Icones";
 import { slidesDe, FOTOS_EM_USO, caminho } from "./fotos";
 
 const pad = (n) => String(n + 1).padStart(2, "0");
@@ -52,65 +52,21 @@ const REL_GERAL = {
   guias: { href: "/guias", tag: "Guias", titulo: "Guias em linguagem simples", texto: "Explicações curtas sobre PGR, AVCB, CAR, habite-se e outros documentos." },
   lembrete: { href: "/lembrete-de-vencimento", tag: "Lembrete", titulo: "Lembrete de vencimento", texto: "Receba um aviso no WhatsApp antes de o documento vencer." },
 };
-const relArea = (a) => ({ href: `/${a.slug}`, tag: "Serviço", titulo: a.nome, texto: a.curto });
+const relArea = (a) => ({ href: `/${a.slug}`, tag: "Serviço", titulo: a.nome, texto: a.curto, area: a.slug });
 const relGuia = (g) => ({ href: `/${g.slug}`, tag: "Guia", titulo: g.h1 });
 
 function Exemplos() {
-  const total = PROJETOS.length;
-  const d = useDeslizar(total);
-  const projeto = PROJETOS[d.i];
   return (
-    <div aria-roledescription="carrossel" aria-label="Exemplos de projeto" {...d.pausarAoPassar}>
-      <div className="exemplos-barra">
-        {total > 1 && (
-          <button type="button" className="seta" onClick={() => d.manual(-1)} aria-label="Projeto anterior">
-            <Icone nome="fa-solid fa-chevron-left" />
-          </button>
-        )}
-        <div className={`exemplos-titulo ${d.trocou ? "troca" : ""}`} aria-live="polite" key={projeto.pasta}>
-          <strong>{projeto.nome}</strong>
-          <span>{projeto.resumo}</span>
-          {total > 1 && (
-            <small>
-              Projeto {d.i + 1} de {total}
-            </small>
-          )}
-        </div>
-        {total > 1 && (
-          <button type="button" className="seta" onClick={() => d.manual(1)} aria-label="Próximo projeto">
-            <Icone nome="fa-solid fa-chevron-right" />
-          </button>
-        )}
-      </div>
-      <div
-        className={`exemplos ${d.trocou ? "troca" : ""} ${total > 1 ? "arrastavel" : ""}`}
-        data-dir={d.dir}
-        key={projeto.pasta}
-        ref={d.bloco}
-        {...d.gesto}
-      >
-        {projeto.itens.map((e) => (
-          <figure className={`exemplo ${e.forma ? "exemplo-" + e.forma : ""}`} key={e.arq}>
-            <a href={`/exemplos/${projeto.pasta}/${e.arq}.webp`} target="_blank" rel="noopener noreferrer" draggable={false}>
-              <img
-                src={`/exemplos/${projeto.pasta}/${e.arq}.webp`}
-                width={e.w}
-                height={e.h}
-                loading="lazy"
-                alt={e.alt}
-                draggable={false}
-              />
-            </a>
-            <figcaption>
-              <strong>{e.titulo}</strong>
-              <span>{e.texto}</span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+    <div>
+      <Carrossel
+        itens={slidesProjetos()}
+        rotulo="Desenhos de projetos reais de residências"
+        aspecto="4 / 3"
+        className="car-projetos"
+      />
       <p className="nota-fina">
-        Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque numa imagem para
-        ampliar{total > 1 ? " e arraste para o lado para ver outro projeto" : ""}.
+        Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem
+        para ampliar.
       </p>
       <div className="acoes">
         <BotaoZap texto="Olá! Vi os exemplos de projeto no site e gostaria de um projeto para a minha obra." rotulo="Quero um projeto assim" />
@@ -119,82 +75,7 @@ function Exemplos() {
   );
 }
 
-const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-
-// Imprime só a folha com a lista de documentos. A folha é montada à parte, no fim do <body>, e o CSS de
-// impressão (`body.imprimindo`) esconde o resto do site. Assim a impressão não depende do tamanho nem
-// do layout da página. Na tela a folha fica escondida.
-let imprimindo = false; // só uma impressão por vez
-const LOGO_IMPRESSAO = "/marca/marca-lockup.webp";
-
-// Carrega o logo antes do clique, para o print() poder ser chamado na hora.
-function precarregarLogo() {
-  const img = new Image();
-  img.src = LOGO_IMPRESSAO;
-}
-
-function imprimirLista(pagina) {
-  if (imprimindo) return;
-  imprimindo = true;
-  const data = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
-  const folha = document.createElement("div"); // só esta folha é removida por esta chamada
-  folha.className = "folha-impressao";
-  folha.innerHTML =
-    `<header class="fi-topo"><img src="${LOGO_IMPRESSAO}" width="120" height="66" alt="RD Engenharia" />` +
-    `<div><p class="fi-empresa">RD Engenharia Segurança e Meio Ambiente</p><p class="fi-data">${esc(data)}</p></div></header>` +
-    `<h1>Lista de documentos necessários</h1><p class="fi-area">Área: ${esc(pagina.nome)}</p>` +
-    `<ul class="fi-lista">${pagina.documentos.map((d) => `<li><span class="fi-caixa"></span>${esc(d)}</li>`).join("")}</ul>` +
-    `<p class="fi-nota">Lista de orientação geral. Confirmamos com você o que cada caso realmente exige.</p>` +
-    `<footer class="fi-rodape"><p>RD IBIRA ENGENHARIA, SEGURANCA E MEIO AMBIENTE LTDA. · CNPJ 27.839.324/0001-74</p><p>${esc(ENDERECO)} · WhatsApp (17) 99721-1208</p></footer>`;
-  document.body.appendChild(folha);
-  document.body.classList.add("imprimindo");
-
-  const mql = window.matchMedia ? window.matchMedia("print") : null;
-  let prazo = 0;
-  let limpou = false;
-  const limpar = () => {
-    if (limpou) return;
-    limpou = true;
-    clearTimeout(prazo);
-    window.removeEventListener("afterprint", limpar);
-    if (mql && mql.removeEventListener) mql.removeEventListener("change", aoMudarMidia);
-    document.body.classList.remove("imprimindo");
-    folha.remove();
-    imprimindo = false;
-  };
-  // Alguns navegadores (iOS Safari) não disparam afterprint: a mudança da mídia "print" e um prazo cobrem isso.
-  function aoMudarMidia(e) {
-    if (!e.matches) limpar();
-  }
-  window.addEventListener("afterprint", limpar);
-  if (mql && mql.addEventListener) mql.addEventListener("change", aoMudarMidia);
-
-  const imprimir = () => {
-    try {
-      window.print();
-    } finally {
-      // Onde print() bloqueia (desktop) já acabou; onde não bloqueia, dá tempo de o diálogo abrir.
-      prazo = setTimeout(limpar, 30000);
-    }
-  };
-  const logo = folha.querySelector("img");
-  if (!logo || (logo.complete && logo.naturalWidth > 0)) {
-    imprimir(); // logo já em cache (pré-carregado): imprime na hora
-  } else {
-    let seguiu = false;
-    const seguir = () => {
-      if (seguiu) return;
-      seguiu = true;
-      imprimir();
-    };
-    logo.addEventListener("load", seguir);
-    logo.addEventListener("error", seguir); // sem o logo a lista sai igual
-    setTimeout(seguir, 1500);
-  }
-}
-
 function PaginaArea({ pagina }) {
-  useEffect(precarregarLogo, []);
   const visual = VISUAL[pagina.slug];
   const guias = GUIAS.filter((g) => g.area === pagina.slug);
   const outras = AREAS.filter((a) => a.slug !== pagina.slug);
@@ -211,7 +92,9 @@ function PaginaArea({ pagina }) {
           <Migalha itens={[{ rotulo: "Serviços", href: "/#servicos" }, { rotulo: pagina.nome }]} />
           <div className="hero-area-grade">
             <div>
-              <p className="eyebrow">Serviço</p>
+              <p className="eyebrow eyebrow-icone">
+                <IconeArea slug={pagina.slug} tamanho={22} /> Serviço
+              </p>
               <h1 className="display-m">{pagina.h1}</h1>
               <p className="lead">{pagina.intro}</p>
               <div className="acoes">
@@ -233,6 +116,7 @@ function PaginaArea({ pagina }) {
 
       <SecoesNav
         itens={[
+          { id: "situacoes", rotulo: "Situações comuns" },
           { id: "o-que-fazemos", rotulo: "O que fazemos" },
           { id: "equipamentos", rotulo: "Equipamentos" },
           { id: "na-pratica", rotulo: "Na prática" },
@@ -273,10 +157,30 @@ function PaginaArea({ pagina }) {
         </section>
       )}
 
-      <Secao id="o-que-fazemos" n="01" rotulo="Serviços" titulo={<>O que fazemos nesta área.</>}>
+      {pagina.situacoes && (
+        <Secao id="situacoes" n="01" rotulo="Situações comuns" titulo="Você se reconhece em alguma destas?">
+          <ul className="situacoes-lista">
+            {pagina.situacoes.map((t) => (
+              <li key={t} className="rev">
+                <IconeArea slug={pagina.slug} tamanho={26} />
+                <span>{t}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="situacoes-ajuda rev">
+            Não tem certeza de qual é o seu caso? <a href="/o-que-preciso">Responda ao passo a passo</a> ou{" "}
+            <a href={zap(zapArea)} target="_blank" rel="noopener noreferrer">
+              conte pelo WhatsApp
+            </a>
+            .
+          </p>
+        </Secao>
+      )}
+
+      <Secao id="o-que-fazemos" n="02" rotulo="Serviços" titulo={<>O que fazemos nesta área.</>}>
         <ol className="linhas">
           {pagina.itens.map((item, n) => (
-            <li className="linha rev" key={item.nome}>
+            <li className={`linha rev ${item.exemplo ? "com-folha" : ""}`} key={item.nome}>
               <span className="linha-n">{pad(n)}</span>
               <h3>{item.nome}</h3>
               <div className="linha-texto">
@@ -293,13 +197,14 @@ function PaginaArea({ pagina }) {
                   <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
                 </a>
               </div>
+              {item.exemplo && <FolhaExemplo m={item.exemplo} nome={item.nome} />}
             </li>
           ))}
         </ol>
       </Secao>
 
       {equip && (
-        <Secao id="equipamentos" n="02" rotulo="Equipamentos" titulo="Equipamentos que costumam ser usados." className="sec-alt">
+        <Secao id="equipamentos" n="03" rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
           <div className={`equip ${temFotosEquip ? "com-fotos" : ""}`}>
             <div className="equip-texto rev">
               <p className="lead">{equip.texto}</p>
@@ -327,7 +232,7 @@ function PaginaArea({ pagina }) {
 
       <Secao
         id="na-pratica"
-        n="03"
+        n="04"
         rotulo="Na prática"
         titulo={civil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
         lead={civil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
@@ -335,7 +240,7 @@ function PaginaArea({ pagina }) {
         {civil ? <Exemplos /> : <Ilustracao slug={pagina.slug} />}
       </Secao>
 
-      <Secao id="atendimento" n="04" rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
+      <Secao id="atendimento" n="05" rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
         {visual && (
           <ol className="etapas-ed">
             {visual.etapas.map((e, n) => (
@@ -364,16 +269,21 @@ function PaginaArea({ pagina }) {
                 <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o prazo
                 de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
               </p>
-              <button type="button" className="btn btn-sec nao-imprime" onClick={() => imprimirLista(pagina)}>
-                Imprimir ou salvar esta lista em PDF
-              </button>
+              <a
+                className="btn btn-sec nao-imprime"
+                href={`/imprimir/${pagina.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Abrir a lista para imprimir ou salvar em PDF
+              </a>
             </div>
             <DocsIlustracao slug={pagina.slug} />
           </div>
         </div>
       </Secao>
 
-      <Secao id="duvidas" n="05" rotulo="Dúvidas" titulo="Perguntas frequentes.">
+      <Secao id="duvidas" n="06" rotulo="Dúvidas" titulo="Perguntas frequentes.">
         <div className="faq-lista rev">
           {pagina.faq.map((f) => (
             <details className="faq-item" key={f.q}>
@@ -858,6 +768,54 @@ function PaginaOnde({ pagina }) {
         relacionadas={[relArea(AREAS[0]), relArea(AREAS[2]), REL_GERAL.quiz]}
       />
     </>
+  );
+}
+
+// Página própria para imprimir ou salvar em PDF a lista de documentos de uma área (/imprimir/<área>).
+// Sem cabeçalho nem rodapé do site, sem estado: o botão chama window.print() direto. noindex.
+export function PaginaImprimir({ area }) {
+  const [data, setData] = useState("");
+  useEffect(() => {
+    setData(new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }));
+  }, []);
+  return (
+    <div className="imprimir">
+      <div className="imprimir-barra nao-imprime">
+        <a className="btn btn-sec" href={`/${area.slug}#atendimento`}>
+          <span aria-hidden="true">←</span> Voltar
+        </a>
+        <button type="button" className="btn btn-zap" onClick={() => window.print()}>
+          Imprimir / Salvar PDF
+        </button>
+        <p>Para salvar em PDF, escolha "Salvar como PDF" como impressora.</p>
+      </div>
+      <main className="folha-doc" id="conteudo">
+        <header className="fd-topo">
+          <img src="/marca/marca-lockup.webp" width="120" height="66" alt="RD Engenharia" />
+          <div>
+            <p className="fd-empresa">RD Engenharia Segurança e Meio Ambiente</p>
+            <p className="fd-data">{data || "\u00a0"}</p>
+          </div>
+        </header>
+        <h1>Lista de documentos necessários</h1>
+        <p className="fd-area">Área: {area.nome}</p>
+        <ul className="fd-lista">
+          {area.documentos.map((d) => (
+            <li key={d}>
+              <span className="fd-caixa" aria-hidden="true" />
+              {d}
+            </li>
+          ))}
+        </ul>
+        <p className="fd-nota">Lista de orientação geral. Confirmamos com você o que cada caso realmente exige.</p>
+        <footer className="fd-rodape">
+          <p>RD IBIRA ENGENHARIA, SEGURANCA E MEIO AMBIENTE LTDA. · CNPJ 27.839.324/0001-74</p>
+          <p>
+            {ENDERECO} · WhatsApp (17) 99721-1208
+          </p>
+        </footer>
+      </main>
+    </div>
   );
 }
 

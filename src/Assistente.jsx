@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Icone from "./Icone";
+import IconeArea from "./Icones";
 import { AREAS, PERFIS, RESULTADOS, achaArea } from "./paginas";
 import { BotaoZap } from "./Layout";
 
@@ -189,7 +190,9 @@ export default function Assistente() {
                   const area = achaArea(r.area);
                   return (
                     <li key={r.id}>
-                      <small>{area ? area.nome : ""}</small>
+                      <small className="ass-area">
+                        {area && <IconeArea slug={area.slug} tamanho={18} />} {area ? area.nome : ""}
+                      </small>
                       <h3>{r.nome}</h3>
                       <p>{r.texto}</p>
                       <a href={`/${r.area}`} aria-label={`${r.nome}: ver na página da área`}>
@@ -208,7 +211,9 @@ export default function Assistente() {
                 <ul className="ass-areas">
                   {AREAS.map((a) => (
                     <li key={a.slug}>
-                      <a href={`/${a.slug}`}>{a.nome}</a>
+                      <a href={`/${a.slug}`}>
+                        <IconeArea slug={a.slug} tamanho={18} /> {a.nome}
+                      </a>
                     </li>
                   ))}
                 </ul>

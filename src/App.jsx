@@ -5,6 +5,7 @@ import { AREAS, URL_AVALIACOES_GOOGLE, NOTA_GOOGLE, ENDERECO } from "./paginas";
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 import Carrossel from "./Carrossel";
+import IconeArea from "./Icones";
 
 const NECESSIDADES = [
   {
@@ -142,10 +143,13 @@ export default function App() {
               {NECESSIDADES.map((n, i) => (
                 <li key={n.slug}>
                   <a href={`/${n.slug}`}>
-                    <span className="escolha-n" aria-hidden="true">
-                      0{i + 1}
+                    <span className="icone-tile escolha-icone">
+                      <IconeArea slug={n.slug} tamanho={32} />
                     </span>
                     <span className="escolha-texto">
+                      <span className="escolha-n" aria-hidden="true">
+                        0{i + 1}
+                      </span>
                       <strong>{n.titulo}</strong>
                       <small>{n.frase}</small>
                     </span>
