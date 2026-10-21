@@ -6,7 +6,8 @@ import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
 import Carrossel from "./Carrossel";
 import Assistente from "./Assistente";
-import DocsIlustracao, { FolhaExemplo } from "./DocsIlustracao";
+import DocsIlustracao, { FolhaSvg, LEGENDA_EXEMPLO } from "./DocsIlustracao";
+import HeroFundo from "./HeroFundo";
 import IconeArea from "./Icones";
 import { slidesDe, FOTOS_EM_USO, caminho } from "./fotos";
 
@@ -87,37 +88,26 @@ function PaginaArea({ pagina }) {
 
   return (
     <>
-      <header className="hero-int hero-area">
-        <div className="container">
-          <Migalha itens={[{ rotulo: "Serviços", href: "/#servicos" }, { rotulo: pagina.nome }]} />
-          <div className="hero-area-grade">
-            <div>
-              <p className="eyebrow eyebrow-icone">
-                <IconeArea slug={pagina.slug} tamanho={22} /> Serviço
-              </p>
-              <h1 className="display-m">{pagina.h1}</h1>
-              <p className="lead">{pagina.intro}</p>
-              <div className="acoes">
-                <BotaoZap className="btn-grande" texto={zapArea} rotulo="Pedir orçamento" />
-                <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
-              </div>
-            </div>
-          </div>
-          <Carrossel
-            chave={`area-${pagina.slug}`}
-            rotulo={`Fotos ilustrativas da área de ${pagina.nome}`}
-            aspecto="16 / 8"
-            prioridade
-            className="carrossel-hero area-carrossel"
-            sizes="(min-width: 900px) 800px, 88vw"
-          />
+      <div className="container migalha-sobre-hero">
+        <Migalha itens={[{ rotulo: "Serviços", href: "/#servicos" }, { rotulo: pagina.nome }]} />
+      </div>
+      <HeroFundo chave={`area-${pagina.slug}`} rotulo={`Fotos ilustrativas da área de ${pagina.nome}`} className="hero-area-fundo">
+        <p className="eyebrow eyebrow-icone">
+          <IconeArea slug={pagina.slug} tamanho={22} /> Serviço
+        </p>
+        <h1 className="display">{pagina.h1}</h1>
+        <p className="lead">{pagina.intro}</p>
+        <div className="acoes">
+          <BotaoZap className="btn-grande" texto={zapArea} rotulo="Pedir orçamento" />
+          <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
         </div>
-      </header>
+      </HeroFundo>
 
       <SecoesNav
         itens={[
           { id: "situacoes", rotulo: "Situações comuns" },
           { id: "o-que-fazemos", rotulo: "O que fazemos" },
+          { id: "documentos-exemplo", rotulo: "Exemplos de documentos" },
           { id: "equipamentos", rotulo: "Equipamentos" },
           { id: "na-pratica", rotulo: "Na prática" },
           { id: "atendimento", rotulo: "Como atendemos" },
@@ -180,7 +170,7 @@ function PaginaArea({ pagina }) {
       <Secao id="o-que-fazemos" n="02" rotulo="Serviços" titulo={<>O que fazemos nesta área.</>}>
         <ol className="linhas">
           {pagina.itens.map((item, n) => (
-            <li className={`linha rev ${item.exemplo ? "com-folha" : ""}`} key={item.nome}>
+            <li className={`linha rev ${""}`} key={item.nome}>
               <span className="linha-n">{pad(n)}</span>
               <h3>{item.nome}</h3>
               <div className="linha-texto">
@@ -197,14 +187,32 @@ function PaginaArea({ pagina }) {
                   <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
                 </a>
               </div>
-              {item.exemplo && <FolhaExemplo m={item.exemplo} nome={item.nome} />}
             </li>
           ))}
         </ol>
       </Secao>
 
+      <Secao
+        id="documentos-exemplo"
+        n="03"
+        rotulo="Documentos"
+        titulo="Veja como são os documentos."
+        lead="Folhas de exemplo de cada serviço desta área. Deslize ou arraste para ver todas."
+        className="sec-alt"
+      >
+        <Carrossel
+          itens={pagina.itens
+            .filter((it) => it.exemplo)
+            .map((it) => ({ key: it.nome, node: <FolhaSvg m={it.exemplo} nome={it.nome} />, legenda: it.nome, nota: LEGENDA_EXEMPLO }))}
+          rotulo={`Exemplos de documentos da área de ${pagina.nome}`}
+          aspecto="158 / 218"
+          className="car-folhas"
+          auto={false}
+        />
+      </Secao>
+
       {equip && (
-        <Secao id="equipamentos" n="03" rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
+        <Secao id="equipamentos" n="04" rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
           <div className={`equip ${temFotosEquip ? "com-fotos" : ""}`}>
             <div className="equip-texto rev">
               <p className="lead">{equip.texto}</p>
@@ -232,7 +240,7 @@ function PaginaArea({ pagina }) {
 
       <Secao
         id="na-pratica"
-        n="04"
+        n="05"
         rotulo="Na prática"
         titulo={civil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
         lead={civil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
@@ -240,9 +248,9 @@ function PaginaArea({ pagina }) {
         {civil ? <Exemplos /> : <Ilustracao slug={pagina.slug} />}
       </Secao>
 
-      <Secao id="atendimento" n="05" rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
+      <Secao id="atendimento" n="06" rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
         {visual && (
-          <ol className="etapas-ed">
+          <ol className="etapas-ed linha-tempo rev">
             {visual.etapas.map((e, n) => (
               <li key={e.t} className="rev">
                 <span className="etapa-big" aria-hidden="true">
@@ -283,7 +291,7 @@ function PaginaArea({ pagina }) {
         </div>
       </Secao>
 
-      <Secao id="duvidas" n="06" rotulo="Dúvidas" titulo="Perguntas frequentes.">
+      <Secao id="duvidas" n="07" rotulo="Dúvidas" titulo="Perguntas frequentes.">
         <div className="faq-lista rev">
           {pagina.faq.map((f) => (
             <details className="faq-item" key={f.q}>

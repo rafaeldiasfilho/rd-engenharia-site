@@ -37,7 +37,7 @@ export default function ExemplosHome() {
       <div className="container">
         <header className="sec-cab rev">
           <p className="sec-n">
-            <span>01</span> Na prática
+            <span>02</span> Na prática
           </p>
           <h2 id="pratica-t" className="sec-titulo">
             Veja o que entregamos.

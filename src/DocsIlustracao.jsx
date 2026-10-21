@@ -232,6 +232,21 @@ function Folha({ x = 0, y = 0, rot = 0, m, completa = true }) {
   );
 }
 
+// Só o desenho da folha (para usar dentro de um slide).
+export function FolhaSvg({ m, nome }) {
+  return (
+    <svg className="folha-svg" viewBox="0 -10 158 218" role="img" aria-label={`Exemplo ilustrativo de ${nome}: folha com ${m.sub.toLowerCase()}`} focusable="false">
+      <Folha m={m} />
+      <g transform="translate(60 -3) rotate(-9)">
+        <rect width="48" height="13" rx="3" fill="#fff" stroke="#9b2c2c" strokeWidth="1.1" />
+        <text x="24" y="9.4" fontSize="6.6" fontWeight="700" fill="#9b2c2c" textAnchor="middle" letterSpacing="0.8">
+          EXEMPLO
+        </text>
+      </g>
+    </svg>
+  );
+}
+
 // Uma folha para um serviço/documento. `m` vem do campo `exemplo` do item em src/paginas.js.
 export function FolhaExemplo({ m, nome }) {
   if (!m) return null;

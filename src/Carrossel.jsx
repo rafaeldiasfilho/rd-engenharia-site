@@ -13,6 +13,8 @@ import { slidesDe, caminho, aviso } from "./fotos";
 // - Nada de window/document na renderização: seguro para o prerender.
 // Fontes de slides: `chave` (fotos em CARROSSEIS, src/fotos.js) ou `itens` (lista própria, ver abaixo).
 // Item: { key, src, w, h, alt, legenda, nota, href (link da legenda), imgHref (link da imagem), contem, creditos }
+//   ou { key, node (qualquer elemento, ex.: uma folha SVG), legenda, nota }.
+// Clicar na imagem vizinha que aparece na borda leva até ela (botão invisível "Ir para a imagem n").
 // Foco por teclado dentro do carrossel (um clique do mouse também foca a faixa, mas não deve pausar para sempre).
 function focoDoTeclado(el) {
   try {
@@ -42,6 +44,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
         pos: s.pos,
       }));
   const total = slides.length;
+  const cheio = className.includes("car-cheio"); // slide ocupa a largura toda: não há vizinhas para clicar
   const secao = useRef(null);
   const faixa = useRef(null);
   const [i, setI] = useState(0);
@@ -246,7 +249,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
         onClickCapture={aoClicarCaptura}
       >
         {slides.map((s, n) => {
-          const img = (
+          const img = s.node ? null : (
             <img
               src={s.src}
               width={s.w}
@@ -267,9 +270,22 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
               aria-roledescription="slide"
               aria-label={`${n + 1} de ${total}`}
             >
+              {!cheio && n !== i && total > 1 && (
+                <button
+                  type="button"
+                  className="car-vizinha"
+                  aria-label={`Ir para a imagem ${n + 1} de ${total}`}
+                  onClick={() => {
+                    parou.current = true;
+                    ir(n);
+                  }}
+                />
+              )}
               <figure>
-                <div className={`car-img ${s.contem ? "contem" : ""}`}>
-                  {s.imgHref ? (
+                <div className={`car-img ${s.contem ? "contem" : ""} ${s.node ? "no" : ""}`}>
+                  {s.node ? (
+                    s.node
+                  ) : s.imgHref ? (
                     <a href={s.imgHref} target="_blank" rel="noopener noreferrer" draggable={false} aria-label={`Ampliar: ${s.legenda || s.alt}`}>
                       {img}
                     </a>

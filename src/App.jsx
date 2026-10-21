@@ -4,27 +4,33 @@ import { FAQ } from "./faq";
 import { AREAS, URL_AVALIACOES_GOOGLE, NOTA_GOOGLE, ENDERECO } from "./paginas";
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
-import Carrossel from "./Carrossel";
+import HeroFundo from "./HeroFundo";
+import { FaixaDocumentos, PainelExemplo, FaixaNumeros } from "./Vitrine";
+import { FOTOS, caminho } from "./fotos";
 import IconeArea from "./Icones";
 
 const NECESSIDADES = [
   {
     slug: "seguranca-do-trabalho",
+    foto: "capacete-vermelho-epi",
     titulo: "Segurança do trabalho",
     frase: "Tenho funcionários e preciso de PGR, laudos ou treinamentos.",
   },
   {
     slug: "corpo-de-bombeiros",
+    foto: "extintor-parede-concreto-pictograma",
     titulo: "Corpo de Bombeiros",
     frase: "Preciso de AVCB ou CLCB para o meu imóvel ou comércio.",
   },
   {
     slug: "engenharia-civil",
+    foto: "edificio-estrutura-concreto-pavimentos",
     titulo: "Engenharia civil",
     frase: "Vou construir, reformar ou regularizar um imóvel.",
   },
   {
     slug: "meio-ambiente-topografia",
+    foto: "rio-mata-vista-aerea",
     titulo: "Meio ambiente e topografia",
     frase: "Tenho imóvel rural e preciso de CAR, georreferenciamento ou topografia.",
   },
@@ -49,6 +55,7 @@ const FORMACAO = [
 const SERVICOS_FORM = AREAS.map((a) => a.nome);
 
 const SECOES_HOME = [
+  { id: "organizamos", rotulo: "O que organizamos" },
   { id: "na-pratica", rotulo: "Na prática" },
   { id: "como-funciona", rotulo: "Como funciona" },
   { id: "onde-atendemos", rotulo: "Onde atendemos" },
@@ -97,70 +104,62 @@ export default function App() {
 
   return (
     <Casca atual="">
-      <header className="heroi">
+      <HeroFundo chave="home" rotulo="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
+        <p className="eyebrow">RD Engenharia · Ibirá/SP</p>
+        <h1 className="display">Engenharia, segurança do trabalho e meio ambiente para a nossa região.</h1>
+        <p className="hero-triade">
+          Documentos em dia. Obra regular. <span className="acento">Equipe protegida.</span>
+        </p>
+        <p className="lead">
+          Laudos, projetos e licenças para empresas, produtores rurais e proprietários de Ibirá e região, presencial e online. Fale direto com o responsável técnico pelo WhatsApp.
+        </p>
+        <div className="acoes">
+          <a className="btn btn-zap btn-grande" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+            <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
+          </a>
+          <a className="btn btn-claro btn-grande" href="/o-que-preciso">
+            Não sei o que preciso
+          </a>
+        </div>
+        <p className={`status status-fundo ${atendendo ? "on" : ""}`}>
+          <Icone nome="fa-solid fa-circle" />{" "}
+          {atendendo
+            ? "Atendendo agora. Seg. a sex., das 7h às 17h"
+            : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
+        </p>
+      </HeroFundo>
+
+      <div className="escolhas-cards-wrap" id="servicos">
         <div className="container">
-          <p className="eyebrow">RD Engenharia · Ibirá/SP</p>
-          <h1 className="display">
-            Engenharia, segurança do trabalho e meio ambiente para a nossa região.
-          </h1>
-          <div className="heroi-baixo">
-            <p className="lead">
-              Laudos, projetos e licenças para empresas, produtores rurais e proprietários de Ibirá e região, presencial e online. Fale direto com o responsável técnico pelo WhatsApp.
-            </p>
-            <div>
-              <div className="acoes">
-                <a
-                  className="btn btn-zap btn-grande"
-                  href={zap("Olá! Gostaria de solicitar um orçamento.")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
-                </a>
-                <a className="btn btn-sec btn-grande" href="/o-que-preciso">
-                  Não sei o que preciso
-                </a>
-              </div>
-              <p className={`status ${atendendo ? "on" : ""}`}>
-                <Icone nome="fa-solid fa-circle" />{" "}
-                {atendendo
-                  ? "Atendendo agora. Seg. a sex., das 7h às 17h"
-                  : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
-              </p>
-            </div>
-          </div>
-          <Carrossel
-            chave="home"
-            rotulo="As quatro áreas de atuação da RD Engenharia"
-            aspecto="16 / 8"
-            prioridade
-            className="carrossel-hero"
-            sizes="(min-width: 900px) 800px, 88vw"
-          />
-          <div className="escolhas-bloco" id="servicos">
-            <h2 className="escolhas-t">Do que você precisa?</h2>
-            <ol className="escolhas">
-              {NECESSIDADES.map((n, i) => (
+          <h2 className="sr-only">Do que você precisa?</h2>
+          <ol className="escolhas-cards">
+            {NECESSIDADES.map((n, i) => {
+              const f = FOTOS[n.foto];
+              return (
                 <li key={n.slug}>
-                  <a href={`/${n.slug}`}>
-                    <span className="icone-tile escolha-icone">
-                      <IconeArea slug={n.slug} tamanho={32} />
+                  <a href={`/${n.slug}`} className="card-area">
+                    <span className="card-area-foto">
+                      <img src={caminho(f)} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
-                    <span className="escolha-texto">
-                      <span className="escolha-n" aria-hidden="true">
-                        0{i + 1}
-                      </span>
-                      <strong>{n.titulo}</strong>
-                      <small>{n.frase}</small>
+                    <span className="icone-tile card-area-icone">
+                      <IconeArea slug={n.slug} tamanho={30} />
                     </span>
-                    <span className="escolha-seta" aria-hidden="true">
+                    <span className="card-area-n" aria-hidden="true">
+                      0{i + 1}
+                    </span>
+                    <strong>{n.titulo}</strong>
+                    <small>{n.frase}</small>
+                    <span className="card-area-seta" aria-hidden="true">
                       →
                     </span>
                   </a>
                 </li>
-              ))}
-            </ol>
-          </div>
+              );
+            })}
+          </ol>
+          <p className="nota-fina escolhas-nota">
+            Fotos ilustrativas de terceiros, não são trabalhos da RD. <a href="/creditos">Créditos</a>
+          </p>
           <ul className="prova">
             <li>
               <strong>CREA-SP</strong>
@@ -180,9 +179,42 @@ export default function App() {
             </li>
           </ul>
         </div>
-      </header>
+      </div>
+
+      <FaixaDocumentos />
 
       <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
+
+      <section className="sec organizamos" id="organizamos" aria-labelledby="org-t">
+        <div className="container organizamos-grade">
+          <div>
+            <header className="sec-cab rev">
+              <p className="sec-n">
+                <span>01</span> O que organizamos
+              </p>
+              <h2 id="org-t" className="sec-titulo">
+                Seus documentos e vencimentos, em um só lugar.
+              </h2>
+            </header>
+            <p className="lead rev">
+              Montamos a lista do que o seu caso exige, elaboramos os documentos e avisamos pelo WhatsApp antes de cada vencimento.
+            </p>
+            <div className="acoes rev">
+              <a className="btn btn-sec btn-grande" href="/o-que-preciso">
+                Descubra o que o seu caso precisa
+              </a>
+              <a className="link-seta" href="/lembrete-de-vencimento">
+                Pedir o lembrete de vencimento <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+          <div className="rev">
+            <PainelExemplo />
+          </div>
+        </div>
+      </section>
+
+      <FaixaNumeros />
 
       <ExemplosHome />
 
@@ -190,13 +222,13 @@ export default function App() {
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
-              <span>02</span> Como funciona
+              <span>03</span> Como funciona
             </p>
             <h2 id="como-t" className="sec-titulo">
               Quatro passos, sem surpresa.
             </h2>
           </header>
-          <ol className="etapas-ed">
+          <ol className="etapas-ed linha-tempo rev">
             {ETAPAS.map((e, i) => (
               <li key={e.titulo} className="rev">
                 <span className="etapa-big" aria-hidden="true">
@@ -214,7 +246,7 @@ export default function App() {
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
-              <span>03</span> Onde atendemos
+              <span>04</span> Onde atendemos
             </p>
             <h2 id="onde-t" className="sec-titulo">
               Atendemos presencialmente e online em Ibirá e região.
@@ -233,7 +265,7 @@ export default function App() {
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
-              <span>04</span> Quem somos
+              <span>05</span> Quem somos
             </p>
             <h2 id="quem-t" className="sec-titulo">
               Quem responde pelo seu serviço.
@@ -243,17 +275,6 @@ export default function App() {
               CREA-SP, e você conversa direto com quem vai executar.
             </p>
           </header>
-          <p className="numeros rev">
-            <span>
-              <strong>500+</strong> documentos técnicos
-            </span>
-            <span>
-              <strong>70+</strong> projetos
-            </span>
-            <span>
-              <strong>Desde 2017</strong> em Ibirá/SP
-            </span>
-          </p>
           <div className="pessoas">
             <article className="rev">
               <h3>Rafael Antonio Dias</h3>
@@ -295,7 +316,7 @@ export default function App() {
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
-              <span>05</span> Dúvidas
+              <span>06</span> Dúvidas
             </p>
             <h2 id="duvidas-t" className="sec-titulo">
               Dúvidas frequentes.
@@ -316,7 +337,7 @@ export default function App() {
         <div className="container contato-grade">
           <div>
             <p className="sec-n">
-              <span>06</span> Contato
+              <span>07</span> Contato
             </p>
             <h2 id="contato-t" className="sec-titulo">
               Peça seu orçamento.

@@ -1,7 +1,7 @@
 import Icone from "./Icone";
 import IconeArea from "./Icones";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, URL_AVALIACOES_GOOGLE, ENDERECO } from "./paginas";
+import { AREAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
 
 export const WHATSAPP = "5517997211208";
 export const zap = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
@@ -328,6 +328,12 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
 export function Rodape() {
   return (
     <footer className="rodape">
+      <div className="wrap rodape-cta">
+        <p className="rodape-cta-t">Vamos conversar sobre o seu caso?</p>
+        <a className="btn btn-zap btn-grande" href={zap("Olá! Gostaria de um orçamento.")} target="_blank" rel="noopener noreferrer">
+          <Icone nome="fa-brands fa-whatsapp" /> Falar no WhatsApp
+        </a>
+      </div>
       <div className="wrap rodape-grade">
         <div>
           <a className="rodape-logo" href="/" aria-label="RD Engenharia, página inicial">
@@ -341,6 +347,11 @@ export function Rodape() {
             </a>
           </p>
           <p>Segunda a sexta, das 7h às 17h</p>
+          <p>
+            <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+              {NOTA_GOOGLE}
+            </a>
+          </p>
           <p>Responsável técnico: Rafael Antonio Dias · CREA-SP 5071022821</p>
         </div>
         <div>
