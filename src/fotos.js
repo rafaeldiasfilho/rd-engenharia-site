@@ -263,7 +263,8 @@ export const foto = (slot) => {
 export const caminho = (f) => `/fotos/otim/${f.arq}.webp`;
 
 // Legenda curta com a licença correta de cada foto.
-export const aviso = (f) => `Imagem ilustrativa (${f.licenca}), não é um trabalho da RD.`;
+// Legenda curta por foto; a frase completa ("não são trabalhos da RD") fica uma vez na home e em /creditos.
+export const aviso = (f) => `Imagem ilustrativa (${f.licenca}).`;
 
 // Lista para a página de créditos: só as fotos em uso (slots e carrosséis), sem repetir.
 const idsEmUso = new Set([

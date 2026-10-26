@@ -4440,7 +4440,8 @@ img {
   display: block;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: var(--linha);
+  /* Enquanto a foto (lazy) carrega no celular, mostra um tom verde suave em vez de um bloco cinza. */
+  background: linear-gradient(135deg, var(--verde-claro), var(--branco));
 }
 
 .card-area-foto img {
