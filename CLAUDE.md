@@ -12,7 +12,7 @@ Instruções para o Claude Code neste repositório. Site institucional da **RD E
 
 ## Stack
 
-React 18 + Vite 5, JavaScript (sem TypeScript). Site estático: `npm run build` roda `vite build` e depois `node scripts/prerender.mjs`, que gera um HTML por página (para o Google ler), o `sitemap.xml` e o JSON-LD. Hospedagem na **Vercel**, banco e login no **Supabase**, código no **GitHub** (branch `main`).
+React 18 + Vite 5, JavaScript. Componentes vindos do 21st.dev/shadcn ficam em `src/components/ui/` (TypeScript + Tailwind v4 + `cn()` de `src/lib/utils.ts`, atalho `@/` para `src/`, `components.json` na raiz). O Tailwind só lê `src/components/ui` e `src/lib` (`@source` em `src/index.css`) e não carrega o reset (preflight): o resto do site continua em `styles.css`, numa camada abaixo das classes do Tailwind. Ao colar um componente novo, se ele usar uma classe fora dessas pastas, ela não é gerada. Site estático: `npm run build` roda `vite build` e depois `node scripts/prerender.mjs`, que gera um HTML por página (para o Google ler), o `sitemap.xml` e o JSON-LD. Hospedagem na **Vercel**, banco e login no **Supabase**, código no **GitHub** (branch `main`).
 
 ```bash
 npm install

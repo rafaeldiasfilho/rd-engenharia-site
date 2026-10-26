@@ -1,13 +1,16 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
-import { AREAS, URL_AVALIACOES_GOOGLE, NOTA_GOOGLE, ENDERECO } from "./paginas";
+import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, NOTA_GOOGLE, ENDERECO } from "./paginas";
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 import HeroFundo from "./HeroFundo";
 import { FaixaDocumentos, PainelExemplo, FaixaNumeros } from "./Vitrine";
 import { FOTOS, caminho } from "./fotos";
 import IconeArea from "./Icones";
+import Perguntas from "./Perguntas";
+import Avaliacoes from "./Avaliacoes";
+import BuscaDocumento from "./Busca";
 
 const NECESSIDADES = [
   {
@@ -105,6 +108,15 @@ export default function App() {
   return (
     <Casca atual="">
       <HeroFundo chave="home" rotulo="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
+        <a className="selo-topo" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+          <span className="selo-topo-estrelas" aria-hidden="true">
+            ★★★★★
+          </span>
+          <span>{NOTA_GOOGLE}</span>
+          <span className="selo-topo-seta" aria-hidden="true">
+            →
+          </span>
+        </a>
         <p className="eyebrow">RD Engenharia · Ibirá/SP</p>
         <h1 className="display">Engenharia, segurança do trabalho e meio ambiente para a nossa região.</h1>
         <p className="hero-triade">
@@ -132,12 +144,13 @@ export default function App() {
       <div className="escolhas-cards-wrap" id="servicos">
         <div className="container">
           <h2 className="sr-only">Do que você precisa?</h2>
+          <BuscaDocumento className="busca-home" />
           <ol className="escolhas-cards">
             {NECESSIDADES.map((n, i) => {
               const f = FOTOS[n.foto];
               return (
                 <li key={n.slug}>
-                  <a href={`/${n.slug}`} className="card-area">
+                  <a href={`/${n.slug}`} className="card-area spot">
                     <span className="card-area-foto">
                       <img src={caminho(f)} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
@@ -174,8 +187,8 @@ export default function App() {
               <span>Você conversa direto com quem vai executar</span>
             </li>
             <li>
-              <strong>Desde 2017</strong>
-              <span>CNPJ ativo desde 29/05/2017, em Ibirá/SP</span>
+              <strong>Presencial e online</strong>
+              <span>Em Ibirá e região, com conversa e orçamento pelo WhatsApp</span>
             </li>
           </ul>
         </div>
@@ -236,14 +249,21 @@ export default function App() {
                 </span>
                 <h3>{e.titulo}</h3>
                 <p>{e.texto}</p>
+                {i === 0 && (
+                  <a className="btn btn-zap btn-peq" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+                    <Icone nome="fa-brands fa-whatsapp" /> Começar agora
+                  </a>
+                )}
               </li>
             ))}
           </ol>
         </div>
       </section>
 
+      <Avaliacoes />
+
       <section className="sec sec-alt" id="onde-atendemos" aria-labelledby="onde-t">
-        <div className="container">
+        <div className="container onde-grade">
           <header className="sec-cab rev">
             <p className="sec-n">
               <span>04</span> Onde atendemos
@@ -252,10 +272,27 @@ export default function App() {
               Atendemos presencialmente e online em Ibirá e região.
             </h2>
             <p className="lead">Conte onde fica o seu imóvel ou a sua empresa pelo WhatsApp e confirmamos o atendimento.</p>
+            <div className="acoes">
+              <a className="btn btn-sec btn-grande" href="/onde-atendemos">
+                Ver onde atendemos
+              </a>
+            </div>
           </header>
-          <div className="acoes rev">
-            <a className="btn btn-sec btn-grande" href="/onde-atendemos">
-              Ver onde atendemos
+          <div className="onde-cartao rev spot">
+            <p className="rotulo-mini">Escritório</p>
+            <p className="onde-endereco">{ENDERECO}</p>
+            <dl>
+              <div>
+                <dt>Atendimento</dt>
+                <dd>Segunda a sexta, das 7h às 17h</dd>
+              </div>
+              <div>
+                <dt>Formas</dt>
+                <dd>Presencial e online</dd>
+              </div>
+            </dl>
+            <a className="btn btn-zap" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
+              Como chegar
             </a>
           </div>
         </div>
@@ -276,7 +313,10 @@ export default function App() {
             </p>
           </header>
           <div className="pessoas">
-            <article className="rev">
+            <article className="rev spot">
+              <span className="pessoa-sigla" aria-hidden="true">
+                RA
+              </span>
               <h3>Rafael Antonio Dias</h3>
               <p className="pessoa-cargo">
                 Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
@@ -296,7 +336,10 @@ export default function App() {
                 <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
               </a>
             </article>
-            <article className="rev">
+            <article className="rev spot">
+              <span className="pessoa-sigla" aria-hidden="true">
+                RF
+              </span>
               <h3>Rafael Antonio Dias Filho</h3>
               <p className="pessoa-cargo">Técnico em edificações · Projetos e atendimento</p>
               <a
@@ -322,14 +365,7 @@ export default function App() {
               Dúvidas frequentes.
             </h2>
           </header>
-          <div className="faq-lista rev">
-            {FAQ.map((item) => (
-              <details className="faq-item" key={item.q}>
-                <summary>{item.q}</summary>
-                <p>{item.a}</p>
-              </details>
-            ))}
-          </div>
+          <Perguntas itens={FAQ} />
         </div>
       </section>
 

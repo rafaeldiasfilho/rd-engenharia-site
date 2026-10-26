@@ -10,9 +10,10 @@ export const AREAS = [
     slug: "seguranca-do-trabalho",
     situacoes: ["Contratei funcionários e não sei por onde começar: PGR, laudos ou treinamentos?","A empresa responde a uma ação trabalhista que pede laudo de insalubridade ou periculosidade.","Um empregado precisa do PPP e a empresa não tem o LTCAT.","Minha equipe trabalha com eletricidade, em altura ou em espaço confinado e precisa de treinamento."],
     nome: "Segurança do Trabalho",
+    assunto: "segurança do trabalho",
     icone: "fa-solid fa-helmet-safety",
     curto: "PGR, LTCAT, laudos de insalubridade e periculosidade e treinamentos.",
-    title: "Segurança do Trabalho em Ibirá e região | PGR, LTCAT e Laudos | RD Engenharia",
+    title: "PGR, LTCAT e Laudos em Ibirá e região | RD Engenharia",
     description:
       "PGR, LTCAT, laudos de insalubridade e periculosidade, APR e treinamentos de NRs para empresas de Ibirá e região. Peça orçamento pelo WhatsApp.",
     h1: "Segurança do Trabalho para empresas da região",
@@ -89,9 +90,10 @@ export const AREAS = [
     slug: "corpo-de-bombeiros",
     situacoes: ["Meu AVCB venceu ou está perto de vencer.","Vou abrir um comércio e não sei se preciso de AVCB ou de CLCB.","O imóvel precisa de projeto de rota de fuga, hidrantes ou alarme de incêndio.","O imóvel não tem licença do Corpo de Bombeiros."],
     nome: "Corpo de Bombeiros (AVCB e CLCB)",
+    assunto: "AVCB e CLCB",
     icone: "fa-solid fa-fire-extinguisher",
     curto: "Projetos de segurança contra incêndio, AVCB e CLCB.",
-    title: "AVCB e CLCB em Ibirá e região | Projeto de Incêndio | RD Engenharia",
+    title: "AVCB, CLCB e Projeto de Incêndio em Ibirá | RD Engenharia",
     description:
       "Projeto de segurança contra incêndio (PSCIP), AVCB e CLCB para comércios, indústrias e imóveis de Ibirá e região. Peça orçamento pelo WhatsApp.",
     h1: "Projeto de incêndio, AVCB e CLCB",
@@ -154,9 +156,10 @@ export const AREAS = [
     slug: "engenharia-civil",
     situacoes: ["Construí sem projeto aprovado e quero regularizar.","Vou vender ou financiar o imóvel e preciso de laudo de vistoria ou de avaliação.","Vejo trincas ou infiltração e quero saber a causa.","Vou construir ou reformar e preciso de projeto e de alvará."],
     nome: "Engenharia Civil e Regularização",
+    assunto: "obra e regularização",
     icone: "fa-solid fa-building",
     curto: "Projetos, regularização de obras, laudos, inspeções e gerenciamento.",
-    title: "Engenharia Civil e Regularização de Obras em Ibirá e região | RD Engenharia",
+    title: "Projetos e Regularização de Obras em Ibirá | RD Engenharia",
     description:
       "Projetos, regularização de obra (as-built e habite-se), laudos, perícias, inspeção predial e gerenciamento de obras em Ibirá e região.",
     h1: "Engenharia civil, projetos e regularização",
@@ -226,9 +229,10 @@ export const AREAS = [
     slug: "meio-ambiente-topografia",
     situacoes: ["Vou vender ou dividir o imóvel rural e preciso de georreferenciamento.","Nunca fiz o CAR da propriedade.","Uso água de poço, represa ou rio e quero saber se preciso de outorga.","Preciso de planta ou das medidas do terreno antes de construir ou dividir."],
     nome: "Meio Ambiente, Topografia e Imóvel Rural",
+    assunto: "imóvel rural e topografia",
     icone: "fa-solid fa-leaf",
     curto: "CAR, licenciamento, outorga, resíduos, topografia e georreferenciamento.",
-    title: "CAR, Georreferenciamento e Topografia em Ibirá e região | RD Engenharia",
+    title: "CAR, Georreferenciamento e Topografia | RD Engenharia",
     description:
       "CAR, georreferenciamento de imóvel rural, topografia, licenciamento ambiental, outorga e gestão de resíduos em Ibirá e região.",
     h1: "Meio ambiente, topografia e imóvel rural",
@@ -333,7 +337,7 @@ export const GUIAS = [
   {
     tipo: "guia",
     slug: "guias/georreferenciamento-quando-e-obrigatorio",
-    title: "Georreferenciamento de imóvel rural: quando é obrigatório? | Guia RD Engenharia",
+    title: "Georreferenciamento: quando é obrigatório? | RD Engenharia",
     description:
       "Saiba o que é o georreferenciamento de imóvel rural, quando ele é exigido pelo INCRA e como se preparar. Guia da RD Engenharia, Ibirá/SP.",
     h1: "Georreferenciamento de imóvel rural: quando é obrigatório?",
@@ -367,7 +371,7 @@ export const GUIAS = [
   {
     tipo: "guia",
     slug: "guias/o-que-e-art-anotacao-de-responsabilidade-tecnica",
-    title: "O que é ART (Anotação de Responsabilidade Técnica)? | Guia RD Engenharia",
+    title: "O que é ART e quando é obrigatória? | RD Engenharia",
     description:
       "Entenda o que é a ART, quando ela é obrigatória e por que ela protege quem contrata um serviço de engenharia.",
     h1: "O que é ART e quando ela é obrigatória?",
@@ -434,6 +438,50 @@ export const GUIAS = [
   },
 ];
 
+// "Em resumo" no topo de cada guia: 3 pontos tirados do próprio texto do guia (nada novo aqui).
+export const RESUMOS_GUIAS = {
+  "guias/quando-minha-empresa-precisa-de-pgr": [
+    "O PGR é o documento da NR-1 que identifica os perigos, avalia os riscos e define as medidas de controle.",
+    "Em regra, é exigido de quem contrata empregados; micro e pequenas empresas de menor risco podem ter tratamento simplificado.",
+    "Deve ser revisado periodicamente e sempre que algo relevante muda na empresa.",
+  ],
+  "guias/avcb-ou-clcb-qual-a-diferenca": [
+    "AVCB e CLCB são as duas licenças mais comuns do Corpo de Bombeiros no Estado de São Paulo.",
+    "O CLCB tem processo mais simples e vale para edificações menores e de baixo risco.",
+    "O enquadramento depende da área, dos pavimentos e do uso do imóvel, e as duas licenças precisam ser renovadas.",
+  ],
+  "guias/georreferenciamento-quando-e-obrigatorio": [
+    "É o levantamento dos limites do imóvel rural com coordenadas oficiais, certificado pelo INCRA.",
+    "É exigido em alterações na matrícula, como desmembramento, parcelamento ou transferência.",
+    "Para começar, separe a matrícula, o CCIR e o ITR atualizados.",
+  ],
+  "guias/laudo-de-insalubridade-como-funciona": [
+    "O laudo comprova se há exposição a agentes nocivos acima dos limites da NR-15.",
+    "Pela CLT, é feito por médico do trabalho ou engenheiro de segurança do trabalho.",
+    "Indica o grau do adicional, quando devido, e ajuda a empresa a se defender em ações trabalhistas.",
+  ],
+  "guias/o-que-e-art-anotacao-de-responsabilidade-tecnica": [
+    "A ART registra no CREA quem é o responsável técnico por um serviço de engenharia.",
+    "Em geral, é exigida em projetos, obras, laudos, perícias, topografia e projetos de incêndio.",
+    "Vale pedir a ART junto com o orçamento e guardar uma cópia.",
+  ],
+  "guias/habite-se-o-que-e-e-como-conseguir": [
+    "É o documento da prefeitura que atesta que a obra foi concluída conforme o projeto aprovado.",
+    "É pedido para averbar a construção na matrícula, vender ou financiar o imóvel.",
+    "Obra sem projeto aprovado começa pelo levantamento do que existe (projeto como construído).",
+  ],
+  "guias/car-cadastro-ambiental-rural": [
+    "O CAR é o registro eletrônico e obrigatório dos imóveis rurais, previsto no Código Florestal.",
+    "É a base da regularização ambiental e, em geral, é exigido para obter crédito rural.",
+    "Ter o CAR não significa estar regular: os dados precisam bater com a realidade do imóvel.",
+  ],
+  "guias/ltcat-e-ppp-para-que-servem": [
+    "O LTCAT identifica os agentes nocivos do trabalho e avalia a exposição dos trabalhadores.",
+    "O PPP é o documento individual de cada trabalhador, feito com base no LTCAT e em outros programas.",
+    "Os dois são usados pela Previdência para avaliar a atividade especial na aposentadoria.",
+  ],
+};
+
 
 export const PAGINAS = [
   ...AREAS,
@@ -441,14 +489,14 @@ export const PAGINAS = [
   {
     tipo: "onde",
     slug: "onde-atendemos",
-    title: "Onde atendemos: Ibirá e região, presencial e online | RD Engenharia",
+    title: "Onde atendemos: Ibirá e região | RD Engenharia",
     description: "Atendemos presencialmente e online em Ibirá e região. Conte onde fica o seu imóvel ou a sua empresa pelo WhatsApp e confirmamos o atendimento.",
     h1: "Atendemos presencialmente e online em Ibirá e região",
   },
   {
     tipo: "quiz",
     slug: "o-que-preciso",
-    title: "O que minha empresa ou imóvel precisa? Passo a passo | RD Engenharia",
+    title: "O que o seu caso precisa? Passo a passo | RD Engenharia",
     description:
       "Responda uma pergunta por vez e descubra quais documentos e serviços técnicos o seu caso provavelmente exige. Depois peça orçamento pelo WhatsApp.",
     h1: "Descubra o que o seu caso precisa",
@@ -502,8 +550,14 @@ export const URL_AVALIACOES_GOOGLE =
 export const ENDERECO = "Rua José Alves de Mello, 770, Centro, Ibirá/SP";
 export const URL_COMO_CHEGAR = "https://www.google.com/maps/dir/?api=1&destination=-21.0824485,-49.2433844";
 export const MAPA_EMBED = "https://maps.google.com/maps?q=-21.0824485,-49.2433844&z=16&output=embed";
-// Nota verificada no perfil do Google em 20/10/2026. Atualizar à mão; não usar marcação AggregateRating.
+// Nota verificada no perfil do Google em 20/10/2026 e de novo em 26/10/2026. Atualizar à mão; não usar marcação AggregateRating.
 export const NOTA_GOOGLE = "5,0 no Google · 8 avaliações";
+
+// Avaliações do Google mostradas na página inicial. O Rafael autorizou em 26/10/2026 publicar os textos
+// e os primeiros nomes. Regras: texto EXATAMENTE como está no Google (sem editar nem resumir), só o
+// primeiro nome, só avaliações que têm texto. Sem marcação Review/AggregateRating no JSON-LD.
+// Formato: { nome: "Primeiro nome", texto: "Texto como está no Google", estrelas: 5 }
+export const AVALIACOES = [];
 
 // Orientação de prazo mostrada na página do lembrete. Cada documento traz a própria validade;
 // a norma só fixa prazo em alguns casos. Confirmamos o prazo exato de cada caso na renovação.
@@ -665,6 +719,45 @@ export const VISUAL = {
       { t: "Entrega e acompanhamento", d: "Conduzimos o processo no órgão responsável até a conclusão." },
     ],
   },
+};
+
+// Comparativo AVCB x CLCB (página de Corpo de Bombeiros e guia). Só reúne o que o site já afirma
+// nos textos da área e do guia; os limites exatos de área, altura e ocupação NÃO são citados aqui.
+export const COMPARATIVO_BOMBEIROS = {
+  colunas: [
+    { sigla: "AVCB", nome: "Auto de Vistoria do Corpo de Bombeiros" },
+    { sigla: "CLCB", nome: "Certificado de Licença do Corpo de Bombeiros" },
+  ],
+  linhas: [
+    {
+      t: "O que é",
+      v: [
+        "Atesta que a edificação cumpre as medidas de segurança contra incêndio exigidas para ela.",
+        "Licença do Corpo de Bombeiros com processo mais simples.",
+      ],
+    },
+    {
+      t: "Para quais imóveis",
+      v: [
+        "Imóveis que não se enquadram no processo simplificado, como muitos comércios, indústrias, escolas, clínicas e condomínios.",
+        "Edificações menores e de baixo risco, dentro dos limites de área, altura e ocupação da legislação paulista.",
+      ],
+    },
+    {
+      t: "Como é emitido",
+      v: ["Depois da análise do projeto e da vistoria do Corpo de Bombeiros.", "Por um processo simplificado, conforme as regras do Corpo de Bombeiros."],
+    },
+    {
+      t: "Projeto técnico",
+      v: ["Em geral, exige o projeto de segurança contra incêndio (PSCIP), com ART.", "A documentação exigida depende do enquadramento do imóvel."],
+    },
+    {
+      t: "Validade",
+      v: ["Tem prazo de validade e precisa ser renovado.", "Também tem prazo de validade e precisa ser renovado."],
+    },
+  ],
+  nota: "Resumo geral, conforme a legislação paulista conhecida em 2026. O enquadramento depende da área construída, da altura e do uso do imóvel, e a equipe confirma cada caso.",
+  zap: "Olá! Quero saber se o meu imóvel precisa de AVCB ou de CLCB.\nUso do imóvel (comércio, indústria, escola etc.): \nÁrea construída (m²): \nNúmero de pavimentos: \nCidade: ",
 };
 
 // Foto do responsável técnico. Quando houver o arquivo em public/ (ex.: "/rafael.webp"), coloque o caminho aqui.

@@ -1,0 +1,36 @@
+/* Folha de estilo de entrada.
+ * Ordem das camadas: tema do Tailwind, o CSS do site (styles.css, inteiro e sem mudanças) e, por
+ * último, as classes utilitárias do Tailwind usadas pelos componentes de components/ui.
+ * O "preflight" (reset de estilos do Tailwind) NÃO é importado: ele mudaria o visual do site todo.
+ */
+@layer theme, site, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "./styles.css" layer(site);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+/* O Tailwind só lê os componentes de components/ui. Se lesse o site inteiro, geraria classes com o
+ * mesmo nome das do site (ex.: .container) e mudaria o layout das páginas. */
+@source "./components/ui";
+@source "./lib";
+
+/* Tema escuro do site: data-theme="dark" (escolhido) ou o sistema, quando não há escolha. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Nomes de cor do shadcn apontando para as cores do site (seguem o tema claro e escuro sozinhos). */
+@theme inline {
+  --color-background: var(--papel);
+  --color-foreground: var(--tinta);
+  --color-card: var(--branco);
+  --color-card-foreground: var(--tinta);
+  --color-muted: var(--linha);
+  --color-muted-foreground: var(--cinza);
+  --color-border: var(--linha);
+  --color-input: var(--linha);
+  --color-ring: var(--realce);
+  --color-primary: var(--verde);
+  --color-primary-foreground: #ffffff;
+  --color-accent: var(--verde-claro);
+  --color-accent-foreground: var(--tinta);
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+}

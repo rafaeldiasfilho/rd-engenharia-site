@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Paginas.jsx";
 import { achaPagina, achaArea } from "./paginas";
-import "./styles.css";
+import "./index.css";
 import { inject } from "@vercel/analytics";
 
 inject();
@@ -31,6 +31,14 @@ if (slug === "admin") {
     raiz,
     <React.StrictMode>
       <PaginaView pagina={pagina} />
+    </React.StrictMode>
+  );
+} else if (raiz.hasChildNodes()) {
+  // Página inicial pré-renderizada (dist/index.html já traz o conteúdo).
+  ReactDOM.hydrateRoot(
+    raiz,
+    <React.StrictMode>
+      <App />
     </React.StrictMode>
   );
 } else {

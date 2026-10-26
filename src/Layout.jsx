@@ -1,10 +1,11 @@
 import Icone from "./Icone";
 import IconeArea from "./Icones";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
+import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
+import { zap } from "./contato";
+import { BotaoBusca } from "./Busca";
 
-export const WHATSAPP = "5517997211208";
-export const zap = (texto) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
+export { WHATSAPP, zap } from "./contato";
 
 export function BotaoZap({ texto, rotulo, className = "" }) {
   return (
@@ -156,6 +157,8 @@ export function Cabecalho({ atual = "" }) {
             Onde atendemos
           </a>
         </nav>
+
+        <BotaoBusca />
 
         <a
           className="btn btn-zap topo-zap"
@@ -355,7 +358,7 @@ export function Rodape() {
           <p>Responsável técnico: Rafael Antonio Dias · CREA-SP 5071022821</p>
         </div>
         <div>
-          <h4>Serviços</h4>
+          <h3 className="rodape-titulo">Serviços</h3>
           <ul>
             {AREAS.map((a) => (
               <li key={a.slug}>
@@ -367,14 +370,14 @@ export function Rodape() {
           </ul>
         </div>
         <div>
-          <h4>Onde atendemos</h4>
+          <h3 className="rodape-titulo">Onde atendemos</h3>
           <p>Atendemos presencialmente e online em Ibirá e região.</p>
           <p>
             <a href="/onde-atendemos">Ver onde atendemos</a>
           </p>
         </div>
         <div>
-          <h4>Mais</h4>
+          <h3 className="rodape-titulo">Mais</h3>
           <ul>
             <li>
               <a href="/o-que-preciso">Descubra o que o seu caso precisa</a>
@@ -406,6 +409,10 @@ export function Rodape() {
         <p>© RD Engenharia Segurança e Meio Ambiente</p>
         <SeletorTema />
       </div>
+      {/* Marca gigante no fim da página, decorativa (padrão de rodapé comum no 21st.dev) */}
+      <p className="rodape-marca-gigante" aria-hidden="true">
+        RD Engenharia
+      </p>
     </footer>
   );
 }
@@ -441,16 +448,29 @@ function useRevelar() {
   }, []);
 }
 
-export function Casca({ children, atual = "" }) {
-  useRevelar();
-  return (
-    <>
-      <a className="pular" href="#conteudo">
-        Pular para o conteúdo
-      </a>
-      <Cabecalho atual={atual} />
-      <main id="conteudo">{children}</main>
-      <Rodape />
+// Área da página atual: a própria área ou a área do guia. Muda o botão flutuante do WhatsApp.
+function areaDaPagina(atual) {
+  const guia = GUIAS.find((g) => g.slug === atual);
+  return AREAS.find((a) => a.slug === (guia ? guia.area : atual)) || null;
+}
+
+// Botão flutuante do WhatsApp. Nas páginas de área e de guia vira uma pílula com o assunto
+// ("Falar sobre AVCB e CLCB") e a mensagem já sai com a área. A pílula só aparece depois que o
+// topo (que já tem o botão de orçamento) sai da tela; sem JavaScript ela fica sempre visível.
+function ZapFlutuante({ atual }) {
+  const area = areaDaPagina(atual);
+  const [longe, setLonge] = useState(true);
+
+  useEffect(() => {
+    if (!area) return undefined;
+    const ver = () => setLonge(window.scrollY > window.innerHeight * 0.7);
+    ver();
+    window.addEventListener("scroll", ver, { passive: true });
+    return () => window.removeEventListener("scroll", ver);
+  }, [area]);
+
+  if (!area) {
+    return (
       <a
         className="zap-flutuante"
         href={zap("Olá! Gostaria de um orçamento.")}
@@ -460,6 +480,65 @@ export function Casca({ children, atual = "" }) {
       >
         <Icone nome="fa-brands fa-whatsapp" />
       </a>
+    );
+  }
+  return (
+    <a
+      className={`zap-flutuante zap-pilula ${longe ? "" : "escondido"}`}
+      href={zap(`Olá! Gostaria de um orçamento na área de ${area.nome}.`)}
+      target="_blank"
+      rel="noopener noreferrer"
+      tabIndex={longe ? undefined : -1}
+      aria-hidden={longe ? undefined : "true"}
+      aria-label={`Falar sobre ${area.assunto} pelo WhatsApp`}
+    >
+      <Icone nome="fa-brands fa-whatsapp" />
+      <span>Falar sobre {area.assunto}</span>
+    </a>
+  );
+}
+
+// Links com âncora (ex.: um serviço aberto pela busca): garante a rolagem até o item depois que a
+// página monta, porque o navegador pode tentar rolar antes de o conteúdo estar pronto.
+function useAncora() {
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) requestAnimationFrame(() => el.scrollIntoView({ block: "start" }));
+  }, []);
+}
+
+// Brilho que segue o mouse nos cartões com a classe "spot" (só em telas com mouse). Um único ouvinte
+// na página: grava a posição do ponteiro em --mx/--my do cartão, e o CSS desenha o brilho.
+function useHolofote() {
+  useEffect(() => {
+    if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return undefined;
+    const mover = (e) => {
+      const el = e.target.closest && e.target.closest(".spot");
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    document.addEventListener("pointermove", mover, { passive: true });
+    return () => document.removeEventListener("pointermove", mover);
+  }, []);
+}
+
+export function Casca({ children, atual = "" }) {
+  useRevelar();
+  useAncora();
+  useHolofote();
+  return (
+    <>
+      <a className="pular" href="#conteudo">
+        Pular para o conteúdo
+      </a>
+      <Cabecalho atual={atual} />
+      <main id="conteudo">{children}</main>
+      <Rodape />
+      <ZapFlutuante atual={atual} />
     </>
   );
 }

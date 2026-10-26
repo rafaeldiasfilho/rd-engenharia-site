@@ -1,6 +1,6 @@
 import Icone from "./Icone";
-import { useEffect, useState } from "react";
-import { AREAS, GUIAS, slidesProjetos, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, achaArea } from "./paginas";
+import { useEffect, useRef, useState } from "react";
+import { AREAS, GUIAS, slidesProjetos, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, COMPARATIVO_BOMBEIROS, RESUMOS_GUIAS, achaArea } from "./paginas";
 import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
 import { Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
@@ -10,6 +10,67 @@ import DocsIlustracao, { FolhaSvg, LEGENDA_EXEMPLO } from "./DocsIlustracao";
 import HeroFundo from "./HeroFundo";
 import IconeArea from "./Icones";
 import { slidesDe, FOTOS_EM_USO, caminho } from "./fotos";
+import { ancora } from "./Busca";
+import Perguntas from "./Perguntas";
+
+// Bloco que no celular começa recolhido (com um botão para abrir) e no computador fica sempre aberto.
+// Vem aberto no HTML (bom para o Google e para quem não tem JavaScript); fecha depois de montar se a tela é estreita.
+function Recolhivel({ rotulo, children }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current && window.matchMedia && window.matchMedia("(max-width: 700px)").matches) ref.current.open = false;
+  }, []);
+  return (
+    <details ref={ref} className="recolhe" open>
+      <summary>
+        <span>{rotulo}</span>
+      </summary>
+      {children}
+    </details>
+  );
+}
+
+// AVCB x CLCB lado a lado. No celular, cada linha vira um bloco com as duas colunas lado a lado.
+function Comparativo() {
+  const c = COMPARATIVO_BOMBEIROS;
+  return (
+    <div className="comparativo rev" id="avcb-ou-clcb">
+      <h3>AVCB ou CLCB: lado a lado</h3>
+      <div className="comparativo-rolar">
+        <table>
+          <caption className="sr-only">Comparação entre AVCB e CLCB</caption>
+          <thead>
+            <tr>
+              <td />
+              {c.colunas.map((col) => (
+                <th key={col.sigla} scope="col">
+                  <strong>{col.sigla}</strong>
+                  <small>{col.nome}</small>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {c.linhas.map((l) => (
+              <tr key={l.t}>
+                <th scope="row">{l.t}</th>
+                {l.v.map((v, n) => (
+                  <td key={c.colunas[n].sigla} data-col={c.colunas[n].sigla}>
+                    {v}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="nota-fina">{c.nota}</p>
+      <div className="acoes">
+        <BotaoZap texto={c.zap} rotulo="Descobrir qual é o meu caso" />
+      </div>
+    </div>
+  );
+}
 
 const pad = (n) => String(n + 1).padStart(2, "0");
 
@@ -85,6 +146,9 @@ function PaginaArea({ pagina }) {
   const civil = pagina.slug === "engenharia-civil";
   const equip = EQUIPAMENTOS[pagina.slug];
   const temFotosEquip = slidesDe(`equip-${pagina.slug}`).length > 0;
+  // Numeração das seções na ordem em que aparecem (01, 02, ...), sem números fixos.
+  let secoes = 0;
+  const num = () => pad(secoes++);
 
   return (
     <>
@@ -107,7 +171,6 @@ function PaginaArea({ pagina }) {
         itens={[
           { id: "situacoes", rotulo: "Situações comuns" },
           { id: "o-que-fazemos", rotulo: "O que fazemos" },
-          { id: "documentos-exemplo", rotulo: "Exemplos de documentos" },
           { id: "equipamentos", rotulo: "Equipamentos" },
           { id: "na-pratica", rotulo: "Na prática" },
           { id: "atendimento", rotulo: "Como atendemos" },
@@ -148,10 +211,10 @@ function PaginaArea({ pagina }) {
       )}
 
       {pagina.situacoes && (
-        <Secao id="situacoes" n="01" rotulo="Situações comuns" titulo="Você se reconhece em alguma destas?">
+        <Secao id="situacoes" n={num()} rotulo="Situações comuns" titulo="Você se reconhece em alguma destas?">
           <ul className="situacoes-lista">
             {pagina.situacoes.map((t) => (
-              <li key={t} className="rev">
+              <li key={t} className="rev spot">
                 <IconeArea slug={pagina.slug} tamanho={26} />
                 <span>{t}</span>
               </li>
@@ -167,13 +230,26 @@ function PaginaArea({ pagina }) {
         </Secao>
       )}
 
-      <Secao id="o-que-fazemos" n="02" rotulo="Serviços" titulo={<>O que fazemos nesta área.</>}>
-        <ol className="linhas">
+      {/* Serviços e documentos juntos: cada cartão traz a folha de exemplo do que o cliente recebe.
+          Antes eram duas seções que repetiam a mesma lista de serviços. */}
+      <Secao
+        id="o-que-fazemos"
+        n={num()}
+        rotulo="Serviços"
+        titulo={<>O que fazemos nesta área.</>}
+        lead="Cada cartão mostra uma folha de exemplo do documento que você recebe."
+      >
+        <ol className="servicos-grade">
           {pagina.itens.map((item, n) => (
-            <li className={`linha rev ${""}`} key={item.nome}>
-              <span className="linha-n">{pad(n)}</span>
-              <h3>{item.nome}</h3>
-              <div className="linha-texto">
+            <li className="servico-cartao rev spot" key={item.nome} id={ancora(item.nome)}>
+              {item.exemplo && (
+                <div className="servico-folha" aria-hidden="true">
+                  <FolhaSvg m={item.exemplo} nome={item.nome} />
+                </div>
+              )}
+              <div className="servico-corpo">
+                <span className="servico-n">{pad(n)}</span>
+                <h3>{item.nome}</h3>
                 <p>{item.texto}</p>
                 <p className="item-quem">
                   <strong>Para quem:</strong> {item.quem}
@@ -190,29 +266,13 @@ function PaginaArea({ pagina }) {
             </li>
           ))}
         </ol>
-      </Secao>
-
-      <Secao
-        id="documentos-exemplo"
-        n="03"
-        rotulo="Documentos"
-        titulo="Veja como são os documentos."
-        lead="Folhas de exemplo de cada serviço desta área. Deslize ou arraste para ver todas."
-        className="sec-alt"
-      >
-        <Carrossel
-          itens={pagina.itens
-            .filter((it) => it.exemplo)
-            .map((it) => ({ key: it.nome, node: <FolhaSvg m={it.exemplo} nome={it.nome} />, legenda: it.nome, nota: LEGENDA_EXEMPLO }))}
-          rotulo={`Exemplos de documentos da área de ${pagina.nome}`}
-          aspecto="158 / 218"
-          className="car-folhas"
-          auto={false}
-        />
+        <p className="nota-fina">As folhas são exemplos ilustrativos, não são documentos reais.</p>
+        {pagina.slug === "corpo-de-bombeiros" && <Comparativo />}
       </Secao>
 
       {equip && (
-        <Secao id="equipamentos" n="04" rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
+        <Secao id="equipamentos" n={num()} rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
+          <Recolhivel rotulo="Ver os equipamentos">
           <div className={`equip ${temFotosEquip ? "com-fotos" : ""}`}>
             <div className="equip-texto rev">
               <p className="lead">{equip.texto}</p>
@@ -235,20 +295,21 @@ function PaginaArea({ pagina }) {
             )}
           </div>
           <p className="nota-fina equip-nota">{NOTA_EQUIPAMENTOS}</p>
+          </Recolhivel>
         </Secao>
       )}
 
       <Secao
         id="na-pratica"
-        n="05"
+        n={num()}
         rotulo="Na prática"
         titulo={civil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
         lead={civil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
       >
-        {civil ? <Exemplos /> : <Ilustracao slug={pagina.slug} />}
+        <Recolhivel rotulo={civil ? "Ver os projetos" : "Ver os exemplos"}>{civil ? <Exemplos /> : <Ilustracao slug={pagina.slug} />}</Recolhivel>
       </Secao>
 
-      <Secao id="atendimento" n="06" rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
+      <Secao id="atendimento" n={num()} rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
         {visual && (
           <ol className="etapas-ed linha-tempo rev">
             {visual.etapas.map((e, n) => (
@@ -258,6 +319,11 @@ function PaginaArea({ pagina }) {
                 </span>
                 <h3>{e.t}</h3>
                 <p>{e.d}</p>
+                {n === 0 && (
+                  <a className="btn btn-zap btn-peq" href={zap(zapArea)} target="_blank" rel="noopener noreferrer">
+                    <Icone nome="fa-brands fa-whatsapp" /> Começar agora
+                  </a>
+                )}
               </li>
             ))}
           </ol>
@@ -291,15 +357,8 @@ function PaginaArea({ pagina }) {
         </div>
       </Secao>
 
-      <Secao id="duvidas" n="07" rotulo="Dúvidas" titulo="Perguntas frequentes.">
-        <div className="faq-lista rev">
-          {pagina.faq.map((f) => (
-            <details className="faq-item" key={f.q}>
-              <summary>{f.q}</summary>
-              <p>{f.a}</p>
-            </details>
-          ))}
-        </div>
+      <Secao id="duvidas" n={num()} rotulo="Dúvidas" titulo="Perguntas frequentes.">
+        <Perguntas itens={pagina.faq} />
       </Secao>
 
       <Final zapTexto={zapArea} relacionadas={relacionadas} />
@@ -314,21 +373,24 @@ function PaginaGuia({ pagina }) {
   return (
     <>
       <Topo migalha={[{ rotulo: "Guias", href: "/guias" }, { rotulo: pagina.h1 }]} eyebrow={area ? `Guia · ${area.nome}` : "Guia"} titulo={pagina.h1} />
-      <SecoesNav
-        rotulo="Neste guia"
-        itens={[
-          { id: "guia", rotulo: "O guia" },
-          { id: "aviso", rotulo: "Importante" },
-          { id: "proximo-passo", rotulo: "Próximo passo" },
-        ]}
-      />
       <section className="sec artigo-sec" id="guia" aria-label="Texto do guia">
         <div className="container container-leitura artigo">
+          {RESUMOS_GUIAS[pagina.slug] && (
+            <aside className="resumo-guia" aria-label="Em resumo">
+              <p className="rotulo-mini">Em resumo</p>
+              <ul>
+                {RESUMOS_GUIAS[pagina.slug].map((r) => (
+                  <li key={r}>{r}</li>
+                ))}
+              </ul>
+            </aside>
+          )}
           {pagina.paragrafos.map((p, n) => (
             <p key={p.slice(0, 40)} className={n === 0 ? "artigo-abre" : ""}>
               {p}
             </p>
           ))}
+          {pagina.slug === "guias/avcb-ou-clcb-qual-a-diferenca" && <Comparativo />}
         </div>
       </section>
       <section className="sec-fina" id="aviso" aria-label="Aviso">
@@ -435,11 +497,21 @@ function ultimoDiaDoMes(anoMes) {
   return `${anoMes}-${String(d).padStart(2, "0")}`;
 }
 
+const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
 function PaginaLembrete({ pagina }) {
-  const [f, setF] = useState({ nome: "", whatsapp: "", documento: DOCUMENTOS_LEMBRETE[0], mes: "", aceite: false, site: "" });
+  const [f, setF] = useState({ nome: "", whatsapp: "", documento: DOCUMENTOS_LEMBRETE[0], mesNum: "", ano: "", aceite: false, site: "" });
   const [estado, setEstado] = useState("parado");
   const [erro, setErro] = useState("");
+  // Anos calculados no navegador (o HTML pré-gerado não fixa o ano da construção do site).
+  const [anos, setAnos] = useState([]);
+  useEffect(() => {
+    const a = new Date().getFullYear();
+    setAnos(Array.from({ length: 6 }, (_, i) => String(a + i)));
+  }, []);
   const mudar = (campo) => (e) => setF((x) => ({ ...x, [campo]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
+  // "Mês do vencimento" em duas listas (mês e ano): o campo type="month" não funciona no Safari do computador.
+  const mesAno = f.mesNum && f.ano ? `${f.ano}-${f.mesNum}` : "";
 
   const enviar = async (e) => {
     e.preventDefault();
@@ -465,7 +537,7 @@ function PaginaLembrete({ pagina }) {
         nome: f.nome.trim(),
         whatsapp: numero,
         documento: f.documento,
-        vencimento: f.mes ? ultimoDiaDoMes(f.mes) : null,
+        vencimento: mesAno ? ultimoDiaDoMes(mesAno) : null,
         consentimento: true,
       });
       setEstado("ok");
@@ -484,7 +556,8 @@ function PaginaLembrete({ pagina }) {
         texto="Deixe o seu contato e o vencimento do documento. Avisamos pelo WhatsApp com antecedência, para você renovar sem correria."
       />
       <section className="sec" aria-label="Formulário do lembrete">
-        <div className="container container-leitura">
+        <div className="container lembrete-grade">
+          <div>
           {estado === "ok" ? (
             <div className="aviso-ok" role="status">
               <h2>Pedido recebido</h2>
@@ -522,10 +595,27 @@ function PaginaLembrete({ pagina }) {
                 </select>
                 {DICAS_LEMBRETE[f.documento] && <small className="dica-doc">{DICAS_LEMBRETE[f.documento]}</small>}
               </label>
-              <label>
-                <span>Mês do vencimento (se souber)</span>
-                <input type="month" value={f.mes} onChange={mudar("mes")} />
-              </label>
+              <fieldset className="campo-mes">
+                <legend>Mês do vencimento (se souber)</legend>
+                <div>
+                  <select aria-label="Mês" value={f.mesNum} onChange={mudar("mesNum")}>
+                    <option value="">Mês</option>
+                    {MESES.map((m, i) => (
+                      <option key={m} value={String(i + 1).padStart(2, "0")}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                  <select aria-label="Ano" value={f.ano} onChange={mudar("ano")}>
+                    <option value="">Ano</option>
+                    {anos.map((a) => (
+                      <option key={a} value={a}>
+                        {a}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </fieldset>
               <label className="oculto" aria-hidden="true">
                 <span>Não preencha este campo</span>
                 <input tabIndex={-1} autoComplete="off" value={f.site} onChange={mudar("site")} />
@@ -547,6 +637,24 @@ function PaginaLembrete({ pagina }) {
               </button>
             </form>
           )}
+          </div>
+          <aside className="lembrete-como rev" aria-label="Como funciona o lembrete">
+            <p className="rotulo-mini">Como funciona</p>
+            <ol>
+              <li>
+                <strong>Você informa</strong> o documento e, se souber, o mês do vencimento.
+              </li>
+              <li>
+                <strong>Guardamos com segurança</strong>, em um banco de dados que só a equipe da RD acessa.
+              </li>
+              <li>
+                <strong>Avisamos pelo WhatsApp</strong> antes do vencimento, para dar tempo de renovar.
+              </li>
+            </ol>
+            <p className="lembrete-como-nota">
+              É gratuito e você pode pedir a exclusão dos seus dados quando quiser. <a href="/privacidade">Política de privacidade</a>.
+            </p>
+          </aside>
         </div>
       </section>
       <Final
@@ -728,13 +836,27 @@ function PaginaOnde({ pagina }) {
         </div>
       </header>
 
-      <Secao
-        id="atendimento-regiao"
-        n="01"
-        rotulo="Região"
-        titulo="Presencial e online, em Ibirá e região."
-        lead="Não tem certeza se o seu endereço está na região? Chame no WhatsApp e confirmamos."
-      />
+      {/* Antes esta seção só repetia o título da página; agora explica as duas formas de atendimento. */}
+      <Secao id="atendimento-regiao" n="01" rotulo="Formas de atendimento" titulo="Como funciona o atendimento.">
+        <ul className="formas-grade">
+          <li className="formas-cartao rev spot">
+            <p className="rotulo-mini">Presencial</p>
+            <h3>No local, quando o serviço exige.</h3>
+            <p>Visitas, medições, levantamentos e vistorias no imóvel, na empresa ou na propriedade rural.</p>
+          </li>
+          <li className="formas-cartao rev spot">
+            <p className="rotulo-mini">Online</p>
+            <h3>O resto, pelo WhatsApp.</h3>
+            <p>Conversa, orçamento, envio de fotos e documentos e acompanhamento, sem precisar sair de casa.</p>
+          </li>
+          <li className="formas-cartao formas-cartao-destaque rev">
+            <p className="rotulo-mini">Seu endereço</p>
+            <h3>Não sabe se está na região?</h3>
+            <p>Conte onde fica o imóvel ou a empresa e confirmamos o atendimento.</p>
+            <BotaoZap texto={zapOnde} rotulo="Perguntar" />
+          </li>
+        </ul>
+      </Secao>
 
       <section className="sec sec-alt" id="mapa" aria-labelledby="mapa-t">
         <div className="container mapa-grade">

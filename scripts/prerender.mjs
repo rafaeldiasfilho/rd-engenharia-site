@@ -14,7 +14,7 @@ const vite = await createServer({
 });
 
 try {
-  const { render, render404, renderImpressao, PAGINAS, AREAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
+  const { render, render404, renderImpressao, renderHome, PAGINAS, AREAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
   const modelo = fs.readFileSync(path.join(dist, "index.html"), "utf8");
   const esc = (t) => t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   const jsonScript = (obj) =>
@@ -122,6 +122,10 @@ try {
     .replace("</head>", `    <title>Área interna | RD Engenharia</title>\n    <meta name="robots" content="noindex, nofollow" />\n  </head>`);
   fs.mkdirSync(path.join(dist, "admin"), { recursive: true });
   fs.writeFileSync(path.join(dist, "admin", "index.html"), htmlAdmin);
+
+  // Página inicial: o mesmo modelo (com title, description e JSON-LD da home), agora com o conteúdo pronto.
+  // Fica por último porque o modelo das outras páginas foi lido do index.html original acima.
+  fs.writeFileSync(path.join(dist, "index.html"), modelo.replace('<div id="root"></div>', `<div id="root">${renderHome()}</div>`));
 
   const hoje = new Date().toISOString().slice(0, 10);
   const urls = ["", ...PAGINAS.filter((p) => !["privacidade"].includes(p.tipo)).map((p) => p.slug)];
