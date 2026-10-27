@@ -1,6 +1,7 @@
 import Icone from "./Icone";
 import IconeArea from "./Icones";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
 import { zap } from "./contato";
 import { BotaoBusca } from "./Busca";
@@ -229,9 +230,12 @@ export function Migalha({ itens }) {
 }
 
 // Índice da página: fica visível ao rolar e marca a seção em que o leitor está.
+// Desenho: pílula de vidro líquido (components/ui/liquid-glass-navbar). A gota segue a seção à vista;
+// depois de um clique, o observador espera a rolagem terminar para a gota não passear pelas seções do meio.
 export function SecoesNav({ itens, rotulo = "Nesta página" }) {
-  const [ativo, setAtivo] = useState(itens[0]?.id);
+  const [ativo, setAtivo] = useState(0);
   const lista = useRef(null);
+  const trava = useRef(0);
   const chave = itens.map((i) => i.id).join("|");
 
   useEffect(() => {
@@ -241,8 +245,9 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
     const io = new IntersectionObserver(
       (entradas) => {
         entradas.forEach((e) => visiveis.set(e.target.id, e.isIntersecting));
+        if (Date.now() < trava.current) return;
         const primeiro = els.find((el) => visiveis.get(el.id));
-        if (primeiro) setAtivo(primeiro.id);
+        if (primeiro) setAtivo(itens.findIndex((i) => i.id === primeiro.id));
       },
       { rootMargin: "-25% 0px -60% 0px" }
     );
@@ -253,23 +258,37 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
 
   // mantém o item ativo à vista quando a barra rola de lado (celular)
   useEffect(() => {
-    const el = lista.current?.querySelector('[aria-current="location"]');
-    if (el && lista.current && lista.current.scrollWidth > lista.current.clientWidth) {
-      const l = lista.current;
-      l.scrollTo({ left: el.offsetLeft - 20, behavior: "auto" });
+    const l = lista.current;
+    const el = l?.querySelector('[aria-current="location"]');
+    if (el && l.scrollWidth > l.clientWidth) {
+      const dx = el.getBoundingClientRect().left - l.getBoundingClientRect().left;
+      l.scrollTo({ left: l.scrollLeft + dx - 24, behavior: "auto" });
     }
   }, [ativo]);
 
+  const itensBarra = useMemo(
+    () => itens.map((i) => ({ label: i.rotulo, href: `#${i.id}`, fx: "none" })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chave]
+  );
+
   return (
-    <nav className="secoes" aria-label={rotulo}>
+    <div className="secoes">
       <div className="secoes-in" ref={lista}>
-        {itens.map((i) => (
-          <a key={i.id} href={`#${i.id}`} aria-current={ativo === i.id ? "location" : undefined}>
-            {i.rotulo}
-          </a>
-        ))}
+        <LiquidNavbar
+          items={itensBarra}
+          active={ativo}
+          onChange={(n) => {
+            trava.current = Date.now() + 1000;
+            setAtivo(n);
+          }}
+          tone="auto"
+          compact={false}
+          label={rotulo}
+          current="location"
+        />
       </div>
-    </nav>
+    </div>
   );
 }
 

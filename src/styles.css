@@ -678,21 +678,22 @@ img {
   }
 }
 
+/* Barra "Nesta página": pílula de vidro líquido (src/components/ui/liquid-glass-navbar.tsx).
+ * A faixa em si é transparente e não recebe cliques; só a pílula recebe. No celular a pílula
+ * rola de lado. O canvas da água passa 14 px da pílula, por isso o respiro em .secoes-in. */
 .secoes {
   position: sticky;
   top: var(--topo-h);
   z-index: 40;
-  background: var(--fundo-vidro);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
-  backdrop-filter: saturate(180%) blur(16px);
-  border-bottom: 1px solid var(--linha);
+  pointer-events: none;
+  padding-block: 6px;
 }
 
 .secoes-in {
-  width: min(1200px, 100% - 40px);
-  margin-inline: auto;
+  width: min(1200px, 100%);
+  margin: -14px auto;
+  padding: 14px 20px;
   display: flex;
-  gap: 4px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -701,53 +702,15 @@ img {
   display: none;
 }
 
-@media (min-width: 700px) {
-  .secoes-in {
-    width: min(1200px, 100% - 64px);
-  }
-}
-
-.secoes a {
+.secoes .nimbus-nav {
   flex: none;
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--nav-h);
-  padding: 0 14px;
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--cinza);
+  margin-inline: auto;
+  pointer-events: auto;
+}
+
+.secoes .nimbus-item {
+  min-height: 44px;
   white-space: nowrap;
-  position: relative;
-  transition: color 0.2s ease;
-}
-
-.secoes a:first-child {
-  padding-left: 0;
-}
-
-.secoes a[aria-current="location"] {
-  color: var(--tinta);
-  font-weight: 600;
-}
-
-.secoes a[aria-current="location"]::after {
-  content: "";
-  position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 0;
-  height: 2px;
-  background: var(--realce);
-}
-
-.secoes a:first-child[aria-current="location"]::after {
-  left: 0;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .secoes a:hover {
-    color: var(--tinta);
-  }
 }
 
 /* Abertura da página inicial */
@@ -3004,21 +2967,33 @@ img {
 
 /* Materiais translúcidos: versão sólida quando o sistema pede menos transparência ou mais contraste */
 @media (prefers-reduced-transparency: reduce) {
-  .topo,
-  .secoes {
+  .topo {
     background: var(--papel);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
+  /* o vidro da pílula tem estilo próprio (fora das camadas), por isso o !important */
+  .secoes .nimbus-glass {
+    background: var(--papel) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
 }
 
 @media (prefers-contrast: more) {
-  .topo,
-  .secoes {
+  .topo {
     background: var(--papel);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     border-bottom-color: var(--tinta);
+  }
+  /* o vidro da pílula tem estilo próprio (fora das camadas), por isso o !important */
+  .secoes .nimbus-glass {
+    background: var(--papel) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    outline: 1px solid var(--tinta);
+    outline-offset: -1px;
   }
 }
 
@@ -6342,5 +6317,76 @@ body:has(#contato) .rodape-cta {
   }
   body:has(.artigo) .zap-pilula span {
     display: none;
+  }
+}
+
+/* Faixa curva de equipamentos (Vitrine.jsx, components/ui/tilted-grid-hero): título em cima, fotos no
+ * meio, aviso embaixo. A altura define o tamanho das fotos (26% da faixa). */
+.faixa-equip-palco {
+  height: clamp(440px, 56vw, 600px);
+}
+
+/* no celular o título e o aviso ocupam mais linhas: a faixa cresce para as fotos ficarem livres no meio */
+@media (max-width: 700px) {
+  .faixa-equip-palco {
+    height: 580px;
+  }
+}
+
+.faixa-equip-texto {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: clamp(36px, 5vw, 56px);
+  text-align: center;
+  pointer-events: none;
+}
+
+.faixa-equip-texto .sec-titulo {
+  max-width: 20ch;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.faixa-equip-texto .nota-fina {
+  max-width: 52ch;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.faixa-equip-texto a {
+  pointer-events: auto;
+}
+
+/* Fundo de curvas de nível (components/ui/topo-field) atrás da seção "Onde atendemos".
+ * A cor das linhas é a cor de texto do canvas; some nas bordas para não brigar com o texto. */
+.sec-topo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.sec-topo-campo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--verde);
+  -webkit-mask-image: radial-gradient(120% 90% at 70% 50%, #000 30%, transparent 85%);
+  mask-image: radial-gradient(120% 90% at 70% 50%, #000 30%, transparent 85%);
+}
+
+[data-theme="dark"] .sec-topo-campo {
+  color: var(--realce);
+  opacity: 0.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sec-topo-campo {
+    color: var(--realce);
+    opacity: 0.6;
   }
 }

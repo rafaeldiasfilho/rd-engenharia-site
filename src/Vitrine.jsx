@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import IconeArea from "./Icones";
+import { TiltedGridHero } from "@/components/ui/tilted-grid-hero";
+import { slidesDe, caminho } from "./fotos";
 
 // Blocos de vitrine da página inicial: faixa de documentos, painel de exemplo e números.
 // Nada aqui inventa cliente, depoimento ou dado real: o painel é um exemplo rotulado como ilustrativo.
@@ -142,6 +144,28 @@ export function FaixaNumeros() {
           <span>em Ibirá/SP</span>
         </p>
       </div>
+    </section>
+  );
+}
+
+// Faixa curva de fotos (components/ui/tilted-grid-hero): equipamentos genéricos de referência das áreas.
+// A faixa é decorativa (aria-hidden); o texto ao redor diz o que é e que as fotos são ilustrativas.
+const FOTOS_EQUIP = slidesDe("faixa-equipamentos").map((s) => ({ src: caminho(s.f), alt: s.f.alt }));
+
+export function FaixaEquipamentos() {
+  return (
+    <section className="faixa-equip" aria-labelledby="equip-t">
+      <TiltedGridHero images={FOTOS_EQUIP} className="faixa-equip-palco" speed={4} tileHeight={26} axis={57} fade={10}>
+        <div className="container faixa-equip-texto">
+          <h2 id="equip-t" className="sec-titulo">
+            Equipamentos de referência em cada área.
+          </h2>
+          <p className="nota-fina">
+            Exemplos genéricos de equipamentos usados em segurança do trabalho, incêndio, obras e topografia. Imagens
+            ilustrativas de terceiros, não são o inventário da RD. <a href="/creditos">Créditos</a>
+          </p>
+        </div>
+      </TiltedGridHero>
     </section>
   );
 }

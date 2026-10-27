@@ -5,7 +5,8 @@ import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, NOTA_GOOGLE, ENDERECO } 
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 import HeroFundo from "./HeroFundo";
-import { FaixaDocumentos, PainelExemplo, FaixaNumeros } from "./Vitrine";
+import { FaixaDocumentos, PainelExemplo, FaixaNumeros, FaixaEquipamentos } from "./Vitrine";
+import { TopoField } from "@/components/ui/topo-field";
 import { FOTOS, caminho } from "./fotos";
 import IconeArea from "./Icones";
 import Perguntas from "./Perguntas";
@@ -229,6 +230,8 @@ export default function App() {
 
       <FaixaNumeros />
 
+      <FaixaEquipamentos />
+
       <ExemplosHome />
 
       <section className="sec" id="como-funciona" aria-labelledby="como-t">
@@ -262,7 +265,8 @@ export default function App() {
 
       <Avaliacoes />
 
-      <section className="sec sec-alt" id="onde-atendemos" aria-labelledby="onde-t">
+      <section className="sec sec-alt sec-topo" id="onde-atendemos" aria-labelledby="onde-t">
+        <TopoField className="sec-topo-campo" grid={0.1} lines={0.4} />
         <div className="container onde-grade">
           <header className="sec-cab rev">
             <p className="sec-n">
