@@ -13,8 +13,12 @@ import { cn } from "@/lib/utils";
  * - A cor das linhas é a cor de texto (CSS `color`) do próprio canvas, então segue o tema claro e
  *   escuro pelo CSS do site. O fundo é transparente: aparece o fundo da seção.
  * - Só anima com o canvas à vista e a aba visível; com "reduzir movimento" desenha um quadro parado.
- * - Resolução limitada a 2x para não pesar em telas de alta densidade.
+ * - Desenha em resolução 1x (as linhas são finas e suaves; 2x custava 4 vezes mais GPU) e a no máximo
+ *   30 quadros por segundo, porque a deriva é lenta.
  */
+
+const MAX_DPR = 1;
+const FRAME_MS = 1000 / 30;
 
 const VERT = `attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}`;
 
@@ -141,6 +145,7 @@ export function TopoField({
     let dpr = 1;
     let time = 0;
     let last = 0;
+    let lastDraw = 0;
     let raf = 0;
     let visible = false;
     let lost = false;
@@ -168,7 +173,10 @@ export function TopoField({
     const tick = (now: number) => {
       time += Math.min((now - last) / 1000, 1 / 20) * clamp(knobs.current.speed, 0, 3);
       last = now;
-      draw();
+      if (now - lastDraw >= FRAME_MS - 1) {
+        lastDraw = now;
+        draw();
+      }
       raf = requestAnimationFrame(tick);
     };
 
@@ -184,7 +192,7 @@ export function TopoField({
     };
 
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
       const r = canvas.getBoundingClientRect();
       const w = Math.max(1, Math.round(r.width * dpr));
       const h = Math.max(1, Math.round(r.height * dpr));

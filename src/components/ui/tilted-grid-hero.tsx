@@ -29,7 +29,10 @@ import { cn } from "@/lib/utils";
  * - os quadros só montam depois da medição, todos no mesmo commit (e remontam
  *   juntos quando o número de quadros muda). No original, os quadros vindos do
  *   HTML prerenderizado começavam a animar antes dos acrescentados pelo React,
- *   e a fila saía de sincronia: fotos sobrepostas e buracos no meio.
+ *   e a fila saía de sincronia: fotos sobrepostas e buracos no meio;
+ * - com "reduzir movimento" cada quadro recebe a sua posição fixa no arco (o
+ *   CSS do site desliga todas as animações com !important, então pausar não
+ *   bastava: os quadros se empilhavam no centro).
  * ─────────────────────────────────────────────────────────────── */
 
 // Strips per tile. Each is a few degrees of arc, too little to read as a
@@ -169,6 +172,21 @@ export function TiltedGridHero({
   // `onScreen`: está à vista agora (sem isso, a animação fica pausada).
   const [near, setNear] = React.useState(false);
   const [onScreen, setOnScreen] = React.useState(false);
+  const [reduce, setReduce] = React.useState(false);
+
+  React.useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const update = () => setReduce(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+
+  // Quadros remontados (outro número de colunas) recomeçam a fila: as fotos de cada um também.
+  React.useEffect(() => {
+    setShown({});
+  }, [layout]);
 
   React.useEffect(() => {
     const el = ref.current;
@@ -285,6 +303,17 @@ export function TiltedGridHero({
           // back, so this numbers tiles in the order they come on.
           const first = columns - 1 - t;
           const img = images[(shown[t] ?? first) % Math.max(images.length, 1)];
+          // Posição parada: o ponto do arco onde o atraso negativo deixaria o quadro no instante 0.
+          const progress = t / columns;
+          const still = reduce
+            ? {
+                transform: turn(-sweep + 2 * sweep * progress),
+                visibility:
+                  progress * 100 <= hide || progress * 100 >= 100 - hide
+                    ? ("hidden" as const)
+                    : ("visible" as const),
+              }
+            : { animation: `${orbit} ${duration}s linear ${-t * speed}s infinite` };
           return (
             <div
               key={t}
@@ -296,7 +325,7 @@ export function TiltedGridHero({
                 height: u(1),
                 transformStyle: "preserve-3d",
                 // Tile t starts t tiles along the loop.
-                animation: `${orbit} ${duration}s linear ${-t * speed}s infinite`,
+                ...still,
               }}
               onAnimationIteration={(e) => {
                 // elapsedTime counts whole loops, missed events included.

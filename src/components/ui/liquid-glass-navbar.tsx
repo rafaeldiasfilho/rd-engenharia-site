@@ -13,7 +13,13 @@
  * - tom "auto": segue o tema do site (data-theme no <html> ou o sistema);
  * - água e sombras na família verde do site, em vez de azul; texto e foco com as cores do site;
  * - rótulo acessível e tipo de aria-current configuráveis (a barra "Nesta página" usa "location");
- * - useLayoutEffect trocado por um efeito que não avisa no prerender (renderToString).
+ * - useLayoutEffect trocado por um efeito que não avisa no prerender (renderToString);
+ * - no tom "auto" as cores da pílula vêm só do CSS (o HTML prerenderizado já sai certo no tema escuro);
+ *   o JS só informa o tom ao shader;
+ * - `ambient={false}`: a água só anima quando algo muda (clique, troca de item, mouse em cima), em vez
+ *   de ondular o tempo todo; `arrowKeys={false}` desliga as setas ← → (útil quando os itens são links);
+ * - resolução do canvas limitada a 1,5x, arrays do desenho reaproveitados, animação pausa com a aba
+ *   oculta OU a pílula fora da tela, e "reduzir movimento" é relido quando muda.
  */
 
 import * as React from "react"
@@ -43,6 +49,10 @@ export type LiquidNavbarProps = {
   label?: string
   /** value of aria-current on the active item: "page" for site navigation, "location" for in-page sections */
   current?: "page" | "location" | "true"
+  /** ambient ripples while idle; false animates only on change (saves GPU/battery on a sticky bar) */
+  ambient?: boolean
+  /** ← → move the selection; turn off when items are links that should only be followed */
+  arrowKeys?: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -97,13 +107,15 @@ function useSiteTone(enabled: boolean) {
 }
 
 const PAD = 14 // canvas bleed around the pill, for shadows and ripples
+const MAX_DPR = 1.5 // the water is soft; more pixels only cost GPU
 
 /* ---------- styles ---------- */
 const NIMBUS_CSS = `
 .nimbus-nav{--n-tint:rgba(247,248,245,.74);--n-fg:var(--tinta,#17211b);--n-fg-soft:var(--cinza,rgba(23,33,27,.66));--n-rim:rgba(255,255,255,.7);
   position:relative;display:inline-flex;align-items:center;gap:2px;padding:6px;border-radius:999px;isolation:isolate;
   font-family:inherit;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
-.nimbus-nav[data-tone="dark"]{--n-tint:rgba(15,21,17,.74);--n-rim:rgba(255,255,255,.22)}
+.nimbus-nav[data-tone="dark"],[data-theme="dark"] .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.74);--n-rim:rgba(255,255,255,.22)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.74);--n-rim:rgba(255,255,255,.22)}}
 .nimbus-glass{position:absolute;inset:0;border-radius:inherit;z-index:-2;overflow:hidden;background:var(--n-tint);
   -webkit-backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);
   box-shadow:inset 0 1px 1px var(--n-rim),inset 0 0 0 1px rgba(255,255,255,.2),0 12px 32px -14px rgba(10,45,20,.45),0 2px 6px rgba(10,45,20,.1)}
@@ -219,7 +231,12 @@ function makeState() {
     w: 0,
     h: 0,
     visible: true,
+    page: true,
     reduce: false,
+    amb: true,
+    blobs: new Float32Array(24),
+    sy6: new Float32Array(6),
+    rips6: new Float32Array(24),
     raf: 0,
     last: 0,
     time: 0,
@@ -272,6 +289,8 @@ export function LiquidNavbar({
   sound = false,
   label = "Principal",
   current: currentKind = "page",
+  ambient = true,
+  arrowKeys = true,
   className,
   style,
 }: LiquidNavbarProps) {
@@ -292,6 +311,7 @@ export function LiquidNavbar({
   const dark = toneUsed === "dark" ? 1 : 0
   const darkRef = React.useRef(dark)
   darkRef.current = dark
+  st.current.amb = ambient
 
   /* ---- drawing ---- */
   const draw = React.useCallback(() => {
@@ -302,26 +322,26 @@ export function LiquidNavbar({
     const r = T.r * (1 - 0.3 * thin)
     if (s.glc) {
       const { gl: g, u } = s.glc
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
       g.viewport(0, 0, g.drawingBufferWidth, g.drawingBufferHeight)
       g.uniform2f(u.uRes, s.w + PAD * 2, s.h + PAD * 2)
       g.uniform1f(u.uDpr, dpr)
       g.uniform1f(u.uTime, s.time)
       g.uniform4f(u.uPill, PAD, PAD, s.w, s.h)
-      const blobs = new Float32Array(24)
-      const sy = new Float32Array(6).fill(1)
+      const blobs = s.blobs.fill(0)
+      const sy = s.sy6.fill(1)
       const head = s.lead === 0 ? s.a : s.b, tail = s.lead === 0 ? s.b : s.a
       blobs.set([head.x, T.cy, s.q * (1 - 0.25 * thin), T.r * (1 - 0.12 * thin), tail.x, T.cy, s.q * (1 - 0.8 * thin), T.r * (1 - 0.5 * thin)], 0)
       sy[0] = sy[1] = s.sy.s
       s.sats.slice(0, 4).forEach((d, i) => blobs.set([d.x, d.y, 0, d.r], 8 + i * 4))
       g.uniform4fv(u.uBlob, blobs)
       g.uniform1fv(u.uSy, sy)
-      const rips = new Float32Array(24)
+      const rips = s.rips6.fill(0)
       s.rips.slice(-6).forEach((p, i) => rips.set([p.x, p.y, p.age, p.amp], i * 4))
       g.uniform4fv(u.uRip, rips)
       g.uniform3f(u.uMouse, s.mouse.x, s.mouse.y, s.mouse.s)
       g.uniform1f(u.uDark, darkRef.current)
-      g.uniform1f(u.uAmb, s.reduce ? 0 : 1)
+      g.uniform1f(u.uAmb, s.reduce || !s.amb ? 0 : 1)
       g.clearColor(0, 0, 0, 0)
       g.clear(g.COLOR_BUFFER_BIT)
       g.drawArrays(g.TRIANGLES, 0, 3)
@@ -413,8 +433,8 @@ export function LiquidNavbar({
       step(dt, now)
       draw()
       const busy = s.moving || s.rips.length || s.sats.length || s.mouse.s > 0.01
-      // ambient water keeps moving while visible; reduced-motion only animates on change
-      if (s.visible && (!s.reduce || busy)) s.raf = requestAnimationFrame(tick)
+      // ambient water keeps moving while visible; reduced-motion (or ambient off) only animates on change
+      if (s.visible && s.page && ((!s.reduce && s.amb) || busy)) s.raf = requestAnimationFrame(tick)
       else s.raf = 0
     }
     s.raf = requestAnimationFrame(tick)
@@ -446,7 +466,7 @@ export function LiquidNavbar({
     T.x = nx
     const cv = canvasRef.current
     if (cv) {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
       const W = s.w + PAD * 2, Hh = s.h + PAD * 2
       if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(Hh * dpr)) {
         cv.width = Math.round(W * dpr)
@@ -461,7 +481,10 @@ export function LiquidNavbar({
   React.useEffect(() => {
     setRefract(supportsRefraction())
     const s = st.current
-    s.reduce = !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    const mqReduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")
+    s.reduce = !!mqReduce?.matches
+    const onReduce = () => { s.reduce = !!mqReduce?.matches; loop() }
+    mqReduce?.addEventListener?.("change", onReduce)
     const cv = canvasRef.current
     s.glc = cv ? initGL(cv) : null
     if (!s.glc) setGl("off")
@@ -469,12 +492,13 @@ export function LiquidNavbar({
     cv?.addEventListener("webglcontextlost", lost)
     const io = new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; if (s.visible) loop() })
     if (navRef.current) io.observe(navRef.current)
-    const vis = () => { s.visible = document.visibilityState === "visible"; if (s.visible) loop() }
+    const vis = () => { s.page = document.visibilityState === "visible"; if (s.page && s.visible) loop() }
     document.addEventListener("visibilitychange", vis)
     return () => {
       cv?.removeEventListener("webglcontextlost", lost)
       io.disconnect()
       document.removeEventListener("visibilitychange", vis)
+      mqReduce?.removeEventListener?.("change", onReduce)
       cancelAnimationFrame(s.raf)
       s.raf = 0
     }
@@ -492,7 +516,7 @@ export function LiquidNavbar({
     if (navRef.current) ro.observe(navRef.current)
     return () => ro.disconnect()
   }, [])
-  React.useEffect(() => { loop() }, [toneUsed, loop])
+  React.useEffect(() => { loop() }, [toneUsed, ambient, loop])
 
   /* ---- interaction ---- */
   const local = (clientX: number, clientY: number) => {
@@ -566,12 +590,12 @@ export function LiquidNavbar({
     <nav
       ref={navRef as any}
       className={["nimbus-nav", className].filter(Boolean).join(" ")}
-      data-tone={toneUsed}
+      data-tone={tone}
       data-gl={gl}
       data-compact={compact === undefined ? undefined : String(compact)}
       data-refract={refract ? "on" : "off"}
       aria-label={label}
-      onKeyDown={onKeyDown}
+      onKeyDown={arrowKeys ? onKeyDown : undefined}
       onPointerMove={onMove}
       onPointerLeave={() => { st.current.mouse.on = false; loop() }}
       onPointerDown={(e) => { const p = local(e.clientX, e.clientY); ripple(p.x, p.y, 0.8) }}

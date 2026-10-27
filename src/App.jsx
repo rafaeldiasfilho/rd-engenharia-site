@@ -266,7 +266,8 @@ export default function App() {
       <Avaliacoes />
 
       <section className="sec sec-alt sec-topo" id="onde-atendemos" aria-labelledby="onde-t">
-        <TopoField className="sec-topo-campo" grid={0.1} lines={0.4} />
+        {/* sem a grade do TopoField: a seção já tem a grade de 32 px do ::before */}
+        <TopoField className="sec-topo-campo" grid={0} lines={0.4} />
         <div className="container onde-grade">
           <header className="sec-cab rev">
             <p className="sec-n">

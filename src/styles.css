@@ -17,6 +17,7 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --topo-h: 64px;
   --nav-h: 48px;
+  --secoes-h: 68px; /* altura da faixa da pílula: 6 + 56 + 6 */
   --fundo-vidro: rgba(247, 248, 245, 0.82);
   --contorno-img: rgba(0, 0, 0, 0.08);
   --borda-vidro: rgba(255, 255, 255, 0.7);
@@ -64,7 +65,8 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 132px;
+  /* topo + barra "Nesta página" + folga para a sombra e as ondas da pílula */
+  scroll-padding-top: calc(var(--topo-h) + var(--secoes-h) + 18px);
   -webkit-text-size-adjust: 100%;
 }
 

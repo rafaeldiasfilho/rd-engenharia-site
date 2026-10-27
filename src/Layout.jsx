@@ -231,23 +231,29 @@ export function Migalha({ itens }) {
 
 // Índice da página: fica visível ao rolar e marca a seção em que o leitor está.
 // Desenho: pílula de vidro líquido (components/ui/liquid-glass-navbar). A gota segue a seção à vista;
-// depois de um clique, o observador espera a rolagem terminar para a gota não passear pelas seções do meio.
+// depois de um clique, o observador espera a rolagem terminar (scrollend, com limite de 3 s) para a gota
+// não passear pelas seções do meio. Setas do teclado e ondulação contínua ficam desligadas: os itens são
+// links (Tab + Enter) e a barra fica sempre à vista, então a água só anima quando algo muda.
 export function SecoesNav({ itens, rotulo = "Nesta página" }) {
   const [ativo, setAtivo] = useState(0);
   const lista = useRef(null);
-  const trava = useRef(0);
+  const travado = useRef(false);
+  const atualizar = useRef(() => {});
   const chave = itens.map((i) => i.id).join("|");
 
   useEffect(() => {
     const els = itens.map((i) => document.getElementById(i.id)).filter(Boolean);
     if (!els.length || !("IntersectionObserver" in window)) return undefined;
     const visiveis = new Map();
+    atualizar.current = () => {
+      if (travado.current) return;
+      const primeiro = els.find((el) => visiveis.get(el.id));
+      if (primeiro) setAtivo(itens.findIndex((i) => i.id === primeiro.id));
+    };
     const io = new IntersectionObserver(
       (entradas) => {
         entradas.forEach((e) => visiveis.set(e.target.id, e.isIntersecting));
-        if (Date.now() < trava.current) return;
-        const primeiro = els.find((el) => visiveis.get(el.id));
-        if (primeiro) setAtivo(itens.findIndex((i) => i.id === primeiro.id));
+        atualizar.current();
       },
       { rootMargin: "-25% 0px -60% 0px" }
     );
@@ -255,6 +261,19 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
     return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chave]);
+
+  const travar = () => {
+    travado.current = true;
+    let limite = 0;
+    const soltar = () => {
+      window.removeEventListener("scrollend", soltar);
+      clearTimeout(limite);
+      travado.current = false;
+      atualizar.current();
+    };
+    window.addEventListener("scrollend", soltar);
+    limite = setTimeout(soltar, 3000);
+  };
 
   // mantém o item ativo à vista quando a barra rola de lado (celular)
   useEffect(() => {
@@ -279,9 +298,11 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
           items={itensBarra}
           active={ativo}
           onChange={(n) => {
-            trava.current = Date.now() + 1000;
+            travar();
             setAtivo(n);
           }}
+          ambient={false}
+          arrowKeys={false}
           tone="auto"
           compact={false}
           label={rotulo}
