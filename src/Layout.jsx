@@ -1,6 +1,7 @@
 import Icone from "./Icone";
 import IconeArea from "./Icones";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
 import { zap } from "./contato";
@@ -34,8 +35,8 @@ function SeletorTema() {
     }
   }, []);
 
-  const escolher = (id) => {
-    setTema(id);
+  const aplicar = (id) => {
+    flushSync(() => setTema(id));
     if (id === "auto") document.documentElement.removeAttribute("data-theme");
     else document.documentElement.setAttribute("data-theme", id);
     try {
@@ -46,11 +47,34 @@ function SeletorTema() {
     }
   };
 
+  // A nova aparência se abre num círculo a partir do botão (View Transitions). Sem suporte ou com
+  // "reduzir movimento", troca direto.
+  const escolher = (id, e) => {
+    const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || reduz) {
+      aplicar(id);
+      return;
+    }
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = e.detail > 0 ? e.clientX : r.left + r.width / 2;
+    const y = e.detail > 0 ? e.clientY : r.top + r.height / 2;
+    const raio = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    const transicao = document.startViewTransition(() => aplicar(id));
+    transicao.ready
+      .then(() => {
+        document.documentElement.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${raio}px at ${x}px ${y}px)`] },
+          { duration: 520, easing: "cubic-bezier(0.23, 1, 0.32, 1)", pseudoElement: "::view-transition-new(root)" }
+        );
+      })
+      .catch(() => {});
+  };
+
   return (
     <div className="tema" role="group" aria-label="Aparência do site">
       <span>Aparência</span>
       {TEMAS.map((t) => (
-        <button key={t.id} type="button" aria-pressed={tema === t.id} onClick={() => escolher(t.id)}>
+        <button key={t.id} type="button" aria-pressed={tema === t.id} onClick={(e) => escolher(t.id, e)}>
           {t.rotulo}
         </button>
       ))}
@@ -178,7 +202,11 @@ export function Cabecalho({ atual = "" }) {
           aria-controls="menu-mobile"
           onClick={() => setAberto((v) => !v)}
         >
-          <Icone nome={aberto ? "fa-solid fa-xmark" : "fa-solid fa-bars"} />
+          <span className="menu-icone" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
         </button>
       </div>
 

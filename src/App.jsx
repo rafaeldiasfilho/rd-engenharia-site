@@ -1,7 +1,7 @@
 import Icone from "./Icone";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
-import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, NOTA_GOOGLE, ENDERECO } from "./paginas";
+import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE, ENDERECO } from "./paginas";
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 import HeroFundo from "./HeroFundo";
@@ -12,6 +12,8 @@ import IconeArea from "./Icones";
 import Perguntas from "./Perguntas";
 import Avaliacoes from "./Avaliacoes";
 import BuscaDocumento from "./Busca";
+import QrWhatsapp from "./QrWhatsapp";
+import PilhaEtapas from "./PilhaEtapas";
 
 const NECESSIDADES = [
   {
@@ -88,6 +90,8 @@ const dentroDoHorario = () => {
 export default function App() {
   const [atendendo, setAtendendo] = useState(false);
   const [pedido, setPedido] = useState({ nome: "", cidade: "", servico: "", mensagem: "" });
+  const [mapa, setMapa] = useState(false);
+  const [mapaPronto, setMapaPronto] = useState(false);
 
   useEffect(() => {
     setAtendendo(dentroDoHorario());
@@ -245,22 +249,14 @@ export default function App() {
               Quatro passos, sem surpresa.
             </h2>
           </header>
-          <ol className="etapas-ed linha-tempo rev">
-            {ETAPAS.map((e, i) => (
-              <li key={e.titulo} className="rev">
-                <span className="etapa-big" aria-hidden="true">
-                  {i + 1}
-                </span>
-                <h3>{e.titulo}</h3>
-                <p>{e.texto}</p>
-                {i === 0 && (
-                  <a className="btn btn-zap btn-peq" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-                    <Icone nome="fa-brands fa-whatsapp" /> Começar agora
-                  </a>
-                )}
-              </li>
-            ))}
-          </ol>
+          <PilhaEtapas
+            etapas={ETAPAS}
+            acaoPrimeira={
+              <a className="btn btn-zap btn-peq" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+                <Icone nome="fa-brands fa-whatsapp" /> Começar agora
+              </a>
+            }
+          />
         </div>
       </section>
 
@@ -297,9 +293,39 @@ export default function App() {
                 <dd>Presencial e online</dd>
               </div>
             </dl>
-            <a className="btn btn-zap" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
-              Como chegar
-            </a>
+            <div className="onde-acoes">
+              <a className="btn btn-zap" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
+                Como chegar
+              </a>
+              <button
+                type="button"
+                className="btn btn-sec"
+                aria-expanded={mapa}
+                aria-controls="onde-mapa"
+                onClick={() => {
+                  setMapa((v) => !v);
+                  setMapaPronto(false);
+                }}
+              >
+                {mapa ? "Fechar o mapa" : "Ver no mapa"}
+              </button>
+            </div>
+            {mapa && (
+              <figure id="onde-mapa" className="onde-mapa">
+                <div className="mapa-caixa">
+                  {!mapaPronto && <p className="onde-mapa-carregando">Carregando o mapa…</p>}
+                  <iframe
+                    title="Mapa com a localização da RD Engenharia em Ibirá/SP"
+                    src={MAPA_EMBED}
+                    referrerPolicy="no-referrer"
+                    allowFullScreen
+                    onLoad={() => setMapaPronto(true)}
+                    className={mapaPronto ? "pronto" : ""}
+                  />
+                </div>
+                <figcaption>O mapa é fornecido pelo Google.</figcaption>
+              </figure>
+            )}
           </div>
         </div>
       </section>
@@ -429,6 +455,7 @@ export default function App() {
                 </dd>
               </div>
             </dl>
+            <QrWhatsapp />
           </div>
 
           <form className="formulario" onSubmit={enviar}>

@@ -1,5 +1,4 @@
 import {
-  faBars,
   faBell,
   faBuilding,
   faChevronLeft,
@@ -22,7 +21,6 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 // Ícones embutidos no site (Font Awesome Free, licença CC BY 4.0), sem carregar biblioteca externa.
 const ICONES = {
   "fa-brands fa-whatsapp": faWhatsapp,
-  "fa-solid fa-bars": faBars,
   "fa-solid fa-bell": faBell,
   "fa-solid fa-building": faBuilding,
   "fa-solid fa-chevron-left": faChevronLeft,
