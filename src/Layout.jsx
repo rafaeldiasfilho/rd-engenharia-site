@@ -3,6 +3,7 @@ import IconeArea from "./Icones";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
+import { HalftoneWordmark } from "@/components/ui/halftone-wordmark";
 import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
 import { zap } from "./contato";
 import { BotaoBusca } from "./Busca";
@@ -475,10 +476,8 @@ export function Rodape() {
         <p>© RD Engenharia Segurança e Meio Ambiente</p>
         <SeletorTema />
       </div>
-      {/* Marca gigante no fim da página, decorativa (padrão de rodapé comum no 21st.dev) */}
-      <p className="rodape-marca-gigante" aria-hidden="true">
-        RD Engenharia
-      </p>
+      {/* Marca gigante no fim da página, decorativa, em pontos de meio-tom que reagem ao ponteiro */}
+      <HalftoneWordmark palavra="RD Engenharia" className="rodape-halftone" />
     </footer>
   );
 }

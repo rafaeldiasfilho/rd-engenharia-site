@@ -5980,12 +5980,33 @@ body:has(#contato) .rodape-cta {
   overflow: hidden;
 }
 
-.rodape-marca-gigante {
+/* Faixa da marca em pontos de meio-tom (components/ui/halftone-wordmark.tsx). O rodapé é escuro nos dois
+   temas, então as cores são fixas: pontos claros e translúcidos que esquentam para o verde. */
+.hw-marca {
+  position: relative;
+  height: clamp(64px, 10.5vw, 220px);
+  font-weight: 700;
+  user-select: none;
+  --hw-tinta: rgba(212, 219, 213, 0.34);
+  --hw-quente: #6fd37c;
+}
+
+.hw-marca canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Sem JavaScript (e até o canvas desenhar) fica o texto com degradê de antes */
+.hw-marca-texto {
+  position: absolute;
+  inset: auto 0 0;
   margin: 0;
   padding: 0 16px;
   text-align: center;
   font-size: clamp(3.2rem, 14.5vw, 13rem);
-  font-weight: 700;
   line-height: 0.8;
   letter-spacing: -0.06em;
   white-space: nowrap;
@@ -5993,8 +6014,11 @@ body:has(#contato) .rodape-cta {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0));
   -webkit-background-clip: text;
   background-clip: text;
-  user-select: none;
   transform: translateY(12%);
+}
+
+.hw-marca.pronto .hw-marca-texto {
+  visibility: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
