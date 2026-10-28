@@ -19,7 +19,15 @@
  * - `ambient={false}`: a água só anima quando algo muda (clique, troca de item, mouse em cima), em vez
  *   de ondular o tempo todo; `arrowKeys={false}` desliga as setas ← → (útil quando os itens são links);
  * - resolução do canvas limitada a 1,5x, arrays do desenho reaproveitados, animação pausa com a aba
- *   oculta OU a pílula fora da tela, e "reduzir movimento" é relido quando muda.
+ *   oculta OU a pílula fora da tela, e "reduzir movimento" é relido quando muda;
+ * - vidro mais opaco (.9 em vez de .74): o texto grande que passa por trás não briga com os itens;
+ *   `refraction={false}` desliga a distorção do fundo (no Chrome ela entortava títulos e botões);
+ * - a pílula nunca passa da largura disponível: os itens rolam de lado DENTRO dela (pontas sempre à
+ *   vista, bordas esmaecidas indicando que há mais), a gota acompanha a rolagem e o item ativo é
+ *   centralizado sozinho;
+ * - o rótulo reserva a largura do negrito (o item ativo não muda de largura): antes a pílula variava
+ *   1 px a cada troca, o ResizeObserver tratava isso como redimensionamento e a gota saltava direto
+ *   para o destino, sem o efeito; agora só uma mudança real de largura (> 2 px) reposiciona sem animar.
  */
 
 import * as React from "react"
@@ -53,6 +61,8 @@ export type LiquidNavbarProps = {
   ambient?: boolean
   /** ← → move the selection; turn off when items are links that should only be followed */
   arrowKeys?: boolean
+  /** bends the backdrop through an SVG filter (Chromium only); false keeps a plain blur */
+  refraction?: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -111,25 +121,33 @@ const MAX_DPR = 1.5 // the water is soft; more pixels only cost GPU
 
 /* ---------- styles ---------- */
 const NIMBUS_CSS = `
-.nimbus-nav{--n-tint:rgba(247,248,245,.74);--n-fg:var(--tinta,#17211b);--n-fg-soft:var(--cinza,rgba(23,33,27,.66));--n-rim:rgba(255,255,255,.7);
-  position:relative;display:inline-flex;align-items:center;gap:2px;padding:6px;border-radius:999px;isolation:isolate;
+.nimbus-nav{--n-tint:rgba(247,248,245,.9);--n-fg:var(--tinta,#17211b);--n-fg-soft:var(--cinza,rgba(23,33,27,.66));--n-rim:rgba(255,255,255,.7);
+  position:relative;display:inline-flex;align-items:center;max-width:100%;padding:6px;border-radius:999px;isolation:isolate;
   font-family:inherit;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
-.nimbus-nav[data-tone="dark"],[data-theme="dark"] .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.74);--n-rim:rgba(255,255,255,.22)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.74);--n-rim:rgba(255,255,255,.22)}}
+.nimbus-nav[data-tone="dark"],[data-theme="dark"] .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.9);--n-rim:rgba(255,255,255,.22)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.9);--n-rim:rgba(255,255,255,.22)}}
 .nimbus-glass{position:absolute;inset:0;border-radius:inherit;z-index:-2;overflow:hidden;background:var(--n-tint);
   -webkit-backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);
   box-shadow:inset 0 1px 1px var(--n-rim),inset 0 0 0 1px rgba(255,255,255,.2),0 12px 32px -14px rgba(10,45,20,.45),0 2px 6px rgba(10,45,20,.1)}
 .nimbus-nav[data-refract="on"] .nimbus-glass{-webkit-backdrop-filter:url(#nimbus-refract) blur(2px) saturate(1.2) brightness(1.08);backdrop-filter:url(#nimbus-refract) blur(2px) saturate(1.2) brightness(1.08)}
+.nimbus-track{position:relative;display:flex;align-items:center;gap:2px;min-width:0;overflow-x:auto;border-radius:999px;
+  scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.nimbus-track::-webkit-scrollbar{display:none}
+.nimbus-nav[data-fl="1"] .nimbus-track{-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px);mask-image:linear-gradient(90deg,transparent,#000 28px)}
+.nimbus-nav[data-fr="1"] .nimbus-track{-webkit-mask-image:linear-gradient(270deg,transparent,#000 28px);mask-image:linear-gradient(270deg,transparent,#000 28px)}
+.nimbus-nav[data-fl="1"][data-fr="1"] .nimbus-track{-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
 .nimbus-water{position:absolute;left:${-PAD}px;top:${-PAD}px;z-index:-1;pointer-events:none}
 .nimbus-nav[data-gl="off"] .nimbus-water{display:none}
 .nimbus-drop{display:none;position:absolute;top:6px;bottom:6px;left:0;border-radius:999px;z-index:-1;pointer-events:none;will-change:transform,width;
   background:radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),rgba(255,255,255,.38);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -2px 6px rgba(31,107,42,.22),inset 0 0 0 1px rgba(255,255,255,.55),0 6px 16px -6px rgba(18,63,25,.45)}
 .nimbus-nav[data-gl="off"] .nimbus-drop{display:block}
-.nimbus-item{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--n-fg-soft);
+.nimbus-item{position:relative;z-index:1;display:inline-flex;flex:none;align-items:center;gap:8px;height:42px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--n-fg-soft);
   font-family:inherit;font-weight:500;font-size:14px;line-height:1;letter-spacing:-.01em;text-decoration:none;cursor:pointer;transition:color .25s}
 .nimbus-item:hover,.nimbus-item[aria-current]{color:var(--n-fg)}
 .nimbus-item[aria-current]{font-weight:600}
+.nimbus-label{display:inline-grid}
+.nimbus-label::after{content:attr(data-text);font-weight:600;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
 .nimbus-item:focus-visible{outline:2px solid var(--realce,#1f6b2a);outline-offset:2px}
 .nv-ico{position:relative;display:inline-flex;flex:none}
 .nv-ico svg{transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
@@ -291,6 +309,7 @@ export function LiquidNavbar({
   current: currentKind = "page",
   ambient = true,
   arrowKeys = true,
+  refraction = true,
   className,
   style,
 }: LiquidNavbarProps) {
@@ -301,6 +320,8 @@ export function LiquidNavbar({
   const navRef = React.useRef<HTMLElement>(null)
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const dropRef = React.useRef<HTMLSpanElement>(null)
+  const trackRef = React.useRef<HTMLDivElement>(null)
+  const scrollX = React.useRef(0)
   const itemRefs = React.useRef<(HTMLElement | null)[]>([])
   const iconRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const audio = React.useRef<AudioContext | null>(null)
@@ -361,23 +382,25 @@ export function LiquidNavbar({
     s.q += (T.q - s.q) * Math.min(1, dt * 12)
     const bodies = [s.a, s.b]
     let still = true
+    // alvo preso à parte visível da pílula (o item ativo pode estar fora, com a faixa rolada)
+    const lo = PAD + 6 + s.q + T.r - 3, hi = PAD + s.w - 6 - s.q - T.r + 3
+    const tx = Math.max(lo, Math.min(hi, T.x))
     if (s.reduce) {
-      s.a.x = s.b.x = T.x; s.a.v = s.b.v = 0; s.sy.s = 1; s.sats = []
+      s.a.x = s.b.x = tx; s.a.v = s.b.v = 0; s.sy.s = 1; s.sats = []
     } else {
       bodies.forEach((B, i) => {
         const lead = i === s.lead
         const k = lead ? 210 : 72
         const c = lead ? 25 : 13
         const f = !lead && now < s.lagFrom ? 0.08 : 1
-        B.v += (k * (T.x - B.x) - c * B.v) * dt * f
+        B.v += (k * (tx - B.x) - c * B.v) * dt * f
         B.x += B.v * dt
-        const lo = PAD + 6 + s.q + T.r - 3, hi = PAD + s.w - 6 - s.q - T.r + 3
         if (B.x < lo || B.x > hi) {
           s.sy.v -= Math.min(Math.abs(B.v), 900) * 0.0016
           B.x = Math.max(lo, Math.min(hi, B.x))
           B.v *= -0.25
         }
-        if (Math.abs(T.x - B.x) > 0.3 || Math.abs(B.v) > 3) still = false
+        if (Math.abs(tx - B.x) > 0.3 || Math.abs(B.v) > 3) still = false
       })
       const L = bodies[s.lead]
       const syT = 1 - 0.2 * Math.min(Math.abs(L.v) / 1500, 1)
@@ -402,20 +425,20 @@ export function LiquidNavbar({
         })
       }
       s.sats = s.sats.filter((d) => {
-        d.vx += (d.k * (T.x - d.x) - 9 * d.vx) * dt
+        d.vx += (d.k * (tx - d.x) - 9 * d.vx) * dt
         d.vy += (90 * (T.cy - d.y) - 7 * d.vy) * dt
         d.x += d.vx * dt
         d.y += d.vy * dt
         d.x = Math.max(PAD + 8 + d.r, Math.min(PAD + s.w - 8 - d.r, d.x))
         d.y = Math.max(T.cy - T.r + d.r, Math.min(T.cy + T.r - d.r, d.y))
-        if (Math.abs(T.x - d.x) < T.q + T.r * 0.5) d.r -= dt * 26
+        if (Math.abs(tx - d.x) < T.q + T.r * 0.5) d.r -= dt * 26
         return d.r > 0.6
       })
       if (s.sats.length) still = false
     }
     if (s.moving && still) {
       s.moving = false
-      if (s.split || !s.reduce) s.rips.push({ x: T.x, y: T.cy, age: 0, amp: s.split ? 1.2 : 0.7 })
+      if (s.split || !s.reduce) s.rips.push({ x: tx, y: T.cy, age: 0, amp: s.split ? 1.2 : 0.7 })
     }
     s.rips.forEach((p) => (p.age += dt))
     s.rips = s.rips.filter((p) => p.age < 2.4)
@@ -441,18 +464,29 @@ export function LiquidNavbar({
   }, [draw, step])
 
   /* ---- layout ---- */
+  // esmaece a borda da faixa do lado em que ainda há itens
+  const fades = React.useCallback(() => {
+    const nav = navRef.current, tr = trackRef.current
+    if (!nav || !tr) return
+    nav.dataset.fl = tr.scrollLeft > 2 ? "1" : "0"
+    nav.dataset.fr = tr.scrollLeft + tr.clientWidth < tr.scrollWidth - 2 ? "1" : "0"
+  }, [])
+
   const measure = React.useCallback(() => {
     const nav = navRef.current
+    const tr = trackRef.current
     const el = itemRefs.current[current]
-    if (!nav || !el) return
+    if (!nav || !tr || !el) return
+    scrollX.current = tr.scrollLeft
+    fades()
     const s = st.current
     s.w = nav.offsetWidth
     s.h = nav.offsetHeight
     const T = s.t
     T.r = el.offsetHeight / 2
     T.q = Math.max(0, el.offsetWidth / 2 - T.r)
-    T.cy = PAD + el.offsetTop + el.offsetHeight / 2
-    const nx = PAD + el.offsetLeft + el.offsetWidth / 2
+    T.cy = PAD + tr.offsetTop + el.offsetTop + el.offsetHeight / 2
+    const nx = PAD + tr.offsetLeft + el.offsetLeft - tr.scrollLeft + el.offsetWidth / 2
     if (!s.ready) {
       s.a.x = s.b.x = nx
       s.q = T.q
@@ -476,10 +510,40 @@ export function LiquidNavbar({
       }
     }
     loop()
-  }, [current, loop])
+  }, [current, loop, fades])
+
+  // a faixa rolou: tudo o que está desenhado anda junto com os itens
+  const onTrackScroll = () => {
+    const tr = trackRef.current
+    if (!tr) return
+    const dx = scrollX.current - tr.scrollLeft
+    scrollX.current = tr.scrollLeft
+    fades()
+    if (!dx) return
+    const s = st.current
+    s.a.x += dx
+    s.b.x += dx
+    s.t.x += dx
+    s.sats.forEach((d) => (d.x += dx))
+    s.rips.forEach((p) => (p.x += dx))
+    if (!s.raf) draw()
+    loop()
+  }
+
+  // item ativo fora da parte visível: centraliza (sem animação na primeira vez)
+  const centered = React.useRef(false)
+  React.useEffect(() => {
+    const tr = trackRef.current
+    const el = itemRefs.current[current]
+    if (!tr || !el || tr.scrollWidth <= tr.clientWidth) return
+    const left = el.offsetLeft - (tr.clientWidth - el.offsetWidth) / 2
+    const smooth = centered.current && !st.current.reduce
+    centered.current = true
+    tr.scrollTo({ left, behavior: smooth ? "smooth" : "auto" })
+  }, [current])
 
   React.useEffect(() => {
-    setRefract(supportsRefraction())
+    setRefract(refraction && supportsRefraction())
     const s = st.current
     const mqReduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")
     s.reduce = !!mqReduce?.matches
@@ -502,6 +566,7 @@ export function LiquidNavbar({
       cancelAnimationFrame(s.raf)
       s.raf = 0
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loop])
 
   useIsoLayoutEffect(() => { measure() }, [measure, items.length, compact])
@@ -511,7 +576,8 @@ export function LiquidNavbar({
     let lastW = -1
     const ro = new ResizeObserver(() => {
       const w = navRef.current?.offsetWidth ?? 0
-      if (w !== lastW) { lastW = w; st.current.ready = false; measureRef.current() }
+      if (Math.abs(w - lastW) > 2) { lastW = w; st.current.ready = false }
+      measureRef.current()
     })
     if (navRef.current) ro.observe(navRef.current)
     return () => ro.disconnect()
@@ -612,6 +678,7 @@ export function LiquidNavbar({
       <span className="nimbus-glass" aria-hidden="true" />
       <canvas className="nimbus-water" ref={canvasRef} aria-hidden="true" />
       <span className="nimbus-drop" ref={dropRef} aria-hidden="true" />
+      <div className="nimbus-track" ref={trackRef} onScroll={onTrackScroll}>
       {items.map((it, i) => {
         const kind = it.fx ?? "pop"
         const playing = fx.i === i && kind !== "none"
@@ -628,7 +695,7 @@ export function LiquidNavbar({
                 {it.icon}
               </span>
             )}
-            <span className="nimbus-label">{it.label}</span>
+            <span className="nimbus-label" data-text={it.label}>{it.label}</span>
           </>
         )
         return it.href ? (
@@ -637,6 +704,7 @@ export function LiquidNavbar({
           <button key={it.label + i} {...(props as any)} type="button">{content}</button>
         )
       })}
+      </div>
     </nav>
   )
 }

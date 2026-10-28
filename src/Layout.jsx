@@ -234,9 +234,10 @@ export function Migalha({ itens }) {
 // depois de um clique, o observador espera a rolagem terminar (scrollend, com limite de 3 s) para a gota
 // não passear pelas seções do meio. Setas do teclado e ondulação contínua ficam desligadas: os itens são
 // links (Tab + Enter) e a barra fica sempre à vista, então a água só anima quando algo muda.
+// No celular a pílula ocupa a largura da tela e os itens rolam de lado dentro dela (o componente
+// centraliza o item ativo e a gota acompanha).
 export function SecoesNav({ itens, rotulo = "Nesta página" }) {
   const [ativo, setAtivo] = useState(0);
-  const lista = useRef(null);
   const travado = useRef(false);
   const atualizar = useRef(() => {});
   const chave = itens.map((i) => i.id).join("|");
@@ -262,28 +263,24 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chave]);
 
+  // um clique novo durante a rolagem do anterior troca a trava (senão a primeira soltava cedo demais)
+  const soltarAnterior = useRef(null);
   const travar = () => {
+    soltarAnterior.current?.(false);
     travado.current = true;
     let limite = 0;
-    const soltar = () => {
+    const soltar = (atualizarAgora = true) => {
       window.removeEventListener("scrollend", soltar);
       clearTimeout(limite);
+      soltarAnterior.current = null;
+      if (!atualizarAgora) return;
       travado.current = false;
       atualizar.current();
     };
+    soltarAnterior.current = soltar;
     window.addEventListener("scrollend", soltar);
     limite = setTimeout(soltar, 3000);
   };
-
-  // mantém o item ativo à vista quando a barra rola de lado (celular)
-  useEffect(() => {
-    const l = lista.current;
-    const el = l?.querySelector('[aria-current="location"]');
-    if (el && l.scrollWidth > l.clientWidth) {
-      const dx = el.getBoundingClientRect().left - l.getBoundingClientRect().left;
-      l.scrollTo({ left: l.scrollLeft + dx - 24, behavior: "auto" });
-    }
-  }, [ativo]);
 
   const itensBarra = useMemo(
     () => itens.map((i) => ({ label: i.rotulo, href: `#${i.id}`, fx: "none" })),
@@ -293,7 +290,7 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
 
   return (
     <div className="secoes">
-      <div className="secoes-in" ref={lista}>
+      <div className="secoes-in">
         <LiquidNavbar
           items={itensBarra}
           active={ativo}
@@ -303,6 +300,7 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
           }}
           ambient={false}
           arrowKeys={false}
+          refraction={false}
           tone="auto"
           compact={false}
           label={rotulo}

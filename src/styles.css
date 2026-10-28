@@ -681,8 +681,9 @@ img {
 }
 
 /* Barra "Nesta página": pílula de vidro líquido (src/components/ui/liquid-glass-navbar.tsx).
- * A faixa em si é transparente e não recebe cliques; só a pílula recebe. No celular a pílula
- * rola de lado. O canvas da água passa 14 px da pílula, por isso o respiro em .secoes-in. */
+ * A faixa em si é transparente e não recebe cliques; só a pílula recebe. A pílula nunca passa da
+ * tela: no celular os itens rolam de lado dentro dela. O canvas da água passa 14 px da pílula,
+ * por isso o respiro em .secoes-in. */
 .secoes {
   position: sticky;
   top: var(--topo-h);
@@ -705,7 +706,8 @@ img {
 }
 
 .secoes .nimbus-nav {
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
   margin-inline: auto;
   pointer-events: auto;
 }
@@ -713,6 +715,16 @@ img {
 .secoes .nimbus-item {
   min-height: 44px;
   white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .secoes-in {
+    padding-inline: 16px;
+  }
+  .secoes .nimbus-item {
+    padding: 0 13px;
+    font-size: 13.5px;
+  }
 }
 
 /* Abertura da página inicial */

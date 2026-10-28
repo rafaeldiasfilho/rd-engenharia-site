@@ -60,6 +60,7 @@ const SERVICOS_FORM = AREAS.map((a) => a.nome);
 
 const SECOES_HOME = [
   { id: "organizamos", rotulo: "O que organizamos" },
+  { id: "equipamentos", rotulo: "Equipamentos" },
   { id: "na-pratica", rotulo: "Na prática" },
   { id: "como-funciona", rotulo: "Como funciona" },
   { id: "onde-atendemos", rotulo: "Onde atendemos" },
