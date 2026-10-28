@@ -45,7 +45,9 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
         pos: s.pos,
       }));
   const total = slides.length;
-  const cheio = className.includes("car-cheio"); // slide ocupa a largura toda: não há vizinhas para clicar
+  // car-cheio: slide na largura toda. car-prateleira: vários cartões à vista, todos já clicáveis.
+  // Nos dois casos não há vizinha "espiando" para virar botão.
+  const cheio = className.includes("car-cheio") || className.includes("car-prateleira");
   const secao = useRef(null);
   const faixa = useRef(null);
   const [i, setI] = useState(0);
@@ -97,7 +99,9 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
         return;
       }
       const p = passo();
-      if (p > 0) setI(Math.max(0, Math.min(total - 1, Math.round(f.scrollLeft / p))));
+      // Com vários cartões à vista, a faixa acaba antes de o último chegar à esquerda: no fim, conta o último.
+      if (f.scrollLeft + f.clientWidth >= f.scrollWidth - 2) setI(total - 1);
+      else if (p > 0) setI(Math.max(0, Math.min(total - 1, Math.round(f.scrollLeft / p))));
     };
     f.addEventListener("scroll", aoRolar, { passive: true });
     return () => {

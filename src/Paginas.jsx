@@ -13,6 +13,7 @@ import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./fotos";
 import { ancora } from "./Busca";
 import Perguntas from "./Perguntas";
 import Janela from "./Janela";
+import MontarPedido from "./MontarPedido";
 import { AnimatedFolder } from "@/components/ui/3d-folder";
 
 // Bloco que no celular começa recolhido (com um botão para abrir) e no computador fica sempre aberto.
@@ -294,32 +295,32 @@ function PaginaArea({ pagina }) {
           ))}
         </ol>
         <p className="nota-fina">As folhas são exemplos ilustrativos, não são documentos reais.</p>
+        {pagina.itens.length > 1 && <MontarPedido area={pagina.nome} itens={pagina.itens} />}
         {pagina.slug === "corpo-de-bombeiros" && <Comparativo />}
       </Secao>
 
       {equip && (
         <Secao id="equipamentos" n={num()} rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
           <Recolhivel rotulo="Ver os equipamentos">
-          <div className={`equip ${temFotosEquip ? "com-fotos" : ""}`}>
-            <div className="equip-texto rev">
-              <p className="lead">{equip.texto}</p>
-              <ul className="equip-lista">
-                {equip.itens.map((i) => (
-                  <li key={i}>{i}</li>
-                ))}
-              </ul>
-            </div>
+          <div className="equip">
+            <p className="lead equip-lead rev">{equip.texto}</p>
             {temFotosEquip && (
-              <div className="equip-fotos rev">
+              <div className="rev">
                 <Carrossel
                   chave={`equip-${pagina.slug}`}
                   rotulo={`Equipamentos de referência usados em serviços de ${pagina.nome}`}
                   aspecto="4 / 3"
-                  className="car-cheio"
-                  sizes="(min-width: 900px) 420px, 100vw"
+                  className="car-prateleira"
+                  auto={false}
+                  sizes="(min-width: 900px) 340px, 78vw"
                 />
               </div>
             )}
+            <ul className="equip-lista rev">
+              {equip.itens.map((i) => (
+                <li key={i}>{i}</li>
+              ))}
+            </ul>
           </div>
           <p className="nota-fina equip-nota">{NOTA_EQUIPAMENTOS}</p>
           </Recolhivel>
@@ -644,15 +645,16 @@ function PaginaLembrete({ pagina }) {
                   required
                 />
               </label>
-              <label>
-                <span>Qual documento?</span>
-                <select value={f.documento} onChange={mudar("documento")}>
-                  {DOCUMENTOS_LEMBRETE.map((d) => (
-                    <option key={d}>{d}</option>
-                  ))}
-                </select>
-                {DICAS_LEMBRETE[f.documento] && <small className="dica-doc">{DICAS_LEMBRETE[f.documento]}</small>}
-              </label>
+              <fieldset className="doc-opcoes">
+                <legend>Qual documento?</legend>
+                {DOCUMENTOS_LEMBRETE.map((d) => (
+                  <label key={d} className="doc-opcao">
+                    <input type="radio" name="documento" value={d} checked={f.documento === d} onChange={mudar("documento")} />
+                    <span className="doc-opcao-nome">{d}</span>
+                    {f.documento === d && DICAS_LEMBRETE[d] && <small className="dica-doc">{DICAS_LEMBRETE[d]}</small>}
+                  </label>
+                ))}
+              </fieldset>
               <fieldset className="campo-mes">
                 <legend>Mês do vencimento (se souber)</legend>
                 <div>

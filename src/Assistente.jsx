@@ -106,6 +106,10 @@ export default function Assistente() {
         </p>
         {etapa > 0 ? (
           <button type="button" className="ass-recomecar" onClick={recomecar}>
+            <svg className="ass-recomecar-seta" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+              <path d="M13.2 8a5.2 5.2 0 1 1-1.6-3.75" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <path d="M12.2 1.8v2.9H9.3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
             Recomeçar
           </button>
         ) : (
