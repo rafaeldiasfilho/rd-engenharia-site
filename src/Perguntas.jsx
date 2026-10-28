@@ -27,6 +27,13 @@ export default function Perguntas({ itens, minimoFiltro = 6 }) {
         <details className="faq-item" key={f.q}>
           <summary>{f.q}</summary>
           <p>{f.a}</p>
+          {f.guia && (
+            <p className="faq-guia">
+              <a href={`/${f.guia}`}>
+                Ler o guia completo <span aria-hidden="true">→</span>
+              </a>
+            </p>
+          )}
         </details>
       ))}
       {comFiltro && termos.length > 0 && visiveis.length === 0 && (

@@ -5,7 +5,8 @@ import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE,
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 import HeroFundo from "./HeroFundo";
-import { FaixaDocumentos, PainelExemplo, FaixaNumeros, FaixaEquipamentos } from "./Vitrine";
+import { FaixaDocumentos, PainelExemplo, FaixaNumeros } from "./Vitrine";
+import Janela from "./Janela";
 import { TopoField } from "@/components/ui/topo-field";
 import { FOTOS, caminho, srcset } from "./fotos";
 import IconeArea from "./Icones";
@@ -15,32 +16,29 @@ import BuscaDocumento from "./Busca";
 import QrWhatsapp from "./QrWhatsapp";
 import PilhaEtapas from "./PilhaEtapas";
 
+// O título de cada cartão vem de AREAS (rotulo), para o nome da área ser o mesmo no site todo.
 const NECESSIDADES = [
   {
     slug: "seguranca-do-trabalho",
     foto: "capacete-vermelho-epi",
-    titulo: "Segurança do trabalho",
     frase: "Tenho funcionários e preciso de PGR, laudos ou treinamentos.",
   },
   {
     slug: "corpo-de-bombeiros",
     foto: "extintor-parede-concreto-pictograma",
-    titulo: "Corpo de Bombeiros",
     frase: "Preciso de AVCB ou CLCB para o meu imóvel ou comércio.",
   },
   {
     slug: "engenharia-civil",
     foto: "edificio-estrutura-concreto-pavimentos",
-    titulo: "Engenharia civil",
     frase: "Vou construir, reformar ou regularizar um imóvel.",
   },
   {
     slug: "meio-ambiente-topografia",
     foto: "rio-mata-vista-aerea",
-    titulo: "Meio ambiente e topografia",
     frase: "Tenho imóvel rural e preciso de CAR, georreferenciamento ou topografia.",
   },
-];
+].map((n) => ({ ...n, titulo: AREAS.find((a) => a.slug === n.slug).rotulo }));
 
 const ETAPAS = [
   { titulo: "Você chama no WhatsApp", texto: "Conte o que precisa. Respondemos no horário de atendimento." },
@@ -62,10 +60,8 @@ const SERVICOS_FORM = AREAS.map((a) => a.nome);
 
 const SECOES_HOME = [
   { id: "organizamos", rotulo: "O que organizamos" },
-  { id: "equipamentos", rotulo: "Equipamentos" },
   { id: "na-pratica", rotulo: "Na prática" },
   { id: "como-funciona", rotulo: "Como funciona" },
-  { id: "onde-atendemos", rotulo: "Onde atendemos" },
   { id: "quem-somos", rotulo: "Quem somos" },
   { id: "duvidas", rotulo: "Dúvidas" },
   { id: "contato", rotulo: "Contato" },
@@ -88,10 +84,12 @@ const dentroDoHorario = () => {
 };
 
 export default function App() {
-  const [atendendo, setAtendendo] = useState(false);
+  // null até montar: o HTML pré-gerado (Google e primeira pintura) mostra só o horário, sem "fora do horário"
+  const [atendendo, setAtendendo] = useState(null);
   const [pedido, setPedido] = useState({ nome: "", cidade: "", servico: "", mensagem: "" });
   const [mapa, setMapa] = useState(false);
   const [mapaPronto, setMapaPronto] = useState(false);
+  const [formacao, setFormacao] = useState(false);
 
   useEffect(() => {
     setAtendendo(dentroDoHorario());
@@ -141,9 +139,11 @@ export default function App() {
         </div>
         <p className={`status status-fundo ${atendendo ? "on" : ""}`}>
           <Icone nome="fa-solid fa-circle" />{" "}
-          {atendendo
-            ? "Atendendo agora. Seg. a sex., das 7h às 17h"
-            : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
+          {atendendo === null
+            ? "Atendimento de segunda a sexta, das 7h às 17h"
+            : atendendo
+              ? "Atendendo agora. Seg. a sex., das 7h às 17h"
+              : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
         </p>
       </HeroFundo>
 
@@ -235,8 +235,6 @@ export default function App() {
 
       <FaixaNumeros />
 
-      <FaixaEquipamentos />
-
       <ExemplosHome />
 
       <section className="sec" id="como-funciona" aria-labelledby="como-t">
@@ -262,79 +260,11 @@ export default function App() {
 
       <Avaliacoes />
 
-      <section className="sec sec-alt sec-topo" id="onde-atendemos" aria-labelledby="onde-t">
-        {/* sem a grade do TopoField: a seção já tem a grade de 32 px do ::before */}
-        <TopoField className="sec-topo-campo" grid={0} lines={0.4} />
-        <div className="container onde-grade">
-          <header className="sec-cab rev">
-            <p className="sec-n">
-              <span>04</span> Onde atendemos
-            </p>
-            <h2 id="onde-t" className="sec-titulo">
-              Atendemos presencialmente e online em Ibirá e região.
-            </h2>
-            <p className="lead">Conte onde fica o seu imóvel ou a sua empresa pelo WhatsApp e confirmamos o atendimento.</p>
-            <div className="acoes">
-              <a className="btn btn-sec btn-grande" href="/onde-atendemos">
-                Ver onde atendemos
-              </a>
-            </div>
-          </header>
-          <div className="onde-cartao rev spot">
-            <p className="rotulo-mini">Escritório</p>
-            <p className="onde-endereco">{ENDERECO}</p>
-            <dl>
-              <div>
-                <dt>Atendimento</dt>
-                <dd>Segunda a sexta, das 7h às 17h</dd>
-              </div>
-              <div>
-                <dt>Formas</dt>
-                <dd>Presencial e online</dd>
-              </div>
-            </dl>
-            <div className="onde-acoes">
-              <a className="btn btn-zap" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
-                Como chegar
-              </a>
-              <button
-                type="button"
-                className="btn btn-sec"
-                aria-expanded={mapa}
-                aria-controls="onde-mapa"
-                onClick={() => {
-                  setMapa((v) => !v);
-                  setMapaPronto(false);
-                }}
-              >
-                {mapa ? "Fechar o mapa" : "Ver no mapa"}
-              </button>
-            </div>
-            {mapa && (
-              <figure id="onde-mapa" className="onde-mapa">
-                <div className="mapa-caixa">
-                  {!mapaPronto && <p className="onde-mapa-carregando">Carregando o mapa…</p>}
-                  <iframe
-                    title="Mapa com a localização da RD Engenharia em Ibirá/SP"
-                    src={MAPA_EMBED}
-                    referrerPolicy="no-referrer"
-                    allowFullScreen
-                    onLoad={() => setMapaPronto(true)}
-                    className={mapaPronto ? "pronto" : ""}
-                  />
-                </div>
-                <figcaption>O mapa é fornecido pelo Google.</figcaption>
-              </figure>
-            )}
-          </div>
-        </div>
-      </section>
-
       <section className="sec" id="quem-somos" aria-labelledby="quem-t">
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
-              <span>05</span> Quem somos
+              <span>04</span> Quem somos
             </p>
             <h2 id="quem-t" className="sec-titulo">
               Quem responde pelo seu serviço.
@@ -353,20 +283,33 @@ export default function App() {
               <p className="pessoa-cargo">
                 Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
               </p>
-              <ul>
-                {FORMACAO.map((f) => (
-                  <li key={f}>{f}</li>
-                ))}
-              </ul>
-              <p className="pessoa-extra">Também corretor de imóveis e perito grafotécnico.</p>
-              <a
-                className="btn btn-sec"
-                href={zap("Olá Rafael! Gostaria de solicitar um orçamento.")}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
-              </a>
+              <p className="pessoa-resumo">
+                {FORMACAO.length} formações, entre bacharelados, pós-graduações e curso técnico.
+              </p>
+              <div className="pessoa-acoes">
+                <button type="button" className="btn btn-sec" onClick={() => setFormacao(true)} aria-haspopup="dialog">
+                  Ver formação completa
+                </button>
+                <a
+                  className="btn btn-sec"
+                  href={zap("Olá Rafael! Gostaria de solicitar um orçamento.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
+                </a>
+              </div>
+              <Janela aberta={formacao} aoFechar={() => setFormacao(false)} titulo="Rafael Antonio Dias">
+                <p className="pessoa-cargo">
+                  Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
+                </p>
+                <ul className="pessoa-formacao">
+                  {FORMACAO.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+                <p className="pessoa-extra">Também corretor de imóveis e perito grafotécnico.</p>
+              </Janela>
             </article>
             <article className="rev spot">
               <span className="pessoa-sigla" aria-hidden="true">
@@ -391,7 +334,7 @@ export default function App() {
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
-              <span>06</span> Dúvidas
+              <span>05</span> Dúvidas
             </p>
             <h2 id="duvidas-t" className="sec-titulo">
               Dúvidas frequentes.
@@ -401,11 +344,14 @@ export default function App() {
         </div>
       </section>
 
-      <section className="bloco-escuro" id="contato" aria-labelledby="contato-t">
+      {/* Contato e "onde atendemos" num bloco só: endereço, horário e região aparecem aqui uma vez
+          (o selo do topo e o rodapé são os outros lugares fixos). O fundo de curvas de nível veio junto. */}
+      <section className="bloco-escuro sec-topo" id="contato" aria-labelledby="contato-t">
+        <TopoField className="sec-topo-campo contato-topo" grid={0} lines={0.4} />
         <div className="container contato-grade">
           <div>
             <p className="sec-n">
-              <span>07</span> Contato
+              <span>06</span> Contato
             </p>
             <h2 id="contato-t" className="sec-titulo">
               Peça seu orçamento.
@@ -415,16 +361,42 @@ export default function App() {
             </p>
             <dl className="contato-dados">
               <div>
-                <dt>Endereço</dt>
+                <dt>Escritório</dt>
                 <dd>
-                  {ENDERECO}{" "}
-                  <a
-                    href={URL_AVALIACOES_GOOGLE}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver no mapa
-                  </a>
+                  {ENDERECO}
+                  <span className="contato-links">
+                    <a href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
+                      Como chegar
+                    </a>
+                    <button
+                      type="button"
+                      className="contato-mapa-botao"
+                      aria-expanded={mapa}
+                      aria-controls={mapa ? "contato-mapa" : undefined}
+                      onClick={() => {
+                        setMapa((v) => !v);
+                        setMapaPronto(false);
+                      }}
+                    >
+                      {mapa ? "Fechar o mapa" : "Ver o mapa aqui"}
+                    </button>
+                  </span>
+                  {mapa && (
+                    <figure id="contato-mapa" className="onde-mapa">
+                      <div className="mapa-caixa">
+                        {!mapaPronto && <p className="onde-mapa-carregando">Carregando o mapa…</p>}
+                        <iframe
+                          title="Mapa com a localização da RD Engenharia em Ibirá/SP"
+                          src={MAPA_EMBED}
+                          referrerPolicy="no-referrer"
+                          allowFullScreen
+                          onLoad={() => setMapaPronto(true)}
+                          className={mapaPronto ? "pronto" : ""}
+                        />
+                      </div>
+                      <figcaption>O mapa é fornecido pelo Google.</figcaption>
+                    </figure>
+                  )}
                 </dd>
               </div>
               <div>
@@ -432,18 +404,10 @@ export default function App() {
                 <dd>Segunda a sexta, das 7h às 17h</dd>
               </div>
               <div>
-                <dt>Onde atendemos</dt>
+                <dt>Região</dt>
                 <dd>
-                  Presencialmente e online em Ibirá e região.
+                  Ibirá e região, presencial e online.
                   <a href="/onde-atendemos">Ver onde atendemos</a>
-                </dd>
-              </div>
-              <div>
-                <dt>Avaliações</dt>
-                <dd>
-                  <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
-                    {NOTA_GOOGLE}
-                  </a>
                 </dd>
               </div>
               <div>

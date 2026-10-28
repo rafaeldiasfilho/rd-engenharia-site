@@ -12,6 +12,7 @@ import IconeArea from "./Icones";
 import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./fotos";
 import { ancora } from "./Busca";
 import Perguntas from "./Perguntas";
+import Janela from "./Janela";
 import { AnimatedFolder } from "@/components/ui/3d-folder";
 
 // Bloco que no celular começa recolhido (com um botão para abrir) e no computador fica sempre aberto.
@@ -171,12 +172,12 @@ function PaginaArea({ pagina }) {
       <SecoesNav
         itens={[
           { id: "situacoes", rotulo: "Situações comuns" },
-          { id: "o-que-fazemos", rotulo: "O que fazemos" },
+          { id: "o-que-fazemos", rotulo: "Serviços" },
           { id: "equipamentos", rotulo: "Equipamentos" },
           { id: "na-pratica", rotulo: "Na prática" },
-          { id: "atendimento", rotulo: "Como atendemos" },
+          { id: "atendimento", rotulo: "Atendimento" },
           { id: "duvidas", rotulo: "Dúvidas" },
-          { id: "proximo-passo", rotulo: "Falar no WhatsApp" },
+          { id: "proximo-passo", rotulo: "Próximo passo" },
         ]}
       />
 
@@ -442,7 +443,22 @@ function PaginaGuia({ pagina }) {
   );
 }
 
+// Guias que valem para todas as áreas (a ART é exigida em serviços das quatro). No índice ficam num grupo
+// próprio; o campo `area` do guia continua valendo para a página do guia (migalha e botão do WhatsApp).
+const GUIAS_GERAIS = new Set(["guias/o-que-e-art-anotacao-de-responsabilidade-tecnica"]);
+
 function PaginaGuias({ pagina }) {
+  const [previa, setPrevia] = useState(null);
+  const guiaPrevia = GUIAS.find((g) => g.slug === previa);
+  const grupos = [
+    { id: "guias-todas", titulo: "Todas as áreas", curto: "Todas as áreas", lista: GUIAS.filter((g) => GUIAS_GERAIS.has(g.slug)) },
+    ...AREAS.map((a) => ({
+      id: `guias-${a.slug}`,
+      titulo: a.nome,
+      curto: a.rotulo,
+      lista: GUIAS.filter((g) => g.area === a.slug && !GUIAS_GERAIS.has(g.slug)),
+    })),
+  ].filter((g) => g.lista.length);
   return (
     <>
       <Topo
@@ -464,27 +480,43 @@ function PaginaGuias({ pagina }) {
       </section>
       <SecoesNav
         rotulo="Áreas dos guias"
-        itens={[...AREAS.map((a) => ({ id: `guias-${a.slug}`, rotulo: a.nome })), { id: "proximo-passo", rotulo: "Próximo passo" }]}
+        itens={[...grupos.map((g) => ({ id: g.id, rotulo: g.curto })), { id: "proximo-passo", rotulo: "Próximo passo" }]}
       />
-      {AREAS.map((a, n) => {
-        const lista = GUIAS.filter((g) => g.area === a.slug);
-        if (!lista.length) return null;
-        return (
-          <Secao key={a.slug} id={`guias-${a.slug}`} n={pad(n)} rotulo="Área" titulo={a.nome} className={n % 2 ? "sec-alt" : ""}>
-            <ul className="guia-cards">
-              {lista.map((g, i) => (
-                <li className="rev" key={g.slug}>
-                  <a href={`/${g.slug}`}>
-                    <small>{pad(i)}</small>
-                    <strong>{g.h1}</strong>
-                    <i aria-hidden="true">→</i>
-                  </a>
-                </li>
+      {grupos.map((grupo, n) => (
+        <Secao key={grupo.id} id={grupo.id} n={pad(n)} rotulo="Área" titulo={grupo.titulo} className={n % 2 ? "sec-alt" : ""}>
+          <ul className="guia-cards">
+            {grupo.lista.map((g, i) => (
+              <li className="rev guia-cartao" key={g.slug}>
+                <a href={`/${g.slug}`}>
+                  <small>{pad(i)}</small>
+                  <strong>{g.h1}</strong>
+                  <i aria-hidden="true">→</i>
+                </a>
+                {RESUMOS_GUIAS[g.slug] && (
+                  <button type="button" className="guia-resumo-botao" aria-haspopup="dialog" onClick={() => setPrevia(g.slug)}>
+                    Ver o resumo<span className="sr-only">: {g.h1}</span>
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </Secao>
+      ))}
+      <Janela aberta={!!guiaPrevia} aoFechar={() => setPrevia(null)} titulo={guiaPrevia ? guiaPrevia.h1 : ""}>
+        {guiaPrevia && (
+          <>
+            <p className="rotulo-mini">Em resumo</p>
+            <ul className="janela-lista">
+              {RESUMOS_GUIAS[guiaPrevia.slug].map((r) => (
+                <li key={r}>{r}</li>
               ))}
             </ul>
-          </Secao>
-        );
-      })}
+            <a className="btn btn-sec" href={`/${guiaPrevia.slug}`}>
+              Ler o guia completo <span aria-hidden="true">→</span>
+            </a>
+          </>
+        )}
+      </Janela>
       <Final
         titulo="Não achou o seu caso?"
         zapTexto="Olá! Li os guias do site e tenho uma dúvida."
@@ -685,6 +717,7 @@ function PaginaLembrete({ pagina }) {
       </section>
       <Final
         titulo="Prefere falar com a gente?"
+        texto="Conte pelo WhatsApp qual documento você quer acompanhar. O lembrete é gratuito e respondemos no horário de atendimento."
         zapTexto="Olá! Tenho uma dúvida sobre o lembrete de vencimento."
         relacionadas={[REL_GERAL.guias, REL_GERAL.quiz, relArea(AREAS[1])]}
       />
@@ -740,6 +773,7 @@ function PaginaPrivacidade() {
       </section>
       <Final
         titulo="Dúvida sobre os seus dados?"
+        texto="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
         zapTexto="Olá! Tenho uma dúvida sobre a política de privacidade do site."
         relacionadas={[REL_GERAL.lembrete, REL_GERAL.guias, REL_GERAL.quiz]}
       />

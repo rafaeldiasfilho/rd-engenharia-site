@@ -2,14 +2,12 @@ import { useState } from "react";
 import Carrossel from "./Carrossel";
 import IconeArea from "./Icones";
 import { Ilustracao } from "./Ilustracoes";
-import { slidesProjetos } from "./paginas";
+import { AREAS, slidesProjetos } from "./paginas";
 
-const ABAS = [
-  { slug: "engenharia-civil", nome: "Engenharia civil" },
-  { slug: "corpo-de-bombeiros", nome: "Bombeiros" },
-  { slug: "seguranca-do-trabalho", nome: "Segurança do trabalho" },
-  { slug: "meio-ambiente-topografia", nome: "Topografia" },
-];
+const ABAS = ["engenharia-civil", "corpo-de-bombeiros", "seguranca-do-trabalho", "meio-ambiente-topografia"].map((slug) => ({
+  slug,
+  nome: AREAS.find((a) => a.slug === slug).rotulo,
+}));
 
 function Civil() {
   return (

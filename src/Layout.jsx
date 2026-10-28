@@ -398,12 +398,7 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
 export function Rodape() {
   return (
     <footer className="rodape">
-      <div className="wrap rodape-cta">
-        <p className="rodape-cta-t">Vamos conversar sobre o seu caso?</p>
-        <a className="btn btn-zap btn-grande" href={zap("Olá! Gostaria de um orçamento.")} target="_blank" rel="noopener noreferrer">
-          <Icone nome="fa-brands fa-whatsapp" /> Falar no WhatsApp
-        </a>
-      </div>
+      {/* Sem convite de WhatsApp aqui: o "Próximo passo" (ou o Contato, na home) e o botão flutuante já fazem isso */}
       <div className="wrap rodape-grade">
         <div>
           <a className="rodape-logo" href="/" aria-label="RD Engenharia, página inicial">
