@@ -12,6 +12,7 @@ import IconeArea from "./Icones";
 import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./fotos";
 import { ancora } from "./Busca";
 import Perguntas from "./Perguntas";
+import { AnimatedFolder } from "@/components/ui/3d-folder";
 
 // Bloco que no celular começa recolhido (com um botão para abrir) e no computador fica sempre aberto.
 // Vem aberto no HTML (bom para o Google e para quem não tem JavaScript); fecha depois de montar se a tela é estreita.
@@ -239,6 +240,31 @@ function PaginaArea({ pagina }) {
         titulo={<>O que fazemos nesta área.</>}
         lead="Cada cartão mostra uma folha de exemplo do documento que você recebe."
       >
+        {/* Pasta com as folhas de exemplo em tamanho de leitura (no cartão elas ficam pequenas). */}
+        <div className="pasta-faixa rev">
+          <AnimatedFolder
+            title="Documentos de exemplo"
+            countLabel={(n) => `${n} folhas desta área`}
+            items={pagina.itens
+              .filter((item) => item.exemplo)
+              .map((item) => ({
+                id: ancora(item.nome),
+                title: item.nome,
+                short: item.nome.split(/ — | \(/)[0],
+                media: <FolhaSvg m={item.exemplo} nome={item.nome} />,
+                caption: LEGENDA_EXEMPLO,
+                action: { label: "Pedir orçamento pelo WhatsApp", href: zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`) },
+              }))}
+          />
+          <div className="pasta-faixa-texto">
+            <h3>Veja cada documento em tamanho de leitura.</h3>
+            <p>
+              Abra a pasta e escolha uma folha para ampliar. Dá para passar de uma para outra e pedir o orçamento daquele
+              documento direto pelo WhatsApp.
+            </p>
+            <p className="nota-fina">{LEGENDA_EXEMPLO} Não há dados de clientes.</p>
+          </div>
+        </div>
         <ol className="servicos-grade">
           {pagina.itens.map((item, n) => (
             <li className="servico-cartao rev spot" key={item.nome} id={ancora(item.nome)}>
