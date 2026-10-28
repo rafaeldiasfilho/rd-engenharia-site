@@ -6322,46 +6322,141 @@ body:has(#contato) .rodape-cta {
   }
 }
 
-/* Faixa curva de equipamentos (Vitrine.jsx, components/ui/tilted-grid-hero): título em cima, fotos no
- * meio, aviso embaixo. A altura define o tamanho das fotos (26% da faixa). */
-.faixa-equip-palco {
-  height: clamp(440px, 56vw, 600px);
+/* Bancada de equipamentos da home (Vitrine.jsx, FaixaEquipamentos): quatro fichas de área, cada uma com
+ * dois equipamentos (foto quadrada, nome e para que serve). Sem movimento.
+ * 4 colunas no computador, 2 no tablet, 1 no celular; a foto ao lado do texto deixa a seção baixa. */
+.bancada-grade {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 20px);
 }
 
-/* no celular o título e o aviso ocupam mais linhas: a faixa cresce para as fotos ficarem livres no meio */
-@media (max-width: 700px) {
-  .faixa-equip-palco {
-    height: 580px;
+.bancada-area {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  background: var(--branco);
+  border: 1px solid var(--linha);
+  border-radius: calc(var(--raio) * 1.6);
+}
+
+.bancada-area-t {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.3;
+  color: var(--tinta);
+}
+
+.bancada-area-t svg,
+.bancada-area-t i {
+  flex: none;
+  color: var(--realce);
+}
+
+.bancada-itens {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bancada-item {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  column-gap: 12px;
+  align-items: start;
+}
+
+.bancada-foto {
+  grid-row: 1 / 3;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--raio);
+  background: var(--verde-claro);
+  box-shadow: inset 0 0 0 1px var(--contorno-img);
+}
+
+.bancada-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bancada-nome {
+  margin: 0 0 2px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--tinta);
+}
+
+.bancada-uso {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: var(--cinza);
+}
+
+.bancada-area-t a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-block: -10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.bancada-area-t a span {
+  color: var(--realce);
+  transition: transform 0.2s var(--ease);
+}
+
+@media (hover: hover) {
+  .bancada-area-t a:hover span {
+    transform: translateX(3px);
   }
 }
 
-.faixa-equip-texto {
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding-block: clamp(36px, 5vw, 56px);
+.bancada-area-t a:focus-visible {
+  outline: 2px solid var(--realce);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.bancada-nota {
+  max-width: none;
+  margin-top: 20px;
   text-align: center;
-  pointer-events: none;
 }
 
-.faixa-equip-texto .sec-titulo {
-  max-width: 20ch;
-  margin: 0;
-  text-wrap: balance;
+@media (max-width: 1100px) {
+  .bancada-grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.faixa-equip-texto .nota-fina {
-  max-width: 52ch;
-  margin: 0;
-  text-wrap: balance;
-}
-
-.faixa-equip-texto a {
-  pointer-events: auto;
+@media (max-width: 640px) {
+  .bancada-grade {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .bancada-area {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+  .bancada-itens {
+    gap: 10px;
+  }
+  .bancada-item {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
 }
 
 /* Fundo de curvas de nível (components/ui/topo-field) atrás da seção "Onde atendemos".
@@ -6390,5 +6485,107 @@ body:has(#contato) .rodape-cta {
   :root:not([data-theme="light"]) .sec-topo-campo {
     color: var(--realce);
     opacity: 0.6;
+  }
+}
+
+/* Celular (rodada de responsividade, 27/10/2026). Fica no fim para vencer as regras anteriores.
+ * - Cartões de área viram linhas compactas (foto à esquerda, texto à direita): a seção caiu de ~2.500 px.
+ * - Abertura com título menor, para os botões caberem na primeira tela também em telas de 667 px.
+ * - Cartões das páginas de serviço com a folha de exemplo mais baixa e menos espaço interno.
+ * - Campos de formulário com 16 px: abaixo disso o iPhone dá zoom ao tocar no campo. */
+@media (max-width: 600px) {
+  .hero-fundo .display {
+    font-size: 2.05rem;
+    line-height: 1.08;
+  }
+
+  .hero-fundo .lead {
+    font-size: 1rem;
+  }
+
+  .escolhas-cards {
+    gap: 10px;
+  }
+
+  .card-area {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    column-gap: 14px;
+    height: auto;
+    min-height: 104px;
+    padding: 0 40px 0 0;
+    border-radius: 18px;
+  }
+
+  .card-area-foto {
+    grid-row: 1 / 3;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .card-area-icone,
+  .card-area-n {
+    display: none;
+  }
+
+  .card-area strong,
+  .card-area small {
+    grid-column: 2;
+    padding-inline: 0;
+  }
+
+  .card-area strong {
+    margin-top: 0;
+    padding-top: 14px;
+    font-size: 1.1rem;
+  }
+
+  .card-area small {
+    margin-top: 4px;
+    padding-bottom: 14px;
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  .card-area-seta {
+    top: 50%;
+    right: 14px;
+    bottom: auto;
+    font-size: 1.3rem;
+    transform: translateY(-50%);
+  }
+
+  .servicos-grade {
+    gap: 14px;
+  }
+
+  .servico-folha {
+    height: 112px;
+    padding-top: 16px;
+  }
+
+  .servico-folha svg {
+    width: 112px;
+  }
+
+  .servico-corpo {
+    padding: 16px 18px 18px;
+  }
+
+  .servico-corpo h3 {
+    margin-bottom: 8px;
+    font-size: 1.15rem;
+  }
+
+  .servico-corpo p {
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
   }
 }

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import IconeArea from "./Icones";
-import { TiltedGridHero } from "@/components/ui/tilted-grid-hero";
-import { slidesDe, caminho } from "./fotos";
+import { FOTOS, caminho, srcset } from "./fotos";
 
 // Blocos de vitrine da página inicial: faixa de documentos, painel de exemplo e números.
 // Nada aqui inventa cliente, depoimento ou dado real: o painel é um exemplo rotulado como ilustrativo.
@@ -148,24 +147,86 @@ export function FaixaNumeros() {
   );
 }
 
-// Faixa curva de fotos (components/ui/tilted-grid-hero): equipamentos genéricos de referência das áreas.
-// A faixa é decorativa (aria-hidden); o texto ao redor diz o que é e que as fotos são ilustrativas.
-const FOTOS_EQUIP = slidesDe("faixa-equipamentos").map((s) => ({ src: caminho(s.f), alt: s.f.alt }));
+// Bancada de equipamentos: duas fichas por área, cada uma com foto, nome e para que serve.
+// Sem movimento. O título de cada ficha leva aos equipamentos da página da área. Textos tirados da pesquisa de equipamentos (o que COSTUMA ser usado, nunca o inventário da RD).
+// As fotos também estão nas listas "equip-*" de fotos.js, então /creditos já cobre todas.
+const BANCADA = [
+  {
+    slug: "seguranca-do-trabalho",
+    nome: "Segurança do trabalho",
+    itens: [
+      { foto: "dosimetro-ruido-calibrador-acustico", nome: "Dosímetro de ruído", uso: "Fica preso ao trabalhador e registra o ruído recebido ao longo da jornada." },
+      { foto: "medidor-nivel-sonoro-portatil", nome: "Decibelímetro", uso: "Mede o ruído de um ponto, na hora, para mapear o ambiente." },
+    ],
+  },
+  {
+    slug: "corpo-de-bombeiros",
+    nome: "Corpo de Bombeiros",
+    itens: [
+      { foto: "extintor-em-caixa-com-sinalizacao", nome: "Extintor e sinalização", uso: "Combate inicial ao fogo; o tipo e o lugar dependem do risco do imóvel." },
+      { foto: "detector-fumaca-teto", nome: "Detector de fumaça", uso: "Parte do alarme: avisa as pessoas logo no início do fogo." },
+    ],
+  },
+  {
+    slug: "engenharia-civil",
+    nome: "Engenharia civil",
+    itens: [
+      { foto: "trena-aco-5-metros", nome: "Trena", uso: "Mede cômodos e fachadas para o desenho do que foi construído (as-built)." },
+      { foto: "estacao-total-amarela-campo", nome: "Estação total", uso: "Mede ângulos, distâncias e alturas no terreno e na obra." },
+    ],
+  },
+  {
+    slug: "meio-ambiente-topografia",
+    nome: "Meio ambiente e topografia",
+    itens: [
+      { foto: "receptor-gnss-sobre-tripe-gramado", nome: "Receptor GNSS", uso: "GPS de precisão: mede por satélite as coordenadas dos limites do imóvel." },
+      { foto: "drone-multirotor-camera", nome: "Drone com câmera", uso: "Fotos aéreas para mapear o terreno, nos casos em que o método é permitido." },
+    ],
+  },
+];
 
 export function FaixaEquipamentos() {
   return (
-    <section className="faixa-equip" aria-labelledby="equip-t">
-      <TiltedGridHero images={FOTOS_EQUIP} className="faixa-equip-palco" speed={4} tileHeight={26} axis={57} fade={10}>
-        <div className="container faixa-equip-texto">
+    <section className="sec bancada" id="equipamentos" aria-labelledby="equip-t">
+      <div className="container">
+        <header className="sec-cab rev">
           <h2 id="equip-t" className="sec-titulo">
             Equipamentos de referência em cada área.
           </h2>
-          <p className="nota-fina">
-            Exemplos genéricos de equipamentos usados em segurança do trabalho, incêndio, obras e topografia. Imagens
-            ilustrativas de terceiros, não são o inventário da RD. <a href="/creditos">Créditos</a>
-          </p>
+          <p className="lead">O que costuma ser usado para medir, conferir e documentar cada tipo de serviço.</p>
+        </header>
+        <div className="bancada-grade">
+          {BANCADA.map((a) => (
+            <article key={a.slug} className="bancada-area rev" aria-labelledby={`bancada-${a.slug}`}>
+              <h3 id={`bancada-${a.slug}`} className="bancada-area-t">
+                <a href={`/${a.slug}#equipamentos`}>
+                  <IconeArea slug={a.slug} tamanho={20} /> {a.nome} <span aria-hidden="true">→</span>
+                </a>
+              </h3>
+              <ul className="bancada-itens">
+                {a.itens
+                  .filter((i) => FOTOS[i.foto])
+                  .map((i) => {
+                    const f = FOTOS[i.foto];
+                    return (
+                      <li key={i.foto} className="bancada-item">
+                        <div className="bancada-foto">
+                          <img src={caminho(f)} srcSet={srcset(f)} sizes="84px" width={f.w} height={f.h} alt={f.alt} loading="lazy" decoding="async" />
+                        </div>
+                        <p className="bancada-nome">{i.nome}</p>
+                        <p className="bancada-uso">{i.uso}</p>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </article>
+          ))}
         </div>
-      </TiltedGridHero>
+        <p className="nota-fina bancada-nota">
+          Exemplos genéricos de equipamentos. Imagens ilustrativas de terceiros, não são o inventário da RD.{" "}
+          <a href="/creditos">Créditos</a>
+        </p>
+      </div>
     </section>
   );
 }

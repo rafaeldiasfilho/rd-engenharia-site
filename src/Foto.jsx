@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { foto, caminho, aviso } from "./fotos";
+import { foto, caminho, srcset, aviso } from "./fotos";
 
 // Foto com legenda honesta. Se o slot não tem foto (ou o arquivo falha), não mostra nada:
 // quem usa o componente já tem a ilustração ou o desenho de projeto como alternativa.
@@ -12,6 +12,8 @@ export default function Foto({ slot, eager = false, sizes = "100vw", className =
       <div className="foto-caixa" style={{ aspectRatio: aspecto || `${f.w} / ${f.h}` }}>
         <img
           src={caminho(f)}
+          srcSet={srcset(f)}
+          sizes={sizes}
           width={f.w}
           height={f.h}
           alt={f.alt}

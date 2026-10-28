@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { slidesDe, caminho, aviso } from "./fotos";
+import { slidesDe, caminho, srcset, aviso } from "./fotos";
 
 // Faixa de imagens no estilo "Fotos" da Apple, sem biblioteca. É o único carrossel do site.
 // - A faixa é CSS scroll-snap: funciona sem JavaScript, com deslizar no toque e roda do mouse, e a
@@ -28,12 +28,13 @@ const INTERVALO = 5000;
 const VOLTAS_MAX = 3; // depois de 3 voltas completas a troca automática para
 const RETOMADA = 8000;
 
-export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", className = "", prioridade = false, auto = true }) {
+export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", className = "", prioridade = false, auto = true, sizes = "(min-width: 900px) 50vw, 90vw" }) {
   const slides = itens
     ? itens
     : slidesDe(chave || "").map((s) => ({
         key: s.foto,
         src: caminho(s.f),
+        srcSet: srcset(s.f),
         w: s.f.w,
         h: s.f.h,
         alt: s.f.alt,
@@ -252,6 +253,8 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
           const img = s.node ? null : (
             <img
               src={s.src}
+              srcSet={s.srcSet}
+              sizes={s.srcSet ? sizes : undefined}
               width={s.w}
               height={s.h}
               alt={s.alt}

@@ -7,7 +7,7 @@ import ExemplosHome from "./ExemplosHome";
 import HeroFundo from "./HeroFundo";
 import { FaixaDocumentos, PainelExemplo, FaixaNumeros, FaixaEquipamentos } from "./Vitrine";
 import { TopoField } from "@/components/ui/topo-field";
-import { FOTOS, caminho } from "./fotos";
+import { FOTOS, caminho, srcset } from "./fotos";
 import IconeArea from "./Icones";
 import Perguntas from "./Perguntas";
 import Avaliacoes from "./Avaliacoes";
@@ -153,7 +153,7 @@ export default function App() {
                 <li key={n.slug}>
                   <a href={`/${n.slug}`} className="card-area spot">
                     <span className="card-area-foto">
-                      <img src={caminho(f)} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
+                      <img src={caminho(f)} srcSet={srcset(f)} sizes="(min-width: 1100px) 300px, (min-width: 700px) 50vw, 100vw" width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
                     <span className="icone-tile card-area-icone">
                       <IconeArea slug={n.slug} tamanho={30} />

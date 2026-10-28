@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { slidesDe, caminho, aviso } from "./fotos";
+import { slidesDe, caminho, srcset, aviso } from "./fotos";
 
 // Abertura (hero) com fotos de fundo em tela cheia, troca por transição de opacidade.
 // Mesmas regras de movimento do Carrossel: a troca automática só começa depois de montar, pausa com o
@@ -122,6 +122,8 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
           <img
             key={x.foto}
             src={caminho(x.f)}
+            srcSet={srcset(x.f)}
+            sizes="100vw"
             width={x.f.w}
             height={x.f.h}
             alt={x.f.alt}

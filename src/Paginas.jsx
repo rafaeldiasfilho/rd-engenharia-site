@@ -9,7 +9,7 @@ import Assistente from "./Assistente";
 import DocsIlustracao, { FolhaSvg, LEGENDA_EXEMPLO } from "./DocsIlustracao";
 import HeroFundo from "./HeroFundo";
 import IconeArea from "./Icones";
-import { slidesDe, FOTOS_EM_USO, caminho } from "./fotos";
+import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./fotos";
 import { ancora } from "./Busca";
 import Perguntas from "./Perguntas";
 
@@ -758,7 +758,7 @@ function PaginaCreditos() {
                 <ul className="creditos">
                   {lista.map((f) => (
                     <li key={f.arq} className="rev">
-                      <img src={caminho(f)} width={f.w} height={f.h} loading="lazy" alt={f.alt} />
+                      <img src={caminho(f)} srcSet={srcset(f)} sizes="160px" width={f.w} height={f.h} loading="lazy" alt={f.alt} />
                       <dl>
                         {f.arquivo && (
                           <div>

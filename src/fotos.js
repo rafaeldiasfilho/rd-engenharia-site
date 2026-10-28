@@ -195,20 +195,6 @@ export const SLOTS = {};
 // "equip-*": só equipamento GENÉRICO de referência (nunca o inventário da RD) e só quando há 3 ou mais
 // fotos que combinam de verdade com a lista da página (marcas visíveis são permitidas aqui; pessoas não).
 export const CARROSSEIS = {
-  // Faixa curva da página inicial (Vitrine.jsx, FaixaEquipamentos): equipamento genérico de referência
-  // das quatro áreas, alternando as áreas. Mesma regra dos "equip-*": nunca o inventário da RD.
-  "faixa-equipamentos": [
-    { foto: "dosimetro-ruido-calibrador-acustico", legenda: "Dosímetro de ruído e calibrador acústico" },
-    { foto: "receptor-gnss-sobre-tripe-gramado", legenda: "Receptor GNSS sobre tripé" },
-    { foto: "extintor-em-caixa-com-sinalizacao", legenda: "Extintor em abrigo, com sinalização" },
-    { foto: "estacao-total-amarela-campo", legenda: "Estação total" },
-    { foto: "medidor-nivel-sonoro-portatil", legenda: "Medidor de nível sonoro portátil" },
-    { foto: "drone-multirotor-camera", legenda: "Drone com câmera" },
-    { foto: "detector-fumaca-teto", legenda: "Detector de fumaça" },
-    { foto: "nivel-laser-linha-verde", legenda: "Nível a laser de linha" },
-    { foto: "receptor-gnss-rtk-floresta", legenda: "Receptor GNSS RTK em bastão" },
-    { foto: "luminaria-saida-emergencia-verde", legenda: "Luminária de saída de emergência" },
-  ],
   home: [
     { foto: "capacete-vermelho-epi", legenda: "Segurança do trabalho", href: "/seguranca-do-trabalho" },
     { foto: "extintor-parede-concreto-pictograma", legenda: "Corpo de Bombeiros", href: "/corpo-de-bombeiros" },
@@ -275,6 +261,11 @@ export const foto = (slot) => {
 };
 
 export const caminho = (f) => `/fotos/otim/${f.arq}.webp`;
+
+// Versões menores (480 e 960 px de largura, geradas ao lado do original em public/fotos/otim/<arq>-<w>.webp)
+// para o navegador baixar só o tamanho que vai mostrar. Use junto com um "sizes" que diga a largura exibida.
+export const srcset = (f) =>
+  [...[480, 960].filter((w) => w < f.w).map((w) => `/fotos/otim/${f.arq}-${w}.webp ${w}w`), `${caminho(f)} ${f.w}w`].join(", ");
 
 // Legenda curta com a licença correta de cada foto.
 // Legenda curta por foto; a frase completa ("não são trabalhos da RD") fica uma vez na home e em /creditos.
