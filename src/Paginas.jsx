@@ -252,7 +252,7 @@ function PaginaArea({ pagina }) {
                 id: ancora(item.nome),
                 title: item.nome,
                 short: item.nome.split(/ — | \(/)[0],
-                media: <FolhaSvg m={item.exemplo} nome={item.nome} />,
+                media: <FolhaSvg m={item.exemplo} nome={item.nome} area={pagina.slug} />,
                 caption: LEGENDA_EXEMPLO,
                 action: { label: "Pedir orçamento pelo WhatsApp", href: zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`) },
               }))}
@@ -271,7 +271,7 @@ function PaginaArea({ pagina }) {
             <li className="servico-cartao rev spot" key={item.nome} id={ancora(item.nome)}>
               {item.exemplo && (
                 <div className="servico-folha" aria-hidden="true">
-                  <FolhaSvg m={item.exemplo} nome={item.nome} />
+                  <FolhaSvg m={item.exemplo} nome={item.nome} area={pagina.slug} />
                 </div>
               )}
               <div className="servico-corpo">

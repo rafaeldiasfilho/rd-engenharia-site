@@ -23,42 +23,42 @@ export const AREAS = [
     itens: [
       {
         nome: "PGR — Programa de Gerenciamento de Riscos",
-        exemplo: {"titulo":"PGR","sub":"Programa de Gerenciamento de Riscos","corpo":"tabela","art":true},
+        exemplo: {"titulo":"PGR","sub":"Programa de Gerenciamento de Riscos","corpo":"tabela","art":true,"layout":"capa","doc":"Programa de Gerenciamento de Riscos","ref":"PGR · NR-01","sumario":["Identificação da organização","Inventário de riscos","Plano de ação"]},
         texto:
           "Documento da NR-1 que identifica os perigos do ambiente de trabalho, avalia os riscos e define as medidas de prevenção. É a base dos demais programas de segurança.",
         quem: "Empresas que contratam empregados, em geral. Microempresas e empresas de pequeno porte de menor risco podem ter tratamento simplificado.",
       },
       {
         nome: "PCMSO — integração com o programa médico",
-        exemplo: {"titulo":"PCMSO","sub":"Programa de controle médico","corpo":"checklist"},
+        exemplo: {"titulo":"PGR × PCMSO","sub":"Informações do PGR para o programa médico","corpo":"checklist","layout":"capa","doc":"Integração entre PGR e PCMSO","ref":"Informações para o médico do trabalho","sumario":["Riscos por função","Exposições identificadas no PGR","Pontos para o programa médico"]},
         texto:
           "O PCMSO (NR-7) é coordenado por médico do trabalho. Orientamos a empresa e integramos as informações do PGR com o programa médico, para que os documentos conversem entre si.",
         quem: "Empresas com empregados.",
       },
       {
         nome: "LTCAT e PPP",
-        exemplo: {"titulo":"LTCAT","sub":"Condições do ambiente de trabalho","corpo":"grafico","art":true},
+        exemplo: {"titulo":"LTCAT","sub":"Condições do ambiente de trabalho","corpo":"grafico","art":true,"layout":"capa","doc":"Laudo Técnico das Condições do Ambiente de Trabalho","ref":"LTCAT","sumario":["Descrição dos ambientes","Agentes nocivos avaliados","Conclusão por função"]},
         texto:
           "O LTCAT documenta os agentes nocivos presentes no trabalho e serve de base para o PPP, usado pela Previdência no reconhecimento de atividade especial para aposentadoria.",
         quem: "Empresas com trabalhadores expostos a agentes nocivos, como ruído, calor, poeira e produtos químicos.",
       },
       {
         nome: "Laudo de insalubridade (NR-15) e de periculosidade (NR-16)",
-        exemplo: {"titulo":"LAUDO","sub":"Insalubridade e periculosidade","corpo":"medicao","art":true},
+        exemplo: {"titulo":"LAUDO","sub":"Insalubridade e periculosidade","corpo":"medicao","art":true,"layout":"capa","doc":"Laudo de Insalubridade e Periculosidade","ref":"NR-15 e NR-16","sumario":["Atividades avaliadas","Avaliações e critérios","Conclusão por função"]},
         texto:
           "Avaliação técnica no local de trabalho para definir se há direito a adicional de insalubridade ou de periculosidade. Também é usado em defesa da empresa em ações trabalhistas.",
         quem: "Empresas que lidam com agentes nocivos, inflamáveis, explosivos ou eletricidade, e empresas que respondem a ações trabalhistas.",
       },
       {
         nome: "APR, Mapa de Risco e AET",
-        exemplo: {"titulo":"APR","sub":"Análise preliminar de riscos","corpo":"mapa"},
+        exemplo: {"titulo":"APR","sub":"Análise preliminar de riscos","corpo":"mapa","layout":"prancha","doc":"Mapa de Risco","ref":"Setor de produção","escala":"Sem escala"},
         texto:
           "Análise Preliminar de Riscos para tarefas específicas, mapa de riscos do ambiente e Análise Ergonômica do Trabalho, conforme a atividade.",
         quem: "Empresas com tarefas de risco, obras e postos de trabalho com exigência ergonômica.",
       },
       {
         nome: "Treinamentos de NRs",
-        exemplo: {"titulo":"CERTIFICADO","sub":"Treinamento de Norma Regulamentadora","corpo":"certificado"},
+        exemplo: {"titulo":"CERTIFICADO","sub":"Treinamento de Norma Regulamentadora","corpo":"certificado","layout":"certificado","doc":"NR-35 · Trabalho em altura"},
         texto:
           "Capacitações como NR-5 (CIPA), NR-6 (EPI), NR-10 (eletricidade), NR-12 (máquinas), NR-18 (construção), NR-33 (espaço confinado) e NR-35 (trabalho em altura), além de primeiros socorros e combate a incêndio.",
         quem: "Colaboradores e gestores de empresas cuja atividade exige a capacitação.",
@@ -104,28 +104,28 @@ export const AREAS = [
     itens: [
       {
         nome: "PSCIP — Projeto de Segurança Contra Incêndio e Pânico",
-        exemplo: {"titulo":"PSCIP","sub":"Projeto de segurança contra incêndio","corpo":"planta","art":true},
+        exemplo: {"titulo":"PSCIP","sub":"Projeto de segurança contra incêndio","corpo":"planta","art":true,"layout":"prancha","doc":"Projeto de Segurança Contra Incêndio","ref":"Planta de medidas de segurança","escala":"1:100"},
         texto:
           "Projeto técnico que define as medidas de proteção exigidas para o seu imóvel, como extintores, sinalização, iluminação de emergência, alarme e hidrantes, conforme as Instruções Técnicas do Corpo de Bombeiros.",
         quem: "Edificações e áreas de risco que não se enquadram em processo simplificado.",
       },
       {
         nome: "AVCB — Auto de Vistoria do Corpo de Bombeiros",
-        exemplo: {"titulo":"AVCB","sub":"Auto de vistoria","corpo":"selo"},
+        exemplo: {"titulo":"AVCB","sub":"Preparação para a vistoria","corpo":"checklist","layout":"capa","doc":"Preparação para Vistoria do AVCB","ref":"Lista de exigências","sumario":["Medidas de segurança exigidas","Situação de cada medida","Pendências antes da vistoria"]},
         texto:
           "Documento que comprova que a edificação cumpre as medidas de segurança contra incêndio, emitido após vistoria do Corpo de Bombeiros.",
         quem: "Comércios, indústrias, escolas, clínicas, condomínios e outros imóveis cuja ocupação exija o documento.",
       },
       {
         nome: "CLCB — Certificado de Licença do Corpo de Bombeiros",
-        exemplo: {"titulo":"CLCB","sub":"Certificado de licença","corpo":"checklist"},
+        exemplo: {"titulo":"CLCB","sub":"Análise de enquadramento","corpo":"checklist","layout":"capa","doc":"Análise de Enquadramento para CLCB","ref":"Área, altura e ocupação","sumario":["Dados da edificação","Enquadramento","Medidas exigidas"]},
         texto:
           "Licença com processo mais simples, para edificações menores e de baixo risco. O enquadramento depende de área, altura e tipo de ocupação, e fazemos essa análise para você.",
         quem: "Estabelecimentos de pequeno porte e baixo risco, conforme a legislação paulista.",
       },
       {
         nome: "Projetos específicos",
-        exemplo: {"titulo":"PROJETO","sub":"Rota de fuga, hidrantes e alarme","corpo":"rota","art":true},
+        exemplo: {"titulo":"PROJETO","sub":"Rota de fuga, hidrantes e alarme","corpo":"rota","art":true,"layout":"prancha","doc":"Rota de Fuga e Hidrantes","ref":"Projeto específico","escala":"1:100"},
         texto:
           "Rota de fuga, hidrantes, sprinklers (chuveiros automáticos), detecção e alarme de incêndio, com ART do responsável técnico.",
         quem: "Imóveis em que o projeto exige sistemas fixos de proteção.",
@@ -171,35 +171,35 @@ export const AREAS = [
     itens: [
       {
         nome: "Projetos arquitetônicos, estruturais e complementares",
-        exemplo: {"titulo":"PROJETO","sub":"Planta e memorial descritivo","corpo":"planta","art":true},
+        exemplo: {"titulo":"PROJETO","sub":"Planta e memorial descritivo","corpo":"planta","art":true,"layout":"prancha","doc":"Projeto Arquitetônico","ref":"Planta baixa","escala":"1:50"},
         texto:
           "Projeto arquitetônico, fundações, projeto estrutural, drenagem, memorial descritivo e memória de cálculo, seguindo as normas da ABNT.",
         quem: "Quem vai construir, ampliar ou reformar.",
       },
       {
         nome: "Regularização de obra e habite-se",
-        exemplo: {"titulo":"AS-BUILT","sub":"Levantamento do que foi construído","corpo":"asbuilt","art":true},
+        exemplo: {"titulo":"AS-BUILT","sub":"Levantamento do que foi construído","corpo":"asbuilt","art":true,"layout":"prancha","doc":"Levantamento Cadastral (As-built)","ref":"Planta baixa","escala":"1:50"},
         texto:
           "Levantamento do que foi construído (as-built), ART ou RRT, alvará, habite-se e demais documentos junto à prefeitura. As regras variam de município para município.",
         quem: "Proprietários de imóveis construídos sem projeto aprovado ou sem habite-se.",
       },
       {
         nome: "Gerenciamento e planejamento de obras",
-        exemplo: {"titulo":"CRONOGRAMA","sub":"Cronograma físico-financeiro","corpo":"gantt"},
+        exemplo: {"titulo":"CRONOGRAMA","sub":"Cronograma físico-financeiro","corpo":"gantt","layout":"prancha","doc":"Cronograma Físico-Financeiro","ref":"Etapas da obra","escala":"Sem escala"},
         texto:
           "Orçamento, cronograma físico-financeiro, diário de obra, controle de qualidade e boletim de medição para acompanhar custo, prazo e qualidade da obra.",
         quem: "Construtoras, empresas e proprietários que querem controle sobre a obra.",
       },
       {
         nome: "Inspeção predial e laudos de patologias",
-        exemplo: {"titulo":"INSPEÇÃO","sub":"Laudo de patologias","corpo":"fachada","art":true},
+        exemplo: {"titulo":"INSPEÇÃO","sub":"Laudo de patologias","corpo":"fachada","art":true,"layout":"capa","doc":"Laudo de Inspeção Predial","ref":"Patologias da edificação","sumario":["Vistoria por sistema","Anomalias e grau de risco","Recomendações"]},
         texto:
           "Inspeção de fachada, estrutura, impermeabilização e instalações, com relatório técnico e orientação de manutenção preventiva.",
         quem: "Condomínios, comércios e proprietários que notam trincas, infiltração ou desgaste.",
       },
       {
         nome: "Laudos e perícias",
-        exemplo: {"titulo":"LAUDO","sub":"Vistoria e avaliação de imóvel","corpo":"laudo","art":true},
+        exemplo: {"titulo":"LAUDO","sub":"Vistoria e avaliação de imóvel","corpo":"laudo","art":true,"layout":"capa","doc":"Laudo Técnico de Vistoria","ref":"Imóvel residencial","sumario":["Objeto e objetivo","Vistoria e registros","Conclusão"]},
         texto:
           "Laudo de vistoria, de avaliação de imóvel, estrutural e perícia, para fins de financiamento, seguro, negociação ou processo judicial.",
         quem: "Quem precisa de um parecer técnico formal sobre um imóvel.",
@@ -245,35 +245,35 @@ export const AREAS = [
     itens: [
       {
         nome: "CAR — Cadastro Ambiental Rural",
-        exemplo: {"titulo":"CAR","sub":"Cadastro ambiental rural","corpo":"car"},
+        exemplo: {"titulo":"CAR","sub":"Cadastro ambiental rural","corpo":"car","layout":"prancha","doc":"Mapa do Imóvel para o CAR","ref":"APP e reserva legal","escala":"1:5.000"},
         texto:
           "Cadastro eletrônico obrigatório dos imóveis rurais, previsto no Código Florestal, que reúne as informações ambientais da propriedade e é base para a regularização ambiental.",
         quem: "Proprietários e possuidores de imóveis rurais.",
       },
       {
         nome: "Georreferenciamento de imóvel rural",
-        exemplo: {"titulo":"MEMORIAL","sub":"Georreferenciamento do imóvel","corpo":"terreno","art":true},
+        exemplo: {"titulo":"MEMORIAL","sub":"Georreferenciamento do imóvel","corpo":"terreno","art":true,"layout":"prancha","doc":"Planta do Imóvel Georreferenciado","ref":"Vértices e confrontações","escala":"1:5.000"},
         texto:
           "Levantamento que define os limites do imóvel com coordenadas oficiais e é certificado junto ao INCRA, exigido em situações como desmembramento e transferência de propriedade.",
         quem: "Quem vai vender, dividir ou regularizar um imóvel rural.",
       },
       {
         nome: "Topografia",
-        exemplo: {"titulo":"LEVANTAMENTO","sub":"Planta e curvas de nível","corpo":"curvas","art":true},
+        exemplo: {"titulo":"LEVANTAMENTO","sub":"Planta e curvas de nível","corpo":"curvas","art":true,"layout":"prancha","doc":"Levantamento Planialtimétrico","ref":"Curvas de nível","escala":"1:1.000"},
         texto:
           "Levantamento planialtimétrico, locação de obras, divisão de glebas, planta cadastral, curvas de nível e cálculo de volume.",
         quem: "Quem vai construir, dividir um terreno ou precisa conhecer as medidas e o relevo da área.",
       },
       {
         nome: "Licenciamento ambiental e outorga",
-        exemplo: {"titulo":"LICENÇA","sub":"Licenciamento e outorga","corpo":"fluxo"},
+        exemplo: {"titulo":"LICENÇA","sub":"Licenciamento e outorga","corpo":"fluxo","layout":"capa","doc":"Licenciamento Ambiental e Outorga","ref":"Acompanhamento do processo","cliente":"empresa","sumario":["Atividade e enquadramento","Documentos exigidos","Andamento do processo"]},
         texto:
           "Orientação e condução de licenças (prévia, de instalação e de operação) e da outorga de uso da água, conforme a atividade e o órgão responsável.",
         quem: "Empreendimentos e atividades que impactam o meio ambiente ou usam recursos hídricos.",
       },
       {
         nome: "Gestão de resíduos e gestão ambiental",
-        exemplo: {"titulo":"PGRS","sub":"Plano de gestão de resíduos","corpo":"tabela"},
+        exemplo: {"titulo":"PGRS","sub":"Plano de gestão de resíduos","corpo":"tabela","layout":"capa","doc":"Plano de Gerenciamento de Resíduos Sólidos","ref":"PGRS","cliente":"empresa","sumario":["Resíduos gerados","Acondicionamento e destino","Responsáveis e registros"]},
         texto:
           "PGRS e PGRSS, inventário e manifesto de resíduos e planos de ação ambiental para empresas, clínicas, indústrias e propriedades.",
         quem: "Empresas que geram resíduos e precisam comprovar o destino correto.",
