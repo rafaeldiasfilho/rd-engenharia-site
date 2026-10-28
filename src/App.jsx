@@ -14,6 +14,7 @@ import Perguntas from "./Perguntas";
 import Avaliacoes from "./Avaliacoes";
 import BuscaDocumento from "./Busca";
 import QrWhatsapp from "./QrWhatsapp";
+import { WHATSAPP_PROJETOS } from "./contato";
 import PilhaEtapas from "./PilhaEtapas";
 
 // O título de cada cartão vem de AREAS (rotulo), para o nome da área ser o mesmo no site todo.
@@ -319,7 +320,7 @@ export default function App() {
               <p className="pessoa-cargo">Técnico em edificações · Projetos e atendimento</p>
               <a
                 className="btn btn-sec"
-                href="https://wa.me/5517996590330?text=Ol%C3%A1!%20Gostaria%20de%20solicitar%20um%20or%C3%A7amento."
+                href={zap("Olá! Gostaria de solicitar um orçamento.", WHATSAPP_PROJETOS)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
