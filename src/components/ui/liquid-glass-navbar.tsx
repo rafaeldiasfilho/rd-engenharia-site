@@ -263,8 +263,11 @@ function makeState() {
 }
 
 function initGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false }) as WebGLRenderingContext | null
+  // Sem GPU (renderização por software) o shader leva cerca de 1 s para compilar: fica a gota em CSS.
+  const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false, failIfMajorPerformanceCaveat: true }) as WebGLRenderingContext | null
   if (!gl) return null
+  const info = gl.getExtension("WEBGL_debug_renderer_info")
+  if (info && /swiftshader|llvmpipe|software/i.test(String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)))) return null
   const sh = (type: number, src: string) => {
     const s = gl.createShader(type)!
     gl.shaderSource(s, src)
@@ -551,33 +554,47 @@ export function LiquidNavbar({
     const onReduce = () => { s.reduce = !!mqReduce?.matches; loop() }
     mqReduce?.addEventListener?.("change", onReduce)
     const cv = canvasRef.current
-    // Contexto WebGL + shader da água custam caro na thread principal: só com a pílula à vista e o
-    // navegador ocioso, nunca no meio da hidratação.
+    // Contexto WebGL + shader da água custam caro na thread principal. Só depois da primeira interação
+    // (mouse, toque, rolagem, tecla), com a pílula à vista e o navegador ocioso: o carregamento fica
+    // livre, e até lá a gota em CSS faz o papel da água.
     const win = window as Window & {
       requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number
       cancelIdleCallback?: (id: number) => void
     }
     let vivo = true
     let ocioso = 0
+    let interagiu = false
     const ligar = () => {
       if (!vivo || s.glc) return
       s.glc = cv ? initGL(cv) : null
       setGl(s.glc ? "on" : "off")
       loop()
     }
+    const agendar = () => {
+      if (!interagiu || !s.visible || s.glc || ocioso) return
+      ocioso = win.requestIdleCallback ? win.requestIdleCallback(ligar, { timeout: 1500 }) : window.setTimeout(ligar, 300)
+    }
+    const GESTOS = ["pointermove", "pointerdown", "keydown", "wheel", "touchstart", "scroll"] as const
+    const marcar = () => {
+      interagiu = true
+      GESTOS.forEach((t) => window.removeEventListener(t, marcar))
+      agendar()
+    }
+    GESTOS.forEach((t) => window.addEventListener(t, marcar, { passive: true }))
     const lost = (e: Event) => { e.preventDefault(); s.glc = null; setGl("off") }
     cv?.addEventListener("webglcontextlost", lost)
     const io = new IntersectionObserver(([e]) => {
       s.visible = e.isIntersecting
       if (!s.visible) return
       loop()
-      if (!s.glc && !ocioso) ocioso = win.requestIdleCallback ? win.requestIdleCallback(ligar, { timeout: 1500 }) : window.setTimeout(ligar, 300)
+      agendar()
     })
     if (navRef.current) io.observe(navRef.current)
     const vis = () => { s.page = document.visibilityState === "visible"; if (s.page && s.visible) loop() }
     document.addEventListener("visibilitychange", vis)
     return () => {
       vivo = false
+      GESTOS.forEach((t) => window.removeEventListener(t, marcar))
       if (win.cancelIdleCallback) win.cancelIdleCallback(ocioso)
       else window.clearTimeout(ocioso)
       cv?.removeEventListener("webglcontextlost", lost)
