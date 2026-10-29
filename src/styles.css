@@ -438,12 +438,42 @@ img {
   color: var(--cinza);
 }
 
+/* Ilha: a navegação fica numa pílula sólida (nunca vidro sobre o vidro do cabeçalho) */
 .menu {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  background: var(--branco);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -14px rgba(0, 0, 0, 0.18);
   font-size: 0.95rem;
   font-weight: 500;
+}
+
+/* Fundo que desliza até o item sob o mouse */
+.menu-pilula {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: var(--w, 0);
+  border-radius: 999px;
+  background: var(--verde-claro);
+  transform: translateX(var(--x, 0));
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 220ms var(--ease), width 220ms var(--ease), opacity 150ms ease;
+}
+
+.menu-pilula[data-on] {
+  opacity: 1;
+}
+
+.menu-pilula[data-salto] {
+  transition: opacity 150ms ease;
 }
 
 .menu > a,
@@ -462,7 +492,15 @@ img {
   white-space: nowrap;
   cursor: pointer;
   position: relative;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  z-index: 1;
+  transition: color 0.2s ease;
+}
+
+@media (pointer: fine) {
+  .menu > a,
+  .menu-servicos > button {
+    min-height: 38px;
+  }
 }
 
 .menu .atual,
@@ -477,7 +515,7 @@ img {
   position: absolute;
   left: 14px;
   right: 14px;
-  bottom: 6px;
+  bottom: 5px;
   height: 2px;
   background: var(--realce);
   border-radius: 2px;
@@ -491,34 +529,116 @@ img {
   transform: rotate(180deg);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .menu > a:hover,
-  .menu-servicos > button:hover {
-    background: var(--verde-claro);
-  }
-}
-
 .menu-servicos {
   position: relative;
 }
 
-.menu-servicos ul {
+/* Painel de Serviços: uma superfície só, centrada sob o botão */
+.menu-painel {
   position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  width: 380px;
-  padding: 8px;
+  z-index: 2;
+  top: calc(100% + 14px);
+  left: 50%;
+  translate: -50% 0;
+  width: 400px;
+  padding: 6px;
   background: var(--branco);
   border: 1px solid var(--linha);
-  border-radius: 18px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
-  animation: gota 0.18s var(--ease);
-  transform-origin: top left;
+  border-radius: 22px;
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: gota 0.2s var(--ease);
+  transform-origin: top center;
+}
+
+/* Ponte invisível sobre o vão: o mouse vai do botão ao painel sem fechá-lo */
+.menu-painel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -16px;
+  height: 16px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .menu-servicos ul.teclado {
+  .menu-painel.teclado {
     animation: none;
+  }
+}
+
+.menu-painel-topo {
+  padding: 10px 12px 6px;
+}
+
+.menu-painel-titulo {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cinza);
+}
+
+.menu-painel-sub {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--cinza);
+}
+
+.menu-painel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-seta-item {
+  flex: none;
+  margin-left: auto;
+  color: var(--realce);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s var(--ease);
+}
+
+.menu-painel li a:focus-visible .menu-seta-item {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-painel li a:hover .menu-seta-item {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menu-painel-rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  min-height: 44px;
+  margin: 6px -6px -6px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--linha);
+  border-radius: 0 0 22px 22px;
+  background: var(--papel);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--cinza);
+  transition: background-color 0.2s ease;
+}
+
+.menu-painel-rodape strong {
+  color: var(--realce);
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-painel-rodape:hover {
+    background: var(--verde-claro);
   }
 }
 
@@ -533,19 +653,19 @@ img {
   }
 }
 
-.menu-servicos li a {
+.menu-painel li a {
   display: block;
   padding: 12px 14px;
   border-radius: 12px;
   transition: background-color 0.2s ease;
 }
 
-.menu-servicos li a strong {
+.menu-painel li a strong {
   display: block;
   font-size: 1rem;
 }
 
-.menu-servicos li a small {
+.menu-painel li a small {
   display: block;
   color: var(--cinza);
   font-size: 0.85rem;
@@ -553,12 +673,12 @@ img {
   margin-top: 2px;
 }
 
-.menu-servicos li a[aria-current="page"] {
+.menu-painel li a[aria-current="page"] {
   background: var(--verde-claro);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .menu-servicos li a:hover {
+  .menu-painel li a:hover {
     background: var(--verde-claro);
   }
 }

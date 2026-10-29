@@ -91,6 +91,11 @@ export function Cabecalho({ atual = "" }) {
   const botaoServicos = useRef(null);
   const botaoMenu = useRef(null);
   const teclado = useRef(false);
+  const menu = useRef(null);
+  // Aberto só pelo mouse passando: fecha quando ele sai. Um clique "fixa" o painel aberto.
+  const porHover = useRef(false);
+  const espera = useRef(0);
+  const [pilula, setPilula] = useState({ x: 0, w: 0, on: false, salto: true });
 
   const emServicos = AREAS.some((a) => a.slug === atual);
   const emGuias = atual === "guias" || atual.startsWith("guias/");
@@ -100,10 +105,14 @@ export function Cabecalho({ atual = "" }) {
   useEffect(() => {
     if (!servicos) return undefined;
     const fora = (e) => {
-      if (caixa.current && !caixa.current.contains(e.target)) setServicos(false);
+      if (caixa.current && !caixa.current.contains(e.target)) {
+        porHover.current = false;
+        setServicos(false);
+      }
     };
     const tecla = (e) => {
       if (e.key === "Escape") {
+        porHover.current = false;
         setServicos(false);
         botaoServicos.current?.focus();
       }
@@ -115,6 +124,37 @@ export function Cabecalho({ atual = "" }) {
       document.removeEventListener("keydown", tecla);
     };
   }, [servicos]);
+
+  useEffect(() => () => clearTimeout(espera.current), []);
+
+  const moverPilula = (e) => {
+    if (e.pointerType !== "mouse" || !menu.current) return;
+    const m = menu.current.getBoundingClientRect();
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = r.left - m.left - menu.current.clientLeft;
+    setPilula((p) => ({ x, w: r.width, on: true, salto: !p.on }));
+  };
+
+  const entrarServicos = (e) => {
+    if (e.pointerType !== "mouse") return;
+    clearTimeout(espera.current);
+    if (servicos) return;
+    espera.current = setTimeout(() => {
+      porHover.current = true;
+      teclado.current = false;
+      setServicos(true);
+    }, 70);
+  };
+
+  const sairServicos = (e) => {
+    if (e.pointerType !== "mouse") return;
+    clearTimeout(espera.current);
+    if (!porHover.current) return;
+    espera.current = setTimeout(() => {
+      porHover.current = false;
+      setServicos(false);
+    }, 200);
+  };
 
   // Esc fecha o menu do celular e devolve o foco ao botão que o abriu.
   useEffect(() => {
@@ -132,26 +172,58 @@ export function Cabecalho({ atual = "" }) {
   return (
     <header className="topo">
       <div className="topo-in">
-        <a className="marca" href="/" aria-label="RD Engenharia, página inicial">
+        <a className="marca" href="/">
           <span className="marca-sigla">
             <img src="/marca/marca-rd.webp" width="320" height="128" alt="" />
           </span>
           <span className="marca-nome">
-            <strong>RD Engenharia</strong>
+            <strong>RD Engenharia</strong>{" "}
             <small>Segurança e meio ambiente</small>
+            <span className="sr-only">, página inicial</span>
           </span>
         </a>
 
-        <nav className="menu" aria-label="Principal">
-          <div className="menu-servicos" ref={caixa}>
+        <nav
+          className="menu"
+          aria-label="Principal"
+          ref={menu}
+          onPointerLeave={() => setPilula((p) => ({ ...p, on: false }))}
+        >
+          <span
+            className="menu-pilula"
+            aria-hidden="true"
+            data-on={pilula.on || undefined}
+            data-salto={pilula.salto || undefined}
+            style={{ "--x": `${pilula.x}px`, "--w": `${pilula.w}px` }}
+          />
+          <div
+            className="menu-servicos"
+            ref={caixa}
+            onPointerEnter={entrarServicos}
+            onPointerLeave={sairServicos}
+            onBlur={(e) => {
+              if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget)) {
+                porHover.current = false;
+                setServicos(false);
+              }
+            }}
+          >
             <button
               type="button"
               ref={botaoServicos}
               className={emServicos ? "atual" : ""}
               aria-expanded={servicos}
-              aria-controls="menu-servicos-lista"
+              aria-controls="menu-servicos-painel"
+              onPointerEnter={moverPilula}
               onClick={(e) => {
                 teclado.current = e.detail === 0; // aberto pelo teclado: sem animação
+                clearTimeout(espera.current);
+                if (e.detail > 0 && porHover.current) {
+                  porHover.current = false;
+                  setServicos(true);
+                  return;
+                }
+                porHover.current = false;
                 setServicos((v) => !v);
               }}
             >
@@ -160,26 +232,43 @@ export function Cabecalho({ atual = "" }) {
                 <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
-            <ul id="menu-servicos-lista" className={`${servicos ? "aberto" : ""} ${teclado.current ? "teclado" : ""}`} hidden={!servicos}>
-              {AREAS.map((a) => (
-                <li key={a.slug}>
-                  <a href={`/${a.slug}`} aria-current={cur(atual === a.slug)} className="menu-item-area">
-                    <span className="icone-tile">
-                      <IconeArea slug={a.slug} tamanho={22} />
-                    </span>
-                    <span>
-                      <strong>{a.nome}</strong>
-                      <small>{a.curto}</small>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div
+              id="menu-servicos-painel"
+              className={`menu-painel ${servicos ? "aberto" : ""} ${teclado.current ? "teclado" : ""}`}
+              hidden={!servicos}
+            >
+              <div className="menu-painel-topo">
+                <p className="menu-painel-titulo">Serviços</p>
+                <p className="menu-painel-sub">{AREAS.length} áreas, presencial e online em Ibirá e região</p>
+              </div>
+              <ul>
+                {AREAS.map((a) => (
+                  <li key={a.slug}>
+                    <a href={`/${a.slug}`} aria-current={cur(atual === a.slug)} className="menu-item-area">
+                      <span className="icone-tile">
+                        <IconeArea slug={a.slug} tamanho={22} />
+                      </span>
+                      <span>
+                        <strong>{a.nome}</strong>
+                        <small>{a.curto}</small>
+                      </span>
+                      <svg className="menu-seta-item" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a className="menu-painel-rodape" href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")}>
+                <span>Não sabe qual área?</span>
+                <strong>Descubra o que o seu caso precisa</strong>
+              </a>
+            </div>
           </div>
-          <a href="/guias" className={emGuias ? "atual" : ""} aria-current={cur(atual === "guias")}>
+          <a href="/guias" className={emGuias ? "atual" : ""} aria-current={cur(atual === "guias")} onPointerEnter={moverPilula}>
             Guias
           </a>
-          <a href="/onde-atendemos" className={emOnde ? "atual" : ""} aria-current={cur(emOnde)}>
+          <a href="/onde-atendemos" className={emOnde ? "atual" : ""} aria-current={cur(emOnde)} onPointerEnter={moverPilula}>
             Onde atendemos
           </a>
         </nav>
