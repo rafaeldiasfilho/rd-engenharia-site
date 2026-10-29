@@ -51,7 +51,7 @@ export const AREAS = [
       },
       {
         nome: "APR, Mapa de Risco e AET",
-        exemplo: {"titulo":"APR","sub":"Análise preliminar de riscos","corpo":"mapa","layout":"prancha","doc":"Mapa de Risco","ref":"Setor de produção","escala":"Sem escala"},
+        exemplo: {"titulo":"APR","sub":"Análise preliminar de riscos","corpo":"apr","layout":"capa","doc":"Análise Preliminar de Riscos","ref":"Atividade não rotineira","sumario":["Descrição da atividade","Etapas, perigos e controles","Liberação da atividade"]},
         texto:
           "Análise Preliminar de Riscos para tarefas específicas, mapa de riscos do ambiente e Análise Ergonômica do Trabalho, conforme a atividade.",
         quem: "Empresas com tarefas de risco, obras e postos de trabalho com exigência ergonômica.",
@@ -104,7 +104,7 @@ export const AREAS = [
     itens: [
       {
         nome: "PSCIP — Projeto de Segurança Contra Incêndio e Pânico",
-        exemplo: {"titulo":"PSCIP","sub":"Projeto de segurança contra incêndio","corpo":"planta","art":true,"layout":"prancha","doc":"Projeto de Segurança Contra Incêndio","ref":"Planta de medidas de segurança","escala":"1:100"},
+        exemplo: {"titulo":"PSCIP","sub":"Projeto de segurança contra incêndio","corpo":"incendio","art":true,"layout":"prancha","doc":"Projeto de Segurança Contra Incêndio","ref":"Planta de medidas de segurança","escala":"1:100"},
         texto:
           "Projeto técnico que define as medidas de proteção exigidas para o seu imóvel, como extintores, sinalização, iluminação de emergência, alarme e hidrantes, conforme as Instruções Técnicas do Corpo de Bombeiros.",
         quem: "Edificações e áreas de risco que não se enquadram em processo simplificado.",
@@ -273,7 +273,7 @@ export const AREAS = [
       },
       {
         nome: "Gestão de resíduos e gestão ambiental",
-        exemplo: {"titulo":"PGRS","sub":"Plano de gestão de resíduos","corpo":"tabela","layout":"capa","doc":"Plano de Gerenciamento de Resíduos Sólidos","ref":"PGRS","cliente":"empresa","sumario":["Resíduos gerados","Acondicionamento e destino","Responsáveis e registros"]},
+        exemplo: {"titulo":"PGRS","sub":"Plano de gestão de resíduos","corpo":"residuos","layout":"capa","doc":"Plano de Gerenciamento de Resíduos Sólidos","ref":"PGRS","cliente":"empresa","sumario":["Resíduos gerados","Acondicionamento e destino","Responsáveis e registros"]},
         texto:
           "PGRS e PGRSS, inventário e manifesto de resíduos e planos de ação ambiental para empresas, clínicas, indústrias e propriedades.",
         quem: "Empresas que geram resíduos e precisam comprovar o destino correto.",

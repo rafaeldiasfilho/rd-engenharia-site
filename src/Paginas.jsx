@@ -2,11 +2,11 @@ import Icone from "./Icone";
 import { useEffect, useRef, useState } from "react";
 import { AREAS, GUIAS, slidesProjetos, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, COMPARATIVO_BOMBEIROS, RESUMOS_GUIAS, achaArea } from "./paginas";
 import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
-import { Ilustracao } from "./Ilustracoes";
+import { ComoLerPrancha, Ilustracao } from "./Ilustracoes";
 import { enviarLembrete } from "./publico/api";
 import Carrossel from "./Carrossel";
 import Assistente from "./Assistente";
-import DocsIlustracao, { FolhaSvg, LEGENDA_EXEMPLO } from "./DocsIlustracao";
+import DocsIlustracao, { FolhaLeitura, FolhaSvg, LEGENDA_EXEMPLO } from "./DocsIlustracao";
 import HeroFundo from "./HeroFundo";
 import IconeArea from "./Icones";
 import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./fotos";
@@ -133,6 +133,7 @@ function Exemplos() {
         Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem
         para ampliar.
       </p>
+      <ComoLerPrancha />
       <div className="acoes">
         <BotaoZap texto="Olá! Vi os exemplos de projeto no site e gostaria de um projeto para a minha obra." rotulo="Quero um projeto assim" />
       </div>
@@ -254,6 +255,7 @@ function PaginaArea({ pagina }) {
                 title: item.nome,
                 short: item.nome.split(/ — | \(/)[0],
                 media: <FolhaSvg m={item.exemplo} nome={item.nome} area={pagina.slug} />,
+                expanded: <FolhaLeitura m={item.exemplo} nome={item.nome} area={pagina.slug} />,
                 caption: LEGENDA_EXEMPLO,
                 action: { label: "Pedir orçamento pelo WhatsApp", href: zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`) },
               }))}
@@ -261,8 +263,8 @@ function PaginaArea({ pagina }) {
           <div className="pasta-faixa-texto">
             <h3>Veja cada documento em tamanho de leitura.</h3>
             <p>
-              Abra a pasta e escolha uma folha para ampliar. Dá para passar de uma para outra e pedir o orçamento daquele
-              documento direto pelo WhatsApp.
+              Abra a pasta e escolha uma folha. Dá para ampliar, ver uma página interna e, em “Como ler”, entender cada
+              parte do documento. Depois, peça o orçamento daquele documento direto pelo WhatsApp.
             </p>
             <p className="nota-fina">{LEGENDA_EXEMPLO} Não há dados de clientes.</p>
           </div>

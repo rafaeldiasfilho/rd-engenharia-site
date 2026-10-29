@@ -30,25 +30,31 @@ export function FaixaDocumentos() {
   );
 }
 
+// Datas e situações inventadas; o texto de cada item explica o documento e o que acontece perto da data.
 const ITENS_PAINEL = [
-  { nome: "PGR", estado: "ok" },
-  { nome: "LTCAT", estado: "ok" },
-  { nome: "AVCB", estado: "vence" },
-  { nome: "Treinamento NR-35", estado: "ok" },
-  { nome: "Laudo de insalubridade", estado: "pendente" },
+  { nome: "PGR", estado: "ok", data: "Próxima revisão: 03/2027", texto: "Programa de Gerenciamento de Riscos. Revisado quando o trabalho muda e na data prevista no próprio programa." },
+  { nome: "LTCAT", estado: "ok", data: "Atualizar se o ambiente mudar", texto: "Laudo das condições do ambiente de trabalho, base do PPP. Precisa ser refeito quando mudam máquinas, processos ou setores." },
+  { nome: "AVCB", estado: "vence", data: "Vence em 28/11/2026", texto: "Auto de Vistoria do Corpo de Bombeiros. Perto do vencimento, a RD avisa pelo WhatsApp e prepara a renovação com antecedência." },
+  { nome: "Treinamento NR-35", estado: "ok", data: "Reciclagem: 08/2027", texto: "Trabalho em altura. A reciclagem fica no calendário para nenhum trabalhador ficar com o treinamento vencido." },
+  { nome: "Laudo de insalubridade", estado: "pendente", data: "Aguardando a medição", texto: "A avaliação do posto ainda não foi feita. O painel mostra o que falta para a empresa ficar em dia." },
 ];
 const ROTULO = { ok: "Em dia", vence: "Vence em 30 dias", pendente: "Pendente" };
 const SIMBOLO = { ok: "✓", vence: "◔", pendente: "○" };
 
 // Cartão no estilo de painel, só para explicar a organização dos documentos. Dados inventados.
 export function PainelExemplo() {
+  const [aberto, setAberto] = useState("");
   const emDia = ITENS_PAINEL.filter((x) => x.estado === "ok").length;
   const pct = Math.round((emDia / ITENS_PAINEL.length) * 100);
+  const atual = ITENS_PAINEL.find((x) => x.nome === aberto);
   return (
     <figure className="painel">
+      <span className="selo-exemplo" aria-hidden="true">
+        EXEMPLO
+      </span>
       <div className="painel-cab">
         <span>Painel de documentos</span>
-        <span className="painel-selo">Exemplo ilustrativo</span>
+        <span className="painel-cliente">Empresa Exemplo Ltda.</span>
       </div>
       <div className="painel-numero">
         <strong>{pct}%</strong>
@@ -62,14 +68,28 @@ export function PainelExemplo() {
       <ul className="painel-lista">
         {ITENS_PAINEL.map((x) => (
           <li key={x.nome}>
-            <span>{x.nome}</span>
-            <span className={`chip chip-${x.estado}`}>
-              <span aria-hidden="true">{SIMBOLO[x.estado]}</span> {ROTULO[x.estado]}
-            </span>
+            <button type="button" aria-pressed={aberto === x.nome} onClick={() => setAberto((a) => (a === x.nome ? "" : x.nome))}>
+              <span className="painel-doc">
+                <span>{x.nome}</span>
+                <small>{x.data}</small>
+              </span>
+              <span className={`chip chip-${x.estado}`}>
+                <span aria-hidden="true">{SIMBOLO[x.estado]}</span> {ROTULO[x.estado]}
+              </span>
+            </button>
           </li>
         ))}
       </ul>
-      <figcaption>Exemplo ilustrativo, sem dados de clientes: nomes e situações são inventados para mostrar como os vencimentos ficam organizados.</figcaption>
+      <p className="painel-explica" aria-live="polite">
+        {atual ? (
+          <>
+            <strong>{atual.nome}.</strong> {atual.texto}
+          </>
+        ) : (
+          "Toque num documento para ver o que ele é e o que acontece perto da data."
+        )}
+      </p>
+      <figcaption>Exemplo ilustrativo, sem dados de clientes: nomes, datas e situações são inventados para mostrar como os vencimentos ficam organizados.</figcaption>
     </figure>
   );
 }

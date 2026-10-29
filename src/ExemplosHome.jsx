@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Carrossel from "./Carrossel";
 import IconeArea from "./Icones";
-import { Ilustracao } from "./Ilustracoes";
+import { ComoLerPrancha, Ilustracao } from "./Ilustracoes";
 import { AREAS, slidesProjetos } from "./paginas";
 
 const ABAS = ["engenharia-civil", "corpo-de-bombeiros", "seguranca-do-trabalho", "meio-ambiente-topografia"].map((slug) => ({
@@ -19,6 +19,7 @@ function Civil() {
         className="car-projetos"
       />
       <p className="nota-fina">Projetos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem para ampliar.</p>
+      <ComoLerPrancha />
       <p className="centro">
         <a className="btn btn-sec" href="/engenharia-civil#na-pratica">
           Ver o projeto completo

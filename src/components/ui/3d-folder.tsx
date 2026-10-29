@@ -27,6 +27,8 @@ export type FolderItem = {
   /** nome curto escrito na folha do leque (padrão: title) */
   short?: string
   media: React.ReactNode
+  /** conteúdo da ampliação, se diferente da miniatura (ex.: folha com abas e zoom) */
+  expanded?: React.ReactNode
   caption?: string
   action?: { label: string; href: string }
 }
@@ -255,7 +257,7 @@ function Ampliacao({ items, indice, origem, titulo, onNavegar, onFechar }: Ampli
       </button>
       <div className="pasta-amp-painel" ref={painel} style={inicial}>
         <div className="pasta-amp-media" key={item.id} data-dir={direcao}>
-          {item.media}
+          {item.expanded ?? item.media}
         </div>
         <div className="pasta-amp-rodape">
           <p className="pasta-amp-pasta">{titulo}</p>
