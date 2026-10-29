@@ -1,5 +1,4 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
 
 /**
  * TopoField — fundo animado com curvas de nível (linhas topográficas) e uma grade fina de 48 px,
@@ -106,151 +105,171 @@ export function TopoField({
   knobs.current = { speed, length, density, grid, lines };
 
   React.useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return undefined;
-    const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false, depth: false });
-    if (!gl) return undefined;
-
-    const shader = (type: number, src: string) => {
-      const s = gl.createShader(type);
-      if (!s) return null;
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
-    };
-    const vs = shader(gl.VERTEX_SHADER, VERT);
-    const fs = shader(gl.FRAGMENT_SHADER, FRAG);
-    const prog = gl.createProgram();
-    if (!vs || !fs || !prog) return undefined;
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return undefined;
-    gl.useProgram(prog);
-
-    // um triângulo que cobre a tela toda
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(prog, "a");
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-
-    const u = (name: string) => gl.getUniformLocation(prog, name);
-    const U = {
-      res: u("u_res"), time: u("u_time"), dpr: u("u_dpr"), scale: u("u_scale"), bands: u("u_bands"),
-      grid: u("u_grid"), line: u("u_line"), color: u("u_color"),
-    };
-
-    let color: [number, number, number] = [0, 0, 0];
-    let dpr = 1;
-    let time = 0;
-    let last = 0;
-    let lastDraw = 0;
-    let raf = 0;
-    let visible = false;
-    let lost = false;
-    const mqReduce = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const mqDark = window.matchMedia?.("(prefers-color-scheme: dark)");
-    let reduce = !!mqReduce?.matches;
-
-    const draw = () => {
-      if (lost) return;
-      const k = knobs.current;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.uniform2f(U.res, canvas.width, canvas.height);
-      gl.uniform1f(U.time, time);
-      gl.uniform1f(U.dpr, dpr);
-      gl.uniform1f(U.scale, 1.4 * clamp(k.length, 0.35, 2.5));
-      gl.uniform1f(U.bands, 10 * clamp(k.density, 0.25, 2.5));
-      gl.uniform1f(U.grid, clamp(k.grid, 0, 1));
-      gl.uniform1f(U.line, clamp(k.lines, 0, 1));
-      gl.uniform3f(U.color, color[0], color[1], color[2]);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    };
-
-    const tick = (now: number) => {
-      time += Math.min((now - last) / 1000, 1 / 20) * clamp(knobs.current.speed, 0, 3);
-      last = now;
-      if (now - lastDraw >= FRAME_MS - 1) {
-        lastDraw = now;
-        draw();
-      }
-      raf = requestAnimationFrame(tick);
-    };
-
-    const run = () => {
-      const go = visible && !reduce && !lost && !document.hidden;
-      if (go && !raf) {
-        last = performance.now();
-        raf = requestAnimationFrame(tick);
-      } else if (!go && raf) {
-        cancelAnimationFrame(raf);
-        raf = 0;
-      }
-    };
-
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
-      const r = canvas.getBoundingClientRect();
-      const w = Math.max(1, Math.round(r.width * dpr));
-      const h = Math.max(1, Math.round(r.height * dpr));
-      if (canvas.width !== w || canvas.height !== h) {
-        canvas.width = w;
-        canvas.height = h;
-      }
-      draw();
-    };
-
-    // O tema troca as variáveis CSS; lê a cor no quadro seguinte, já com o estilo novo aplicado.
-    const readColor = () =>
-      requestAnimationFrame(() => {
-        color = rgb(getComputedStyle(canvas).color);
-        draw();
-      });
-
-    const onReduce = () => {
-      reduce = !!mqReduce?.matches;
-      run();
-      draw();
-    };
-    const onLost = (e: Event) => {
-      e.preventDefault();
-      lost = true;
-      run();
-    };
-
-    const io = new IntersectionObserver(
+    const alvo = ref.current;
+    if (!alvo) return undefined;
+    // Contexto WebGL e shader custam caro na thread principal: só nascem com o canvas perto da tela.
+    let limpar: (() => void) | undefined;
+    let iniciado = false;
+    const perto = new IntersectionObserver(
       ([e]) => {
-        visible = e.isIntersecting;
-        run();
+        if (!e?.isIntersecting || iniciado) return;
+        iniciado = true;
+        perto.disconnect();
+        limpar = iniciar(alvo);
       },
-      { rootMargin: "100px" },
+      { rootMargin: "300px" },
     );
-    const ro = new ResizeObserver(resize);
-    const mo = new MutationObserver(readColor);
-    io.observe(canvas);
-    ro.observe(canvas);
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
-    mqDark?.addEventListener?.("change", readColor);
-    mqReduce?.addEventListener?.("change", onReduce);
-    document.addEventListener("visibilitychange", run);
-    canvas.addEventListener("webglcontextlost", onLost);
-
-    color = rgb(getComputedStyle(canvas).color);
-    resize();
-
+    perto.observe(alvo);
     return () => {
-      cancelAnimationFrame(raf);
-      io.disconnect();
-      ro.disconnect();
-      mo.disconnect();
-      mqDark?.removeEventListener?.("change", readColor);
-      mqReduce?.removeEventListener?.("change", onReduce);
-      document.removeEventListener("visibilitychange", run);
-      canvas.removeEventListener("webglcontextlost", onLost);
+      perto.disconnect();
+      limpar?.();
     };
+
+    function iniciar(canvas: HTMLCanvasElement): (() => void) | undefined {
+      const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false, depth: false });
+      if (!gl) return undefined;
+
+      const shader = (type: number, src: string) => {
+        const s = gl.createShader(type);
+        if (!s) return null;
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+      };
+      const vs = shader(gl.VERTEX_SHADER, VERT);
+      const fs = shader(gl.FRAGMENT_SHADER, FRAG);
+      const prog = gl.createProgram();
+      if (!vs || !fs || !prog) return undefined;
+      gl.attachShader(prog, vs);
+      gl.attachShader(prog, fs);
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return undefined;
+      gl.useProgram(prog);
+
+      // um triângulo que cobre a tela toda
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(prog, "a");
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+      const u = (name: string) => gl.getUniformLocation(prog, name);
+      const U = {
+        res: u("u_res"), time: u("u_time"), dpr: u("u_dpr"), scale: u("u_scale"), bands: u("u_bands"),
+        grid: u("u_grid"), line: u("u_line"), color: u("u_color"),
+      };
+
+      let color: [number, number, number] = [0, 0, 0];
+      let dpr = 1;
+      let time = 0;
+      let last = 0;
+      let lastDraw = 0;
+      let raf = 0;
+      let visible = false;
+      let lost = false;
+      const mqReduce = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+      const mqDark = window.matchMedia?.("(prefers-color-scheme: dark)");
+      let reduce = !!mqReduce?.matches;
+
+      const draw = () => {
+        if (lost) return;
+        const k = knobs.current;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.uniform2f(U.res, canvas.width, canvas.height);
+        gl.uniform1f(U.time, time);
+        gl.uniform1f(U.dpr, dpr);
+        gl.uniform1f(U.scale, 1.4 * clamp(k.length, 0.35, 2.5));
+        gl.uniform1f(U.bands, 10 * clamp(k.density, 0.25, 2.5));
+        gl.uniform1f(U.grid, clamp(k.grid, 0, 1));
+        gl.uniform1f(U.line, clamp(k.lines, 0, 1));
+        gl.uniform3f(U.color, color[0], color[1], color[2]);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      };
+
+      const tick = (now: number) => {
+        time += Math.min((now - last) / 1000, 1 / 20) * clamp(knobs.current.speed, 0, 3);
+        last = now;
+        if (now - lastDraw >= FRAME_MS - 1) {
+          lastDraw = now;
+          draw();
+        }
+        raf = requestAnimationFrame(tick);
+      };
+
+      const run = () => {
+        const go = visible && !reduce && !lost && !document.hidden;
+        if (go && !raf) {
+          last = performance.now();
+          raf = requestAnimationFrame(tick);
+        } else if (!go && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      };
+
+      const resize = () => {
+        dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+        const r = canvas.getBoundingClientRect();
+        const w = Math.max(1, Math.round(r.width * dpr));
+        const h = Math.max(1, Math.round(r.height * dpr));
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+        draw();
+      };
+
+      // O tema troca as variáveis CSS; lê a cor no quadro seguinte, já com o estilo novo aplicado.
+      const readColor = () =>
+        requestAnimationFrame(() => {
+          color = rgb(getComputedStyle(canvas).color);
+          draw();
+        });
+
+      const onReduce = () => {
+        reduce = !!mqReduce?.matches;
+        run();
+        draw();
+      };
+      const onLost = (e: Event) => {
+        e.preventDefault();
+        lost = true;
+        run();
+      };
+
+      const io = new IntersectionObserver(
+        ([e]) => {
+          visible = e.isIntersecting;
+          run();
+        },
+        { rootMargin: "100px" },
+      );
+      const ro = new ResizeObserver(resize);
+      const mo = new MutationObserver(readColor);
+      io.observe(canvas);
+      ro.observe(canvas);
+      mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
+      mqDark?.addEventListener?.("change", readColor);
+      mqReduce?.addEventListener?.("change", onReduce);
+      document.addEventListener("visibilitychange", run);
+      canvas.addEventListener("webglcontextlost", onLost);
+
+      color = rgb(getComputedStyle(canvas).color);
+      resize();
+
+      return () => {
+        cancelAnimationFrame(raf);
+        io.disconnect();
+        ro.disconnect();
+        mo.disconnect();
+        mqDark?.removeEventListener?.("change", readColor);
+        mqReduce?.removeEventListener?.("change", onReduce);
+        document.removeEventListener("visibilitychange", run);
+        canvas.removeEventListener("webglcontextlost", onLost);
+      };
+    }
   }, []);
 
   // Props novas valem a partir do próximo quadro (ou do próximo redimensionamento, se estiver parado).
@@ -258,7 +277,7 @@ export function TopoField({
     <canvas
       ref={ref}
       aria-hidden="true"
-      className={cn("pointer-events-none block h-full w-full", className)}
+      className={`pointer-events-none block h-full w-full ${className ?? ""}`}
       {...props}
     />
   );

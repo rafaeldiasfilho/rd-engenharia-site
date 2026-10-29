@@ -254,10 +254,19 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
       desenhar(performance.now());
       setPronto(true);
     };
-    // Espera a IBM Plex Sans 700 carregar: medir com a fonte reserva desalinharia a palavra.
-    const fontes = document.fonts;
-    if (fontes && fontes.load) fontes.load(`${peso} 100px ${fonte}`).then(comecar, comecar);
-    else comecar();
+    // Só monta perto da tela (a máscara lê pixels e percorre a grade inteira), fora do carregamento.
+    // Espera também a IBM Plex Sans 700: medir com a fonte reserva desalinharia a palavra.
+    const perto = new IntersectionObserver(
+      ([e]) => {
+        if (!e?.isIntersecting) return;
+        perto.disconnect();
+        const fontes = document.fonts;
+        if (fontes && fontes.load) fontes.load(`${peso} 100px ${fonte}`).then(comecar, comecar);
+        else comecar();
+      },
+      { rootMargin: "400px" },
+    );
+    perto.observe(root);
 
     root.addEventListener("pointermove", mover);
     root.addEventListener("pointerleave", sair);
@@ -278,6 +287,7 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
 
     return () => {
       vivo = false;
+      perto.disconnect();
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();

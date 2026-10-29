@@ -124,8 +124,8 @@ const NIMBUS_CSS = `
 .nimbus-nav{--n-tint:rgba(247,248,245,.9);--n-fg:var(--tinta,#17211b);--n-fg-soft:var(--cinza,rgba(23,33,27,.66));--n-rim:rgba(255,255,255,.7);
   position:relative;display:inline-flex;align-items:center;max-width:100%;padding:6px;border-radius:999px;isolation:isolate;
   font-family:inherit;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
-.nimbus-nav[data-tone="dark"],[data-theme="dark"] .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.9);--n-rim:rgba(255,255,255,.22)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.9);--n-rim:rgba(255,255,255,.22)}}
+.nimbus-nav[data-tone="dark"],[data-theme="dark"] .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.9);--n-rim:rgba(255,255,255,.22);--n-drop:radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.2),rgba(255,255,255,0) 60%),rgba(111,211,124,.16);--n-drop-sh:inset 0 1px 1px rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.12),0 6px 16px -6px rgba(0,0,0,.5)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.9);--n-rim:rgba(255,255,255,.22);--n-drop:radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.2),rgba(255,255,255,0) 60%),rgba(111,211,124,.16);--n-drop-sh:inset 0 1px 1px rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.12),0 6px 16px -6px rgba(0,0,0,.5)}}
 .nimbus-glass{position:absolute;inset:0;border-radius:inherit;z-index:-2;overflow:hidden;background:var(--n-tint);
   -webkit-backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);backdrop-filter:blur(10px) saturate(1.2) brightness(1.08);
   box-shadow:inset 0 1px 1px var(--n-rim),inset 0 0 0 1px rgba(255,255,255,.2),0 12px 32px -14px rgba(10,45,20,.45),0 2px 6px rgba(10,45,20,.1)}
@@ -137,11 +137,11 @@ const NIMBUS_CSS = `
 .nimbus-nav[data-fr="1"] .nimbus-track{-webkit-mask-image:linear-gradient(270deg,transparent,#000 28px);mask-image:linear-gradient(270deg,transparent,#000 28px)}
 .nimbus-nav[data-fl="1"][data-fr="1"] .nimbus-track{-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
 .nimbus-water{position:absolute;left:${-PAD}px;top:${-PAD}px;z-index:-1;pointer-events:none}
-.nimbus-nav[data-gl="off"] .nimbus-water{display:none}
+.nimbus-nav:not([data-gl="on"]) .nimbus-water{display:none}
 .nimbus-drop{display:none;position:absolute;top:6px;bottom:6px;left:0;border-radius:999px;z-index:-1;pointer-events:none;will-change:transform,width;
-  background:radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),rgba(255,255,255,.38);
-  box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -2px 6px rgba(31,107,42,.22),inset 0 0 0 1px rgba(255,255,255,.55),0 6px 16px -6px rgba(18,63,25,.45)}
-.nimbus-nav[data-gl="off"] .nimbus-drop{display:block}
+  background:var(--n-drop,radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),rgba(255,255,255,.38));
+  box-shadow:var(--n-drop-sh,inset 0 1px 1px rgba(255,255,255,.95),inset 0 -2px 6px rgba(31,107,42,.22),inset 0 0 0 1px rgba(255,255,255,.55),0 6px 16px -6px rgba(18,63,25,.45))}
+.nimbus-nav:not([data-gl="on"]) .nimbus-drop{display:block}
 .nimbus-item{position:relative;z-index:1;display:inline-flex;flex:none;align-items:center;gap:8px;height:42px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--n-fg-soft);
   font-family:inherit;font-weight:500;font-size:14px;line-height:1;letter-spacing:-.01em;text-decoration:none;cursor:pointer;transition:color .25s}
 .nimbus-item:hover,.nimbus-item[aria-current]{color:var(--n-fg)}
@@ -326,7 +326,8 @@ export function LiquidNavbar({
   const iconRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const audio = React.useRef<AudioContext | null>(null)
   const st = React.useRef(makeState())
-  const [gl, setGl] = React.useState<"on" | "off">("on")
+  // "wait": ainda sem shader (prerender e começo da página); a gota em CSS faz o papel da água.
+  const [gl, setGl] = React.useState<"wait" | "on" | "off">("wait")
   const [refract, setRefract] = React.useState(false)
   const [fx, setFx] = React.useState({ i: -1, n: 0 })
   const dark = toneUsed === "dark" ? 1 : 0
@@ -550,15 +551,35 @@ export function LiquidNavbar({
     const onReduce = () => { s.reduce = !!mqReduce?.matches; loop() }
     mqReduce?.addEventListener?.("change", onReduce)
     const cv = canvasRef.current
-    s.glc = cv ? initGL(cv) : null
-    if (!s.glc) setGl("off")
+    // Contexto WebGL + shader da água custam caro na thread principal: só com a pílula à vista e o
+    // navegador ocioso, nunca no meio da hidratação.
+    const win = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number
+      cancelIdleCallback?: (id: number) => void
+    }
+    let vivo = true
+    let ocioso = 0
+    const ligar = () => {
+      if (!vivo || s.glc) return
+      s.glc = cv ? initGL(cv) : null
+      setGl(s.glc ? "on" : "off")
+      loop()
+    }
     const lost = (e: Event) => { e.preventDefault(); s.glc = null; setGl("off") }
     cv?.addEventListener("webglcontextlost", lost)
-    const io = new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; if (s.visible) loop() })
+    const io = new IntersectionObserver(([e]) => {
+      s.visible = e.isIntersecting
+      if (!s.visible) return
+      loop()
+      if (!s.glc && !ocioso) ocioso = win.requestIdleCallback ? win.requestIdleCallback(ligar, { timeout: 1500 }) : window.setTimeout(ligar, 300)
+    })
     if (navRef.current) io.observe(navRef.current)
     const vis = () => { s.page = document.visibilityState === "visible"; if (s.page && s.visible) loop() }
     document.addEventListener("visibilitychange", vis)
     return () => {
+      vivo = false
+      if (win.cancelIdleCallback) win.cancelIdleCallback(ocioso)
+      else window.clearTimeout(ocioso)
       cv?.removeEventListener("webglcontextlost", lost)
       io.disconnect()
       document.removeEventListener("visibilitychange", vis)
