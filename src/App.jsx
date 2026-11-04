@@ -1,4 +1,5 @@
 import Icone from "./Icone";
+import Aurora from "./Aurora";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
 import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE, ENDERECO } from "./paginas";
@@ -238,7 +239,8 @@ export default function App() {
 
       <ExemplosHome />
 
-      <section className="sec" id="como-funciona" aria-labelledby="como-t">
+      <section className="sec sec-escura" id="como-funciona" aria-labelledby="como-t">
+        <Aurora />
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
@@ -275,7 +277,7 @@ export default function App() {
               CREA-SP, e você conversa direto com quem vai executar.
             </p>
           </header>
-          <div className="pessoas">
+          <div className="pessoas cascata">
             <article className="rev spot">
               <span className="pessoa-sigla" aria-hidden="true">
                 RA
@@ -341,13 +343,14 @@ export default function App() {
               Dúvidas frequentes.
             </h2>
           </header>
-          <Perguntas itens={FAQ} />
+          <Perguntas itens={FAQ} limite={5} />
         </div>
       </section>
 
       {/* Contato e "onde atendemos" num bloco só: endereço, horário e região aparecem aqui uma vez
           (o selo do topo e o rodapé são os outros lugares fixos). O fundo de curvas de nível veio junto. */}
       <section className="bloco-escuro sec-topo" id="contato" aria-labelledby="contato-t">
+        <Aurora />
         <TopoField className="sec-topo-campo contato-topo" grid={0} lines={0.4} />
         <div className="container contato-grade">
           <div>

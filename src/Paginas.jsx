@@ -127,7 +127,7 @@ function Exemplos() {
         itens={slidesProjetos()}
         rotulo="Desenhos de projetos reais de residências"
         aspecto="4 / 3"
-        className="car-projetos"
+        className="car-projetos car-3d"
       />
       <p className="nota-fina">
         Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem

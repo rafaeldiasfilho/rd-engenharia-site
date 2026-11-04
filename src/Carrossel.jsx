@@ -110,6 +110,49 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
     };
   }, [total]);
 
+  // Carrossel 3D (className "car-3d"): cada imagem gira e diminui conforme a distância do centro da faixa,
+  // como um coverflow. A faixa continua sendo scroll-snap (toque, arrasto e teclado iguais); o giro só
+  // acompanha a rolagem, um quadro por vez. Com "reduzir movimento" fica plano.
+  const tresD = className.includes("car-3d");
+  useEffect(() => {
+    const f = faixa.current;
+    if (!tresD || !f) return undefined;
+    let quadro = 0;
+    const pintar = () => {
+      quadro = 0;
+      const caixa = f.getBoundingClientRect();
+      const meio = caixa.left + caixa.width / 2;
+      const p = passo() || caixa.width;
+      Array.from(f.children).forEach((sl) => {
+        const img = sl.querySelector(".car-img");
+        if (!img) return;
+        if (reduz.current) {
+          img.style.transform = "";
+          img.style.opacity = "";
+          return;
+        }
+        const r = sl.getBoundingClientRect();
+        const d = Math.max(-2, Math.min(2, (r.left + r.width / 2 - meio) / p));
+        const ad = Math.min(Math.abs(d), 1.5);
+        img.style.transform = `rotateY(${(-d * 34).toFixed(2)}deg) scale(${(1 - ad * 0.16).toFixed(3)})`;
+        img.style.opacity = (1 - ad * 0.38).toFixed(3);
+        sl.style.zIndex = String(10 - Math.round(ad * 4));
+      });
+    };
+    const agendar3d = () => {
+      if (!quadro) quadro = requestAnimationFrame(pintar);
+    };
+    pintar();
+    f.addEventListener("scroll", agendar3d, { passive: true });
+    window.addEventListener("resize", agendar3d);
+    return () => {
+      cancelAnimationFrame(quadro);
+      f.removeEventListener("scroll", agendar3d);
+      window.removeEventListener("resize", agendar3d);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tresD, total]);
+
   // Movimento reduzido + troca automática (tudo depois de montar, então nada muda na renderização do servidor).
   useEffect(() => {
     const mq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;

@@ -597,6 +597,34 @@ function useRevelar() {
   }, []);
 }
 
+// Barra fina no topo que mostra quanto da página já foi lido (verde para lima). Só transform, um
+// quadro por rolagem; decorativa (aria-hidden). Com "reduzir movimento" o CSS a esconde.
+function ProgressoLeitura() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    let quadro = 0;
+    const pintar = () => {
+      quadro = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      el.style.setProperty("--p", max > 0 ? Math.min(1, window.scrollY / max).toFixed(4) : "0");
+    };
+    const agendar = () => {
+      if (!quadro) quadro = requestAnimationFrame(pintar);
+    };
+    pintar();
+    window.addEventListener("scroll", agendar, { passive: true });
+    window.addEventListener("resize", agendar);
+    return () => {
+      cancelAnimationFrame(quadro);
+      window.removeEventListener("scroll", agendar);
+      window.removeEventListener("resize", agendar);
+    };
+  }, []);
+  return <div ref={ref} className="progresso-leitura" aria-hidden="true" />;
+}
+
 // Área da página atual: a própria área ou a área do guia. Muda o botão flutuante do WhatsApp.
 function areaDaPagina(atual) {
   const guia = GUIAS.find((g) => g.slug === atual);
@@ -684,6 +712,7 @@ export function Casca({ children, atual = "" }) {
       <a className="pular" href="#conteudo">
         Pular para o conteúdo
       </a>
+      <ProgressoLeitura />
       <Cabecalho atual={atual} />
       <main id="conteudo">{children}</main>
       <Rodape />

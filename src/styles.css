@@ -1,40 +1,46 @@
 /* Modelo 2: editorial técnico. Duas aparências (clara e escura), mesma família de verde. */
 :root {
   color-scheme: light;
-  --papel: #f7f8f5;
+  --papel: #f3f7f1;
   --branco: #ffffff;
-  --tinta: #17211b;
-  --cinza: #56625a;
-  --linha: #dce2d9;
-  --verde: #1f6b2a;
-  --verde-esc: #123f19;
-  --verde-claro: #e7f0e5;
-  --realce: #1f6b2a;
-  --fundo-escuro: #123f19;
-  --rodape: #17211b;
+  --tinta: #0f1f16;
+  --cinza: #4d5e53;
+  --linha: #d6e2d2;
+  --verde: #18692f;
+  --verde-esc: #0c2e1c;
+  --verde-claro: #e3f3d8;
+  --realce: #18692f;
+  --fundo-escuro: #0c2e1c;
+  --rodape: #08190f;
+  /* lima: destaque da paleta "verde profundo + lima" (2026-11-04). Sobre fundo escuro usa --lima;
+     sobre fundo claro, texto em --lima-texto (contraste AA). */
+  --lima: #9be15d;
+  --lima-forte: #b8f07c;
+  --lima-texto: #3f7d12;
   --raio: 10px;
   --ease: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --topo-h: 64px;
   --nav-h: 48px;
   --secoes-h: 68px; /* altura da faixa da pílula: 6 + 56 + 6 */
-  --fundo-vidro: rgba(247, 248, 245, 0.82);
+  --fundo-vidro: rgba(243, 247, 241, 0.82);
   --contorno-img: rgba(0, 0, 0, 0.08);
   --borda-vidro: rgba(255, 255, 255, 0.7);
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --papel: #0f1511;
-  --branco: #172019;
-  --tinta: #eaf0eb;
-  --cinza: #a6b2a9;
-  --linha: #2a362d;
-  --verde-claro: #1c2f20;
-  --realce: #6fd37c;
-  --fundo-escuro: #0b2410;
-  --rodape: #080c09;
-  --fundo-vidro: rgba(15, 21, 17, 0.82);
+  --papel: #09130d;
+  --branco: #102018;
+  --tinta: #eaf4ec;
+  --cinza: #a2b8a8;
+  --linha: #1f362a;
+  --verde-claro: #15301f;
+  --realce: #9be15d;
+  --lima-texto: #9be15d;
+  --fundo-escuro: #061a0f;
+  --rodape: #040d08;
+  --fundo-vidro: rgba(9, 19, 13, 0.82);
   --contorno-img: rgba(255, 255, 255, 0.1);
   --borda-vidro: rgba(255, 255, 255, 0.08);
 }
@@ -42,16 +48,17 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --papel: #0f1511;
-    --branco: #172019;
-    --tinta: #eaf0eb;
-    --cinza: #a6b2a9;
-    --linha: #2a362d;
-    --verde-claro: #1c2f20;
-    --realce: #6fd37c;
-    --fundo-escuro: #0b2410;
-    --rodape: #080c09;
-    --fundo-vidro: rgba(15, 21, 17, 0.82);
+    --papel: #09130d;
+    --branco: #102018;
+    --tinta: #eaf4ec;
+    --cinza: #a2b8a8;
+    --linha: #1f362a;
+    --verde-claro: #15301f;
+    --realce: #9be15d;
+    --lima-texto: #9be15d;
+    --fundo-escuro: #061a0f;
+    --rodape: #040d08;
+    --fundo-vidro: rgba(9, 19, 13, 0.82);
     --contorno-img: rgba(255, 255, 255, 0.1);
     --borda-vidro: rgba(255, 255, 255, 0.08);
   }
@@ -1798,7 +1805,7 @@ img {
   height: 56px;
   border-radius: 50%;
   background: #25d366;
-  color: #0b2410;
+  color: #061a0f;
   font-size: 1.8rem;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
   transition: transform 160ms var(--ease);
@@ -2445,7 +2452,7 @@ img {
   align-items: center;
   gap: 12px;
   padding: 0 96px 12px 0;
-  border-bottom: 1.5px solid #1f6b2a;
+  border-bottom: 1.5px solid #18692f;
 }
 
 .modelo-marca {
@@ -2455,7 +2462,7 @@ img {
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: #1f6b2a;
+  background: #18692f;
   color: #fff;
   font-size: 0.85rem;
   font-weight: 700;
@@ -2534,7 +2541,7 @@ img {
 
 .modelo-folha th button[aria-pressed="true"] {
   background: #e7f0e5;
-  color: #1f6b2a;
+  color: #18692f;
 }
 
 .modelo-folha td[data-ativa] {
@@ -2552,8 +2559,8 @@ img {
 }
 
 .nivel-baixo {
-  color: #1f6b2a;
-  background: rgba(31, 107, 42, 0.1);
+  color: #18692f;
+  background: rgba(24, 105, 47, 0.1);
 }
 
 .nivel-moderado {
@@ -4383,7 +4390,7 @@ img {
   align-items: center;
   gap: 16px;
   padding-bottom: 12px;
-  border-bottom: 2px solid #1f6b2a;
+  border-bottom: 2px solid #18692f;
 }
 
 .fd-topo img {
@@ -4410,7 +4417,7 @@ img {
 
 .fd-area {
   margin-bottom: 14px;
-  color: #1f6b2a;
+  color: #18692f;
   font-weight: 600;
 }
 
@@ -4529,7 +4536,7 @@ img {
   padding-top: clamp(64px, 10vw, 128px);
   padding-bottom: clamp(150px, 15vw, 200px);
   overflow: hidden;
-  background: #0b2410;
+  background: #061a0f;
   color: #fff;
   touch-action: pan-y;
 }
@@ -4573,8 +4580,8 @@ img {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(55% 70% at 88% 12%, rgba(111, 211, 124, 0.2), transparent 62%),
-    radial-gradient(40% 50% at 8% 100%, rgba(31, 107, 42, 0.35), transparent 70%);
+  background: radial-gradient(55% 70% at 88% 12%, rgba(155, 225, 93, 0.2), transparent 62%),
+    radial-gradient(40% 50% at 8% 100%, rgba(24, 105, 47, 0.35), transparent 70%);
   pointer-events: none;
 }
 
@@ -5135,8 +5142,8 @@ img {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(60% 90% at 12% 0%, rgba(111, 211, 124, 0.2), transparent 62%),
-    radial-gradient(50% 80% at 100% 100%, rgba(31, 107, 42, 0.5), transparent 70%);
+  background: radial-gradient(60% 90% at 12% 0%, rgba(155, 225, 93, 0.2), transparent 62%),
+    radial-gradient(50% 80% at 100% 100%, rgba(24, 105, 47, 0.5), transparent 70%);
 }
 
 .faixa-numeros-grade {
@@ -6009,20 +6016,20 @@ img {
  * Grade fina de "papel milimetrado" que some nas bordas, brilho verde suave, cartões com borda fina
  * e sombra em camadas, e um ritmo vertical um pouco mais curto entre as seções. Só CSS. */
 :root {
-  --grade-cor: rgba(31, 107, 42, 0.07);
+  --grade-cor: rgba(24, 105, 47, 0.07);
   --sombra-cartao: 0 1px 2px rgba(7, 24, 11, 0.04), 0 8px 24px -12px rgba(7, 24, 11, 0.18);
   --sombra-cartao-alta: 0 1px 2px rgba(7, 24, 11, 0.05), 0 22px 44px -18px rgba(7, 24, 11, 0.28);
 }
 
 :root[data-theme="dark"] {
-  --grade-cor: rgba(111, 211, 124, 0.07);
+  --grade-cor: rgba(155, 225, 93, 0.07);
   --sombra-cartao: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
   --sombra-cartao-alta: 0 1px 2px rgba(0, 0, 0, 0.3), 0 22px 44px -18px rgba(0, 0, 0, 0.7);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --grade-cor: rgba(111, 211, 124, 0.07);
+    --grade-cor: rgba(155, 225, 93, 0.07);
     --sombra-cartao: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
     --sombra-cartao-alta: 0 1px 2px rgba(0, 0, 0, 0.3), 0 22px 44px -18px rgba(0, 0, 0, 0.7);
   }
@@ -6256,7 +6263,7 @@ img {
   font-weight: 700;
   user-select: none;
   --hw-tinta: rgba(212, 219, 213, 0.34);
-  --hw-quente: #6fd37c;
+  --hw-quente: #9be15d;
 }
 
 .hw-marca canvas {
@@ -7659,7 +7666,7 @@ img {
   border: 1px solid #c9d2c7;
   border-radius: 999px;
   background: #f7f8f5;
-  color: #123f19;
+  color: #0c2e1c;
   font: inherit;
   font-size: 0.9rem;
   font-weight: 600;
@@ -8254,5 +8261,273 @@ img {
   .ass-recomecar:active .ass-recomecar-seta,
   .ass-recomecar:hover .ass-recomecar-seta {
     transform: none;
+  }
+}
+
+/* ===== Redesign 2026-11: verde profundo + lima, faixas escuras com aurora, carrossel 3D, movimento ===== */
+
+/* Faixas escuras: os mesmos tokens, recalculados para fundo escuro (os filhos se adaptam sozinhos).
+   O destaque vira lima. Valem nos dois temas. */
+.sec-escura,
+.bloco-escuro,
+.faixa-numeros {
+  --tinta: #eef6ef;
+  --cinza: rgba(234, 244, 236, 0.74);
+  --linha: rgba(234, 244, 236, 0.14);
+  --branco: rgba(255, 255, 255, 0.06);
+  --papel: rgba(255, 255, 255, 0.04);
+  --verde-claro: rgba(155, 225, 93, 0.14);
+  --realce: var(--lima);
+  --lima-texto: var(--lima);
+  --contorno-img: rgba(255, 255, 255, 0.12);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--fundo-escuro);
+  color: var(--tinta);
+}
+
+.sec-escura .sec-n,
+.bloco-escuro .sec-n {
+  color: var(--cinza);
+  border-top-color: rgba(155, 225, 93, 0.5);
+}
+
+.sec-escura .sec-n span,
+.bloco-escuro .sec-n span {
+  color: var(--lima);
+}
+
+.sec-escura .sec-titulo,
+.bloco-escuro .sec-titulo {
+  color: #fff;
+}
+
+.faixa-numeros strong {
+  color: var(--lima);
+}
+
+/* Aurora (src/Aurora.jsx): três manchas de luz que derivam; só transform, pausa fora da tela */
+.aurora {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora span {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  opacity: 0.55;
+  will-change: transform;
+  animation: auroraDeriva 22s ease-in-out infinite alternate;
+}
+
+.aurora span:nth-child(1) {
+  top: -38vmax;
+  left: -22vmax;
+  background: radial-gradient(closest-side, rgba(155, 225, 93, 0.42), transparent);
+}
+
+.aurora span:nth-child(2) {
+  right: -30vmax;
+  bottom: -40vmax;
+  background: radial-gradient(closest-side, rgba(24, 105, 47, 0.85), transparent);
+  animation-duration: 28s;
+  animation-direction: alternate-reverse;
+}
+
+.aurora span:nth-child(3) {
+  top: 10%;
+  left: 35%;
+  width: 46vmax;
+  height: 46vmax;
+  background: radial-gradient(closest-side, rgba(63, 191, 150, 0.32), transparent);
+  animation-duration: 34s;
+}
+
+.aurora-pausa span {
+  animation-play-state: paused;
+}
+
+@keyframes auroraDeriva {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(8vmax, 6vmax, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-6vmax, 10vmax, 0) scale(0.94);
+  }
+}
+
+/* Destaques em lima sobre fundo claro (texto legível) */
+.acento,
+.sec-n span {
+  color: var(--lima-texto);
+}
+
+.hero-fundo .acento {
+  color: var(--lima);
+}
+
+/* Botão principal com brilho lima ao passar o mouse */
+@media (hover: hover) and (pointer: fine) {
+  .btn-zap:hover,
+  .btn-pri:hover {
+    box-shadow: 0 0 0 4px rgba(155, 225, 93, 0.28), 0 14px 30px -14px rgba(12, 46, 28, 0.6);
+  }
+}
+
+/* Carrossel 3D (coverflow): as vizinhas giram e diminuem conforme a distância do centro.
+   O giro é aplicado por script em .car-img (a faixa continua sendo scroll-snap). */
+.car-3d {
+  --sw: 74%;
+  --car-gap: 0px;
+}
+
+.car-3d .car-faixa {
+  perspective: 1400px;
+  border-radius: 0;
+  padding-block: 18px 6px;
+}
+
+.car-3d .car-slide {
+  transform-style: preserve-3d;
+}
+
+.car-3d .car-img {
+  transform-origin: center center;
+  transition: box-shadow 0.4s var(--ease);
+  will-change: transform;
+}
+
+.car-3d .car-slide.ativo .car-img {
+  box-shadow: 0 30px 60px -30px rgba(8, 25, 15, 0.55);
+}
+
+.car-3d.car-projetos .car-slide:not(.ativo) .car-img {
+  clip-path: inset(0 round clamp(16px, 2.2vw, 24px));
+}
+
+@media (min-width: 900px) {
+  .car-3d {
+    --sw: 58%;
+  }
+}
+
+/* Movimento ao rolar: entrada com leve escala; listas entram em cascata (sem desfoque: filter em blocos grandes pesa no celular) */
+.rev {
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+
+.rev-on .rev:not(.vis) {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+}
+
+.rev-on .cascata > .rev:nth-child(2),
+.rev-on .cascata > * > .rev:nth-child(2) {
+  transition-delay: 0.08s;
+}
+
+.rev-on .cascata > .rev:nth-child(3),
+.rev-on .cascata > * > .rev:nth-child(3) {
+  transition-delay: 0.16s;
+}
+
+.rev-on .cascata > .rev:nth-child(4),
+.rev-on .cascata > * > .rev:nth-child(4) {
+  transition-delay: 0.24s;
+}
+
+/* Barra de progresso de leitura no topo (src/Layout.jsx) */
+.progresso-leitura {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 3px;
+  background: linear-gradient(90deg, var(--verde), var(--lima));
+  transform-origin: left center;
+  transform: scaleX(var(--p, 0));
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora span {
+    animation: none;
+  }
+  .progresso-leitura {
+    display: none;
+  }
+}
+
+/* Página inicial mais curta no celular: ritmo mais apertado, pessoas em linha, garantias em 2 colunas */
+.faq-mais {
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .sec {
+    padding-block: 52px;
+  }
+  .sec-cab {
+    margin-bottom: 24px;
+  }
+  .bloco-escuro {
+    padding-block: 56px;
+  }
+  .prova {
+    gap: 0 16px;
+    margin-top: 24px;
+  }
+  .prova li {
+    padding: 12px 0 4px;
+  }
+  .prova strong {
+    font-size: 1.05rem;
+  }
+  .prova span {
+    font-size: 0.82rem;
+  }
+  .pessoas article {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: start;
+  }
+  .pessoas .pessoa-sigla {
+    grid-row: span 3;
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    font-size: 1rem;
+  }
+  .pessoas article > :not(.pessoa-sigla) {
+    grid-column: 2;
+  }
+}
+
+/* "Na prática": no celular as abas viram uma faixa que desliza de lado (antes, uma embaixo da outra) */
+@media (max-width: 600px) {
+  #na-pratica .abas {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    margin-inline: -20px;
+    padding: 2px 20px 6px;
+    scrollbar-width: none;
+  }
+  #na-pratica .abas::-webkit-scrollbar {
+    display: none;
+  }
+  #na-pratica .abas button {
+    flex: none;
   }
 }

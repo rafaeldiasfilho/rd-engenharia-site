@@ -16,7 +16,7 @@ function Civil() {
         itens={slidesProjetos(true)}
         rotulo="Desenhos de projetos reais de engenharia civil"
         aspecto="4 / 3"
-        className="car-projetos"
+        className="car-projetos car-3d"
       />
       <p className="nota-fina">Projetos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem para ampliar.</p>
       <ComoLerPrancha />

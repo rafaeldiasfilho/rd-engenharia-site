@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Aurora from "./Aurora";
 
 // Blocos de vitrine da página inicial: faixa de documentos, painel de exemplo e números.
 // Nada aqui inventa cliente, depoimento ou dado real: o painel é um exemplo rotulado como ilustrativo.
@@ -142,7 +143,8 @@ function Numero({ alvo, sufixo = "" }) {
 export function FaixaNumeros() {
   return (
     <section className="faixa-numeros" aria-label="A RD em números">
-      <div className="container faixa-numeros-grade">
+      <Aurora />
+      <div className="container faixa-numeros-grade cascata">
         <p className="rev">
           <strong>
             <Numero alvo={500} sufixo="+" />
