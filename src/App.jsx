@@ -6,7 +6,7 @@ import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE,
 import { Casca, SecoesNav, zap } from "./Layout";
 import ExemplosHome from "./ExemplosHome";
 import HeroFundo from "./HeroFundo";
-import { FaixaDocumentos, PainelExemplo, FaixaNumeros } from "./Vitrine";
+import { FaixaDocumentos, PainelExemplo, NumerosLinha } from "./Vitrine";
 import Janela from "./Janela";
 import { TopoField } from "@/components/ui/topo-field";
 import { FOTOS, caminho, srcset } from "./fotos";
@@ -64,7 +64,6 @@ const SECOES_HOME = [
   { id: "organizamos", rotulo: "O que organizamos" },
   { id: "na-pratica", rotulo: "Na prática" },
   { id: "como-funciona", rotulo: "Como funciona" },
-  { id: "quem-somos", rotulo: "Quem somos" },
   { id: "duvidas", rotulo: "Dúvidas" },
   { id: "contato", rotulo: "Contato" },
 ];
@@ -206,7 +205,8 @@ export default function App() {
 
       <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
 
-      <section className="sec organizamos" id="organizamos" aria-labelledby="org-t">
+      <section className="sec sec-escura organizamos" id="organizamos" aria-labelledby="org-t">
+        <Aurora />
         <div className="container organizamos-grade">
           <div>
             <header className="sec-cab rev">
@@ -228,14 +228,13 @@ export default function App() {
                 Pedir o lembrete de vencimento <span aria-hidden="true">→</span>
               </a>
             </div>
+            <NumerosLinha />
           </div>
           <div className="rev">
             <PainelExemplo />
           </div>
         </div>
       </section>
-
-      <FaixaNumeros />
 
       <ExemplosHome />
 
@@ -263,81 +262,11 @@ export default function App() {
 
       <Avaliacoes />
 
-      <section className="sec" id="quem-somos" aria-labelledby="quem-t">
-        <div className="container">
-          <header className="sec-cab rev">
-            <p className="sec-n">
-              <span>04</span> Quem somos
-            </p>
-            <h2 id="quem-t" className="sec-titulo">
-              Quem responde pelo seu serviço.
-            </h2>
-            <p className="lead">
-              A RD Engenharia é uma empresa familiar de Ibirá. Todo serviço é assinado por profissional habilitado no
-              CREA-SP, e você conversa direto com quem vai executar.
-            </p>
-          </header>
-          <div className="pessoas cascata">
-            <article className="rev spot">
-              <span className="pessoa-sigla" aria-hidden="true">
-                RA
-              </span>
-              <h3>Rafael Antonio Dias</h3>
-              <p className="pessoa-cargo">
-                Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
-              </p>
-              <p className="pessoa-resumo">
-                {FORMACAO.length} formações, entre bacharelados, pós-graduações e curso técnico.
-              </p>
-              <div className="pessoa-acoes">
-                <button type="button" className="btn btn-sec" onClick={() => setFormacao(true)} aria-haspopup="dialog">
-                  Ver formação completa
-                </button>
-                <a
-                  className="btn btn-sec"
-                  href={zap("Olá Rafael! Gostaria de solicitar um orçamento.")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
-                </a>
-              </div>
-              <Janela aberta={formacao} aoFechar={() => setFormacao(false)} titulo="Rafael Antonio Dias">
-                <p className="pessoa-cargo">
-                  Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
-                </p>
-                <ul className="pessoa-formacao">
-                  {FORMACAO.map((f) => (
-                    <li key={f}>{f}</li>
-                  ))}
-                </ul>
-                <p className="pessoa-extra">Também corretor de imóveis e perito grafotécnico.</p>
-              </Janela>
-            </article>
-            <article className="rev spot">
-              <span className="pessoa-sigla" aria-hidden="true">
-                RF
-              </span>
-              <h3>Rafael Antonio Dias Filho</h3>
-              <p className="pessoa-cargo">Técnico em edificações · Projetos e atendimento</p>
-              <a
-                className="btn btn-sec"
-                href={zap("Olá! Gostaria de solicitar um orçamento.", WHATSAPP_PROJETOS)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icone nome="fa-brands fa-whatsapp" /> (17) 99659-0330
-              </a>
-            </article>
-          </div>
-        </div>
-      </section>
-
       <section className="sec sec-alt" id="duvidas" aria-labelledby="duvidas-t">
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
-              <span>05</span> Dúvidas
+              <span>04</span> Dúvidas
             </p>
             <h2 id="duvidas-t" className="sec-titulo">
               Dúvidas frequentes.
@@ -355,7 +284,7 @@ export default function App() {
         <div className="container contato-grade">
           <div>
             <p className="sec-n">
-              <span>06</span> Contato
+              <span>05</span> Contato
             </p>
             <h2 id="contato-t" className="sec-titulo">
               Peça seu orçamento.
@@ -455,6 +384,67 @@ export default function App() {
               <Icone nome="fa-brands fa-whatsapp" /> Continuar no WhatsApp
             </button>
           </form>
+        </div>
+        {/* Quem somos fica dentro do Contato: as pessoas e os telefones ao lado do formulário. */}
+        <div className="container contato-pessoas" id="quem-somos">
+          <h3 className="contato-pessoas-titulo">Quem responde pelo seu serviço</h3>
+          <p className="contato-texto">
+            A RD Engenharia é uma empresa familiar de Ibirá. Todo serviço é assinado por profissional habilitado no CREA-SP,
+            e você conversa direto com quem vai executar.
+          </p>
+          <div className="pessoas cascata">
+            <article className="rev spot">
+              <span className="pessoa-sigla" aria-hidden="true">
+                RA
+              </span>
+              <h3>Rafael Antonio Dias</h3>
+              <p className="pessoa-cargo">
+                Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
+              </p>
+              <p className="pessoa-resumo">
+                {FORMACAO.length} formações, entre bacharelados, pós-graduações e curso técnico.
+              </p>
+              <div className="pessoa-acoes">
+                <button type="button" className="btn btn-sec" onClick={() => setFormacao(true)} aria-haspopup="dialog">
+                  Ver formação completa
+                </button>
+                <a
+                  className="btn btn-sec"
+                  href={zap("Olá Rafael! Gostaria de solicitar um orçamento.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
+                </a>
+              </div>
+              <Janela aberta={formacao} aoFechar={() => setFormacao(false)} titulo="Rafael Antonio Dias">
+                <p className="pessoa-cargo">
+                  Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
+                </p>
+                <ul className="pessoa-formacao">
+                  {FORMACAO.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+                <p className="pessoa-extra">Também corretor de imóveis e perito grafotécnico.</p>
+              </Janela>
+            </article>
+            <article className="rev spot">
+              <span className="pessoa-sigla" aria-hidden="true">
+                RF
+              </span>
+              <h3>Rafael Antonio Dias Filho</h3>
+              <p className="pessoa-cargo">Técnico em edificações · Projetos e atendimento</p>
+              <a
+                className="btn btn-sec"
+                href={zap("Olá! Gostaria de solicitar um orçamento.", WHATSAPP_PROJETOS)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icone nome="fa-brands fa-whatsapp" /> (17) 99659-0330
+              </a>
+            </article>
+          </div>
         </div>
       </section>
     </Casca>

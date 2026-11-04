@@ -8531,3 +8531,58 @@ img {
     flex: none;
   }
 }
+
+/* Página inicial enxuta (2026-11-04): números dentro de "O que organizamos" e "Quem somos" dentro do Contato */
+.numeros-linha {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: clamp(28px, 4vw, 44px);
+  padding-top: 22px;
+  border-top: 1px solid var(--linha);
+}
+
+.numeros-linha p {
+  margin: 0;
+}
+
+.numeros-linha strong {
+  display: block;
+  color: var(--lima);
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.numeros-linha strong small {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  color: var(--cinza);
+}
+
+.numeros-linha p > span {
+  display: block;
+  margin-top: 6px;
+  color: var(--cinza);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.contato-pessoas {
+  margin-top: clamp(40px, 6vw, 72px);
+  padding-top: clamp(32px, 5vw, 56px);
+  border-top: 1px solid var(--linha);
+}
+
+.contato-pessoas-titulo {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  letter-spacing: -0.02em;
+}
+
+.contato-pessoas .pessoas {
+  margin-top: 24px;
+}

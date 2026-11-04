@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import Aurora from "./Aurora";
 
 // Blocos de vitrine da página inicial: faixa de documentos, painel de exemplo e números.
 // Nada aqui inventa cliente, depoimento ou dado real: o painel é um exemplo rotulado como ilustrativo.
@@ -139,31 +138,29 @@ function Numero({ alvo, sufixo = "" }) {
   );
 }
 
-// Faixa verde escura com os números ditos pelo dono.
-export function FaixaNumeros() {
+// Números ditos pelo dono, em linha, dentro da seção escura "O que organizamos" (antes eram uma faixa
+// própria; juntar as duas encurtou a página inicial).
+export function NumerosLinha() {
   return (
-    <section className="faixa-numeros" aria-label="A RD em números">
-      <Aurora />
-      <div className="container faixa-numeros-grade cascata">
-        <p className="rev">
-          <strong>
-            <Numero alvo={500} sufixo="+" />
-          </strong>
-          <span>documentos técnicos</span>
-        </p>
-        <p className="rev">
-          <strong>
-            <Numero alvo={70} sufixo="+" />
-          </strong>
-          <span>projetos</span>
-        </p>
-        <p className="rev">
-          <strong>
-            <small>Desde</small> 2017
-          </strong>
-          <span>em Ibirá/SP</span>
-        </p>
-      </div>
-    </section>
+    <div className="numeros-linha cascata" role="group" aria-label="A RD em números">
+      <p className="rev">
+        <strong>
+          <Numero alvo={500} sufixo="+" />
+        </strong>
+        <span>documentos técnicos</span>
+      </p>
+      <p className="rev">
+        <strong>
+          <Numero alvo={70} sufixo="+" />
+        </strong>
+        <span>projetos</span>
+      </p>
+      <p className="rev">
+        <strong>
+          <small>Desde</small> 2017
+        </strong>
+        <span>em Ibirá/SP</span>
+      </p>
+    </div>
   );
 }
