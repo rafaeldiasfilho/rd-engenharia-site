@@ -7,3 +7,8 @@ recordings/*.mp4
 recordings/*.gif
 recordings/*.png
 .screenplay/
+
+# Local secrets (never commit; .env.example stays versioned)
+.env
+.env.local
+.env.*.local

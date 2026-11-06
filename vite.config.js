@@ -24,8 +24,7 @@ const faqJsonLd = () => ({
   },
 });
 
-// Tailwind only for the components in components/ui (shadcn/21st.dev pattern); the rest of the site stays
-// in styles.css. "@/..." points to src/, as those components expect.
+// "@/..." points to src/ (used by the components in src/components/ui).
 export default defineConfig({
   plugins: [react(), faqJsonLd()],
   resolve: {

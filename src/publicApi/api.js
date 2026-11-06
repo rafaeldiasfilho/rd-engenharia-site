@@ -1,6 +1,6 @@
 // Public calls to Supabase with no library (fetch only), so the site pages stay light.
 // The key is the publishable one: it only allows what the database rules (RLS) grant to the public,
-// that is, sending a reminder request and looking up a case by its code.
+// that is, sending a reminder request.
 import { SUPABASE_URL, SUPABASE_KEY } from "../admin/db";
 
 const baseHeaders = {
