@@ -35,7 +35,7 @@ export default function Inclinado3D({ children, className = "" }) {
       }
     });
     io.observe(el);
-    el.classList.add("incl-ativo");
+    el.classList.add("tilt-active");
     calcular();
     return () => {
       io.disconnect();
@@ -46,8 +46,8 @@ export default function Inclinado3D({ children, className = "" }) {
   }, []);
 
   return (
-    <div ref={ref} className={`incl3d ${className}`}>
-      <div className="incl3d-moldura">{children}</div>
+    <div ref={ref} className={`tilt3d ${className}`}>
+      <div className="tilt3d-frame">{children}</div>
     </div>
   );
 }

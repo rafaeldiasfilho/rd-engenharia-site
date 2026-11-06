@@ -45,34 +45,34 @@ export default function MontarPedido({ area, itens }) {
     : `Olá! Gostaria de um orçamento na área de ${area}.`;
 
   return (
-    <div className="pedido rev">
-      <div className="pedido-cab">
+    <div className="request reveal">
+      <div className="request-head">
         <h3>Precisa de mais de um serviço?</h3>
         <p>Toque nos serviços que você precisa e envie tudo numa mensagem só.</p>
       </div>
-      <div className="pedido-opcoes" role="group" aria-label="Serviços desta área">
+      <div className="request-options" role="group" aria-label="Serviços desta área">
         {itens.map((item) => (
           <button
             type="button"
             key={item.nome}
             ref={(el) => (botoes.current[item.nome] = el)}
-            className="pedido-chip"
+            className="request-chip"
             aria-pressed={marcados.includes(item.nome)}
             onClick={() => alternar(item.nome)}
           >
-            <span className="pedido-marca" aria-hidden="true" />
+            <span className="request-brand" aria-hidden="true" />
             {curto(item.nome)}
           </button>
         ))}
       </div>
-      <div className="pedido-caixa">
-        <p className="rotulo-mini" aria-live="polite">
+      <div className="request-box">
+        <p className="label-mini" aria-live="polite">
           {marcados.length === 0 ? "Sua mensagem" : marcados.length === 1 ? "Sua mensagem · 1 serviço" : `Sua mensagem · ${marcados.length} serviços`}
         </p>
         {marcados.length === 0 ? (
-          <p className="pedido-vazio">Nenhum serviço marcado. Você também pode enviar sem marcar e contar o caso na conversa.</p>
+          <p className="request-empty">Nenhum serviço marcado. Você também pode enviar sem marcar e contar o caso na conversa.</p>
         ) : (
-          <ul className="pedido-lista">
+          <ul className="request-list">
             {marcados.map((nome) => (
               <li key={nome} ref={(el) => (itensCaixa.current[nome] = el)}>
                 <span>{curto(nome)}</span>

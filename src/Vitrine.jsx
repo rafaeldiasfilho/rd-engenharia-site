@@ -14,7 +14,7 @@ const DOCUMENTOS = [
 // Faixa que anda devagar; para ao passar o mouse ou focar e fica parada com "reduzir movimento" (CSS).
 export function FaixaDocumentos() {
   const grupo = (oculto) => (
-    <ul className="marquee-grupo" aria-hidden={oculto ? "true" : undefined}>
+    <ul className="marquee-group" aria-hidden={oculto ? "true" : undefined}>
       {DOCUMENTOS.map((d) => (
         <li key={d}>{d}</li>
       ))}
@@ -22,7 +22,7 @@ export function FaixaDocumentos() {
   );
   return (
     <section className="marquee" aria-label="Documentos e serviços que a RD elabora">
-      <div className="marquee-trilho">
+      <div className="marquee-track">
         {grupo(false)}
         {grupo(true)}
       </div>
@@ -48,28 +48,28 @@ export function PainelExemplo() {
   const pct = Math.round((emDia / ITENS_PAINEL.length) * 100);
   const atual = ITENS_PAINEL.find((x) => x.nome === aberto);
   return (
-    <figure className="painel">
-      <span className="selo-exemplo" aria-hidden="true">
+    <figure className="panel">
+      <span className="badge-example" aria-hidden="true">
         EXEMPLO
       </span>
-      <div className="painel-cab">
+      <div className="panel-head">
         <span>Painel de documentos</span>
-        <span className="painel-cliente">Empresa Exemplo Ltda.</span>
+        <span className="panel-client">Empresa Exemplo Ltda.</span>
       </div>
-      <div className="painel-numero">
+      <div className="panel-number">
         <strong>{pct}%</strong>
         <span>
           dos documentos em dia ({emDia} de {ITENS_PAINEL.length})
         </span>
       </div>
-      <div className="painel-barra" role="img" aria-label={`${emDia} de ${ITENS_PAINEL.length} documentos em dia`}>
+      <div className="panel-bar" role="img" aria-label={`${emDia} de ${ITENS_PAINEL.length} documentos em dia`}>
         <i style={{ width: `${pct}%` }} />
       </div>
-      <ul className="painel-lista">
+      <ul className="panel-list">
         {ITENS_PAINEL.map((x) => (
           <li key={x.nome}>
             <button type="button" aria-pressed={aberto === x.nome} onClick={() => setAberto((a) => (a === x.nome ? "" : x.nome))}>
-              <span className="painel-doc">
+              <span className="panel-doc">
                 <span>{x.nome}</span>
                 <small>{x.data}</small>
               </span>
@@ -80,7 +80,7 @@ export function PainelExemplo() {
           </li>
         ))}
       </ul>
-      <p className="painel-explica" aria-live="polite">
+      <p className="panel-explain" aria-live="polite">
         {atual ? (
           <>
             <strong>{atual.nome}.</strong> {atual.texto}
@@ -142,20 +142,20 @@ function Numero({ alvo, sufixo = "" }) {
 // própria; juntar as duas encurtou a página inicial).
 export function NumerosLinha() {
   return (
-    <div className="numeros-linha cascata" role="group" aria-label="A RD em números">
-      <p className="rev">
+    <div className="numbers-line cascade" role="group" aria-label="A RD em números">
+      <p className="reveal">
         <strong>
           <Numero alvo={500} sufixo="+" />
         </strong>
         <span>documentos técnicos</span>
       </p>
-      <p className="rev">
+      <p className="reveal">
         <strong>
           <Numero alvo={70} sufixo="+" />
         </strong>
         <span>projetos</span>
       </p>
-      <p className="rev">
+      <p className="reveal">
         <strong>
           <small>Desde</small> 2017
         </strong>

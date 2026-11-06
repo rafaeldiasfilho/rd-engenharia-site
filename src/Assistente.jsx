@@ -92,32 +92,32 @@ export default function Assistente() {
   const pct = noResultado ? 100 : Math.round((etapa / total) * 100);
 
   return (
-    <div className="assistente">
-      <div className="ass-topo">
+    <div className="wizard">
+      <div className="wizard-top">
         {etapa > 0 ? (
-          <button type="button" className="ass-voltar" onClick={voltar}>
+          <button type="button" className="wizard-back" onClick={voltar}>
             <span aria-hidden="true">←</span> Voltar
           </button>
         ) : (
-          <span className="ass-voltar-vazio" />
+          <span className="wizard-back-empty" />
         )}
-        <p className="ass-contador" aria-live="polite">
+        <p className="wizard-counter" aria-live="polite">
           {noResultado ? "Resultado" : perfil ? `Pergunta ${atual} de ${total}` : "Pergunta 1"}
         </p>
         {etapa > 0 ? (
-          <button type="button" className="ass-recomecar" onClick={recomecar}>
-            <svg className="ass-recomecar-seta" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+          <button type="button" className="wizard-restart" onClick={recomecar}>
+            <svg className="wizard-restart-arrow" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
               <path d="M13.2 8a5.2 5.2 0 1 1-1.6-3.75" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               <path d="M12.2 1.8v2.9H9.3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Recomeçar
           </button>
         ) : (
-          <span className="ass-voltar-vazio" />
+          <span className="wizard-back-empty" />
         )}
       </div>
       <div
-        className="ass-barra"
+        className="wizard-bar"
         role="progressbar"
         aria-label="Progresso do guia"
         aria-valuemin={0}
@@ -127,19 +127,19 @@ export default function Assistente() {
         <i style={{ transform: `scaleX(${pct / 100})` }} />
       </div>
 
-      <div className="ass-tela" key={`${perfilId}-${etapa}`}>
+      <div className="wizard-screen" key={`${perfilId}-${etapa}`}>
         {etapa === 0 && (
           <>
-            <h2 className="ass-pergunta" tabIndex={-1} ref={titulo}>
+            <h2 className="wizard-question" tabIndex={-1} ref={titulo}>
               Qual é a sua situação?
             </h2>
-            <p className="ass-apoio">Escolha a que mais se parece com o seu caso.</p>
-            <div className="ass-opcoes" role="group" aria-label="Qual é a sua situação?">
+            <p className="wizard-support">Escolha a que mais se parece com o seu caso.</p>
+            <div className="wizard-options" role="group" aria-label="Qual é a sua situação?">
               {PERFIS.map((p, i) => (
                 <button
                   type="button"
                   key={p.id}
-                  className={`ass-opcao ${perfilId === p.id ? "ativo" : ""}`}
+                  className={`wizard-option ${perfilId === p.id ? "active" : ""}`}
                   aria-pressed={perfilId === p.id}
                   onClick={() => escolherPerfil(p.id)}
                 >
@@ -154,14 +154,14 @@ export default function Assistente() {
 
         {situacao && (
           <>
-            <p className="ass-rotulo">Isso se aplica ao seu caso?</p>
-            <h2 className="ass-pergunta" tabIndex={-1} ref={titulo}>
+            <p className="wizard-label">Isso se aplica ao seu caso?</p>
+            <h2 className="wizard-question" tabIndex={-1} ref={titulo}>
               {situacao.texto}
             </h2>
-            <div className="ass-opcoes ass-sn" role="group" aria-label={`${situacao.texto}. Isso se aplica ao seu caso?`}>
+            <div className="wizard-options wizard-yesno" role="group" aria-label={`${situacao.texto}. Isso se aplica ao seu caso?`}>
               <button
                 type="button"
-                className={`ass-opcao ${respostas[etapa - 1] === true ? "ativo" : ""}`}
+                className={`wizard-option ${respostas[etapa - 1] === true ? "active" : ""}`}
                 aria-pressed={respostas[etapa - 1] === true}
                 onClick={() => responder(true)}
               >
@@ -170,7 +170,7 @@ export default function Assistente() {
               </button>
               <button
                 type="button"
-                className={`ass-opcao ${respostas[etapa - 1] === false ? "ativo" : ""}`}
+                className={`wizard-option ${respostas[etapa - 1] === false ? "active" : ""}`}
                 aria-pressed={respostas[etapa - 1] === false}
                 onClick={() => responder(false)}
               >
@@ -183,18 +183,18 @@ export default function Assistente() {
 
         {noResultado && (
           <>
-            <h2 className="ass-pergunta" tabIndex={-1} ref={titulo}>
+            <h2 className="wizard-question" tabIndex={-1} ref={titulo}>
               {resultados.length
                 ? "Pelo que você respondeu, costumam ser exigidos:"
                 : "Nenhum item específico apareceu para as suas respostas."}
             </h2>
             {resultados.length > 0 ? (
-              <ul className="ass-resultados">
+              <ul className="wizard-results">
                 {resultados.map((r) => {
                   const area = achaArea(r.area);
                   return (
                     <li key={r.id}>
-                      <small className="ass-area">
+                      <small className="wizard-area">
                         {area && <IconeArea slug={area.slug} tamanho={18} />} {area ? area.nome : ""}
                       </small>
                       <h3>{r.nome}</h3>
@@ -208,11 +208,11 @@ export default function Assistente() {
               </ul>
             ) : (
               <>
-                <p className="ass-apoio">
+                <p className="wizard-support">
                   Isso não significa que nada seja exigido: cada caso tem particularidades. Conte a sua situação pelo
                   WhatsApp, ou veja as áreas de atuação.
                 </p>
-                <ul className="ass-areas">
+                <ul className="wizard-areas">
                   {AREAS.map((a) => (
                     <li key={a.slug}>
                       <a href={`/${a.slug}`}>
@@ -223,11 +223,11 @@ export default function Assistente() {
                 </ul>
               </>
             )}
-            <p className="aviso-guia">
+            <p className="notice-guide">
               Este resultado é uma orientação inicial e não substitui a análise técnica. Confirmamos o que é realmente
               exigido no seu caso.
             </p>
-            <div className="quiz-cidade">
+            <div className="quiz-city">
               <label htmlFor="cidade-quiz">Sua cidade (opcional, vai só na mensagem)</label>
               <input
                 id="cidade-quiz"
@@ -237,22 +237,22 @@ export default function Assistente() {
                 autoComplete="off"
               />
             </div>
-            <div className="acoes">
+            <div className="actions">
               <BotaoZap
-                className="btn-grande"
+                className="btn-large"
                 texto={resultados.length ? mensagem : mensagemSemItens}
                 rotulo={resultados.length ? "Enviar para a RD pelo WhatsApp" : "Contar o meu caso no WhatsApp"}
               />
-              <button type="button" className="btn btn-sec btn-grande" onClick={recomecar}>
+              <button type="button" className="btn btn-sec btn-large" onClick={recomecar}>
                 Recomeçar
               </button>
             </div>
           </>
         )}
       </div>
-      {etapa < 2 && <p className="ass-dica">Nada do que você responde é guardado. <span className="so-teclado">Dica: as teclas 1, 2 e 3 escolhem as opções.</span></p>}
+      {etapa < 2 && <p className="wizard-hint">Nada do que você responde é guardado. <span className="keyboard-only">Dica: as teclas 1, 2 e 3 escolhem as opções.</span></p>}
       <noscript>
-        <p className="ass-apoio">
+        <p className="wizard-support">
           Este passo a passo precisa de JavaScript. Sem ele, veja as áreas:{" "}
           {AREAS.map((a) => (
             <a key={a.slug} href={`/${a.slug}`}>

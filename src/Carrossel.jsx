@@ -50,7 +50,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
   const total = slides.length;
   // car-cheio: slide na largura toda. car-prateleira: vários cartões à vista, todos já clicáveis.
   // Nos dois casos não há vizinha "espiando" para virar botão.
-  const cheio = className.includes("car-cheio") || className.includes("car-prateleira");
+  const cheio = className.includes("carousel-full") || className.includes("carousel-shelf");
   const secao = useRef(null);
   const faixa = useRef(null);
   const [i, setI] = useState(0);
@@ -118,7 +118,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
   // Carrossel 3D (className "car-3d"): cada imagem gira e diminui conforme a distância do centro da faixa,
   // como um coverflow. A faixa continua sendo scroll-snap (toque, arrasto e teclado iguais); o giro só
   // acompanha a rolagem, um quadro por vez. Com "reduzir movimento" fica plano.
-  const tresD = className.includes("car-3d");
+  const tresD = className.includes("carousel-3d");
   useEffect(() => {
     const f = faixa.current;
     if (!tresD || !f) return undefined;
@@ -129,7 +129,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
       const meio = caixa.left + caixa.width / 2;
       const p = passo() || caixa.width;
       Array.from(f.children).forEach((sl) => {
-        const img = sl.querySelector(".car-img");
+        const img = sl.querySelector(".carousel-img");
         if (!img) return;
         if (reduz.current) {
           img.style.transform = "";
@@ -283,15 +283,15 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
   return (
     <section
       ref={secao}
-      className={`carrossel ${total < 2 ? "carrossel-um" : ""} ${className}`}
+      className={`carousel ${total < 2 ? "carousel-one" : ""} ${className}`}
       role="region"
       aria-roledescription="carrossel"
       aria-label={rotulo}
-      style={{ "--car-aspecto": aspecto }}
+      style={{ "--carousel-aspect": aspecto }}
       onKeyDown={teclas}
     >
       <div
-        className={`car-faixa ${arrastando ? "arrastando" : ""}`}
+        className={`carousel-band ${arrastando ? "dragging" : ""}`}
         ref={faixa}
         tabIndex={0}
         aria-label={`${rotulo}: use as setas do teclado, deslize ou arraste`}
@@ -320,7 +320,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
           return (
             <div
               key={s.key}
-              className={`car-slide ${n === i ? "ativo" : ""}`}
+              className={`carousel-slide ${n === i ? "active" : ""}`}
               role="group"
               aria-roledescription="slide"
               aria-label={`${n + 1} de ${total}`}
@@ -328,7 +328,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
               {!cheio && n !== i && total > 1 && (
                 <button
                   type="button"
-                  className="car-vizinha"
+                  className="carousel-neighbor"
                   aria-label={`Ir para a imagem ${n + 1} de ${total}`}
                   onClick={() => {
                     parou.current = true;
@@ -337,7 +337,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
                 />
               )}
               <figure>
-                <div className={`car-img ${s.contem ? "contem" : ""} ${s.node ? "no" : ""}`}>
+                <div className={`carousel-img ${s.contem ? "contain" : ""} ${s.node ? "node" : ""}`}>
                   {s.node ? (
                     s.node
                   ) : s.imgHref ? (
@@ -361,7 +361,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
                   )}
                 </div>
                 <figcaption>
-                  <strong className="car-legenda">
+                  <strong className="carousel-caption">
                     {s.href ? (
                       <a href={s.href}>
                         {s.legenda} <span aria-hidden="true">→</span>
@@ -383,17 +383,17 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
       </div>
 
       {total > 1 && (
-        <div className="car-controles">
-          <p className="car-contador" aria-live="off" aria-atomic="true">
+        <div className="carousel-controls">
+          <p className="carousel-counter" aria-live="off" aria-atomic="true">
             <span className="sr-only">Imagem </span>
             {i + 1} / {total}
           </p>
-          <div className="car-pontos">
+          <div className="carousel-dots">
             {slides.map((s, n) => (
               <button
                 key={s.key}
                 type="button"
-                className={n === i ? "ativo" : ""}
+                className={n === i ? "active" : ""}
                 aria-label={`Ir para a imagem ${n + 1} de ${total}`}
                 aria-current={n === i ? "true" : undefined}
                 onClick={() => {

@@ -25,9 +25,9 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
   const comFiltro = itens.length >= minimoFiltro;
 
   return (
-    <div className="faq-lista rev">
+    <div className="faq-list reveal">
       {comFiltro && (
-        <div className="faq-filtro">
+        <div className="faq-filter">
           <label>
             <span>Filtrar perguntas</span>
             <input type="search" placeholder="Ex.: ART, CAR, orçamento" value={q} onChange={(e) => setQ(e.target.value)} />
@@ -38,8 +38,8 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
         </div>
       )}
       {largo && visiveis.length > 0 && (
-        <div className="faq-lado">
-          <ul className="faq-perguntas">
+        <div className="faq-side">
+          <ul className="faq-questions">
             {visiveis.map((f, n) =>
               limite > 0 && !todas && !termos.length && n >= limite ? null : (
                 <li key={f.q}>
@@ -53,17 +53,17 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
           {(() => {
             const f = visiveis[Math.min(sel, visiveis.length - 1)];
             return (
-              <div className="faq-resposta" id="faq-resposta" aria-live="polite">
+              <div className="faq-answer" id="faq-resposta" aria-live="polite">
                 <h3>{f.q}</h3>
                 <p>{f.a}</p>
                 {f.guia && (
-                  <p className="faq-guia">
+                  <p className="faq-guide">
                     <a href={`/${f.guia}`}>
                       Ler o guia completo <span aria-hidden="true">→</span>
                     </a>
                   </p>
                 )}
-                <p className="faq-ainda">
+                <p className="faq-followup">
                   Ficou alguma dúvida?{" "}
                   <a href={zap(`Olá! Tenho uma dúvida: ${f.q}`)} target="_blank" rel="noopener noreferrer">
                     Pergunte no WhatsApp
@@ -79,7 +79,7 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
           <summary>{f.q}</summary>
           <p>{f.a}</p>
           {f.guia && (
-            <p className="faq-guia">
+            <p className="faq-guide">
               <a href={`/${f.guia}`}>
                 Ler o guia completo <span aria-hidden="true">→</span>
               </a>
@@ -88,12 +88,12 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
         </details>
       ))}
       {limite > 0 && !todas && !termos.length && itens.length > limite && (
-        <button type="button" className="btn btn-sec faq-mais" onClick={() => setTodas(true)}>
+        <button type="button" className="btn btn-sec faq-more" onClick={() => setTodas(true)}>
           Ver todas as {itens.length} perguntas
         </button>
       )}
       {comFiltro && termos.length > 0 && visiveis.length === 0 && (
-        <p className="faq-vazio">
+        <p className="faq-empty">
           Nenhuma pergunta com “{q.trim()}”.{" "}
           <a href={zap(`Olá! Tenho uma dúvida sobre: ${q.trim()}`)} target="_blank" rel="noopener noreferrer">
             Pergunte direto no WhatsApp

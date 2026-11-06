@@ -47,5 +47,5 @@ export default function Cena3D({ cena, className = "", rotulo }) {
     };
   }, [cena]);
 
-  return <div ref={caixa} className={`cena3d ${sem3d ? "cena-sem3d" : ""} ${className}`} role="img" aria-label={rotulo} />;
+  return <div ref={caixa} className={`scene3d ${sem3d ? "cena-sem3d" : ""} ${className}`} role="img" aria-label={rotulo} />;
 }

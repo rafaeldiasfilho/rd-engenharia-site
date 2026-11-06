@@ -83,9 +83,9 @@ export function montarCena(el, { camera: cam = {}, sombras = false, construir })
   let giroFixo = null;
   controles.addEventListener("start", () => {
     if (giroFixo === null) giroFixo = grupo.rotation.z;
-    el.classList.add("cena-arrastando");
+    el.classList.add("scene-dragging");
   });
-  controles.addEventListener("end", () => el.classList.remove("cena-arrastando"));
+  controles.addEventListener("end", () => el.classList.remove("scene-dragging"));
   // Sem o laço rodando (imagem parada ou fora da tela), redesenha a cada movimento
   controles.addEventListener("change", () => {
     if (!quadro) renderer.render(cena, camera);
@@ -117,7 +117,7 @@ export function montarCena(el, { camera: cam = {}, sombras = false, construir })
     }
   });
   io.observe(el);
-  el.classList.add("cena-pronta");
+  el.classList.add("scene-ready");
 
   return () => {
     cancelAnimationFrame(quadro);

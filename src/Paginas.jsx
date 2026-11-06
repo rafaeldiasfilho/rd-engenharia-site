@@ -58,7 +58,7 @@ function Recolhivel({ rotulo, children }) {
     if (ref.current && window.matchMedia && window.matchMedia("(max-width: 700px)").matches) ref.current.open = false;
   }, []);
   return (
-    <details ref={ref} className="recolhe" open>
+    <details ref={ref} className="collapse" open>
       <summary>
         <span>{rotulo}</span>
       </summary>
@@ -71,9 +71,9 @@ function Recolhivel({ rotulo, children }) {
 function Comparativo() {
   const c = COMPARATIVO_BOMBEIROS;
   return (
-    <div className="comparativo rev" id="avcb-ou-clcb">
+    <div className="comparison reveal" id="avcb-ou-clcb">
       <h3>AVCB ou CLCB: lado a lado</h3>
-      <div className="comparativo-rolar">
+      <div className="comparison-scroll">
         <table>
           <caption className="sr-only">Comparação entre AVCB e CLCB</caption>
           <thead>
@@ -101,8 +101,8 @@ function Comparativo() {
           </tbody>
         </table>
       </div>
-      <p className="nota-fina">{c.nota}</p>
-      <div className="acoes">
+      <p className="fine-print">{c.nota}</p>
+      <div className="actions">
         <BotaoZap texto={c.zap} rotulo="Descobrir qual é o meu caso" />
       </div>
     </div>
@@ -116,11 +116,11 @@ function Secao({ id, n, rotulo, titulo, lead, className = "", children }) {
   return (
     <section className={`sec ${className}`} id={id} aria-labelledby={`${id}-t`}>
       <div className="container">
-        <header className="sec-cab rev">
+        <header className="sec-head reveal">
           <p className="sec-n">
             <span>{n}</span> {rotulo}
           </p>
-          <h2 id={`${id}-t`} className="sec-titulo">
+          <h2 id={`${id}-t`} className="sec-title">
             {titulo}
           </h2>
           {lead && <p className="lead">{lead}</p>}
@@ -134,7 +134,7 @@ function Secao({ id, n, rotulo, titulo, lead, className = "", children }) {
 // Abertura das páginas internas simples (guias, quiz, lembrete, privacidade, créditos).
 function Topo({ migalha, eyebrow, titulo, texto, children }) {
   return (
-    <header className="hero-int">
+    <header className="hero-inner">
       <div className="container">
         <Migalha itens={migalha} />
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
@@ -161,14 +161,14 @@ function Exemplos() {
         itens={slidesProjetos()}
         rotulo="Desenhos de projetos reais de residências"
         aspecto="4 / 3"
-        className="car-projetos car-3d"
+        className="carousel-projects carousel-3d"
       />
-      <p className="nota-fina">
+      <p className="fine-print">
         Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem
         para ampliar.
       </p>
       <ComoLerPrancha />
-      <div className="acoes">
+      <div className="actions">
         <BotaoZap texto="Olá! Vi os exemplos de projeto no site e gostaria de um projeto para a minha obra." rotulo="Quero um projeto assim" />
       </div>
     </div>
@@ -190,17 +190,17 @@ function PaginaArea({ pagina }) {
 
   return (
     <>
-      <div className="container migalha-sobre-hero">
+      <div className="container breadcrumb-over-hero">
         <Migalha itens={[{ rotulo: "Serviços", href: "/#servicos" }, { rotulo: pagina.nome }]} />
       </div>
-      <HeroFundo chave={`area-${pagina.slug}`} rotulo={`Fotos ilustrativas da área de ${pagina.nome}`} className="hero-area-fundo">
-        <p className="eyebrow eyebrow-icone">
+      <HeroFundo chave={`area-${pagina.slug}`} rotulo={`Fotos ilustrativas da área de ${pagina.nome}`} className="hero-area-bg">
+        <p className="eyebrow eyebrow-icon">
           <IconeArea slug={pagina.slug} tamanho={22} /> Serviço
         </p>
         <h1 className="display">{pagina.h1}</h1>
         <p className="lead">{pagina.intro}</p>
-        <div className="acoes">
-          <BotaoZap className="btn-grande" texto={zapArea} rotulo="Pedir orçamento pelo WhatsApp" />
+        <div className="actions">
+          <BotaoZap className="btn-large" texto={zapArea} rotulo="Pedir orçamento pelo WhatsApp" />
           <small>Orçamento por escrito e sem compromisso. Prazo e valor são informados depois de conhecermos o seu caso.</small>
         </div>
       </HeroFundo>
@@ -218,23 +218,23 @@ function PaginaArea({ pagina }) {
       />
 
       {visual && (
-        <section className="resumo-ed" aria-label="Resumo">
-          <div className="container resumo-ed-grade">
-            <div className="rev">
-              <p className="rotulo-mini">Para quem</p>
+        <section className="summary-editorial" aria-label="Resumo">
+          <div className="container summary-editorial-grid">
+            <div className="reveal">
+              <p className="label-mini">Para quem</p>
               <p>{visual.quem}</p>
             </div>
-            <div className="rev">
-              <p className="rotulo-mini">Você recebe</p>
+            <div className="reveal">
+              <p className="label-mini">Você recebe</p>
               <p>{visual.recebe}</p>
             </div>
-            <div className="assina rev">
-              <p className="rotulo-mini">Quem assina</p>
-              <div className="assina-linha">
+            <div className="signer reveal">
+              <p className="label-mini">Quem assina</p>
+              <div className="signer-line">
                 {FOTO_RESPONSAVEL ? (
                   <img src={FOTO_RESPONSAVEL} width="56" height="56" alt="Rafael Antonio Dias" />
                 ) : (
-                  <span className="assina-sigla" aria-hidden="true">
+                  <span className="signer-initials" aria-hidden="true">
                     RD
                   </span>
                 )}
@@ -249,34 +249,34 @@ function PaginaArea({ pagina }) {
       )}
 
       {CENA_AREA[pagina.slug] && (
-        <section className="faixa-cena" aria-labelledby="cena-t">
-          <div className="container faixa-cena-grade">
-            <div className="faixa-cena-texto rev">
-              <p className="rotulo-mini">{CENA_AREA[pagina.slug].rotulo}</p>
-              <h2 id="cena-t" className="sec-titulo">
+        <section className="band-scene" aria-labelledby="cena-t">
+          <div className="container band-scene-grid">
+            <div className="band-scene-text reveal">
+              <p className="label-mini">{CENA_AREA[pagina.slug].rotulo}</p>
+              <h2 id="cena-t" className="sec-title">
                 {CENA_AREA[pagina.slug].titulo}
               </h2>
               <p>{CENA_AREA[pagina.slug].texto}</p>
-              <p className="nota-fina">
+              <p className="fine-print">
                 Ilustração em 3D. Arraste com o mouse ou o dedo para girar.
               </p>
             </div>
-            <Cena3D cena={CENA_AREA[pagina.slug].cena} className="faixa-cena-3d" rotulo={CENA_AREA[pagina.slug].alt} />
+            <Cena3D cena={CENA_AREA[pagina.slug].cena} className="band-scene-3d" rotulo={CENA_AREA[pagina.slug].alt} />
           </div>
         </section>
       )}
 
       {pagina.situacoes && (
         <Secao id="situacoes" n={num()} rotulo="Situações comuns" titulo="Você se reconhece em alguma destas?">
-          <ul className="situacoes-lista">
+          <ul className="situations-list">
             {pagina.situacoes.map((t) => (
-              <li key={t} className="rev">
+              <li key={t} className="reveal">
                 <IconeArea slug={pagina.slug} tamanho={26} />
                 <span>{t}</span>
               </li>
             ))}
           </ul>
-          <p className="situacoes-ajuda rev">
+          <p className="situations-help reveal">
             Não tem certeza de qual é o seu caso? <a href="/o-que-preciso">Responda ao passo a passo</a> ou{" "}
             <a href={zap(zapArea)} target="_blank" rel="noopener noreferrer">
               conte pelo WhatsApp
@@ -296,7 +296,7 @@ function PaginaArea({ pagina }) {
         lead="Cada cartão mostra uma folha de exemplo do documento que você recebe."
       >
         {/* Pasta com as folhas de exemplo em tamanho de leitura (no cartão elas ficam pequenas). */}
-        <div className="pasta-faixa rev">
+        <div className="folder-band reveal">
           <AnimatedFolder
             title="Documentos de exemplo"
             countLabel={(n) => `${n} folhas desta área`}
@@ -312,32 +312,32 @@ function PaginaArea({ pagina }) {
                 action: { label: "Pedir orçamento pelo WhatsApp", href: zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`) },
               }))}
           />
-          <div className="pasta-faixa-texto">
+          <div className="folder-band-text">
             <h3>Veja cada documento em tamanho de leitura.</h3>
             <p>
               Abra a pasta e escolha uma folha. Dá para ampliar, ver uma página interna e, em “Como ler”, entender cada
               parte do documento. Depois, peça o orçamento daquele documento direto pelo WhatsApp.
             </p>
-            <p className="nota-fina">{LEGENDA_EXEMPLO} Não há dados de clientes.</p>
+            <p className="fine-print">{LEGENDA_EXEMPLO} Não há dados de clientes.</p>
           </div>
         </div>
-        <ol className="servicos-grade">
+        <ol className="services-grid">
           {pagina.itens.map((item, n) => (
-            <li className="servico-cartao rev" key={item.nome} id={ancora(item.nome)}>
+            <li className="service-card reveal" key={item.nome} id={ancora(item.nome)}>
               {item.exemplo && (
-                <div className="servico-folha" aria-hidden="true">
+                <div className="service-sheet" aria-hidden="true">
                   <FolhaSvg m={item.exemplo} nome={item.nome} area={pagina.slug} />
                 </div>
               )}
-              <div className="servico-corpo">
-                <span className="servico-n">{pad(n)}</span>
+              <div className="service-body">
+                <span className="service-n">{pad(n)}</span>
                 <h3>{item.nome}</h3>
                 <p>{item.texto}</p>
-                <p className="item-quem">
+                <p className="item-who">
                   <strong>Para quem:</strong> {item.quem}
                 </p>
                 <a
-                  className="btn btn-sec btn-peq"
+                  className="btn btn-sec btn-small"
                   href={zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -348,7 +348,7 @@ function PaginaArea({ pagina }) {
             </li>
           ))}
         </ol>
-        <p className="nota-fina">As folhas são exemplos ilustrativos, não são documentos reais.</p>
+        <p className="fine-print">As folhas são exemplos ilustrativos, não são documentos reais.</p>
         {pagina.itens.length > 1 && <MontarPedido area={pagina.nome} itens={pagina.itens} />}
         {pagina.slug === "corpo-de-bombeiros" && <Comparativo />}
       </Secao>
@@ -356,27 +356,27 @@ function PaginaArea({ pagina }) {
       {equip && (
         <Secao id="equipamentos" n={num()} rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
           <Recolhivel rotulo="Ver os equipamentos">
-          <div className="equip">
-            <p className="lead equip-lead rev">{equip.texto}</p>
+          <div className="equipment">
+            <p className="lead equipment-lead reveal">{equip.texto}</p>
             {temFotosEquip && (
-              <div className="rev">
+              <div className="reveal">
                 <Carrossel
                   chave={`equip-${pagina.slug}`}
                   rotulo={`Equipamentos de referência usados em serviços de ${pagina.nome}`}
                   aspecto="4 / 3"
-                  className="car-prateleira"
+                  className="carousel-shelf"
                   auto={false}
                   sizes="(min-width: 900px) 340px, 78vw"
                 />
               </div>
             )}
-            <ul className="equip-lista rev">
+            <ul className="equipment-list reveal">
               {equip.itens.map((i) => (
                 <li key={i}>{i}</li>
               ))}
             </ul>
           </div>
-          <p className="nota-fina equip-nota">{NOTA_EQUIPAMENTOS}</p>
+          <p className="fine-print equipment-note">{NOTA_EQUIPAMENTOS}</p>
           </Recolhivel>
         </Secao>
       )}
@@ -393,16 +393,16 @@ function PaginaArea({ pagina }) {
 
       <Secao id="atendimento" n={num()} rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
         {visual && (
-          <ol className="etapas-ed linha-tempo rev">
+          <ol className="steps-editorial timeline reveal">
             {visual.etapas.map((e, n) => (
-              <li key={e.t} className="rev">
-                <span className="etapa-big" aria-hidden="true">
+              <li key={e.t} className="reveal">
+                <span className="step-big" aria-hidden="true">
                   {n + 1}
                 </span>
                 <h3>{e.t}</h3>
                 <p>{e.d}</p>
                 {n === 0 && (
-                  <a className="btn btn-zap btn-peq" href={zap(zapArea)} target="_blank" rel="noopener noreferrer">
+                  <a className="btn btn-whatsapp btn-small" href={zap(zapArea)} target="_blank" rel="noopener noreferrer">
                     <Icone nome="fa-brands fa-whatsapp" /> Começar agora
                   </a>
                 )}
@@ -410,23 +410,23 @@ function PaginaArea({ pagina }) {
             ))}
           </ol>
         )}
-        <div className="separe rev">
-          <div className="separe-grade">
-            <div className="separe-texto">
+        <div className="split reveal">
+          <div className="split-grid">
+            <div className="split-text">
               <h3>Para agilizar, separe</h3>
-              <ul className="lista-docs">
+              <ul className="list-docs">
                 {pagina.documentos.map((d) => (
                   <li key={d}>
                     <Icone nome="fa-solid fa-circle-check" /> {d}
                   </li>
                 ))}
               </ul>
-              <p className="aviso-lembrete">
+              <p className="notice-reminder">
                 <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o prazo
                 de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
               </p>
               <a
-                className="btn btn-sec nao-imprime"
+                className="btn btn-sec no-print"
                 href={`/imprimir/${pagina.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -455,11 +455,11 @@ function PaginaGuia({ pagina }) {
   return (
     <>
       <Topo migalha={[{ rotulo: "Guias", href: "/guias" }, { rotulo: pagina.h1 }]} eyebrow={area ? `Guia · ${area.nome}` : "Guia"} titulo={pagina.h1} />
-      <section className="sec artigo-sec" id="guia" aria-label="Texto do guia">
-        <div className="container container-leitura artigo">
+      <section className="sec article-sec" id="guia" aria-label="Texto do guia">
+        <div className="container container-reading article">
           {RESUMOS_GUIAS[pagina.slug] && (
-            <aside className="resumo-guia" aria-label="Em resumo">
-              <p className="rotulo-mini">Em resumo</p>
+            <aside className="summary-guide" aria-label="Em resumo">
+              <p className="label-mini">Em resumo</p>
               <ul>
                 {RESUMOS_GUIAS[pagina.slug].map((r) => (
                   <li key={r}>{r}</li>
@@ -468,21 +468,21 @@ function PaginaGuia({ pagina }) {
             </aside>
           )}
           {pagina.paragrafos.map((p, n) => (
-            <p key={p.slice(0, 40)} className={n === 0 ? "artigo-abre" : ""}>
+            <p key={p.slice(0, 40)} className={n === 0 ? "article-lead" : ""}>
               {p}
             </p>
           ))}
           {pagina.slug === "guias/avcb-ou-clcb-qual-a-diferenca" && <Comparativo />}
         </div>
       </section>
-      <section className="sec-fina" id="aviso" aria-label="Aviso">
-        <div className="container container-leitura">
-          <p className="aviso-guia">
+      <section className="sec-fine" id="aviso" aria-label="Aviso">
+        <div className="container container-reading">
+          <p className="notice-guide">
             Este guia tem caráter informativo e reflete a legislação conhecida em 2026. As regras podem mudar, e por isso
             confirmamos a norma vigente em cada caso.
           </p>
           {area && (
-            <p className="mais-links">
+            <p className="more-links">
               Veja todos os serviços de <a href={`/${area.slug}`}>{area.nome}</a>.
             </p>
           )}
@@ -522,9 +522,9 @@ function PaginaGuias({ pagina }) {
         titulo={pagina.h1}
         texto="Explicações curtas e em linguagem simples sobre os documentos mais pedidos."
       />
-      <section className="sec-fina" aria-label="Passo a passo">
+      <section className="sec-fine" aria-label="Passo a passo">
         <div className="container">
-          <a className="banda-passo" href="/o-que-preciso">
+          <a className="band-step" href="/o-que-preciso">
             <span>
               <small>Passo a passo</small>
               <strong>Não sabe qual guia ler? Descubra o que o seu caso precisa.</strong>
@@ -539,16 +539,16 @@ function PaginaGuias({ pagina }) {
       />
       {grupos.map((grupo, n) => (
         <Secao key={grupo.id} id={grupo.id} n={pad(n)} rotulo="Área" titulo={grupo.titulo} className={n % 2 ? "sec-alt" : ""}>
-          <ul className="guia-cards">
+          <ul className="guide-cards">
             {grupo.lista.map((g, i) => (
-              <li className="rev guia-cartao" key={g.slug}>
+              <li className="reveal guide-card" key={g.slug}>
                 <a href={`/${g.slug}`}>
                   <small>{pad(i)}</small>
                   <strong>{g.h1}</strong>
                   <i aria-hidden="true">→</i>
                 </a>
                 {RESUMOS_GUIAS[g.slug] && (
-                  <button type="button" className="guia-resumo-botao" aria-haspopup="dialog" onClick={() => setPrevia(g.slug)}>
+                  <button type="button" className="guide-summary-button" aria-haspopup="dialog" onClick={() => setPrevia(g.slug)}>
                     Ver o resumo<span className="sr-only">: {g.h1}</span>
                   </button>
                 )}
@@ -560,7 +560,7 @@ function PaginaGuias({ pagina }) {
       <Janela aberta={!!guiaPrevia} aoFechar={() => setPrevia(null)} titulo={guiaPrevia ? guiaPrevia.h1 : ""}>
         {guiaPrevia && (
           <>
-            <p className="rotulo-mini">Em resumo</p>
+            <p className="label-mini">Em resumo</p>
             <ul className="janela-lista">
               {RESUMOS_GUIAS[guiaPrevia.slug].map((r) => (
                 <li key={r}>{r}</li>
@@ -591,7 +591,7 @@ function PaginaQuiz({ pagina }) {
         texto="Responda uma pergunta por vez. No fim, você vê o que o seu caso provavelmente exige e fala com a gente pelo WhatsApp."
       />
       <section className="sec quiz" aria-label="Perguntas">
-        <div className="container container-leitura">
+        <div className="container container-reading">
           <Assistente />
         </div>
       </section>
@@ -669,10 +669,10 @@ function PaginaLembrete({ pagina }) {
         texto="Deixe o seu contato e o vencimento do documento. Avisamos pelo WhatsApp com antecedência, para você renovar sem correria."
       />
       <section className="sec" aria-label="Formulário do lembrete">
-        <div className="container lembrete-grade">
+        <div className="container reminder-grid">
           <div>
           {estado === "ok" ? (
-            <div className="aviso-ok" role="status">
+            <div className="notice-ok" role="status">
               <h2>Pedido recebido</h2>
               <p>
                 Obrigado! Guardamos o seu pedido e vamos avisar você pelo WhatsApp antes do vencimento. Se quiser
@@ -683,7 +683,7 @@ function PaginaLembrete({ pagina }) {
               </a>
             </div>
           ) : (
-            <form className="form-publico" onSubmit={enviar} noValidate>
+            <form className="form-public" onSubmit={enviar} noValidate>
               <label>
                 <span>Seu nome</span>
                 <input value={f.nome} onChange={mudar("nome")} autoComplete="name" maxLength={120} required />
@@ -699,17 +699,17 @@ function PaginaLembrete({ pagina }) {
                   required
                 />
               </label>
-              <fieldset className="doc-opcoes">
+              <fieldset className="doc-options">
                 <legend>Qual documento?</legend>
                 {DOCUMENTOS_LEMBRETE.map((d) => (
-                  <label key={d} className="doc-opcao">
+                  <label key={d} className="doc-option">
                     <input type="radio" name="documento" value={d} checked={f.documento === d} onChange={mudar("documento")} />
-                    <span className="doc-opcao-nome">{d}</span>
-                    {f.documento === d && DICAS_LEMBRETE[d] && <small className="dica-doc">{DICAS_LEMBRETE[d]}</small>}
+                    <span className="doc-option-name">{d}</span>
+                    {f.documento === d && DICAS_LEMBRETE[d] && <small className="hint-doc">{DICAS_LEMBRETE[d]}</small>}
                   </label>
                 ))}
               </fieldset>
-              <fieldset className="campo-mes">
+              <fieldset className="field-month">
                 <legend>Mês do vencimento (se souber)</legend>
                 <div>
                   <select aria-label="Mês" value={f.mesNum} onChange={mudar("mesNum")}>
@@ -730,11 +730,11 @@ function PaginaLembrete({ pagina }) {
                   </select>
                 </div>
               </fieldset>
-              <label className="oculto" aria-hidden="true">
+              <label className="is-hidden" aria-hidden="true">
                 <span>Não preencha este campo</span>
                 <input tabIndex={-1} autoComplete="off" value={f.site} onChange={mudar("site")} />
               </label>
-              <label className="aceite">
+              <label className="consent">
                 <input type="checkbox" checked={f.aceite} onChange={mudar("aceite")} />
                 <span>
                   Autorizo a RD Engenharia a me enviar lembretes por WhatsApp sobre o vencimento deste documento. Posso
@@ -742,18 +742,18 @@ function PaginaLembrete({ pagina }) {
                 </span>
               </label>
               {erro && (
-                <p className="erro-form" role="alert">
+                <p className="error-form" role="alert">
                   {erro}
                 </p>
               )}
-              <button className="btn btn-zap btn-grande" type="submit" disabled={estado === "enviando"}>
+              <button className="btn btn-whatsapp btn-large" type="submit" disabled={estado === "enviando"}>
                 {estado === "enviando" ? "Enviando..." : "Quero ser avisado"}
               </button>
             </form>
           )}
           </div>
-          <aside className="lembrete-como rev" aria-label="Como funciona o lembrete">
-            <p className="rotulo-mini">Como funciona</p>
+          <aside className="reminder-how reveal" aria-label="Como funciona o lembrete">
+            <p className="label-mini">Como funciona</p>
             <ol>
               <li>
                 <strong>Você informa</strong> o documento e, se souber, o mês do vencimento.
@@ -765,7 +765,7 @@ function PaginaLembrete({ pagina }) {
                 <strong>Avisamos pelo WhatsApp</strong> antes do vencimento, para dar tempo de renovar.
               </li>
             </ol>
-            <p className="lembrete-como-nota">
+            <p className="reminder-how-note">
               É gratuito e você pode pedir a exclusão dos seus dados quando quiser. <a href="/privacidade">Política de privacidade</a>.
             </p>
           </aside>
@@ -785,9 +785,9 @@ function PaginaPrivacidade() {
   return (
     <>
       <Topo migalha={[{ rotulo: "Privacidade" }]} eyebrow="Transparência" titulo="Política de Privacidade" />
-      <section className="sec artigo-sec">
-        <div className="container container-leitura artigo">
-          <p className="artigo-abre">
+      <section className="sec article-sec">
+        <div className="container container-reading article">
+          <p className="article-lead">
             Esta página explica, de forma simples, como o site da RD Engenharia Segurança e Meio Ambiente trata as
             informações de quem entra em contato.
           </p>
@@ -842,9 +842,9 @@ function PaginaTermos() {
   return (
     <>
       <Topo migalha={[{ rotulo: "Termos de uso" }]} eyebrow="Transparência" titulo="Termos de Uso" />
-      <section className="sec artigo-sec">
-        <div className="container container-leitura artigo">
-          <p className="artigo-abre">
+      <section className="sec article-sec">
+        <div className="container container-reading article">
+          <p className="article-lead">
             Estes termos explicam, de forma simples, como funciona o site da RD Engenharia Segurança e Meio Ambiente.
             Ao usar o site, você concorda com eles.
           </p>
@@ -925,9 +925,9 @@ function PaginaCreditos() {
             const lista = FOTOS_EM_USO.filter((f) => f.licenca === g.licenca);
             if (!lista.length) return null;
             return (
-              <div key={g.licenca} className="creditos-grupo">
+              <div key={g.licenca} className="credits-group">
                 <h2>{g.titulo}</h2>
-                <p className="creditos-nota">
+                <p className="credits-note">
                   {g.texto}
                   {g.link && (
                     <>
@@ -939,9 +939,9 @@ function PaginaCreditos() {
                     </>
                   )}
                 </p>
-                <ul className="creditos">
+                <ul className="credits">
                   {lista.map((f) => (
-                    <li key={f.arq} className="rev">
+                    <li key={f.arq} className="reveal">
                       <img src={caminho(f)} srcSet={srcset(f)} sizes="160px" width={f.w} height={f.h} loading="lazy" alt={f.alt} />
                       <dl>
                         {f.arquivo && (
@@ -981,7 +981,7 @@ function PaginaCreditos() {
               </div>
             );
           })}
-          <div className="container-leitura creditos-outros">
+          <div className="container-reading credits-others">
             <h2>Outros materiais</h2>
             <p>
               A marca (logotipo) é da RD Engenharia. Os desenhos de projeto da página de engenharia civil são trabalhos reais da RD, com os dados dos
@@ -1006,7 +1006,7 @@ function PaginaOnde({ pagina }) {
   const zapOnde = "Olá! Gostaria de saber se vocês atendem o meu endereço.";
   return (
     <>
-      <header className="hero-int hero-area">
+      <header className="hero-inner hero-area">
         <div className="container">
           <Migalha itens={[{ rotulo: "Onde atendemos" }]} />
           <p className="eyebrow">Onde atendemos</p>
@@ -1014,27 +1014,27 @@ function PaginaOnde({ pagina }) {
           <p className="lead">
             Isso vale para todos os serviços. Conte a sua situação pelo WhatsApp e combinamos a melhor forma de atender você.
           </p>
-          <div className="acoes">
-            <BotaoZap className="btn-grande" texto={zapOnde} rotulo="Perguntar pelo WhatsApp" />
+          <div className="actions">
+            <BotaoZap className="btn-large" texto={zapOnde} rotulo="Perguntar pelo WhatsApp" />
           </div>
         </div>
       </header>
 
       {/* Antes esta seção só repetia o título da página; agora explica as duas formas de atendimento. */}
       <Secao id="atendimento-regiao" n="01" rotulo="Formas de atendimento" titulo="Como funciona o atendimento.">
-        <ul className="formas-grade">
-          <li className="formas-cartao rev">
-            <p className="rotulo-mini">Presencial</p>
+        <ul className="modes-grid">
+          <li className="modes-card reveal">
+            <p className="label-mini">Presencial</p>
             <h3>No local, quando o serviço exige.</h3>
             <p>Visitas, medições, levantamentos e vistorias no imóvel, na empresa ou na propriedade rural.</p>
           </li>
-          <li className="formas-cartao rev">
-            <p className="rotulo-mini">Online</p>
+          <li className="modes-card reveal">
+            <p className="label-mini">Online</p>
             <h3>O resto, pelo WhatsApp.</h3>
             <p>Conversa, orçamento, envio de fotos e documentos e acompanhamento, sem precisar sair de casa.</p>
           </li>
-          <li className="formas-cartao formas-cartao-destaque rev">
-            <p className="rotulo-mini">Seu endereço</p>
+          <li className="modes-card modes-card-featured reveal">
+            <p className="label-mini">Seu endereço</p>
             <h3>Não sabe se está na região?</h3>
             <p>Conte onde fica o imóvel ou a empresa e confirmamos o atendimento.</p>
             <BotaoZap texto={zapOnde} rotulo="Perguntar" />
@@ -1043,27 +1043,27 @@ function PaginaOnde({ pagina }) {
       </Secao>
 
       <section className="sec sec-alt" id="mapa" aria-labelledby="mapa-t">
-        <div className="container mapa-grade">
-          <div className="rev">
+        <div className="container map-grid">
+          <div className="reveal">
             <p className="sec-n">
               <span>02</span> Onde fica
             </p>
-            <h2 id="mapa-t" className="sec-titulo">
+            <h2 id="mapa-t" className="sec-title">
               Nosso endereço.
             </h2>
             <p className="lead">{ENDERECO}</p>
-            <p className="mapa-horario">Segunda a sexta, das 7h às 17h.</p>
-            <div className="acoes">
-              <a className="btn btn-zap btn-grande" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
+            <p className="map-hours">Segunda a sexta, das 7h às 17h.</p>
+            <div className="actions">
+              <a className="btn btn-whatsapp btn-large" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
                 Como chegar
               </a>
-              <a className="btn btn-sec btn-grande" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+              <a className="btn btn-sec btn-large" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
                 Ver no Google Maps
               </a>
             </div>
           </div>
-          <figure className="mapa rev">
-            <div className="mapa-caixa">
+          <figure className="map reveal">
+            <div className="map-box">
               <iframe
                 title="Mapa com a localização da RD Engenharia em Ibirá/SP"
                 src={MAPA_EMBED}
@@ -1093,36 +1093,36 @@ export function PaginaImprimir({ area }) {
     setData(new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }));
   }, []);
   return (
-    <div className="imprimir">
-      <div className="imprimir-barra nao-imprime">
+    <div className="print">
+      <div className="print-bar no-print">
         <a className="btn btn-sec" href={`/${area.slug}#atendimento`}>
           <span aria-hidden="true">←</span> Voltar
         </a>
-        <button type="button" className="btn btn-zap" onClick={() => window.print()}>
+        <button type="button" className="btn btn-whatsapp" onClick={() => window.print()}>
           Imprimir / Salvar PDF
         </button>
         <p>Para salvar em PDF, escolha "Salvar como PDF" como impressora.</p>
       </div>
-      <main className="folha-doc" id="conteudo">
-        <header className="fd-topo">
+      <main className="sheet-doc" id="conteudo">
+        <header className="sheet-top">
           <img src="/marca/marca-lockup.webp" width="120" height="66" alt="RD Engenharia" />
           <div>
-            <p className="fd-empresa">RD Engenharia Segurança e Meio Ambiente</p>
-            <p className="fd-data">{data || "\u00a0"}</p>
+            <p className="sheet-company">RD Engenharia Segurança e Meio Ambiente</p>
+            <p className="sheet-date">{data || "\u00a0"}</p>
           </div>
         </header>
         <h1>Lista de documentos necessários</h1>
-        <p className="fd-area">Área: {area.nome}</p>
-        <ul className="fd-lista">
+        <p className="sheet-area">Área: {area.nome}</p>
+        <ul className="sheet-list">
           {area.documentos.map((d) => (
             <li key={d}>
-              <span className="fd-caixa" aria-hidden="true" />
+              <span className="sheet-box" aria-hidden="true" />
               {d}
             </li>
           ))}
         </ul>
-        <p className="fd-nota">Lista de orientação geral. Confirmamos com você o que cada caso realmente exige.</p>
-        <footer className="fd-rodape">
+        <p className="sheet-note">Lista de orientação geral. Confirmamos com você o que cada caso realmente exige.</p>
+        <footer className="sheet-footer">
           <p>{LEGAL_NAME} · CNPJ {CNPJ}</p>
           <p>
             {ENDERECO} · WhatsApp {PHONE_DISPLAY}
@@ -1150,20 +1150,20 @@ export default function PaginaView({ pagina }) {
 export function NaoEncontrada() {
   return (
     <Casca atual="404">
-      <section className="nao-encontrada">
+      <section className="not-found">
         <div className="container">
           <p className="eyebrow">Erro 404</p>
           <h1 className="display-m">Página não encontrada.</h1>
           <p className="lead">O endereço pode ter mudado ou estar digitado errado. Veja por onde seguir:</p>
-          <div className="acoes">
-            <a className="btn btn-zap btn-grande" href="/">
+          <div className="actions">
+            <a className="btn btn-whatsapp btn-large" href="/">
               Ir para o início
             </a>
-            <a className="btn btn-sec btn-grande" href="/guias">
+            <a className="btn btn-sec btn-large" href="/guias">
               Ver os guias
             </a>
             <a
-              className="btn btn-sec btn-grande"
+              className="btn btn-sec btn-large"
               href={zap("Olá! Não encontrei o que procurava no site.")}
               target="_blank"
               rel="noopener noreferrer"

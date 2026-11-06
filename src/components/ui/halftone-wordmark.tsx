@@ -70,8 +70,8 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
 
     const reduz = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const estilo = getComputedStyle(root);
-    const tinta = hwCor(estilo.getPropertyValue("--hw-tinta")) || [255, 255, 255, 0.2];
-    const quente = hwCor(estilo.getPropertyValue("--hw-quente")) || [111, 211, 124, 1];
+    const tinta = hwCor(estilo.getPropertyValue("--hw-ink")) || [255, 255, 255, 0.2];
+    const quente = hwCor(estilo.getPropertyValue("--hw-warm")) || [111, 211, 124, 1];
     const fonte = estilo.fontFamily || "sans-serif";
     const peso = estilo.fontWeight || "700";
     const corTinta = `rgba(${tinta[0]},${tinta[1]},${tinta[2]},${tinta[3]})`;
@@ -299,9 +299,9 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
   }, [palavra, passo, raio, corte]);
 
   return (
-    <div ref={caixa} className={`hw-marca ${pronto ? "pronto" : ""} ${className}`} aria-hidden="true">
+    <div ref={caixa} className={`hw-brand ${pronto ? "ready" : ""} ${className}`} aria-hidden="true">
       <canvas ref={tela} />
-      <p className="hw-marca-texto">{palavra}</p>
+      <p className="hw-brand-text">{palavra}</p>
     </div>
   );
 }

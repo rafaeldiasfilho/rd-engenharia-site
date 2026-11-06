@@ -18,17 +18,17 @@ export default function Janela({ aberta, aoFechar, titulo, children }) {
   return (
     <dialog
       ref={ref}
-      className="janela"
+      className="dialog"
       aria-labelledby={`${id}-t`}
       onClose={aoFechar}
       onClick={(e) => {
         if (e.target === e.currentTarget) aoFechar();
       }}
     >
-      <div className="janela-painel">
-        <div className="janela-cab">
+      <div className="dialog-panel">
+        <div className="dialog-head">
           <h3 id={`${id}-t`}>{titulo}</h3>
-          <button type="button" className="janela-fechar" onClick={aoFechar} aria-label="Fechar">
+          <button type="button" className="dialog-close" onClick={aoFechar} aria-label="Fechar">
             <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
               <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>

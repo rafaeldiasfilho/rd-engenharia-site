@@ -13,7 +13,7 @@ export { WHATSAPP, zap } from "./contato";
 
 export function BotaoZap({ texto, rotulo, className = "" }) {
   return (
-    <a className={`btn btn-zap ${className}`} href={zap(texto)} target="_blank" rel="noopener noreferrer">
+    <a className={`btn btn-whatsapp ${className}`} href={zap(texto)} target="_blank" rel="noopener noreferrer">
       <Icone nome="fa-brands fa-whatsapp" /> {rotulo}
     </a>
   );
@@ -73,7 +73,7 @@ function SeletorTema() {
   };
 
   return (
-    <div className="tema" role="group" aria-label="Aparência do site">
+    <div className="theme" role="group" aria-label="Aparência do site">
       <span>Aparência</span>
       {TEMAS.map((t) => (
         <button key={t.id} type="button" aria-pressed={tema === t.id} onClick={(e) => escolher(t.id, e)}>
@@ -171,13 +171,13 @@ export function Cabecalho({ atual = "" }) {
   }, [aberto]);
 
   return (
-    <header className="topo">
-      <div className="topo-in">
-        <a className="marca" href="/">
-          <span className="marca-sigla">
+    <header className="top">
+      <div className="top-inner">
+        <a className="brand" href="/">
+          <span className="brand-initials">
             <img src="/marca/marca-rd.webp" width="320" height="128" alt="" />
           </span>
-          <span className="marca-nome">
+          <span className="brand-name">
             <strong>RD Engenharia</strong>{" "}
             <small>Segurança e meio ambiente</small>
             <span className="sr-only">, página inicial</span>
@@ -191,14 +191,14 @@ export function Cabecalho({ atual = "" }) {
           onPointerLeave={() => setPilula((p) => ({ ...p, on: false }))}
         >
           <span
-            className="menu-pilula"
+            className="menu-pill"
             aria-hidden="true"
             data-on={pilula.on || undefined}
             data-salto={pilula.salto || undefined}
             style={{ "--x": `${pilula.x}px`, "--w": `${pilula.w}px` }}
           />
           <div
-            className="menu-servicos"
+            className="menu-services"
             ref={caixa}
             onPointerEnter={entrarServicos}
             onPointerLeave={sairServicos}
@@ -212,7 +212,7 @@ export function Cabecalho({ atual = "" }) {
             <button
               type="button"
               ref={botaoServicos}
-              className={emServicos ? "atual" : ""}
+              className={emServicos ? "current" : ""}
               aria-expanded={servicos}
               aria-controls="menu-servicos-painel"
               onPointerEnter={moverPilula}
@@ -229,47 +229,47 @@ export function Cabecalho({ atual = "" }) {
               }}
             >
               Serviços
-              <svg className="seta-menu" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true">
+              <svg className="arrow-menu" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true">
                 <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
             <div
               id="menu-servicos-painel"
-              className={`menu-painel ${servicos ? "aberto" : ""} ${teclado.current ? "teclado" : ""}`}
+              className={`menu-panel ${servicos ? "open" : ""} ${teclado.current ? "keyboard" : ""}`}
               hidden={!servicos}
             >
-              <div className="menu-painel-topo">
-                <p className="menu-painel-titulo">Serviços</p>
-                <p className="menu-painel-sub">{AREAS.length} áreas, presencial e online em Ibirá e região</p>
+              <div className="menu-panel-top">
+                <p className="menu-panel-title">Serviços</p>
+                <p className="menu-panel-sub">{AREAS.length} áreas, presencial e online em Ibirá e região</p>
               </div>
               <ul>
                 {AREAS.map((a) => (
                   <li key={a.slug}>
                     <a href={`/${a.slug}`} aria-current={cur(atual === a.slug)} className="menu-item-area">
-                      <span className="icone-tile">
+                      <span className="icon-tile">
                         <IconeArea slug={a.slug} tamanho={22} />
                       </span>
                       <span>
                         <strong>{a.nome}</strong>
                         <small>{a.curto}</small>
                       </span>
-                      <svg className="menu-seta-item" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                      <svg className="menu-arrow-item" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                         <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </a>
                   </li>
                 ))}
               </ul>
-              <a className="menu-painel-rodape" href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")}>
+              <a className="menu-panel-footer" href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")}>
                 <span>Não sabe qual área?</span>
                 <strong>Descubra o que o seu caso precisa</strong>
               </a>
             </div>
           </div>
-          <a href="/guias" className={emGuias ? "atual" : ""} aria-current={cur(atual === "guias")} onPointerEnter={moverPilula}>
+          <a href="/guias" className={emGuias ? "current" : ""} aria-current={cur(atual === "guias")} onPointerEnter={moverPilula}>
             Guias
           </a>
-          <a href="/onde-atendemos" className={emOnde ? "atual" : ""} aria-current={cur(emOnde)} onPointerEnter={moverPilula}>
+          <a href="/onde-atendemos" className={emOnde ? "current" : ""} aria-current={cur(emOnde)} onPointerEnter={moverPilula}>
             Onde atendemos
           </a>
         </nav>
@@ -277,7 +277,7 @@ export function Cabecalho({ atual = "" }) {
         <BotaoBusca />
 
         <a
-          className="btn btn-zap topo-zap"
+          className="btn btn-whatsapp top-whatsapp"
           href={zap("Olá! Gostaria de solicitar um orçamento.")}
           target="_blank"
           rel="noopener noreferrer"
@@ -287,13 +287,13 @@ export function Cabecalho({ atual = "" }) {
 
         <button
           ref={botaoMenu}
-          className="menu-botao"
+          className="menu-button"
           aria-label={aberto ? "Fechar menu" : "Abrir menu"}
           aria-expanded={aberto}
           aria-controls="menu-mobile"
           onClick={() => setAberto((v) => !v)}
         >
-          <span className="menu-icone" aria-hidden="true">
+          <span className="menu-icon" aria-hidden="true">
             <i />
             <i />
             <i />
@@ -301,14 +301,14 @@ export function Cabecalho({ atual = "" }) {
         </button>
       </div>
 
-      <nav id="menu-mobile" className={`menu-mobile ${aberto ? "aberto" : ""}`} aria-label="Menu" hidden={!aberto}>
-        <p className="menu-mobile-titulo">Serviços</p>
+      <nav id="menu-mobile" className={`menu-mobile ${aberto ? "open" : ""}`} aria-label="Menu" hidden={!aberto}>
+        <p className="menu-mobile-title">Serviços</p>
         {AREAS.map((a) => (
           <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(atual === a.slug)} onClick={() => setAberto(false)}>
             <IconeArea slug={a.slug} tamanho={22} /> {a.nome}
           </a>
         ))}
-        <p className="menu-mobile-titulo">Mais</p>
+        <p className="menu-mobile-title">Mais</p>
         <a href="/guias" aria-current={cur(atual === "guias")} onClick={() => setAberto(false)}>
           Guias
         </a>
@@ -318,7 +318,7 @@ export function Cabecalho({ atual = "" }) {
         <a href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")} onClick={() => setAberto(false)}>
           Descobrir o que o meu caso precisa
         </a>
-        <a className="btn btn-zap" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+        <a className="btn btn-whatsapp" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
           <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
         </a>
       </nav>
@@ -329,7 +329,7 @@ export function Cabecalho({ atual = "" }) {
 // Trilha "Início › Serviços › Segurança do trabalho". O último item é a página atual.
 export function Migalha({ itens }) {
   return (
-    <nav className="migalha" aria-label="Você está aqui">
+    <nav className="breadcrumb" aria-label="Você está aqui">
       <ol>
         <li>
           <a href="/">Início</a>
@@ -409,7 +409,7 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
 
   return (
     <div className="secoes">
-      <div className="secoes-in">
+      <div className="secoes-inner">
         <LiquidNavbar
           items={itensBarra}
           active={ativo}
@@ -434,26 +434,26 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
 export function Final({ titulo = "Fale com o responsável técnico.", texto, zapTexto, zapRotulo = "Falar no WhatsApp", relacionadas = [] }) {
   return (
     <>
-      <section className="sec proximo" id="proximo-passo" aria-labelledby="proximo-titulo">
+      <section className="sec next" id="proximo-passo" aria-labelledby="proximo-titulo">
         <div className="container">
           <p className="sec-n">
             <span>→</span> Próximo passo
           </p>
-          <div className="proximo-grade rev">
-            <h2 id="proximo-titulo" className="sec-titulo">
+          <div className="next-grid reveal">
+            <h2 id="proximo-titulo" className="sec-title">
               {titulo}
             </h2>
             <div>
               <p className="lead">
                 {texto || "Conte o seu caso pelo WhatsApp. A mensagem já vai pronta, sem compromisso. Valor e prazo são informados depois de conhecermos o seu caso."}
               </p>
-              <BotaoZap className="btn-grande" texto={zapTexto} rotulo={zapRotulo} />
+              <BotaoZap className="btn-large" texto={zapTexto} rotulo={zapRotulo} />
             </div>
           </div>
         </div>
       </section>
       {relacionadas.length > 0 && (
-        <section className="sec relacionadas" aria-labelledby="rel-titulo">
+        <section className="sec related" aria-labelledby="rel-titulo">
           <div className="container">
             <p className="sec-n">
               <span>↗</span> Continue por aqui
@@ -461,12 +461,12 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
             <h2 id="rel-titulo" className="sr-only">
               Páginas relacionadas
             </h2>
-            <ul className="rel-lista">
+            <ul className="related-list">
               {relacionadas.slice(0, 3).map((r) => (
-                <li key={r.href} className="rev">
+                <li key={r.href} className="reveal">
                   <a href={r.href}>
                     {r.area && (
-                      <span className="icone-tile rel-icone">
+                      <span className="icon-tile related-icon">
                         <IconeArea slug={r.area} tamanho={24} />
                       </span>
                     )}
@@ -487,14 +487,14 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
 
 export function Rodape() {
   return (
-    <footer className="rodape">
+    <footer className="footer">
       {/* Sem convite de WhatsApp aqui: o "Próximo passo" (ou o Contato, na home) e o botão flutuante já fazem isso */}
-      <div className="wrap rodape-grade">
+      <div className="wrap footer-grid">
         <div>
-          <a className="rodape-logo" href="/" aria-label="RD Engenharia, página inicial">
+          <a className="footer-logo" href="/" aria-label="RD Engenharia, página inicial">
             <img src="/marca/marca-lockup.webp" width="720" height="396" alt="RD Engenharia, Segurança e Meio Ambiente" loading="lazy" />
           </a>
-          <p className="rodape-marca">{LEGAL_NAME}</p>
+          <p className="footer-brand">{LEGAL_NAME}</p>
           <p>CNPJ {CNPJ} · ativo desde {OPEN_SINCE}</p>
           <p>
             <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
@@ -510,11 +510,11 @@ export function Rodape() {
           <p>Responsável técnico: {TECHNICAL_LEAD} · {CREA_NUMBER}</p>
         </div>
         <div>
-          <h3 className="rodape-titulo">Serviços</h3>
+          <h3 className="footer-title">Serviços</h3>
           <ul>
             {AREAS.map((a) => (
               <li key={a.slug}>
-                <a href={`/${a.slug}`} className="rodape-area">
+                <a href={`/${a.slug}`} className="footer-area">
                   <IconeArea slug={a.slug} tamanho={18} /> {a.nome}
                 </a>
               </li>
@@ -522,14 +522,14 @@ export function Rodape() {
           </ul>
         </div>
         <div>
-          <h3 className="rodape-titulo">Onde atendemos</h3>
+          <h3 className="footer-title">Onde atendemos</h3>
           <p>Atendemos presencialmente e online em Ibirá e região.</p>
           <p>
             <a href="/onde-atendemos">Ver onde atendemos</a>
           </p>
         </div>
         <div>
-          <h3 className="rodape-titulo">Mais</h3>
+          <h3 className="footer-title">Mais</h3>
           <ul>
             <li>
               <a href="/o-que-preciso">Descubra o que o seu caso precisa</a>
@@ -560,12 +560,12 @@ export function Rodape() {
           </ul>
         </div>
       </div>
-      <div className="rodape-fim">
+      <div className="footer-end">
         <p>© RD Engenharia Segurança e Meio Ambiente</p>
         <SeletorTema />
       </div>
       {/* Marca gigante no fim da página, decorativa, em pontos de meio-tom que reagem ao ponteiro */}
-      <HalftoneWordmark palavra="RD Engenharia" className="rodape-halftone" />
+      <HalftoneWordmark palavra="RD Engenharia" className="footer-halftone" />
     </footer>
   );
 }
@@ -574,10 +574,10 @@ export function Rodape() {
 function useRevelar() {
   useEffect(() => {
     const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const els = Array.from(document.querySelectorAll(".rev"));
+    const els = Array.from(document.querySelectorAll(".reveal"));
     if (reduz || !("IntersectionObserver" in window)) return undefined;
     const vh = window.innerHeight;
-    document.documentElement.classList.add("rev-on");
+    document.documentElement.classList.add("reveal-on");
     const io = new IntersectionObserver(
       (entradas) => {
         entradas.forEach((e) => {
@@ -596,7 +596,7 @@ function useRevelar() {
     });
     return () => {
       io.disconnect();
-      document.documentElement.classList.remove("rev-on");
+      document.documentElement.classList.remove("reveal-on");
     };
   }, []);
 }
@@ -626,7 +626,7 @@ function ProgressoLeitura() {
       window.removeEventListener("resize", agendar);
     };
   }, []);
-  return <div ref={ref} className="progresso-leitura" aria-hidden="true" />;
+  return <div ref={ref} className="progress-reading" aria-hidden="true" />;
 }
 
 // Área da página atual: a própria área ou a área do guia. Muda o botão flutuante do WhatsApp.
@@ -653,7 +653,7 @@ function ZapFlutuante({ atual }) {
   if (!area) {
     return (
       <a
-        className="zap-flutuante"
+        className="whatsapp-float"
         href={zap("Olá! Gostaria de um orçamento.")}
         target="_blank"
         rel="noopener noreferrer"
@@ -665,7 +665,7 @@ function ZapFlutuante({ atual }) {
   }
   return (
     <a
-      className={`zap-flutuante zap-pilula ${longe ? "" : "escondido"}`}
+      className={`whatsapp-float whatsapp-pill ${longe ? "" : "hidden"}`}
       href={zap(`Olá! Gostaria de um orçamento na área de ${area.nome}.`)}
       target="_blank"
       rel="noopener noreferrer"
@@ -695,7 +695,7 @@ export function Casca({ children, atual = "" }) {
   useAncora();
   return (
     <>
-      <a className="pular" href="#conteudo">
+      <a className="skip" href="#conteudo">
         Pular para o conteúdo
       </a>
       <ProgressoLeitura />

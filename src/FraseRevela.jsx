@@ -11,7 +11,7 @@ export default function FraseRevela({ texto, className = "" }) {
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-    el.classList.add("frase-ativa");
+    el.classList.add("phrase-active");
     const spans = [...el.querySelectorAll("span")];
     let quadro = 0;
     const calcular = () => {
@@ -37,9 +37,9 @@ export default function FraseRevela({ texto, className = "" }) {
   }, []);
 
   return (
-    <section className={`frase-revela-sec ${className}`} aria-label="Nosso compromisso">
+    <section className={`phrase-reveal-sec ${className}`} aria-label="Nosso compromisso">
       <div className="container">
-        <p ref={ref} className="frase-revela">
+        <p ref={ref} className="phrase-reveal">
           {palavras.map((p, n) => (
             <span key={n}>{p} </span>
           ))}

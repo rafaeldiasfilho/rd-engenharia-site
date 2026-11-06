@@ -80,7 +80,7 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
     const d = dlg.current;
     if (!d) return;
     d.showModal();
-    document.documentElement.classList.add("ampliar-aberto");
+    document.documentElement.classList.add("viewer-open");
     const img = foto.current;
     const animar = () => {
       if (parado) return;
@@ -92,7 +92,7 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
     };
     if (img.complete) animar();
     else img.addEventListener("load", animar, { once: true });
-    return () => document.documentElement.classList.remove("ampliar-aberto");
+    return () => document.documentElement.classList.remove("viewer-open");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -234,7 +234,7 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
   return (
     <dialog
       ref={dlg}
-      className="ampliar"
+      className="viewer"
       aria-label={atual?.legenda || atual?.alt || "Foto ampliada"}
       onCancel={(e) => {
         e.preventDefault();
@@ -246,7 +246,7 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
     >
       <div
         ref={palco}
-        className="ampliar-palco"
+        className="viewer-stage"
         onPointerDown={baixo}
         onPointerMove={mover}
         onPointerUp={cima}
@@ -255,19 +255,19 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
           if (e.target === e.currentTarget && estado.current.zoom === 1) fechar();
         }}
       >
-        <img ref={foto} key={atual?.src} src={atual?.src} alt={atual?.alt || ""} draggable={false} className={zoom > 1 ? "com-zoom" : ""} />
+        <img ref={foto} key={atual?.src} src={atual?.src} alt={atual?.alt || ""} draggable={false} className={zoom > 1 ? "with-zoom" : ""} />
       </div>
 
-      <div className="ampliar-barra">
-        <p className="ampliar-legenda">
+      <div className="viewer-bar">
+        <p className="viewer-caption">
           {total > 1 && (
-            <span className="ampliar-contador">
+            <span className="viewer-counter">
               {i + 1} / {total}
             </span>
           )}
           {atual?.legenda}
         </p>
-        <div className="ampliar-botoes">
+        <div className="viewer-buttons">
           <button type="button" onClick={() => (zoom > 1 ? zerar() : ampliarEm(2))} aria-label={zoom > 1 ? "Tirar o zoom" : "Dar zoom"}>
             {zoom > 1 ? <MagnifyingGlassMinus size={22} aria-hidden="true" /> : <MagnifyingGlassPlus size={22} aria-hidden="true" />}
           </button>
@@ -279,15 +279,15 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
 
       {total > 1 && (
         <>
-          <button type="button" className="ampliar-seta ampliar-ant" onClick={() => ir(-1)} aria-label="Foto anterior">
+          <button type="button" className="viewer-arrow viewer-prev" onClick={() => ir(-1)} aria-label="Foto anterior">
             <CaretLeft size={26} aria-hidden="true" />
           </button>
-          <button type="button" className="ampliar-seta ampliar-prox" onClick={() => ir(1)} aria-label="Próxima foto">
+          <button type="button" className="viewer-arrow viewer-next" onClick={() => ir(1)} aria-label="Próxima foto">
             <CaretRight size={26} aria-hidden="true" />
           </button>
         </>
       )}
-      <p className="ampliar-dica" aria-hidden="true">
+      <p className="viewer-hint" aria-hidden="true">
         Duplo toque para zoom · arraste para baixo para fechar
       </p>
     </dialog>

@@ -19,7 +19,7 @@ document.addEventListener(
     const secao = a.closest("section[id], header, footer, nav, [data-origem]");
     const origem =
       a.dataset.origem ||
-      (a.classList.contains("zap-flutuante") ? "botao-flutuante" : "") ||
+      (a.classList.contains("whatsapp-float") ? "botao-flutuante" : "") ||
       (secao && (secao.dataset?.origem || secao.id || secao.tagName.toLowerCase())) ||
       "pagina";
     try {

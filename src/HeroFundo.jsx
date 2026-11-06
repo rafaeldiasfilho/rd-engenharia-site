@@ -106,7 +106,7 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
   return (
     <section
       ref={secao}
-      className={`hero-fundo ${className}`}
+      className={`hero-bg ${className}`}
       role="region"
       aria-roledescription="carrossel"
       aria-label={rotulo}
@@ -115,7 +115,7 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
       onPointerCancel={() => (inicio.current = null)}
       onKeyDown={teclas}
     >
-      <div className="hf-slides">
+      <div className="hero-slides">
         {slides.map((x, n) =>
           // Só ficam no DOM (e só baixam) a primeira foto, a da vez, a próxima e a que está saindo.
           n === 0 || n === i || n === (i + 1) % total || n === anterior ? (
@@ -128,7 +128,7 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
             height={x.f.h}
             alt={x.f.alt}
             aria-hidden={n === i ? undefined : "true"}
-            className={n === i ? "ativo" : ""}
+            className={n === i ? "active" : ""}
             loading="eager"
             fetchpriority={n === 0 && i === 0 ? "high" : undefined}
             decoding="async"
@@ -137,11 +137,11 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
           ) : null
         )}
       </div>
-      <div className="hf-scrim" aria-hidden="true" />
-      <div className="container hf-conteudo">{children}</div>
+      <div className="hero-scrim" aria-hidden="true" />
+      <div className="container hero-content">{children}</div>
       {s && (
-        <div className="container hf-rodape">
-          <p className="hf-legenda">
+        <div className="container hero-footer">
+          <p className="hero-caption">
             <strong>
               {s.href ? (
                 <a href={s.href}>
@@ -156,12 +156,12 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
             </small>
           </p>
           {total > 1 && (
-            <div className="hf-pontos">
+            <div className="hero-dots">
               {slides.map((x, n) => (
                 <button
                   key={x.foto}
                   type="button"
-                  className={n === i ? "ativo" : ""}
+                  className={n === i ? "active" : ""}
                   aria-label={`Ir para a imagem ${n + 1} de ${total}`}
                   aria-current={n === i ? "true" : undefined}
                   onClick={() => manual(n)}

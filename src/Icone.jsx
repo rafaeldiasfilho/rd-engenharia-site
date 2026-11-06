@@ -45,5 +45,5 @@ export default function Icone({ nome }) {
   if (!Componente) return null;
   // O ponto de status ("Atendendo agora") é um círculo cheio, não um ícone de traço.
   const peso = nome === "fa-solid fa-circle" ? "fill" : "regular";
-  return <Componente className="icone" size="1em" weight={peso} aria-hidden="true" focusable="false" />;
+  return <Componente className="icon" size="1em" weight={peso} aria-hidden="true" focusable="false" />;
 }

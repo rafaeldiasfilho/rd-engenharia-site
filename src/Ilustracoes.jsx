@@ -38,7 +38,7 @@ function Interativa({ itens, rotulo, titulo, idTitulo, legendaFinal, desenho, aj
   });
   const atual = itens.find((x) => x.id === ativo);
   return (
-    <figure className="ilustra">
+    <figure className="illustration">
       <svg viewBox="0 0 420 334" role="img" aria-labelledby={idTitulo}>
         <title id={idTitulo}>{titulo}</title>
         <rect x="0" y="0" width="420" height="334" fill={PAPEL} />
@@ -46,7 +46,7 @@ function Interativa({ itens, rotulo, titulo, idTitulo, legendaFinal, desenho, aj
         <Carimbo {...carimbo} />
         <SeloExemplo x={318} y={10} rot={-6} s={1.7} />
       </svg>
-      <ul className="legenda" aria-label={rotulo}>
+      <ul className="caption" aria-label={rotulo}>
         {itens.map((x) => (
           <li key={x.id}>
             <button type="button" aria-pressed={ativo === x.id} onClick={() => escolher(x.id)}>
@@ -55,7 +55,7 @@ function Interativa({ itens, rotulo, titulo, idTitulo, legendaFinal, desenho, aj
           </li>
         ))}
       </ul>
-      <p className="ilustra-explica" aria-live="polite">
+      <p className="illustration-explain" aria-live="polite">
         {atual ? (
           <>
             <strong>{atual.nome}.</strong> {atual.texto}
@@ -410,22 +410,22 @@ const LINHAS_PGR = [
 function ModeloPGR() {
   const [col, setCol] = useState(-1);
   return (
-    <figure className="modelo">
-      <div className="modelo-folha" role="group" aria-label="Modelo ilustrativo do inventário de riscos de um PGR de uma empresa fictícia">
-        <span className="selo-exemplo" aria-hidden="true">
+    <figure className="template">
+      <div className="template-sheet" role="group" aria-label="Modelo ilustrativo do inventário de riscos de um PGR de uma empresa fictícia">
+        <span className="badge-example" aria-hidden="true">
           EXEMPLO
         </span>
-        <div className="modelo-cab">
-          <span className="modelo-marca" aria-hidden="true">
+        <div className="template-head">
+          <span className="template-brand" aria-hidden="true">
             RD
           </span>
           <div>
-            <p className="modelo-tipo">PGR · NR-01 · Página 4 de 18</p>
+            <p className="template-type">PGR · NR-01 · Página 4 de 18</p>
             <h3>2. Inventário de riscos</h3>
           </div>
         </div>
-        <p className="modelo-peq">Empresa Exemplo Ltda. · CNPJ 00.000.000/0001-00 · Empresa fictícia</p>
-        <div className="modelo-rolagem">
+        <p className="template-small">Empresa Exemplo Ltda. · CNPJ 00.000.000/0001-00 · Empresa fictícia</p>
+        <div className="template-scroll">
           <table>
             <thead>
               <tr>
@@ -444,7 +444,7 @@ function ModeloPGR() {
                 <tr key={r}>
                   {l.map((c, i) => (
                     <td key={i} data-ativa={col === i ? "" : undefined}>
-                      {i === 3 ? <span className={`nivel nivel-${c.toLowerCase()}`}>{c}</span> : c}
+                      {i === 3 ? <span className={`level nivel-${c.toLowerCase()}`}>{c}</span> : c}
                     </td>
                   ))}
                 </tr>
@@ -452,7 +452,7 @@ function ModeloPGR() {
             </tbody>
           </table>
         </div>
-        <p className="modelo-explica" aria-live="polite">
+        <p className="template-explain" aria-live="polite">
           {col >= 0 ? (
             <>
               <strong>{COLUNAS_PGR[col][0]}:</strong> {COLUNAS_PGR[col][1]}
@@ -461,7 +461,7 @@ function ModeloPGR() {
             "Toque no título de uma coluna para ver o que ela significa."
           )}
         </p>
-        <p className="modelo-rodape">Inventário de riscos (trecho) · Revisão 00 · RD Engenharia</p>
+        <p className="template-footer">Inventário de riscos (trecho) · Revisão 00 · RD Engenharia</p>
       </div>
       <figcaption>Modelo ilustrativo, com empresa e dados inventados, para mostrar como o programa organiza perigos, riscos e medidas.</figcaption>
     </figure>
@@ -480,9 +480,9 @@ const PARTES_PRANCHA = [
 export function ComoLerPrancha() {
   const [ativo, setAtivo] = useState(-1);
   return (
-    <div className="como-ler">
-      <p className="como-ler-titulo">Como ler uma prancha</p>
-      <ul className="legenda" aria-label="Partes de uma prancha">
+    <div className="how-read">
+      <p className="how-read-title">Como ler uma prancha</p>
+      <ul className="caption" aria-label="Partes de uma prancha">
         {PARTES_PRANCHA.map(([nome], i) => (
           <li key={nome}>
             <button type="button" aria-pressed={ativo === i} onClick={() => setAtivo((a) => (a === i ? -1 : i))}>
@@ -491,7 +491,7 @@ export function ComoLerPrancha() {
           </li>
         ))}
       </ul>
-      <p className="ilustra-explica" aria-live="polite">
+      <p className="illustration-explain" aria-live="polite">
         {ativo >= 0 ? (
           <>
             <strong>{PARTES_PRANCHA[ativo][0]}.</strong> {PARTES_PRANCHA[ativo][1]}
@@ -509,7 +509,7 @@ export function Ilustracao({ slug }) {
   if (slug === "meio-ambiente-topografia") return <Topografia />;
   if (slug === "seguranca-do-trabalho")
     return (
-      <div className="ilustra-duas">
+      <div className="illustration-two">
         <MapaRiscos />
         <ModeloPGR />
       </div>

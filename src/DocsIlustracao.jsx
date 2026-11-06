@@ -225,7 +225,7 @@ const descricao = (m, nome, pagina) =>
 export function FolhaSvg({ m, nome, area, pagina = "folha", pinos = null }) {
   const uid = useId().replace(/:/g, "");
   return (
-    <svg className="folha-svg" viewBox="0 -10 158 218" role="img" aria-label={descricao(m, nome, pagina)} focusable="false">
+    <svg className="sheet-svg" viewBox="0 -10 158 218" role="img" aria-label={descricao(m, nome, pagina)} focusable="false">
       <Folha m={m} area={area} pagina={pagina} uid={uid} />
       {pinos && <Pinos lista={pinos} />}
       <SeloExemplo x={60} y={-3} />
@@ -245,24 +245,24 @@ export function FolhaLeitura({ m, nome, area }) {
     ["ler", "Como ler"],
   ];
   return (
-    <div className="folha-leitura" data-zoom={zoom ? "" : undefined}>
-      <div className="folha-leitura-barra">
-        <div className="folha-abas" role="group" aria-label="O que ver na folha">
+    <div className="sheet-reading" data-zoom={zoom ? "" : undefined}>
+      <div className="sheet-reading-bar">
+        <div className="sheet-tabs" role="group" aria-label="O que ver na folha">
           {abas.map(([id, rotulo]) => (
             <button key={id} type="button" aria-pressed={vista === id} onClick={() => setVista(id)}>
               {rotulo}
             </button>
           ))}
         </div>
-        <button type="button" className="folha-zoom" aria-pressed={zoom} onClick={() => setZoom((z) => !z)}>
+        <button type="button" className="sheet-zoom" aria-pressed={zoom} onClick={() => setZoom((z) => !z)}>
           {zoom ? "Reduzir" : "Ampliar"}
         </button>
       </div>
-      <div className="folha-leitura-area" tabIndex={zoom ? 0 : undefined} aria-label={zoom ? "Folha ampliada: role para ver as partes" : undefined}>
+      <div className="sheet-reading-area" tabIndex={zoom ? 0 : undefined} aria-label={zoom ? "Folha ampliada: role para ver as partes" : undefined}>
         <FolhaSvg m={m} nome={nome} area={area} pagina={vista === "miolo" ? "miolo" : "folha"} pinos={pinos} />
       </div>
       {pinos && (
-        <ol className="folha-pinos">
+        <ol className="sheet-pins">
           {pinos.map((p, i) => (
             <li key={i}>
               <span aria-hidden="true">{i + 1}</span>
@@ -279,7 +279,7 @@ export function FolhaLeitura({ m, nome, area }) {
 export function FolhaExemplo({ m, nome, area }) {
   if (!m) return null;
   return (
-    <figure className="folha-ex">
+    <figure className="sheet-sample">
       <FolhaSvg m={m} nome={nome} area={area} />
       <figcaption>{LEGENDA_EXEMPLO}</figcaption>
     </figure>
@@ -314,7 +314,7 @@ export default function DocsIlustracao({ slug }) {
   const m = PAR[slug];
   if (!m) return null;
   return (
-    <figure className="docs-ilustra">
+    <figure className="docs-illustration">
       <svg viewBox="0 0 335 250" role="img" aria-label={m.alt} focusable="false">
         <Folha x={168} y={10} rot={5} m={m.tras} area={slug} uid={`${uid}t`} />
         <Folha x={26} y={28} rot={-4} m={m.frente} area={slug} uid={`${uid}f`} />

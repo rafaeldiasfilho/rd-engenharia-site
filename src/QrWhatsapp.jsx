@@ -23,22 +23,22 @@ export default function QrWhatsapp() {
   };
 
   return (
-    <div className="qr-zap">
-      <button type="button" className="qr-zap-botao" aria-expanded={aberto} aria-controls="qr-zap-painel" onClick={() => setAberto((v) => !v)}>
+    <div className="qr-whatsapp">
+      <button type="button" className="qr-whatsapp-button" aria-expanded={aberto} aria-controls="qr-zap-painel" onClick={() => setAberto((v) => !v)}>
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" fill="currentColor">
           <path d="M1 1h6v6H1zm2 2v2h2V3zM11 1h6v6h-6zm2 2v2h2V3zM1 11h6v6H1zm2 2v2h2v-2zM10 10h2v2h-2zm2 2h2v2h-2zm2-2h3v2h-3zm-4 4h2v3h-2zm4 1h3v2h-3z" />
         </svg>
         {aberto ? "Fechar o QR code" : "Abrir a conversa no celular"}
       </button>
       {aberto && (
-        <div id="qr-zap-painel" className="qr-zap-painel">
+        <div id="qr-zap-painel" className="qr-whatsapp-panel">
           <img src="/marca/qr-whatsapp.svg" width="196" height="196" alt="QR code que abre a conversa com a RD Engenharia no WhatsApp" />
-          <div className="qr-zap-texto">
+          <div className="qr-whatsapp-text">
             <p>
               <strong>Aponte a câmera do celular.</strong> O WhatsApp abre com a mensagem pronta.
             </p>
-            <button type="button" className="qr-zap-copiar" onClick={copiar}>
-              <span key={copiado ? "s" : "n"} className="qr-zap-troca">
+            <button type="button" className="qr-whatsapp-copy" onClick={copiar}>
+              <span key={copiado ? "s" : "n"} className="qr-whatsapp-swap">
                 {copiado ? "Link copiado ✓" : "Copiar o link"}
               </span>
             </button>

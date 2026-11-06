@@ -141,11 +141,11 @@ export default function BuscaDocumento({ autoFoco = false, aoSair, className = "
   const idOpcao = (n) => `${base}-op-${n}`;
 
   return (
-    <form className={`busca ${className}`} role="search" onSubmit={(e) => e.preventDefault()}>
-      <label htmlFor={`${base}-campo`} className="busca-rotulo">
+    <form className={`search ${className}`} role="search" onSubmit={(e) => e.preventDefault()}>
+      <label htmlFor={`${base}-campo`} className="search-label">
         Qual documento ou serviço você precisa?
       </label>
-      <div className="busca-caixa">
+      <div className="search-box">
         <Icone nome="fa-solid fa-magnifying-glass" />
         <input
           ref={campo}
@@ -167,31 +167,31 @@ export default function BuscaDocumento({ autoFoco = false, aoSair, className = "
           onKeyDown={teclas}
         />
       </div>
-      <ul id={idLista} role="listbox" className="busca-lista" aria-label="Resultados da busca" hidden={!aberto}>
+      <ul id={idLista} role="listbox" className="search-list" aria-label="Resultados da busca" hidden={!aberto}>
         {opcoes.map((op, n) => (
           <li
             key={op.href}
             id={idOpcao(n)}
             role="option"
             aria-selected={n === ativo}
-            className={`busca-op ${op.externo ? "busca-op-zap" : ""}`}
+            className={`search-option ${op.externo ? "search-option-whatsapp" : ""}`}
             onMouseMove={() => setAtivo(n)}
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => abrir(op)}
           >
-            <span className="busca-tipo">{op.externo ? <Icone nome="fa-brands fa-whatsapp" /> : op.tipo}</span>
-            <span className="busca-txt">
+            <span className="search-type">{op.externo ? <Icone nome="fa-brands fa-whatsapp" /> : op.tipo}</span>
+            <span className="search-txt">
               <strong>{op.titulo}</strong>
               <small>{op.texto}</small>
             </span>
           </li>
         ))}
       </ul>
-      <p className="busca-status" aria-live="polite">
+      <p className="search-status" aria-live="polite">
         {texto ? (resultados.length ? `${resultados.length} resultado${resultados.length > 1 ? "s" : ""}` : "Nenhum resultado no site") : ""}
       </p>
       {!texto && (
-        <p className="busca-sugestoes">
+        <p className="search-suggestions">
           <span>Mais procurados:</span>
           {SUGESTOES.map((s) => (
             <button
@@ -248,21 +248,21 @@ export function BotaoBusca() {
 
   return (
     <>
-      <button type="button" className="busca-botao" aria-label="Buscar documento ou serviço" aria-haspopup="dialog" onClick={abrir}>
+      <button type="button" className="search-button" aria-label="Buscar documento ou serviço" aria-haspopup="dialog" onClick={abrir}>
         <Icone nome="fa-solid fa-magnifying-glass" />
-        <span className="busca-botao-txt">Buscar</span>
+        <span className="search-button-txt">Buscar</span>
       </button>
       <dialog
         ref={janela}
-        className="busca-janela"
+        className="search-dialog"
         aria-label="Buscar documento ou serviço"
         onClose={() => setAberta(false)}
         onClick={(e) => {
           if (e.target === janela.current) fechar(); // clique fora da caixa
         }}
       >
-        <div className="busca-janela-in">
-          <button type="button" className="busca-fechar" aria-label="Fechar a busca" onClick={fechar}>
+        <div className="search-dialog-inner">
+          <button type="button" className="search-close" aria-label="Fechar a busca" onClick={fechar}>
             <Icone nome="fa-solid fa-xmark" />
           </button>
           {aberta && <BuscaDocumento autoFoco aoSair={fechar} />}

@@ -108,7 +108,7 @@ function baixarCSV(nome, linhas) {
 
 function Campo({ rotulo, children }) {
   return (
-    <label className="adm-campo">
+    <label className="admin-field">
       <span>{rotulo}</span>
       {children}
     </label>
@@ -135,11 +135,11 @@ function Login({ banco, aoEntrar }) {
   };
 
   return (
-    <div className="adm-login">
-      <form className="formulario" onSubmit={enviar}>
+    <div className="admin-login">
+      <form className="form" onSubmit={enviar}>
         <h1>Área interna da RD</h1>
         {banco.modo === "demo" && (
-          <p className="adm-aviso">
+          <p className="admin-notice">
             Modo demonstração: o banco de dados ainda não está ligado. Os dados ficam só neste navegador.
           </p>
         )}
@@ -156,11 +156,11 @@ function Login({ banco, aoEntrar }) {
           />
         </Campo>
         {erro && (
-          <p className="adm-erro" role="alert">
+          <p className="admin-error" role="alert">
             {erro}
           </p>
         )}
-        <button className="btn btn-zap btn-grande" type="submit" disabled={enviando}>
+        <button className="btn btn-whatsapp btn-large" type="submit" disabled={enviando}>
           {enviando ? "Entrando..." : "Entrar"}
         </button>
       </form>
@@ -193,23 +193,23 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
       : `Olá, ${cli.nome}! Aqui é da RD Engenharia. Podemos avisar você por WhatsApp quando seus serviços estiverem perto do vencimento, para você não perder o prazo? Se preferir não receber, é só nos dizer.`;
     const zap = linkZap(cli.whatsapp || cli.telefone, msg);
     return (
-      <li className="adm-linha">
+      <li className="admin-line">
         <div>
           <strong>{cli.nome}</strong>
           <span>{s.tipo}</span>
           {!cli.aceita_lembretes && <small>Sem aceite de lembretes registrado. O botão pede a autorização.</small>}
-          <small className={s.dias < 0 ? "adm-atraso" : ""}>
+          <small className={s.dias < 0 ? "admin-overdue" : ""}>
             {s.dias < 0 ? `Venceu há ${-s.dias} dia(s)` : s.dias === 0 ? "Vence hoje" : `Vence em ${s.dias} dia(s)`} ·{" "}
             {dataBR(s.vencimento)}
           </small>
         </div>
-        <div className="adm-acoes">
+        <div className="admin-actions">
           {zap ? (
-            <a className="btn btn-zap" href={zap} target="_blank" rel="noopener noreferrer">
+            <a className="btn btn-whatsapp" href={zap} target="_blank" rel="noopener noreferrer">
               {cli.aceita_lembretes ? "Chamar no WhatsApp" : "Pedir autorização"}
             </a>
           ) : (
-            <span className="adm-sem">Sem telefone</span>
+            <span className="admin-none">Sem telefone</span>
           )}
           <button className="btn btn-sec" type="button" onClick={() => abrirCliente(cli.id)}>
             Abrir cliente
@@ -224,7 +224,7 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
 
   return (
     <>
-      <div className="adm-resumo">
+      <div className="admin-summary">
         <div>
           <strong>{vencidos.length}</strong>
           <span>vencidos</span>
@@ -243,19 +243,19 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
         </div>
       </div>
 
-      <h2 className="adm-titulo">Vencidos</h2>
+      <h2 className="admin-title">Vencidos</h2>
       {vencidos.length ? (
-        <ul className="adm-lista">
+        <ul className="admin-list">
           {vencidos.map((s) => (
             <Linha key={s.id} s={s} />
           ))}
         </ul>
       ) : (
-        <p className="adm-vazio">Nenhum serviço vencido.</p>
+        <p className="admin-empty">Nenhum serviço vencido.</p>
       )}
 
-      <div className="adm-titulo-linha">
-        <h2 className="adm-titulo">Próximos vencimentos</h2>
+      <div className="admin-title-line">
+        <h2 className="admin-title">Próximos vencimentos</h2>
         <label>
           Janela
           <select value={janela} onChange={(e) => setJanela(Number(e.target.value))}>
@@ -268,13 +268,13 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
         </label>
       </div>
       {proximos.length ? (
-        <ul className="adm-lista">
+        <ul className="admin-list">
           {proximos.map((s) => (
             <Linha key={s.id} s={s} />
           ))}
         </ul>
       ) : (
-        <p className="adm-vazio">
+        <p className="admin-empty">
           Nada vencendo nesse período. Ao registrar um serviço, informe de quantos em quantos meses ele se repete
           para aparecer aqui.
         </p>
@@ -288,13 +288,13 @@ function FormCliente({ inicial, aoSalvar, aoCancelar }) {
   const mudar = (campo) => (e) => setC((x) => ({ ...x, [campo]: e.target.value }));
   return (
     <form
-      className="adm-form"
+      className="admin-form"
       onSubmit={(e) => {
         e.preventDefault();
         aoSalvar(c);
       }}
     >
-      <div className="adm-grade">
+      <div className="admin-grid">
         <Campo rotulo="Nome ou razão social">
           <input value={c.nome} onChange={mudar("nome")} required />
         </Campo>
@@ -338,7 +338,7 @@ function FormCliente({ inicial, aoSalvar, aoCancelar }) {
           <input value={c.origem || ""} onChange={mudar("origem")} placeholder="Indicação, Instagram, site..." />
         </Campo>
       </div>
-      <label className="adm-aceite">
+      <label className="admin-consent">
         <input
           type="checkbox"
           checked={!!c.aceita_lembretes}
@@ -358,8 +358,8 @@ function FormCliente({ inicial, aoSalvar, aoCancelar }) {
       <Campo rotulo="Observações">
         <textarea rows="3" value={c.observacoes || ""} onChange={mudar("observacoes")} />
       </Campo>
-      <div className="adm-acoes">
-        <button className="btn btn-zap" type="submit">
+      <div className="admin-actions">
+        <button className="btn btn-whatsapp" type="submit">
           Salvar cliente
         </button>
         <button className="btn btn-sec" type="button" onClick={aoCancelar}>
@@ -376,13 +376,13 @@ function FormServico({ inicial, aoSalvar, aoCancelar }) {
   const sugestao = somarMeses(s.data_realizacao, s.repetir_meses);
   return (
     <form
-      className="adm-form"
+      className="admin-form"
       onSubmit={(e) => {
         e.preventDefault();
         aoSalvar({ ...s, vencimento: s.vencimento || sugestao || "" });
       }}
     >
-      <div className="adm-grade">
+      <div className="admin-grid">
         <Campo rotulo="Serviço">
           <select value={s.tipo} onChange={mudar("tipo")}>
             {TIPOS_SERVICO.map((t) => (
@@ -430,8 +430,8 @@ function FormServico({ inicial, aoSalvar, aoCancelar }) {
       <Campo rotulo="Observações">
         <textarea rows="2" value={s.observacoes || ""} onChange={mudar("observacoes")} />
       </Campo>
-      <div className="adm-acoes">
-        <button className="btn btn-zap" type="submit">
+      <div className="admin-actions">
+        <button className="btn btn-whatsapp" type="submit">
           Salvar serviço
         </button>
         <button className="btn btn-sec" type="button" onClick={aoCancelar}>
@@ -452,7 +452,7 @@ function Clientes({ clientes, servicos, abrirCliente, novoCliente }) {
 
   return (
     <>
-      <div className="adm-barra">
+      <div className="admin-bar">
         <input
           type="search"
           placeholder="Buscar por nome, CPF/CNPJ, cidade ou telefone"
@@ -460,20 +460,20 @@ function Clientes({ clientes, servicos, abrirCliente, novoCliente }) {
           onChange={(e) => setBusca(e.target.value)}
           aria-label="Buscar clientes"
         />
-        <button className="btn btn-zap" type="button" onClick={novoCliente}>
+        <button className="btn btn-whatsapp" type="button" onClick={novoCliente}>
           Novo cliente
         </button>
       </div>
       {lista.length ? (
-        <ul className="adm-lista">
+        <ul className="admin-list">
           {lista.map((c) => (
-            <li className="adm-linha" key={c.id}>
+            <li className="admin-line" key={c.id}>
               <div>
                 <strong>{c.nome}</strong>
                 <span>{[c.cidade, c.whatsapp || c.telefone].filter(Boolean).join(" · ") || "Sem dados de contato"}</span>
                 <small>{contar(c.id)} serviço(s)</small>
               </div>
-              <div className="adm-acoes">
+              <div className="admin-actions">
                 <button className="btn btn-sec" type="button" onClick={() => abrirCliente(c.id)}>
                   Abrir
                 </button>
@@ -482,7 +482,7 @@ function Clientes({ clientes, servicos, abrirCliente, novoCliente }) {
           ))}
         </ul>
       ) : (
-        <p className="adm-vazio">{clientes.length ? "Nenhum cliente encontrado." : "Nenhum cliente cadastrado ainda."}</p>
+        <p className="admin-empty">{clientes.length ? "Nenhum cliente encontrado." : "Nenhum cliente cadastrado ainda."}</p>
       )}
     </>
   );
@@ -517,7 +517,7 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
           aoCancelar={() => setEditando(false)}
         />
       ) : (
-        <section className="adm-ficha">
+        <section className="admin-record">
           <h2>{cliente.nome}</h2>
           <dl>
             <div>
@@ -558,10 +558,10 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
               </div>
             )}
           </dl>
-          <div className="adm-acoes">
+          <div className="admin-actions">
             {linkZap(cliente.whatsapp || cliente.telefone, `Olá, ${cliente.nome}! Aqui é da RD Engenharia.`) && (
               <a
-                className="btn btn-zap"
+                className="btn btn-whatsapp"
                 href={linkZap(cliente.whatsapp || cliente.telefone, `Olá, ${cliente.nome}! Aqui é da RD Engenharia.`)}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -586,10 +586,10 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
         </section>
       )}
 
-      <div className="adm-titulo-linha">
-        <h2 className="adm-titulo">Serviços</h2>
+      <div className="admin-title-line">
+        <h2 className="admin-title">Serviços</h2>
         {!servicoEmEdicao && (
-          <button className="btn btn-zap" type="button" onClick={() => setServicoEmEdicao({ data_realizacao: hojeISO() })}>
+          <button className="btn btn-whatsapp" type="button" onClick={() => setServicoEmEdicao({ data_realizacao: hojeISO() })}>
             Registrar serviço
           </button>
         )}
@@ -607,11 +607,11 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
       )}
 
       {meus.length ? (
-        <ul className="adm-lista">
+        <ul className="admin-list">
           {meus.map((s) => {
             const dias = diasAte(s.vencimento);
             return (
-              <li className="adm-linha" key={s.id}>
+              <li className="admin-line" key={s.id}>
                 <div>
                   <strong>{s.tipo}</strong>
                   <span>
@@ -622,13 +622,13 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
                   {s.local_servico && <span>{s.local_servico}</span>}
                   {s.descricao && <span>{s.descricao}</span>}
                   {s.vencimento && (
-                    <small className={dias < 0 && !s.encerrado ? "adm-atraso" : ""}>
+                    <small className={dias < 0 && !s.encerrado ? "admin-overdue" : ""}>
                       Vencimento: {dataBR(s.vencimento)}
                       {s.encerrado ? " · tratado" : dias < 0 ? " · vencido" : ` · em ${dias} dia(s)`}
                     </small>
                   )}
                 </div>
-                <div className="adm-acoes">
+                <div className="admin-actions">
                   <button className="btn btn-sec" type="button" onClick={() => setServicoEmEdicao(s)}>
                     Editar
                   </button>
@@ -647,7 +647,7 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
           })}
         </ul>
       ) : (
-        <p className="adm-vazio">Nenhum serviço registrado para este cliente.</p>
+        <p className="admin-empty">Nenhum serviço registrado para este cliente.</p>
       )}
     </>
   );
@@ -661,7 +661,7 @@ function LembretesSite({ lista, tratar, converter, excluir }) {
   const Linha = ({ l }) => {
     const msg = `Olá, ${l.nome}! Aqui é da RD Engenharia. Recebemos o seu pedido de lembrete sobre: ${l.documento}. Vamos avisar você antes do vencimento. Pode nos confirmar a data exata do vencimento?`;
     return (
-      <li className="adm-linha">
+      <li className="admin-line">
         <div>
           <strong>{l.nome}</strong>
           <span>{l.documento}</span>
@@ -669,8 +669,8 @@ function LembretesSite({ lista, tratar, converter, excluir }) {
             Vencimento: {mesAno(l.vencimento)} · Autorizou em {dataBR(String(l.consentimento_em).slice(0, 10))}
           </small>
         </div>
-        <div className="adm-acoes">
-          <a className="btn btn-zap" href={linkZap(l.whatsapp, msg)} target="_blank" rel="noopener noreferrer">
+        <div className="admin-actions">
+          <a className="btn btn-whatsapp" href={linkZap(l.whatsapp, msg)} target="_blank" rel="noopener noreferrer">
             Chamar no WhatsApp
           </a>
           {!l.tratado && (
@@ -694,20 +694,20 @@ function LembretesSite({ lista, tratar, converter, excluir }) {
   };
   return (
     <>
-      <h2 className="adm-titulo">Pedidos de lembrete feitos no site</h2>
+      <h2 className="admin-title">Pedidos de lembrete feitos no site</h2>
       {pendentes.length ? (
-        <ul className="adm-lista">
+        <ul className="admin-list">
           {pendentes.map((l) => (
             <Linha key={l.id} l={l} />
           ))}
         </ul>
       ) : (
-        <p className="adm-vazio">Nenhum pedido novo.</p>
+        <p className="admin-empty">Nenhum pedido novo.</p>
       )}
       {tratados.length > 0 && (
         <>
-          <h2 className="adm-titulo">Já tratados</h2>
-          <ul className="adm-lista">
+          <h2 className="admin-title">Já tratados</h2>
+          <ul className="admin-list">
             {tratados.map((l) => (
               <Linha key={l.id} l={l} />
             ))}
@@ -768,11 +768,11 @@ export default function Admin() {
 
   const cliente = clientes.find((c) => c.id === clienteId);
 
-  if (!banco || usuario === undefined) return <p className="adm-vazio">Carregando...</p>;
+  if (!banco || usuario === undefined) return <p className="admin-empty">Carregando...</p>;
   if (banco.modo === "indisponivel")
     return (
-      <div className="adm-login">
-        <div className="formulario">
+      <div className="admin-login">
+        <div className="form">
           <h1>Área interna da RD</h1>
           <p>O banco de dados ainda não foi ligado a este site. Assim que for ligado, o acesso será liberado aqui.</p>
         </div>
@@ -787,9 +787,9 @@ export default function Admin() {
   };
 
   return (
-    <div className="adm">
-      <header className="adm-topo">
-        <div className="adm-topo-in">
+    <div className="admin">
+      <header className="admin-top">
+        <div className="admin-top-inner">
           <strong>RD Engenharia · Área interna</strong>
           <nav aria-label="Seções">
             <button type="button" aria-pressed={aba === "painel"} onClick={() => irPara("painel")}>
@@ -802,7 +802,7 @@ export default function Admin() {
               Pedidos do site{lembretes.filter((l) => !l.tratado).length ? ` (${lembretes.filter((l) => !l.tratado).length})` : ""}
             </button>
           </nav>
-          <div className="adm-usuario">
+          <div className="admin-user">
             <span>{usuario.email}</span>
             <button
               type="button"
@@ -817,19 +817,19 @@ export default function Admin() {
         </div>
       </header>
 
-      <div className="adm-conteudo">
+      <div className="admin-content">
         {banco.modo === "demo" && (
-          <p className="adm-aviso">Modo demonstração: dados só neste navegador. O banco de dados ainda não está ligado.</p>
+          <p className="admin-notice">Modo demonstração: dados só neste navegador. O banco de dados ainda não está ligado.</p>
         )}
         {erro && (
-          <p className="adm-erro" role="alert">
+          <p className="admin-error" role="alert">
             {erro}
           </p>
         )}
 
         {novo ? (
           <>
-            <h2 className="adm-titulo">Novo cliente</h2>
+            <h2 className="admin-title">Novo cliente</h2>
             <FormCliente
               inicial={{}}
               aoSalvar={(c) =>
@@ -904,7 +904,7 @@ export default function Admin() {
               abrirCliente={setClienteId}
               novoCliente={() => setNovo(true)}
             />
-            <div className="adm-acoes adm-backup">
+            <div className="admin-actions admin-backup">
               <button className="btn btn-sec" type="button" onClick={() => baixarCSV("clientes.csv", clientes)}>
                 Baixar clientes (CSV)
               </button>

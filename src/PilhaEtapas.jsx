@@ -75,15 +75,15 @@ export default function PilhaEtapas({ etapas, acaoPrimeira }) {
   }, []);
 
   return (
-    <ol className="pilha" ref={lista}>
+    <ol className="stack" ref={lista}>
       {etapas.map((e, i) => (
-        <li key={e.titulo} className="pilha-item" style={{ "--i": i }}>
-          <article className="pilha-cartao">
-            <span className="pilha-num" aria-hidden="true">
+        <li key={e.titulo} className="stack-item" style={{ "--i": i }}>
+          <article className="stack-card">
+            <span className="stack-num" aria-hidden="true">
               {i + 1}
             </span>
             <div>
-              <p className="pilha-passo">
+              <p className="stack-step">
                 Passo {i + 1} de {etapas.length}
               </p>
               <h3>{e.titulo}</h3>

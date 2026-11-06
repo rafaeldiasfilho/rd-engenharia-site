@@ -79,7 +79,7 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
 
   return (
     <div
-      className={["pasta", className].filter(Boolean).join(" ")}
+      className={["folder", className].filter(Boolean).join(" ")}
       data-aberta={aberta ? "true" : "false"}
       onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
       onPointerLeave={(e) => e.pointerType === "mouse" && setHover(false)}
@@ -87,20 +87,20 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
       <button
         ref={pastaRef}
         type="button"
-        className="pasta-botao"
+        className="folder-button"
         aria-expanded={aberta}
         aria-controls={`${id}-cartoes`}
         aria-label={`${aberta ? "Fechar" : "Abrir"} a pasta ${title}: ${countLabel(items.length)}`}
         onClick={() => setFixa((v) => !v)}
       />
-      <div className="pasta-grafico" aria-hidden="true">
-        <span className="pasta-fundo" />
-        <span className="pasta-aba" />
-        <span className="pasta-frente" />
+      <div className="folder-graphic" aria-hidden="true">
+        <span className="folder-bg" />
+        <span className="folder-tab" />
+        <span className="folder-front" />
       </div>
-      <ul className="pasta-cartoes" id={`${id}-cartoes`}>
+      <ul className="folder-cards" id={`${id}-cartoes`}>
         {leque.map((it, i) => (
-          <li key={it.id} className="pasta-cartao" data-i={i} data-oculto={aberto === i ? "true" : undefined}>
+          <li key={it.id} className="folder-card" data-i={i} data-oculto={aberto === i ? "true" : undefined}>
             <button
               ref={(el) => {
                 cardRefs.current[i] = el
@@ -114,18 +114,18 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
                 abrirItem(i)
               }}
             >
-              <span className="pasta-cartao-media">{it.media}</span>
-              <span className="pasta-cartao-titulo">{it.short ?? it.title}</span>
+              <span className="folder-card-media">{it.media}</span>
+              <span className="folder-card-title">{it.short ?? it.title}</span>
             </button>
           </li>
         ))}
       </ul>
-      <div className="pasta-texto" aria-hidden="true">
-        <h3 className="pasta-titulo">{title}</h3>
-        <p className="pasta-contagem">{countLabel(items.length)}</p>
-        <p className="pasta-dica">
-          <span className="pasta-dica-mouse">{aberta ? "Clique numa folha para ampliar" : "Passe o mouse para abrir"}</span>
-          <span className="pasta-dica-toque">{aberta ? "Toque numa folha para ampliar" : "Toque para abrir"}</span>
+      <div className="folder-text" aria-hidden="true">
+        <h3 className="folder-title">{title}</h3>
+        <p className="folder-count">{countLabel(items.length)}</p>
+        <p className="folder-hint">
+          <span className="folder-hint-mouse">{aberta ? "Clique numa folha para ampliar" : "Passe o mouse para abrir"}</span>
+          <span className="folder-hint-touch">{aberta ? "Toque numa folha para ampliar" : "Toque para abrir"}</span>
         </p>
       </div>
       {aberto !== null && (
@@ -221,7 +221,7 @@ function Ampliacao({ items, indice, origem, titulo, onNavegar, onFechar }: Ampli
       else if (e.key === "ArrowLeft") ir(indice - 1)
       else if (e.key === "Tab") {
         // o foco fica dentro da ampliação
-        const raiz = painel.current?.closest(".pasta-amp")
+        const raiz = painel.current?.closest(".folder-viewer")
         const focaveis = raiz ? Array.from(raiz.querySelectorAll<HTMLElement>("button:not([disabled]), a[href]")) : []
         if (!focaveis.length) return
         const primeiro = focaveis[0], ultimo = focaveis[focaveis.length - 1]
@@ -241,31 +241,31 @@ function Ampliacao({ items, indice, origem, titulo, onNavegar, onFechar }: Ampli
   if (!item) return null
 
   return createPortal(
-    <div className="pasta-amp" data-fase={fase} role="dialog" aria-modal="true" aria-labelledby={tituloId}>
-      <div className="pasta-amp-fundo" onClick={sair} />
-      <button ref={fecharRef} type="button" className="pasta-amp-fechar" onClick={sair} aria-label="Fechar">
+    <div className="folder-viewer" data-fase={fase} role="dialog" aria-modal="true" aria-labelledby={tituloId}>
+      <div className="folder-viewer-bg" onClick={sair} />
+      <button ref={fecharRef} type="button" className="folder-viewer-close" onClick={sair} aria-label="Fechar">
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
           <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
         </svg>
       </button>
-      <button type="button" className="pasta-amp-nav pasta-amp-ant" onClick={() => ir(indice - 1)} disabled={!temAnt} aria-label="Anterior">
+      <button type="button" className="folder-viewer-nav folder-viewer-prev" onClick={() => ir(indice - 1)} disabled={!temAnt} aria-label="Anterior">
         <Seta lado="esq" />
       </button>
-      <button type="button" className="pasta-amp-nav pasta-amp-prox" onClick={() => ir(indice + 1)} disabled={!temProx} aria-label="Próximo">
+      <button type="button" className="folder-viewer-nav folder-viewer-next" onClick={() => ir(indice + 1)} disabled={!temProx} aria-label="Próximo">
         <Seta lado="dir" />
       </button>
-      <div className="pasta-amp-painel" ref={painel} style={inicial}>
-        <div className="pasta-amp-media" key={item.id} data-dir={direcao}>
+      <div className="folder-viewer-panel" ref={painel} style={inicial}>
+        <div className="folder-viewer-media" key={item.id} data-dir={direcao}>
           {item.expanded ?? item.media}
         </div>
-        <div className="pasta-amp-rodape">
-          <p className="pasta-amp-pasta">{titulo}</p>
-          <h3 id={tituloId} className="pasta-amp-titulo">
+        <div className="folder-viewer-footer">
+          <p className="folder-viewer-folder">{titulo}</p>
+          <h3 id={tituloId} className="folder-viewer-title">
             {item.title}
           </h3>
-          {item.caption && <p className="pasta-amp-legenda">{item.caption}</p>}
-          <div className="pasta-amp-linha">
-            <div className="pasta-amp-pontos">
+          {item.caption && <p className="folder-viewer-caption">{item.caption}</p>}
+          <div className="folder-viewer-line">
+            <div className="folder-viewer-dots">
               {items.map((it, i) => (
                 <button
                   key={it.id}
@@ -276,12 +276,12 @@ function Ampliacao({ items, indice, origem, titulo, onNavegar, onFechar }: Ampli
                 />
               ))}
             </div>
-            <span className="pasta-amp-n" aria-live="polite">
+            <span className="folder-viewer-n" aria-live="polite">
               {indice + 1} de {items.length}
             </span>
           </div>
           {item.action && (
-            <a className="btn btn-zap btn-peq pasta-amp-acao" href={item.action.href} target="_blank" rel="noopener noreferrer">
+            <a className="btn btn-whatsapp btn-small folder-viewer-action" href={item.action.href} target="_blank" rel="noopener noreferrer">
               {item.action.label}
             </a>
           )}

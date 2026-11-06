@@ -12,5 +12,5 @@ const AREA = {
 export default function IconeArea({ slug, tamanho = 24, className = "" }) {
   const Componente = AREA[slug];
   if (!Componente) return null;
-  return <Componente className={`icone-area ${className}`} size={tamanho} weight="regular" aria-hidden="true" focusable="false" />;
+  return <Componente className={`icon-area ${className}`} size={tamanho} weight="regular" aria-hidden="true" focusable="false" />;
 }

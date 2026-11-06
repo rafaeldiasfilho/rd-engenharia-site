@@ -121,7 +121,7 @@ const MAX_DPR = 1.5 // the water is soft; more pixels only cost GPU
 
 /* ---------- styles ---------- */
 const NIMBUS_CSS = `
-.nimbus-nav{--n-tint:rgba(247,248,245,.9);--n-fg:var(--tinta,#17211b);--n-fg-soft:var(--cinza,rgba(23,33,27,.66));--n-rim:rgba(255,255,255,.7);
+.nimbus-nav{--n-tint:rgba(247,248,245,.9);--n-fg:var(--ink,#17211b);--n-fg-soft:var(--muted,rgba(23,33,27,.66));--n-rim:rgba(255,255,255,.7);
   position:relative;display:inline-flex;align-items:center;max-width:100%;padding:6px;border-radius:999px;isolation:isolate;
   font-family:inherit;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
 .nimbus-nav[data-tone="dark"],[data-theme="dark"] .nimbus-nav[data-tone="auto"]{--n-tint:rgba(15,21,17,.9);--n-rim:rgba(255,255,255,.22);--n-drop:radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.2),rgba(255,255,255,0) 60%),rgba(111,211,124,.16);--n-drop-sh:inset 0 1px 1px rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.12),0 6px 16px -6px rgba(0,0,0,.5)}
@@ -148,7 +148,7 @@ const NIMBUS_CSS = `
 .nimbus-item[aria-current]{font-weight:600}
 .nimbus-label{display:inline-grid}
 .nimbus-label::after{content:attr(data-text);font-weight:600;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
-.nimbus-item:focus-visible{outline:2px solid var(--realce,#1f6b2a);outline-offset:2px}
+.nimbus-item:focus-visible{outline:2px solid var(--accent,#1f6b2a);outline-offset:2px}
 .nv-ico{position:relative;display:inline-flex;flex:none}
 .nv-ico svg{transition:transform .45s cubic-bezier(.3,1.6,.5,1)}
 .nimbus-item[aria-current] .nv-ico svg{transform:translateY(-1px) scale(1.08)}

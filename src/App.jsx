@@ -115,33 +115,33 @@ export default function App() {
   return (
     <Casca atual="">
       <HeroFundo chave="home" rotulo="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
-        <a className="selo-topo" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
-          <span className="selo-topo-estrelas" aria-hidden="true">
+        <a className="badge-top" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+          <span className="badge-top-stars" aria-hidden="true">
             ★★★★★
           </span>
           <span>{NOTA_GOOGLE}</span>
-          <span className="selo-topo-seta" aria-hidden="true">
+          <span className="badge-top-arrow" aria-hidden="true">
             →
           </span>
         </a>
         <p className="eyebrow">RD Engenharia · Ibirá/SP</p>
         <h1 className="display">Laudos, projetos e licenças em dia para empresas, obras e imóveis rurais.</h1>
-        <p className="hero-triade">
-          Documentos em dia. Obra regular. <span className="acento">Equipe protegida.</span>
+        <p className="hero-triad">
+          Documentos em dia. Obra regular. <span className="accent">Equipe protegida.</span>
         </p>
         <p className="lead">
           Engenharia, segurança do trabalho e meio ambiente em Ibirá e região, presencial e online. Você fala direto com o responsável técnico pelo WhatsApp.
         </p>
-        <div className="acoes">
-          <a className="btn btn-zap btn-grande" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+        <div className="actions">
+          <a className="btn btn-whatsapp btn-large" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
             <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
           </a>
-          <a className="link-seta hero-link" href="/o-que-preciso">
+          <a className="link-arrow hero-link" href="/o-que-preciso">
             Não sabe o que precisa? Descubra aqui <span aria-hidden="true">→</span>
           </a>
         </div>
-        <p className="hero-risco">Orçamento por escrito e sem compromisso.</p>
-        <p className={`status status-fundo ${atendendo ? "on" : ""}`}>
+        <p className="hero-risk">Orçamento por escrito e sem compromisso.</p>
+        <p className={`status status-bg ${atendendo ? "on" : ""}`}>
           <Icone nome="fa-solid fa-circle" />{" "}
           {atendendo === null
             ? "Atendimento de segunda a sexta, das 7h às 17h"
@@ -151,20 +151,20 @@ export default function App() {
         </p>
       </HeroFundo>
 
-      <div className="escolhas-cards-wrap" id="servicos">
+      <div className="choices-cards-wrap" id="servicos">
         <div className="container">
           <h2 className="sr-only">Do que você precisa?</h2>
-          <BuscaDocumento className="busca-home" />
-          <ol className="escolhas-cards">
+          <BuscaDocumento className="search-home" />
+          <ol className="choices-cards">
             {NECESSIDADES.map((n, i) => {
               const f = FOTOS[n.foto];
               return (
                 <li key={n.slug}>
                   <a href={`/${n.slug}`} className="card-area">
-                    <span className="card-area-foto">
+                    <span className="card-area-photo">
                       <img src={caminho(f)} srcSet={srcset(f)} sizes={i === 0 || i === 3 ? "(min-width: 1100px) 800px, (min-width: 700px) 50vw, 100vw" : "(min-width: 1100px) 400px, (min-width: 700px) 50vw, 100vw"} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
-                    <span className="icone-tile card-area-icone">
+                    <span className="icon-tile card-area-icon">
                       <IconeArea slug={n.slug} tamanho={30} />
                     </span>
                     <span className="card-area-n" aria-hidden="true">
@@ -172,7 +172,7 @@ export default function App() {
                     </span>
                     <strong>{n.titulo}</strong>
                     <small>{n.frase}</small>
-                    <span className="card-area-seta" aria-hidden="true">
+                    <span className="card-area-arrow" aria-hidden="true">
                       →
                     </span>
                   </a>
@@ -180,10 +180,10 @@ export default function App() {
               );
             })}
           </ol>
-          <p className="nota-fina escolhas-nota">
+          <p className="fine-print choices-note">
             Fotos ilustrativas de terceiros, não são trabalhos da RD. <a href="/creditos">Créditos</a>
           </p>
-          <ul className="prova">
+          <ul className="proof">
             <li>
               <strong>CREA-SP</strong>
               <span>Todo serviço é assinado por profissional habilitado</span>
@@ -210,31 +210,31 @@ export default function App() {
 
       <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
 
-      <section className="sec band-section organizamos" id="organizamos" aria-labelledby="org-t">
-        <div className="container organizamos-grade">
+      <section className="sec band-section organize" id="organizamos" aria-labelledby="org-t">
+        <div className="container organize-grid">
           <div>
-            <header className="sec-cab rev">
+            <header className="sec-head reveal">
               <p className="sec-n">
                 <span>01</span> O que organizamos
               </p>
-              <h2 id="org-t" className="sec-titulo">
+              <h2 id="org-t" className="sec-title">
                 Seus documentos e vencimentos, em um só lugar.
               </h2>
             </header>
-            <p className="lead rev">
+            <p className="lead reveal">
               Montamos a lista do que o seu caso exige, elaboramos os documentos e avisamos pelo WhatsApp antes de cada vencimento.
             </p>
-            <div className="acoes rev">
-              <a className="btn btn-sec btn-grande" href="/o-que-preciso">
+            <div className="actions reveal">
+              <a className="btn btn-sec btn-large" href="/o-que-preciso">
                 Descubra o que o seu caso precisa
               </a>
-              <a className="link-seta" href="/lembrete-de-vencimento">
+              <a className="link-arrow" href="/lembrete-de-vencimento">
                 Pedir o lembrete de vencimento <span aria-hidden="true">→</span>
               </a>
             </div>
             <NumerosLinha />
           </div>
-          <div className="rev">
+          <div className="reveal">
             <Inclinado3D>
               <PainelExemplo />
             </Inclinado3D>
@@ -246,18 +246,18 @@ export default function App() {
 
       <section className="sec band-section" id="como-funciona" aria-labelledby="como-t">
         <div className="container">
-          <header className="sec-cab rev">
+          <header className="sec-head reveal">
             <p className="sec-n">
               <span>03</span> Como funciona
             </p>
-            <h2 id="como-t" className="sec-titulo">
+            <h2 id="como-t" className="sec-title">
               Quatro passos, sem surpresa.
             </h2>
           </header>
           <PilhaEtapas
             etapas={ETAPAS}
             acaoPrimeira={
-              <a className="btn btn-zap btn-peq" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+              <a className="btn btn-whatsapp btn-small" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
                 <Icone nome="fa-brands fa-whatsapp" /> Começar agora
               </a>
             }
@@ -269,11 +269,11 @@ export default function App() {
 
       <section className="sec sec-alt" id="duvidas" aria-labelledby="duvidas-t">
         <div className="container">
-          <header className="sec-cab rev">
+          <header className="sec-head reveal">
             <p className="sec-n">
               <span>04</span> Dúvidas
             </p>
-            <h2 id="duvidas-t" className="sec-titulo">
+            <h2 id="duvidas-t" className="sec-title">
               Dúvidas frequentes.
             </h2>
           </header>
@@ -283,31 +283,31 @@ export default function App() {
 
       {/* Contato e "onde atendemos" num bloco só: endereço, horário e região aparecem aqui uma vez
           (o selo do topo e o rodapé são os outros lugares fixos). O fundo de curvas de nível veio junto. */}
-      <section className="contact-block sec-topo" id="contato" aria-labelledby="contato-t">
-        <TopoField className="sec-topo-campo contato-topo" grid={0} lines={0.4} />
-        <div className="container contato-grade">
+      <section className="contact-block sec-top" id="contato" aria-labelledby="contato-t">
+        <TopoField className="sec-top-field contact-top" grid={0} lines={0.4} />
+        <div className="container contact-grid">
           <div>
             <p className="sec-n">
               <span>05</span> Contato
             </p>
-            <h2 id="contato-t" className="sec-titulo">
+            <h2 id="contato-t" className="sec-title">
               Peça seu orçamento.
             </h2>
-            <p className="contato-texto">
+            <p className="contact-text">
               Preencha e continue no WhatsApp. A mensagem já vai pronta, sem compromisso.
             </p>
-            <dl className="contato-dados">
+            <dl className="contact-data">
               <div>
                 <dt>Escritório</dt>
                 <dd>
                   {ENDERECO}
-                  <span className="contato-links">
+                  <span className="contact-links">
                     <a href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
                       Como chegar
                     </a>
                     <button
                       type="button"
-                      className="contato-mapa-botao"
+                      className="contact-map-button"
                       aria-expanded={mapa}
                       aria-controls={mapa ? "contato-mapa" : undefined}
                       onClick={() => {
@@ -319,16 +319,16 @@ export default function App() {
                     </button>
                   </span>
                   {mapa && (
-                    <figure id="contato-mapa" className="onde-mapa">
-                      <div className="mapa-caixa">
-                        {!mapaPronto && <p className="onde-mapa-carregando">Carregando o mapa…</p>}
+                    <figure id="contato-mapa" className="where-map">
+                      <div className="map-box">
+                        {!mapaPronto && <p className="where-map-loading">Carregando o mapa…</p>}
                         <iframe
                           title="Mapa com a localização da RD Engenharia em Ibirá/SP"
                           src={MAPA_EMBED}
                           referrerPolicy="no-referrer"
                           allowFullScreen
                           onLoad={() => setMapaPronto(true)}
-                          className={mapaPronto ? "pronto" : ""}
+                          className={mapaPronto ? "ready" : ""}
                         />
                       </div>
                       <figcaption>O mapa é fornecido pelo Google.</figcaption>
@@ -359,7 +359,7 @@ export default function App() {
             <QrWhatsapp />
           </div>
 
-          <form className="formulario" onSubmit={enviar}>
+          <form className="form" onSubmit={enviar}>
             <label>
               Seu nome
               <input value={pedido.nome} onChange={mudar("nome")} autoComplete="name" />
@@ -384,31 +384,31 @@ export default function App() {
               O que você precisa
               <textarea rows="4" value={pedido.mensagem} onChange={mudar("mensagem")} />
             </label>
-            <button className="btn btn-zap btn-grande" type="submit">
+            <button className="btn btn-whatsapp btn-large" type="submit">
               <Icone nome="fa-brands fa-whatsapp" /> Continuar no WhatsApp
             </button>
           </form>
         </div>
         {/* Quem somos fica dentro do Contato: as pessoas e os telefones ao lado do formulário. */}
-        <div className="container contato-pessoas" id="quem-somos">
-          <h3 className="contato-pessoas-titulo">Quem responde pelo seu serviço</h3>
-          <p className="contato-texto">
+        <div className="container contact-people" id="quem-somos">
+          <h3 className="contact-people-title">Quem responde pelo seu serviço</h3>
+          <p className="contact-text">
             A RD Engenharia é uma empresa familiar de Ibirá. Todo serviço é assinado por profissional habilitado no CREA-SP,
             e você conversa direto com quem vai executar.
           </p>
-          <div className="pessoas cascata">
-            <article className="rev">
-              <span className="pessoa-sigla" aria-hidden="true">
+          <div className="people cascade">
+            <article className="reveal">
+              <span className="person-initials" aria-hidden="true">
                 RA
               </span>
               <h3>Rafael Antonio Dias</h3>
-              <p className="pessoa-cargo">
+              <p className="person-role">
                 Engenheiro civil e ambiental · Especialista em segurança do trabalho · {CREA_NUMBER}
               </p>
-              <p className="pessoa-resumo">
+              <p className="person-summary">
                 {FORMACAO.length} formações, entre bacharelados, pós-graduações e curso técnico.
               </p>
-              <div className="pessoa-acoes">
+              <div className="person-actions">
                 <button type="button" className="btn btn-sec" onClick={() => setFormacao(true)} aria-haspopup="dialog">
                   Ver formação completa
                 </button>
@@ -422,23 +422,23 @@ export default function App() {
                 </a>
               </div>
               <Janela aberta={formacao} aoFechar={() => setFormacao(false)} titulo="Rafael Antonio Dias">
-                <p className="pessoa-cargo">
+                <p className="person-role">
                   Engenheiro civil e ambiental · Especialista em segurança do trabalho · {CREA_NUMBER}
                 </p>
-                <ul className="pessoa-formacao">
+                <ul className="person-education">
                   {FORMACAO.map((f) => (
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
-                <p className="pessoa-extra">Também corretor de imóveis e perito grafotécnico.</p>
+                <p className="person-extra">Também corretor de imóveis e perito grafotécnico.</p>
               </Janela>
             </article>
-            <article className="rev">
-              <span className="pessoa-sigla" aria-hidden="true">
+            <article className="reveal">
+              <span className="person-initials" aria-hidden="true">
                 RF
               </span>
               <h3>Rafael Antonio Dias Filho</h3>
-              <p className="pessoa-cargo">Técnico em edificações · Projetos e atendimento</p>
+              <p className="person-role">Técnico em edificações · Projetos e atendimento</p>
               <a
                 className="btn btn-sec"
                 href={zap("Olá! Gostaria de solicitar um orçamento.", WHATSAPP_PROJETOS)}
