@@ -41,8 +41,8 @@
   --info: #1f5f8b;
 }
 
-/* Variáveis do tema (um lugar só). Tema claro em :root; o escuro vale quando a pessoa escolhe "Escuro"
-   (data-theme="dark") ou quando o sistema está escuro e ela não escolheu "Claro". */
+/* Theme variables (one place). Light theme in :root; dark applies when the visitor picks "Escuro" (dark)
+   (data-theme="dark") or when the system is dark and they did not pick "Claro" (light). */
 
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -103,7 +103,7 @@
 
 html {
   scroll-behavior: smooth;
-  /* topo + barra "Nesta página" + folga para a sombra e as ondas da pílula */
+  /* header + "Nesta página" bar + room for the pill's shadow and ripples */
   scroll-padding-top: calc(var(--header-h) + var(--sections-h) + 18px);
   -webkit-text-size-adjust: 100%;
 }
@@ -173,7 +173,7 @@ img {
   border: 0;
 }
 
-/* Movimento reduzido: sem transições, sem entradas animadas */
+/* Reduced motion: no transitions, no animated entrances */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -317,7 +317,7 @@ img {
   margin-top: 32px;
 }
 
-/* Entrada suave: só opacidade e deslocamento curto, ativada por script (sem script, tudo aparece) */
+/* Soft entrance: opacity and a short shift only, enabled by script (without script everything shows) */
 .reveal {
   transition: opacity 300ms var(--ease), transform 0.28s var(--ease);
 }
@@ -327,7 +327,7 @@ img {
   transform: translateY(14px);
 }
 
-/* Botões */
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -407,7 +407,7 @@ img {
   }
 }
 
-/* Cabeçalho */
+/* Header */
 .top {
   position: sticky;
   top: 0;
@@ -474,7 +474,7 @@ img {
   color: var(--muted);
 }
 
-/* Ilha: a navegação fica numa pílula sólida (nunca vidro sobre o vidro do cabeçalho) */
+/* Island: the navigation sits in a solid pill (never glass over the header glass) */
 .menu {
   position: relative;
   display: flex;
@@ -489,7 +489,7 @@ img {
   font-weight: 500;
 }
 
-/* Fundo que desliza até o item sob o mouse */
+/* Background that slides to the item under the mouse */
 .menu-pill {
   position: absolute;
   top: 4px;
@@ -569,7 +569,7 @@ img {
   position: relative;
 }
 
-/* Painel de Serviços: uma superfície só, centrada sob o botão */
+/* Services panel: a single surface, centred under the button */
 .menu-panel {
   position: absolute;
   z-index: 2;
@@ -586,7 +586,7 @@ img {
   transform-origin: top center;
 }
 
-/* Ponte invisível sobre o vão: o mouse vai do botão ao painel sem fechá-lo */
+/* Invisible bridge over the gap: the mouse goes from the button to the panel without closing it */
 .menu-panel::before {
   content: "";
   position: absolute;
@@ -742,7 +742,7 @@ img {
   transform: scale(0.96);
 }
 
-/* Três traços que viram um X quando o menu abre (só transform e opacidade). */
+/* Three bars that turn into an X when the menu opens (transform and opacity only). */
 .menu-icon {
   position: relative;
   display: block;
@@ -846,7 +846,7 @@ img {
   }
 }
 
-/* Trilha de navegação e índice da página */
+/* Breadcrumb and page index */
 .breadcrumb {
   margin-bottom: clamp(28px, 5vw, 56px);
   font-size: 0.88rem;
@@ -885,11 +885,11 @@ img {
   }
 }
 
-/* Barra "Nesta página": pílula de vidro líquido (src/components/ui/liquid-glass-navbar.tsx).
- * A faixa em si é transparente e não recebe cliques; só a pílula recebe. A pílula nunca passa da
- * tela: no celular os itens rolam de lado dentro dela. O canvas da água passa 14 px da pílula,
- * por isso o respiro em .secoes-in. */
-.secoes {
+/* "Nesta página" (on this page) bar: liquid glass pill (src/components/ui/liquid-glass-navbar.tsx).
+ * The strip itself is transparent and takes no clicks; only the pill does. The pill never goes past the
+ * screen: on phones the items scroll sideways inside it. The water canvas extends 14 px beyond the pill,
+ * hence the padding in .section-nav-inner. */
+.section-nav {
   position: sticky;
   top: var(--header-h);
   z-index: 40;
@@ -897,7 +897,7 @@ img {
   padding-block: 6px;
 }
 
-.secoes-inner {
+.section-nav-inner {
   width: min(1200px, 100%);
   margin: -14px auto;
   padding: 14px 20px;
@@ -906,24 +906,24 @@ img {
   scrollbar-width: none;
 }
 
-.secoes-inner::-webkit-scrollbar {
+.section-nav-inner::-webkit-scrollbar {
   display: none;
 }
 
-.secoes .nimbus-nav {
+.section-nav .nimbus-nav {
   flex: 0 1 auto;
   min-width: 0;
   margin-inline: auto;
   pointer-events: auto;
 }
 
-.secoes .nimbus-item {
+.section-nav .nimbus-item {
   min-height: 44px;
   white-space: nowrap;
 }
 
 @media (max-width: 600px) {
-  .secoes-inner {
+  .section-nav-inner {
     padding-inline: 16px;
   }
 }
@@ -998,7 +998,7 @@ img {
   text-underline-offset: 3px;
 }
 
-/* Páginas internas: abertura */
+/* Inner pages: opening */
 .hero-inner {
   padding: clamp(24px, 4vw, 40px) 0 clamp(40px, 6vw, 80px);
 }
@@ -1068,7 +1068,7 @@ img {
   font-size: 0.88rem;
 }
 
-/* Linhas editoriais (serviços, guias, cidades) */
+/* Editorial rows (services, guides, cities) */
 .lines {
   border-bottom: 1px solid var(--line);
 }
@@ -1094,7 +1094,7 @@ img {
   }
 }
 
-/* Etapas com números grandes */
+/* Steps with large numbers */
 .steps-editorial {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1405,7 +1405,7 @@ img {
   }
 }
 
-/* Próximo passo e páginas relacionadas */
+/* Next step and related pages */
 .next {
   background: var(--surface);
   border-top: 1px solid var(--line);
@@ -1515,7 +1515,7 @@ img {
   }
 }
 
-/* Rodapé */
+/* Footer */
 .footer {
   background: var(--footer-bg);
   color: #d4dbd5;
@@ -1831,7 +1831,7 @@ img {
   color: var(--ink);
 }
 
-/* Formulários públicos */
+/* Public forms */
 .form-public {
   display: grid;
   gap: 18px;
@@ -1929,7 +1929,7 @@ img {
   margin: 0;
 }
 
-/* Créditos */
+/* Credits */
 .credits {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2002,7 +2002,7 @@ img {
   padding: clamp(64px, 12vw, 160px) 0;
 }
 
-/* Ícones */
+/* Icons */
 .icon {
   width: 1em;
   height: 1em;
@@ -2010,7 +2010,7 @@ img {
   flex: none;
 }
 
-/* Exemplos de projeto (desenhos reais) */
+/* Project examples (real drawings) */
 .examples {
   display: grid;
   gap: 20px;
@@ -2088,7 +2088,7 @@ img {
   }
 }
 
-/* Ilustrações interativas */
+/* Interactive illustrations */
 .illustration,
 .template {
   margin: 0 auto;
@@ -2191,7 +2191,7 @@ img {
   align-items: start;
 }
 
-/* Modelo de PGR: mesmo papel, borda e carimbo das folhas de exemplo (sempre claro, nos dois temas) */
+/* PGR template: same paper, border and stamp as the example sheets (always light, in both themes) */
 .template-sheet {
   position: relative;
   background: #fdfdfb;
@@ -2356,7 +2356,7 @@ img {
   }
 }
 
-/* Abas e exemplos na página inicial */
+/* Tabs and examples on the home page */
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -2420,7 +2420,7 @@ img {
   }
 }
 
-/* Troca de projeto por arrasto */
+/* Project switch by dragging */
 @keyframes examples-slide {
   from {
     opacity: 0;
@@ -2444,8 +2444,8 @@ img {
   animation: examples-slide 0.28s var(--ease) both;
 }
 
-/* Fonte própria: Manrope variável (subconjunto latin, OFL), sem depender do Google Fonts.
-   Trocada da IBM Plex Sans em 2026-11-06 (skill de redesign: Geist, Manrope ou Poppins). */
+/* Own font: variable Manrope (latin subset, OFL), no dependency on Google Fonts.
+   Replaced IBM Plex Sans on 2026-11-06 (redesign skill: Geist, Manrope or Poppins). */
 @font-face {
   font-family: "Manrope";
   font-style: normal;
@@ -2455,7 +2455,7 @@ img {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Telas de toque: alvos de pelo menos 44 px */
+/* Touch screens: targets of at least 44 px */
 @media (pointer: coarse) {
   .footer li a {
     display: block;
@@ -2495,7 +2495,7 @@ img {
   }
 }
 
-/* Área interna */
+/* Internal area */
 .admin-top {
   background: var(--surface);
   border-bottom: 1px solid var(--line);
@@ -2811,7 +2811,7 @@ img {
   }
 }
 
-/* Equipamentos que podem ser usados */
+/* Equipment that may be used */
 .equipment {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -2819,7 +2819,7 @@ img {
   min-width: 0;
 }
 
-/* sem isto a faixa de cartões estica a coluna e a página rola para o lado no celular */
+/* without this the card strip stretches the column and the page scrolls sideways on phones */
 .equipment > * {
   min-width: 0;
 }
@@ -2834,7 +2834,7 @@ img {
   margin-top: 0;
 }
 
-/* Lista de equipamentos em blocos numerados (antes: linhas com régua) */
+/* Equipment list in numbered blocks (before: rows with a ruler) */
 .equipment-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
@@ -2870,15 +2870,15 @@ img {
   font-variant-numeric: tabular-nums;
 }
 
-/* Materiais translúcidos: versão sólida quando o sistema pede menos transparência ou mais contraste */
+/* Translucent materials: solid version when the system asks for less transparency or more contrast */
 @media (prefers-reduced-transparency: reduce) {
   .top {
     background: var(--paper);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-  /* o vidro da pílula tem estilo próprio (fora das camadas), por isso o !important */
-  .secoes .nimbus-glass {
+  /* the pill glass has its own style (outside the layers), hence the !important */
+  .section-nav .nimbus-glass {
     background: var(--paper) !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
@@ -2892,8 +2892,8 @@ img {
     backdrop-filter: none;
     border-bottom-color: var(--ink);
   }
-  /* o vidro da pílula tem estilo próprio (fora das camadas), por isso o !important */
-  .secoes .nimbus-glass {
+  /* the pill glass has its own style (outside the layers), hence the !important */
+  .section-nav .nimbus-glass {
     background: var(--paper) !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
@@ -2916,7 +2916,7 @@ img {
   height: auto;
 }
 
-/* Carrossel de fotos (Carrossel.jsx): faixa com scroll-snap, controles de 44 px, sem biblioteca */
+/* Photo carousel (src/Carousel.jsx): scroll-snap strip, 44 px controls, no library */
 .carousel {
   --sw: 88%;
   --carousel-gap: 14px;
@@ -2946,7 +2946,7 @@ img {
 }
 
 .carousel-slide {
-  flex: 0 0 100%; /* 100% da área com padding: a faixa tem largura var(--sw) */
+  flex: 0 0 100%; /* 100% of the padded area: the strip has width var(--sw) */
   min-width: 0;
   scroll-snap-align: center;
   scroll-snap-stop: always;
@@ -3088,7 +3088,7 @@ img {
   }
 }
 
-/* Uma imagem só, ou carrossel em coluna estreita: ocupa a largura toda */
+/* A single image, or a carousel in a narrow column: takes the full width */
 .carousel-one,
 .carousel-full {
   --sw: 100%;
@@ -3099,8 +3099,8 @@ img {
   opacity: 1;
 }
 
-/* Prateleira (equipamentos): vários cartões à vista, alinhados à esquerda, cada um com a foto e a
-   legenda dentro de um cartão. Sem troca automática. */
+/* Shelf (equipment): several cards in view, aligned left, each with the photo and the
+   caption inside a card. No automatic switching. */
 .carousel-shelf {
   --sw: 100%;
 }
@@ -3182,7 +3182,7 @@ img {
   margin-top: clamp(20px, 3vw, 32px);
 }
 
-/* Passo a passo (Assistente.jsx): uma pergunta por tela */
+/* Wizard (src/Wizard.jsx): one question per screen */
 .wizard {
   position: relative;
   padding: clamp(20px, 4vw, 44px);
@@ -3463,7 +3463,7 @@ img {
   }
 }
 
-/* Índice de guias: cartões e faixa do passo a passo */
+/* Guide index: cards and the wizard band */
 .guide-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
@@ -3586,7 +3586,7 @@ img {
   text-underline-offset: 3px;
 }
 
-/* Lista de documentos: texto + ilustração de exemplo */
+/* Document list: text + example illustration */
 .split-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
@@ -3687,7 +3687,7 @@ img {
 
 /* ===== Rodada 4 ===== */
 
-/* Carrossel: arrastar com o mouse */
+/* Carousel: drag with the mouse */
 @media (pointer: fine) {
   .carousel-band {
     cursor: grab;
@@ -3724,7 +3724,7 @@ img {
   border: 1px solid var(--line);
 }
 
-/* Ícones das áreas */
+/* Area icons */
 .icon-tile {
   display: inline-grid;
   place-items: center;
@@ -3799,7 +3799,7 @@ img {
   gap: 8px;
 }
 
-/* Situações comuns */
+/* Common situations */
 .situations-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3864,7 +3864,7 @@ img {
   line-height: 1.35;
 }
 
-/* Página de impressão da lista de documentos (/imprimir/<área>) */
+/* Print page of the document list (/imprimir/<area>) */
 .print {
   min-height: 100dvh;
   padding: 24px 16px 56px;
@@ -4012,9 +4012,9 @@ img {
   grid-template-columns: 56px minmax(0, 1fr) 1.6rem;
 }
 
-/* ===== Rodada 5: visual mais ousado (apenas os dois temas verdes) ===== */
+/* ===== Round 5: bolder visuals (only the two green themes) ===== */
 
-/* Entrada suave de seções: até 20 px, 480 ms, uma vez; sem script tudo aparece */
+/* Soft section entrance: up to 20 px, 480 ms, once; without script everything shows */
 .reveal {
   transition: opacity 0.48s var(--ease), transform 0.48s var(--ease);
 }
@@ -4024,7 +4024,7 @@ img {
   transform: translateY(20px);
 }
 
-/* Hero em tela cheia com fotos de fundo */
+/* Full-screen hero with background photos */
 .hero-bg {
   position: relative;
   isolation: isolate;
@@ -4210,7 +4210,7 @@ img {
   outline-offset: 2px;
 }
 
-/* Cartões das quatro áreas, sobrepostos ao fim do hero */
+/* Cards of the four areas, overlapping the end of the hero */
 .choices-cards-wrap {
   position: relative;
   z-index: 5;
@@ -4260,7 +4260,7 @@ img {
   display: block;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  /* Enquanto a foto (lazy) carrega no celular, mostra um tom verde suave em vez de um bloco cinza. */
+  /* While the (lazy) photo loads on phones, show a soft green tone instead of a grey block. */
   background: linear-gradient(135deg, var(--green-light), var(--surface));
 }
 
@@ -4349,10 +4349,10 @@ img {
   }
 }
 
-/* Faixa de documentos que anda devagar */
+/* Slowly moving strip of documents */
 .marquee {
   overflow-x: auto;
-  scrollbar-width: none; /* depois das 3 voltas dá para rolar a faixa com o dedo, o mouse ou o teclado */
+  scrollbar-width: none; /* after the 3 loops the strip can be scrolled with a finger, the mouse or the keyboard */
   border-block: 1px solid var(--line);
   padding: 20px 0;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
@@ -4362,7 +4362,7 @@ img {
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee 70s linear 3; /* 3 voltas e para: nada se move para sempre (WCAG 2.2.2) */
+  animation: marquee 70s linear 3; /* 3 loops and stop: nothing moves forever (WCAG 2.2.2) */
 }
 
 .marquee:hover .marquee-track,
@@ -4417,7 +4417,7 @@ img {
   }
 }
 
-/* O que organizamos: texto + painel de exemplo */
+/* "O que organizamos" (what we organize): text + example panel */
 .organize-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
@@ -4436,7 +4436,7 @@ img {
   }
 }
 
-/* Carimbo "EXEMPLO" das folhas, em HTML (painel da home e modelo de PGR) */
+/* "EXEMPLO" (example) stamp of the sheets, in HTML (home panel and PGR template) */
 .badge-example {
   position: absolute;
   top: 14px;
@@ -4618,7 +4618,7 @@ img {
   line-height: 1.4;
 }
 
-/* Títulos de seção com numeral grande */
+/* Section titles with a large numeral */
 .sec-n {
   display: flex;
   align-items: baseline;
@@ -4648,7 +4648,7 @@ img {
   padding-block: clamp(72px, 10vw, 140px);
 }
 
-/* Passos como linha do tempo */
+/* Steps as a timeline */
 .timeline {
   position: relative;
   display: grid;
@@ -4735,7 +4735,7 @@ img {
   }
 }
 
-/* Carrossel: imagem vizinha clicável e galeria de folhas */
+/* Carousel: clickable neighbouring image and sheet gallery */
 .carousel-slide {
   position: relative;
 }
@@ -4769,7 +4769,7 @@ img {
   filter: drop-shadow(0 18px 26px rgba(7, 24, 11, 0.22));
 }
 
-/* Situações comuns em cartões grandes */
+/* Common situations in large cards */
 .situations-list {
   counter-reset: sit;
   gap: 20px;
@@ -4815,7 +4815,7 @@ img {
   padding-top: 4px;
 }
 
-/* Sem movimento: nada de transição de foto nem deslocamento */
+/* No motion: no photo transition and no shift */
 @media (prefers-reduced-motion: reduce) {
   .hero-slides img,
   .card-area,
@@ -4855,7 +4855,7 @@ img {
   }
 }
 
-/* Busca por documento ou serviço (cabeçalho, janela e página inicial) */
+/* Search by document or service (header, dialog and home page) */
 .search {
   position: relative;
 }
@@ -4959,7 +4959,7 @@ img {
   line-height: 1.4;
 }
 
-/* Contagem de resultados: só para leitor de tela (a lista já mostra os resultados) */
+/* Result count: screen readers only (the list already shows the results) */
 .search-status {
   position: absolute;
   width: 1px;
@@ -4999,7 +4999,7 @@ img {
   }
 }
 
-/* Na página inicial: painel claro sobre o fim do hero, acima dos cartões das áreas */
+/* On the home page: light panel over the end of the hero, above the area cards */
 .search-home {
   margin-bottom: 18px;
   padding: 20px clamp(18px, 3vw, 28px) 18px;
@@ -5016,7 +5016,7 @@ img {
   z-index: 20;
 }
 
-/* Botão no cabeçalho e janela da busca */
+/* Header button and search dialog */
 .search-button {
   display: inline-flex;
   align-items: center;
@@ -5095,7 +5095,7 @@ img {
   }
 }
 
-/* Serviço aberto pela busca: o cartão do serviço ganha contorno verde */
+/* Service opened from the search: the service card gets a green outline */
 .service-card:target {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent), var(--card-shadow-high);
@@ -5162,7 +5162,7 @@ img {
   margin-top: 18px;
 }
 
-/* No celular: o nome da linha ocupa a largura toda e as duas colunas ficam lado a lado embaixo */
+/* On phones: the row name takes the full width and the two columns sit side by side below */
 @media (max-width: 700px) {
   .comparison table,
   .comparison tbody,
@@ -5201,7 +5201,7 @@ img {
   }
 }
 
-/* Filtro das perguntas frequentes */
+/* FAQ filter */
 .faq-filter {
   display: flex;
   flex-wrap: wrap;
@@ -5254,12 +5254,12 @@ img {
   text-underline-offset: 3px;
 }
 
-/* Botão "Começar agora" na primeira etapa */
+/* "Começar agora" (start now) button on the first step */
 .steps-editorial li .btn-small {
   margin-top: 14px;
 }
 
-/* Botão flutuante com o assunto da área (pílula) */
+/* Floating button with the area topic (pill) */
 .whatsapp-pill {
   width: auto;
   max-width: calc(100vw - 36px);
@@ -5303,7 +5303,7 @@ img {
   min-height: 44px;
 }
 
-/* Avaliações do Google (página inicial) */
+/* Google reviews (home page) */
 .review {
   padding-block: clamp(56px, 8vw, 104px);
   border-top: 1px solid var(--line);
@@ -5394,17 +5394,17 @@ img {
   margin-top: 16px;
 }
 
-/* ── Acabamento visual (padrões recorrentes do 21st.dev, adaptados) ─────────────────────────
- * Grade fina de "papel milimetrado" que some nas bordas, brilho verde suave, cartões com borda fina
- * e sombra em camadas, e um ritmo vertical um pouco mais curto entre as seções. Só CSS. */
-/* Variáveis do tema (um lugar só). Tema claro em :root; o escuro vale quando a pessoa escolhe "Escuro"
-   (data-theme="dark") ou quando o sistema está escuro e ela não escolheu "Claro". */
+/* ── Visual finish (recurring 21st.dev patterns, adapted) ─────────────────────────────────────
+ * Fine "graph paper" grid that fades at the edges, soft green glow, cards with a thin border
+ * and layered shadow, and a slightly shorter vertical rhythm between sections. CSS only. */
+/* Theme variables (one place). Light theme in :root; dark applies when the visitor picks "Escuro" (dark)
+   (data-theme="dark") or when the system is dark and they did not pick "Claro" (light). */
 
 
 
 
 
-/* Ritmo: seções um pouco mais próximas (a página fica mais curta sem apertar o conteúdo) */
+/* Rhythm: sections a little closer (the page gets shorter without crowding the content) */
 .sec {
   padding-block: clamp(56px, 7.5vw, 112px);
 }
@@ -5413,7 +5413,7 @@ img {
   margin-bottom: clamp(28px, 4.5vw, 56px);
 }
 
-/* Grade milimetrada com brilho, atrás do cabeçalho de algumas seções e do topo das páginas internas */
+/* Graph-paper grid with glow, behind the header of some sections and the top of inner pages */
 .organize,
 .review,
 .hero-inner {
@@ -5438,7 +5438,7 @@ img {
   mask-image: radial-gradient(80% 70% at 30% 20%, #000 30%, transparent 85%);
 }
 
-/* Cartões com o mesmo acabamento: borda fina, sombra em camadas, leve elevação no hover */
+/* Cards with the same finish: thin border, layered shadow, slight lift on hover */
 .people article,
 .review-card,
 .review-note,
@@ -5456,7 +5456,7 @@ img {
   }
 }
 
-/* Selos de prova (CREA-SP, ART, WhatsApp, desde 2017) em blocos com borda, estilo "bento" */
+/* Proof badges (CREA-SP, ART, WhatsApp, since 2017) in bordered blocks, "bento" style */
 .choices-cards-wrap .proof {
   gap: 12px;
 }
@@ -5469,7 +5469,7 @@ img {
   box-shadow: var(--card-shadow);
 }
 
-/* Quem somos: monograma no lugar da foto (até existir a foto) e cartões alinhados pelo topo */
+/* "Quem somos" (about us): monogram instead of the photo (until there is a photo) and cards aligned at the top */
 .people {
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
   align-items: start;
@@ -5495,9 +5495,9 @@ img {
   }
 }
 
-/* ── Efeitos inspirados no 21st.dev (feitos aqui, sem copiar código) ─────────────────────── */
+/* ── Effects inspired by 21st.dev (built here, no copied code) ──────────────────────────────── */
 
-/* Selo de avaliação acima do título (padrão "announcement pill" dos heroes) */
+/* Rating badge above the title ("announcement pill" pattern of heroes) */
 .badge-top {
   display: inline-flex;
   align-items: center;
@@ -5535,7 +5535,7 @@ img {
   }
 }
 
-/* Destaque em gradiente na frase do topo ("Equipe protegida.") */
+/* Gradient highlight on the top phrase ("Equipe protegida.") */
 .hero-triad .accent {
   background: linear-gradient(90deg, #7fe08c, #c9f7a8);
   -webkit-background-clip: text;
@@ -5546,13 +5546,13 @@ img {
 
 
 
-/* Marca gigante no fim do rodapé, com o texto sumindo para baixo */
+/* Giant logo at the end of the footer, with the text fading downwards */
 .footer {
   overflow: hidden;
 }
 
-/* Faixa da marca em pontos de meio-tom (components/ui/halftone-wordmark.tsx). O rodapé é escuro nos dois
-   temas, então as cores são fixas: pontos claros e translúcidos que esquentam para o verde. */
+/* Logo strip in halftone dots (components/ui/halftone-wordmark.tsx). The footer is dark in both
+   themes, so the colours are fixed: light translucent dots that warm up to green. */
 .hw-brand {
   position: relative;
   height: clamp(64px, 10.5vw, 220px);
@@ -5570,7 +5570,7 @@ img {
   height: 100%;
 }
 
-/* Sem JavaScript (e até o canvas desenhar) fica o texto com degradê de antes */
+/* Without JavaScript (and until the canvas draws) the earlier gradient text stays */
 .hw-brand-text {
   position: absolute;
   inset: auto 0 0;
@@ -5593,9 +5593,9 @@ img {
 }
 
 
-/* ── Páginas de serviço ───────────────────────────────────────────────────────────────────── */
+/* ── Service pages ────────────────────────────────────────────────────────────────────────── */
 
-/* Grade de serviços: cada cartão com a folha de exemplo em cima e o texto embaixo */
+/* Service grid: each card with the example sheet on top and the text below */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
@@ -5624,7 +5624,7 @@ img {
   }
 }
 
-/* Área da folha: fundo com grade milimetrada, folha centralizada e cortada embaixo (efeito "espiando") */
+/* Sheet area: graph-paper background, sheet centred and cut at the bottom ("peeking" effect) */
 .service-sheet {
   position: relative;
   height: 190px;
@@ -5699,7 +5699,7 @@ img {
   padding-top: 9px;
 }
 
-/* Situações comuns: cartões no tamanho do texto, em até 4 colunas */
+/* Common situations: cards sized to the text, in up to 4 columns */
 .situations-list {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
 }
@@ -5709,9 +5709,9 @@ img {
   font-size: clamp(1.05rem, 1.4vw, 1.2rem);
 }
 
-/* ── Correções da revisão geral ──────────────────────────────────────────────────────────── */
+/* ── Fixes from the general review ───────────────────────────────────────────────────────── */
 
-/* Blocos recolhíveis: no computador o botão some e o conteúdo fica sempre à mostra */
+/* Collapsible blocks: on desktop the button hides and the content is always shown */
 .collapse > summary {
   display: none;
 }
@@ -5748,7 +5748,7 @@ img {
   }
 }
 
-/* Onde atendemos: formas de atendimento em cartões */
+/* Where we work: service modes in cards */
 .modes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
@@ -5790,7 +5790,7 @@ img {
   border-color: transparent;
 }
 
-/* Lembrete: formulário + "como funciona" lado a lado no computador */
+/* Reminder: form + "como funciona" (how it works) side by side on desktop */
 .reminder-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -5885,7 +5885,7 @@ img {
   gap: 10px;
 }
 
-/* Guias: caixa "Em resumo" no topo do texto */
+/* Guides: "Em resumo" (summary) box at the top of the text */
 .summary-guide {
   margin: 0 0 clamp(28px, 4vw, 40px);
   padding: 22px 24px;
@@ -5922,7 +5922,7 @@ img {
   background: var(--accent);
 }
 
-/* Créditos: lista compacta, miniatura ao lado dos dados */
+/* Credits: compact list, thumbnail next to the details */
 .credits {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
   gap: 16px;
@@ -5956,12 +5956,12 @@ img {
   }
 }
 
-/* Rodapé: títulos agora são h3 (antes h4, pulando um nível) */
+/* Footer: headings are now h3 (before h4, skipping a level) */
 .footer .footer-title {
   margin: 0 0 14px;
 }
 
-/* Guias no celular: a pílula do WhatsApp vira o botão redondo, para não cobrir o texto enquanto se lê */
+/* Guides on phones: the WhatsApp pill becomes the round button, so it does not cover the text while reading */
 @media (max-width: 700px) {
   body:has(.article) .whatsapp-pill {
     width: 56px;
@@ -5973,8 +5973,8 @@ img {
   }
 }
 
-/* Fundo de curvas de nível (components/ui/topo-field) atrás da seção "Onde atendemos".
- * A cor das linhas é a cor de texto do canvas; some nas bordas para não brigar com o texto. */
+/* Contour-line background (components/ui/contour-field.tsx) behind the "Onde atendemos" section.
+ * The line colour is the canvas text colour; it fades at the edges so it does not fight the text. */
 .sec-top {
   position: relative;
   isolation: isolate;
@@ -6002,11 +6002,11 @@ img {
   }
 }
 
-/* Celular (rodada de responsividade, 27/10/2026). Fica no fim para vencer as regras anteriores.
- * - Cartões de área viram linhas compactas (foto à esquerda, texto à direita): a seção caiu de ~2.500 px.
- * - Abertura com título menor, para os botões caberem na primeira tela também em telas de 667 px.
- * - Cartões das páginas de serviço com a folha de exemplo mais baixa e menos espaço interno.
- * - Campos de formulário com 16 px: abaixo disso o iPhone dá zoom ao tocar no campo. */
+/* Phones (responsiveness round, 2026-10-27). Kept at the end so it wins over the earlier rules.
+ * - Area cards become compact rows (photo left, text right): the section dropped from ~2,500 px.
+ * - Opening with a smaller title, so the buttons fit the first screen on 667 px screens too.
+ * - Service page cards with a lower example sheet and less inner space.
+ * - Form fields at 16 px: below that the iPhone zooms in when the field is tapped. */
 @media (max-width: 600px) {
   .hero-bg .display {
     font-size: 2.05rem;
@@ -6104,9 +6104,9 @@ img {
   }
 }
 
-/* Pasta de documentos de exemplo (src/components/ui/3d-folder.tsx), nas páginas de área.
- * A pasta abre em perspectiva e solta três folhas em leque; a folha clicada amplia num painel.
- * Camadas: fundo e aba (1) < folhas (2) < frente e brilho (3). */
+/* Folder of example documents (src/components/ui/3d-folder.tsx), on the area pages.
+ * The folder opens in perspective and fans out three sheets; the clicked sheet enlarges in a panel.
+ * Layers: back and tab (1) < sheets (2) < front and shine (3). */
 .folder-band {
   display: grid;
   grid-template-columns: minmax(280px, 340px) 1fr;
@@ -6366,7 +6366,7 @@ img {
   }
 }
 
-/* Ampliação (renderizada no <body>) */
+/* Enlarged view (rendered in <body>) */
 .folder-viewer {
   position: fixed;
   inset: 0;
@@ -6444,7 +6444,7 @@ img {
   overscroll-behavior: contain;
 }
 
-/* Folha ampliada: abas (folha, página interna, como ler) e zoom */
+/* Enlarged sheet: tabs (sheet, inner page, how to read) and zoom */
 .sheet-reading {
   display: flex;
   flex-direction: column;
@@ -6721,7 +6721,7 @@ img {
   }
 }
 
-/* No celular as setas vão para baixo do painel */
+/* On phones the arrows move below the panel */
 @media (max-width: 640px) {
   .folder-viewer {
     align-items: start;
@@ -6765,10 +6765,10 @@ img {
   }
 }
 
-/* ===== Rodada 7: componentes da biblioteca de prompts ===== */
+/* ===== Round 7: components from the prompt library ===== */
 
-/* Carrossel de projetos: as vizinhas ficam recortadas em cima e embaixo e a imagem ativa abre por inteiro;
-   a legenda só aparece na ativa. */
+/* Project carousel: the neighbours are cropped top and bottom and the active image opens in full;
+   the caption only shows on the active one. */
 .carousel-projects .carousel-img {
   clip-path: inset(0 round clamp(16px, 2.2vw, 24px));
   transition: clip-path 480ms var(--ease);
@@ -6782,14 +6782,14 @@ img {
   transition: opacity 320ms var(--ease), visibility 0s;
 }
 
-/* visibility tira a legenda escondida do foco e do clique */
+/* visibility removes the hidden caption from focus and clicks */
 .carousel-projects .carousel-slide:not(.active) figcaption {
   opacity: 0;
   visibility: hidden;
   transition: opacity 320ms var(--ease), visibility 0s 320ms;
 }
 
-/* Como funciona: cartões que grudam no topo e se empilham (src/PilhaEtapas.jsx) */
+/* How it works: cards that stick to the top and stack (src/StepStack.jsx) */
 .stack {
   display: grid;
   gap: clamp(18px, 3vw, 28px);
@@ -6799,7 +6799,7 @@ img {
   list-style: none;
 }
 
-/* Só gruda em telas altas: em celular deitado ou com zoom, o fim do cartão ficaria escondido. */
+/* Only sticks on tall screens: on a phone in landscape or with zoom, the end of the card would be hidden. */
 @media (min-height: 640px) {
   .stack-item {
     position: sticky;
@@ -6873,7 +6873,7 @@ img {
   }
 }
 
-/* QR code do WhatsApp na seção de contato: só em telas com mouse (src/QrWhatsapp.jsx) */
+/* WhatsApp QR code in the contact section: only on screens with a mouse (src/WhatsappQr.jsx) */
 .qr-whatsapp {
   display: none;
   margin-top: 24px;
@@ -6936,7 +6936,7 @@ img {
 .qr-whatsapp-panel img {
   flex: none;
   display: block;
-  width: 196px; /* 49 módulos x 4 px: módulos iguais, sem serrilhado */
+  width: 196px; /* 49 modules x 4 px: equal modules, no jagged edges */
   height: 196px;
 }
 
@@ -6990,14 +6990,14 @@ img {
   }
 }
 
-/* Troca de aparência: o JS anima o círculo; aqui só desligamos o cross-fade padrão. */
+/* Theme switch: the JS animates the circle; here we only turn off the default cross-fade. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
-/* Ver o mapa (endereço na seção Contato da página inicial): o mapa só carrega depois do clique. */
+/* Show the map (address in the Contact section of the home page): the map only loads after the click. */
 .where-map {
   margin: 18px 0 0;
   animation: qr-open 320ms var(--ease) both;
@@ -7041,9 +7041,9 @@ img {
   }
 }
 
-/* ===== Revisão de conteúdo (28/10/2026) ===== */
+/* ===== Content review (2026-10-28) ===== */
 
-/* Contato: links do endereço e fundo de curvas de nível claro sobre o verde escuro */
+/* Contact: address links and light contour background over the dark green */
 .contact-links {
   display: flex;
   flex-wrap: wrap;
@@ -7085,7 +7085,7 @@ img {
   position: relative;
 }
 
-/* Quem somos: os dois cartões do mesmo tamanho; a formação completa abre numa janela */
+/* "Quem somos" (about us): both cards the same size; the full education opens in a dialog */
 .people {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -7108,7 +7108,7 @@ img {
   }
 }
 
-/* Janela (src/Janela.jsx): <dialog> nativo, entrada só com opacidade e escala */
+/* Dialog (src/Dialog.jsx): native <dialog>, entrance with opacity and scale only */
 .dialog {
   width: min(560px, calc(100% - 32px));
   max-height: calc(100dvh - 48px);
@@ -7192,7 +7192,7 @@ img {
   }
 }
 
-/* Guias: botão de resumo no canto do cartão (fora do link, para não aninhar controles) */
+/* Guides: summary button in the card corner (outside the link, so controls are not nested) */
 .guide-card {
   position: relative;
 }
@@ -7218,7 +7218,7 @@ img {
   outline-offset: 2px;
 }
 
-/* Perguntas frequentes: link para o guia completo */
+/* FAQ: link to the full guide */
 .faq-item .faq-guide {
   margin-top: -14px;
   padding-bottom: 24px;
@@ -7235,9 +7235,9 @@ img {
   }
 }
 
-/* ===== Rodada 8: chips do pedido, opções do lembrete, seta do Recomeçar ===== */
+/* ===== Round 8: request chips, reminder options, Recomeçar (restart) arrow ===== */
 
-/* Montar o pedido (MontarPedido.jsx): chips à esquerda, a mensagem à direita */
+/* Request builder (src/RequestBuilder.jsx): chips on the left, the message on the right */
 .request {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
@@ -7416,7 +7416,7 @@ img {
   }
 }
 
-/* Lembrete: o documento é escolhido numa lista de opções; a escolhida mostra a dica de prazo */
+/* Reminder: the document is chosen from a list of options; the chosen one shows the deadline tip */
 .doc-options {
   display: grid;
   gap: 8px;
@@ -7486,7 +7486,7 @@ img {
   }
 }
 
-/* Passo a passo: a seta do Recomeçar dá uma volta */
+/* Wizard: the Recomeçar (restart) arrow spins once */
 .wizard-restart-arrow {
   flex: 0 0 auto;
   transition: transform 520ms var(--ease);
@@ -7543,8 +7543,7 @@ img {
   color: var(--ink);
 }
 
-/* Aurora (src/Aurora.jsx): três manchas de luz que derivam; só transform, pausa fora da tela */
-/* Destaques em lima sobre fundo claro (texto legível) */
+/* Lime highlights on a light background (readable text) */
 .accent,
 .sec-n span {
   color: var(--lime-text);
@@ -7554,15 +7553,15 @@ img {
   color: var(--lime);
 }
 
-/* Botão principal com brilho lima ao passar o mouse */
+/* Primary button with a lime glow on hover */
 @media (hover: hover) and (pointer: fine) {
   .btn-whatsapp:hover {
     box-shadow: 0 0 0 4px rgba(155, 225, 93, 0.28), 0 14px 30px -14px rgba(12, 46, 28, 0.6);
   }
 }
 
-/* Carrossel 3D (coverflow): as vizinhas giram e diminuem conforme a distância do centro.
-   O giro é aplicado por script em .car-img (a faixa continua sendo scroll-snap). */
+/* 3D carousel (coverflow): the neighbours turn and shrink with the distance from the centre.
+   The turn is applied by script on .car-img (the strip is still scroll-snap). */
 .carousel-3d {
   --sw: 74%;
   --carousel-gap: 0px;
@@ -7598,7 +7597,7 @@ img {
   }
 }
 
-/* Movimento ao rolar: entrada com leve escala; listas entram em cascata (sem desfoque: filter em blocos grandes pesa no celular) */
+/* Motion on scroll: entrance with a slight scale; lists come in as a cascade (no blur: filter on large blocks is heavy on phones) */
 .reveal {
   transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
 }
@@ -7623,7 +7622,7 @@ img {
   transition-delay: 0.24s;
 }
 
-/* Barra de progresso de leitura no topo (src/Layout.jsx) */
+/* Reading progress bar at the top (src/layout/scrollEffects.jsx) */
 .progress-reading {
   position: fixed;
   top: 0;
@@ -7643,7 +7642,7 @@ img {
   }
 }
 
-/* Página inicial mais curta no celular: ritmo mais apertado, pessoas em linha, garantias em 2 colunas */
+/* Shorter home page on phones: tighter rhythm, people in a row, guarantees in 2 columns */
 .faq-more {
   margin-top: 20px;
 }
@@ -7689,7 +7688,7 @@ img {
   }
 }
 
-/* "Na prática": no celular as abas viram uma faixa que desliza de lado (antes, uma embaixo da outra) */
+/* "Na prática" (in practice): on phones the tabs become a strip that slides sideways (before, stacked) */
 @media (max-width: 600px) {
   #na-pratica .tabs {
     flex-wrap: nowrap;
@@ -7707,7 +7706,7 @@ img {
   }
 }
 
-/* Página inicial enxuta (2026-11-04): números dentro de "O que organizamos" e "Quem somos" dentro do Contato */
+/* Leaner home page (2026-11-04): numbers inside "O que organizamos" and "Quem somos" inside Contact */
 .numbers-line {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -7762,8 +7761,8 @@ img {
   margin-top: 24px;
 }
 
-/* ===== Animações 3D (2026-11-06) ===== */
-/* Cenas 3D das páginas de área: cartão escuro, texto à esquerda e cena à direita */
+/* ===== 3D animations (2026-11-06) ===== */
+/* 3D scenes of the area pages: dark card, text on the left and scene on the right */
 .band-scene { padding: clamp(40px, 6vw, 72px) 0; }
 .band-scene-grid {
   position: relative; isolation: isolate; overflow: hidden;
@@ -7781,7 +7780,7 @@ img {
 .scene3d { position: relative; width: 100%; aspect-ratio: 5 / 4; min-height: 260px; }
 .scene3d canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; opacity: 0; transition: opacity .8s var(--ease); }
 .scene3d.scene-ready canvas { opacity: 1; }
-/* sem WebGL ou antes de carregar: curvas de nível desenhadas só com CSS */
+/* without WebGL or before loading: contour lines drawn with CSS only */
 .scene3d::before {
   content: ""; position: absolute; inset: 8%; border-radius: 50%;
   background: repeating-radial-gradient(circle at 55% 45%, transparent 0 14px, rgba(155, 225, 93, .28) 14px 15px);
@@ -7793,7 +7792,7 @@ img {
   .scene3d { aspect-ratio: 4 / 3; min-height: 220px; }
 }
 
-/* Painel da página inicial que se endireita ao rolar (rotateX a partir de --p) */
+/* Home page panel that straightens while scrolling (rotateX from --p) */
 .tilt3d { perspective: 1100px; }
 .tilt3d-frame { transform-origin: 50% 100%; }
 .tilt3d.tilt-active .tilt3d-frame {
@@ -7803,16 +7802,16 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .tilt3d.tilt-active .tilt3d-frame { transform: none; }
 }
-/* Giro livre das cenas 3D: cursor de "pegar" e sem seleção de texto ao arrastar */
+/* Free rotation of the 3D scenes: "grab" cursor and no text selection while dragging */
 .scene3d canvas { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
 .scene3d.scene-dragging canvas { cursor: grabbing; }
 
 /* =====================================================================================================
-   Redesign pela skill "redesign-existing-projects" (elayadesign, MIT), aplicada inteira pelo dono em
-   2026-11-06: fonte Manrope; fundos neutros (escuro só #181818/#1F1F1F/#272727/#313131/#131209);
-   um único destaque (verde no claro, lima no escuro); nenhum degradê de fundo (só o título do topo);
-   sem faixas escuras dentro do tema claro; curva única de movimento; estados de clique; ícones Phosphor.
-   Fica no fim do arquivo para valer sobre as regras antigas.
+   Redesign with the "redesign-existing-projects" skill (elayadesign, MIT), applied in full by the owner on
+   2026-11-06: Manrope font; neutral backgrounds (dark only #181818/#1F1F1F/#272727/#313131/#131209);
+   a single accent (green in light, lime in dark); no background gradients (only the top title);
+   no dark bands inside the light theme; one motion curve; press states; Phosphor icons.
+   Kept at the end of the file so it wins over the older rules.
    ===================================================================================================== */
 
 .contact-text,
@@ -7826,7 +7825,7 @@ img {
   border: 1px solid var(--line);
 }
 
-/* Rodapé no tom da página */
+/* Footer in the page tone */
 .footer {
   background: var(--footer-bg);
   color: var(--muted);
@@ -7861,7 +7860,7 @@ img {
   color: var(--paper);
 }
 
-/* Véu chapado sobre as fotos do topo (sem degradê) */
+/* Flat veil over the top photos (no gradient) */
 .hero-scrim {
   background: rgba(12, 12, 12, 0.68);
 }
@@ -7894,8 +7893,8 @@ img {
   background: var(--accent);
 }
 
-/* O único degradê permitido: o título do topo, só no texto, da esquerda para a direita.
-   O topo é sempre escuro (foto com véu), então usa o degradê do tema escuro. */
+/* The only allowed gradient: the top title, text only, left to right.
+   The top is always dark (photo with veil), so it uses the dark theme gradient. */
 .hero-content h1.display,
 .hero-home h1.display,
 .hero-area-bg h1.display {
@@ -7907,7 +7906,7 @@ img {
   text-wrap: balance;
 }
 
-/* Bloco 3D das páginas de área: cartão chapado no tom do tema */
+/* 3D block of the area pages: flat card in the theme tone */
 .band-scene-grid {
   background: var(--surface);
   color: var(--ink);
@@ -7937,7 +7936,7 @@ img {
   color: var(--ink);
 }
 
-/* Estados: todo elemento clicável "afunda" um pouco ao clicar (scale 0.98) */
+/* States: every clickable element "sinks" a little on click (scale 0.98) */
 .btn:active,
 .card-area:active,
 .tabs button:active,
@@ -7953,7 +7952,7 @@ img {
   font-variant-numeric: tabular-nums;
 }
 
-/* Visualizador de fotos (src/Ampliar.jsx): tela cheia escura, foto no meio, barra com legenda e botões */
+/* Photo viewer (src/PhotoViewer.jsx): dark full screen, photo in the middle, bar with caption and buttons */
 html.viewer-open { overflow: hidden; }
 .viewer {
   position: fixed;
@@ -8044,7 +8043,7 @@ html.viewer-open { overflow: hidden; }
   .viewer-hint { display: none; }
 }
 
-/* Perguntas frequentes em duas colunas (telas largas): lista à esquerda, resposta à direita */
+/* FAQ in two columns (wide screens): list on the left, answer on the right */
 .faq-side {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -8102,7 +8101,7 @@ html.viewer-open { overflow: hidden; }
 .faq-answer p { margin: 0 0 16px; color: var(--muted); max-width: 65ch; text-wrap: pretty; }
 .faq-followup { font-size: 14px; }
 
-/* Título do topo na escala da skill: 36/36 no celular, 48/48 no tablet, 60/60 no computador */
+/* Top title on the skill scale: 36/36 on phones, 48/48 on tablets, 60/60 on desktop */
 .hero-home h1.display,
 .hero-area-bg h1.display {
   font-size: 36px;
@@ -8125,7 +8124,7 @@ html.viewer-open { overflow: hidden; }
 }
 .faq-list:has(.faq-side) { max-width: none; }
 
-/* Marketing (skills copywriting/cro): um botão principal, a segunda opção como link, redução de risco perto do botão */
+/* Marketing (copywriting/cro skills): one primary button, the second option as a link, risk reduction near the button */
 .hero-link { color: #ededed; font-weight: 600; }
 .hero-link:hover { color: #fff; }
 .hero-risk { margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #d6d6d6; }
@@ -8146,7 +8145,7 @@ html.viewer-open { overflow: hidden; }
   }
 }
 
-/* Selos de confiança: sem cara de cartão, só divisórias finas (skill: cartão só onde a elevação diz algo) */
+/* Trust badges: no card look, only thin dividers (skill: a card only where elevation means something) */
 .choices-cards-wrap .proof li,
 .proof li {
   background: none;
@@ -8157,7 +8156,7 @@ html.viewer-open { overflow: hidden; }
   padding: 4px 0 4px 16px;
 }
 
-/* Frase que acende palavra por palavra (src/FraseRevela.jsx) */
+/* Phrase that lights up word by word (src/RevealPhrase.jsx) */
 .phrase-reveal-sec { padding: 64px 0; }
 .phrase-reveal {
   margin: 0;
@@ -8176,8 +8175,8 @@ html.viewer-open { overflow: hidden; }
 .phrase-reveal.phrase-active span { opacity: 0.28; transition: opacity 300ms var(--ease); }
 .phrase-reveal.phrase-active span.lit { opacity: 1; }
 
-/* Menu do celular em tela cheia, itens entrando em sequência (skill: 60 ms entre itens, total até 400 ms,
-   cada um sobe 24 px enquanto aparece). Com "reduzir movimento", sem animação. */
+/* Full-screen phone menu, items entering in sequence (skill: 60 ms between items, up to 400 ms in total,
+   each rises 24 px as it appears). With "reduce motion", no animation. */
 @media (max-width: 899px) {
   .menu-mobile.open {
     position: absolute;
@@ -8207,19 +8206,19 @@ html.viewer-open { overflow: hidden; }
   .menu-mobile.open > * { animation: none; }
 }
 
-/* ===== Ajustes da auditoria Designesy (2026-11-06) ===== */
+/* ===== Designesy audit fixes (2026-11-06) ===== */
 
-/* Cores nomeadas pela FUNÇÃO (não pela cor) e cores de estado ok / aviso / erro / informação.
-   Os nomes antigos (--paper, --ink, --green…) continuam valendo; estes são os nomes de referência. */
+/* Colours named by ROLE (not by colour) and state colours ok / warning / error / info.
+   The old names (--paper, --ink, --green…) still work; these are the reference names. */
 .error-form,
 [data-theme="dark"] .error-form { color: var(--error); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .error-form { color: var(--error); }
 }
-/* "Vence em 30 dias" é um aviso: anel na cor de aviso */
+/* "Vence em 30 dias" (expires in 30 days) is a warning: ring in the warning colour */
 .chip-expiring { box-shadow: inset 0 0 0 1.5px var(--warn); }
 
-/* Áreas de toque de pelo menos 44 px (WCAG 2.5.5) nos botões que estavam com 34–36 px */
+/* Touch areas of at least 44 px (WCAG 2.5.5) on the buttons that were 34–36 px */
 .theme button,
 .search-suggestions button,
 .guide-summary-button,
@@ -8229,7 +8228,7 @@ html.viewer-open { overflow: hidden; }
 }
 .theme button { padding-inline: 16px; }
 
-/* Alto contraste do Windows (forced colors): bordas e foco visíveis, sem depender de sombra ou fundo */
+/* Windows High Contrast (forced colors): visible borders and focus, without relying on shadow or background */
 @media (forced-colors: active) {
   .btn,
   .card-area,

@@ -63,8 +63,8 @@ export function SectionNav({ items, label = "Nesta página" }) {
   );
 
   return (
-    <div className="secoes">
-      <div className="secoes-inner">
+    <div className="section-nav">
+      <div className="section-nav-inner">
         <LiquidNavbar
           items={barItems}
           active={active}
