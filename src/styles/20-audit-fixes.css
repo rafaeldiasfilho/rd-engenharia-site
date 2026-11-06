@@ -1,0 +1,82 @@
+/* Site styles, part 20: Designesy audit fixes (role colours, touch areas, forced colours).
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* ===== Designesy audit fixes (2026-11-06) ===== */
+
+/* Colours named by ROLE (not by colour) and state colours ok / warning / error / info.
+   The old names (--paper, --ink, --green…) still work; these are the reference names. */
+.error-form,
+[data-theme="dark"] .error-form { color: var(--error); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .error-form { color: var(--error); }
+}
+/* "Vence em 30 dias" (expires in 30 days) is a warning: ring in the warning colour */
+.chip-expiring { box-shadow: inset 0 0 0 1.5px var(--warn); }
+
+/* Touch areas of at least 44 px (WCAG 2.5.5) on the buttons that were 34–36 px */
+.theme button,
+.search-suggestions button,
+.guide-summary-button,
+.sheet-zoom,
+.template-sheet th button {
+  min-height: 44px;
+}
+.theme button { padding-inline: 16px; }
+
+/* Windows High Contrast (forced colors): visible borders and focus, without relying on shadow or background */
+@media (forced-colors: active) {
+  .btn,
+  .card-area,
+  .faq-questions button,
+  .faq-answer,
+  .form,
+  .band-scene-grid,
+  .panel,
+  .chip,
+  .theme button,
+  .viewer button,
+  .menu-panel,
+  .search-home {
+    border: 1px solid CanvasText;
+  }
+  .btn-whatsapp,
+  .theme button[aria-pressed="true"],
+  .faq-questions button[aria-pressed="true"] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+  :focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+  .hero-scrim { background: Canvas; opacity: 0.7; }
+  .hero-home h1.display,
+  .hero-area-bg h1.display {
+    background: none;
+    color: CanvasText;
+  }
+  .scene3d canvas,
+  .progress-reading { forced-color-adjust: none; }
+}
+.contact-map-button,
+.contact-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.btn,
+.request-chip {
+  min-height: 44px;
+}
+
+/* Contour-line field (contour-field.tsx): fills its block and ignores clicks */
+.contour-field { display: block; width: 100%; height: 100%; pointer-events: none; }
+
+/* Cards that host absolutely positioned details */
+.service-card,
+.modes-card:not(.modes-card-featured),
+.people article,
+.review-card {
+  position: relative;
+}

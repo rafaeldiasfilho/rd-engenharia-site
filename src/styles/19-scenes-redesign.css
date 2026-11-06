@@ -1,0 +1,447 @@
+/* Site styles, part 19: 3D scenes and the 2026-11-06 redesign.
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* ===== 3D animations (2026-11-06) ===== */
+/* 3D scenes of the area pages: dark card, text on the left and scene on the right */
+.band-scene { padding: clamp(40px, 6vw, 72px) 0; }
+.band-scene-grid {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: grid; grid-template-columns: 1fr 1.15fr; align-items: center; gap: 24px;
+  border-radius: 24px; padding: clamp(24px, 4vw, 48px);
+  background: radial-gradient(120% 90% at 80% 30%, #18452a 0%, #0c2e1c 55%, #071a10 100%);
+  color: #eaf5e4;
+  box-shadow: 0 30px 60px -30px rgba(4, 20, 10, .6);
+}
+.band-scene-text { position: relative; z-index: 1; max-width: 46ch; }
+.band-scene-text .label-mini { color: var(--lime); }
+.band-scene-text .sec-title { color: #fff; }
+.band-scene-text p { color: #cfe3c8; }
+.band-scene-text .fine-print { color: #9fbf98; }
+.scene3d { position: relative; width: 100%; aspect-ratio: 5 / 4; min-height: 260px; }
+.scene3d canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; opacity: 0; transition: opacity .8s var(--ease); }
+.scene3d.scene-ready canvas { opacity: 1; }
+/* without WebGL or before loading: contour lines drawn with CSS only */
+.scene3d::before {
+  content: ""; position: absolute; inset: 8%; border-radius: 50%;
+  background: repeating-radial-gradient(circle at 55% 45%, transparent 0 14px, rgba(155, 225, 93, .28) 14px 15px);
+  transition: opacity .8s var(--ease);
+}
+.scene3d.scene-ready::before { opacity: 0; }
+@media (max-width: 760px) {
+  .band-scene-grid { grid-template-columns: 1fr; }
+  .scene3d { aspect-ratio: 4 / 3; min-height: 220px; }
+}
+
+/* Home page panel that straightens while scrolling (rotateX from --p) */
+.tilt3d { perspective: 1100px; }
+.tilt3d-frame { transform-origin: 50% 100%; }
+.tilt3d.tilt-active .tilt3d-frame {
+  transform: rotateX(calc((1 - var(--p, 0)) * 22deg)) scale(calc(.9 + var(--p, 0) * .1)) translateY(calc((1 - var(--p, 0)) * 24px));
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tilt3d.tilt-active .tilt3d-frame { transform: none; }
+}
+/* Free rotation of the 3D scenes: "grab" cursor and no text selection while dragging */
+.scene3d canvas { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.scene3d.scene-dragging canvas { cursor: grabbing; }
+
+/* =====================================================================================================
+   Redesign with the "redesign-existing-projects" skill (elayadesign, MIT), applied in full by the owner on
+   2026-11-06: Manrope font; neutral backgrounds (dark only #181818/#1F1F1F/#272727/#313131/#131209);
+   a single accent (green in light, lime in dark); no background gradients (only the top title);
+   no dark bands inside the light theme; one motion curve; press states; Phosphor icons.
+   Kept at the end of the file so it wins over the older rules.
+   ===================================================================================================== */
+
+.contact-text,
+.contact-data dt {
+  color: var(--muted);
+}
+.contact-data div {
+  border-top-color: var(--line);
+}
+.form {
+  border: 1px solid var(--line);
+}
+
+/* Footer in the page tone */
+.footer {
+  background: var(--footer-bg);
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+.footer-brand,
+.footer h4,
+.footer .footer-title {
+  color: var(--ink);
+}
+.footer :focus-visible {
+  outline-color: var(--accent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer a:hover {
+    color: var(--ink);
+  }
+  .theme button:hover {
+    border-color: var(--ink);
+  }
+}
+.footer-end {
+  border-top-color: var(--line);
+}
+.theme button {
+  border-color: var(--line);
+  color: var(--muted);
+}
+.theme button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+/* Flat veil over the top photos (no gradient) */
+.hero-scrim {
+  background: rgba(12, 12, 12, 0.68);
+}
+.card-area-photo {
+  background: var(--green-light);
+}
+.timeline::before {
+  background: var(--line);
+}
+.review::before,
+.hero-inner::before {
+  background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 32px 32px, 32px 32px;
+}
+.person-initials {
+  background: var(--green);
+}
+.hero-triad .accent {
+  background: none;
+  color: #b8f07c;
+}
+.hw-brand-text {
+  background: none;
+  color: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.folder-card-title {
+  background: rgba(18, 18, 18, 0.72);
+}
+.progress-reading {
+  background: var(--accent);
+}
+
+/* The only allowed gradient: the top title, text only, left to right.
+   The top is always dark (photo with veil), so it uses the dark theme gradient. */
+.hero-content h1.display,
+.hero-home h1.display,
+.hero-area-bg h1.display {
+  background: linear-gradient(90deg, #ffffff, #9b9b9b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  max-width: 680px;
+  text-wrap: balance;
+}
+
+/* 3D block of the area pages: flat card in the theme tone */
+.band-scene-grid {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 48px -32px color-mix(in srgb, var(--ink) 30%, transparent);
+}
+.band-scene-text .label-mini {
+  color: var(--accent);
+}
+.band-scene-text .sec-title {
+  color: var(--ink);
+}
+.band-scene-text p {
+  color: var(--muted);
+}
+.band-scene-text .fine-print {
+  color: var(--muted);
+}
+.scene3d::before {
+  background: repeating-radial-gradient(circle at 55% 45%, transparent 0 14px, color-mix(in srgb, var(--accent) 30%, transparent) 14px 15px);
+}
+.qr-whatsapp-button {
+  border-color: var(--line);
+  color: var(--ink);
+}
+.contact-people-title {
+  color: var(--ink);
+}
+
+/* States: every clickable element "sinks" a little on click (scale 0.98) */
+.btn:active,
+.card-area:active,
+.tabs button:active,
+.chip:active,
+.faq-item summary:active,
+.link-arrow:active {
+  transform: scale(0.98);
+}
+
+.numbers-line strong,
+.panel-number strong,
+.organize strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Photo viewer (src/PhotoViewer.jsx): dark full screen, photo in the middle, bar with caption and buttons */
+html.viewer-open { overflow: hidden; }
+.viewer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.92);
+  color: #ededed;
+  overflow: hidden;
+}
+.viewer::backdrop { background: transparent; }
+.viewer-stage {
+  position: absolute;
+  inset: 56px 16px 72px;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  touch-action: none;
+  cursor: zoom-in;
+}
+.viewer-stage img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+.viewer-stage img.with-zoom { cursor: grab; border-radius: 0; }
+.viewer-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+}
+.viewer-caption { margin: 0; font-size: 14px; line-height: 20px; color: #d6d6d6; text-wrap: pretty; }
+.viewer-counter { margin-right: 12px; color: #9b9b9b; font-variant-numeric: tabular-nums; }
+.viewer-buttons { display: flex; gap: 8px; }
+.viewer button {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: #1f1f1f;
+  color: #ededed;
+  cursor: pointer;
+  transition: background-color 300ms var(--ease), transform 200ms var(--ease);
+}
+.viewer button:active { transform: scale(0.98); }
+.viewer button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .viewer button:hover { background: #313131; }
+}
+.viewer-arrow { position: absolute; top: 50%; transform: translateY(-50%); }
+.viewer-arrow:active { transform: translateY(-50%) scale(0.98); }
+.viewer-prev { left: 16px; }
+.viewer-next { right: 16px; }
+.viewer-hint {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: #9b9b9b;
+}
+@media (max-width: 700px) {
+  .viewer-arrow { display: none; }
+  .viewer-stage { inset: 48px 8px 72px; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .viewer-hint { display: none; }
+}
+
+/* FAQ in two columns (wide screens): list on the left, answer on the right */
+.faq-side {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px;
+  align-items: start;
+}
+.faq-questions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.faq-questions li { border-bottom: 1px solid var(--line); }
+.faq-questions button {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: left;
+  cursor: pointer;
+  text-wrap: pretty;
+  transition: background-color 300ms var(--ease), color 300ms var(--ease);
+}
+.faq-questions button[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .faq-questions button:hover { color: var(--ink); }
+}
+.faq-answer {
+  position: sticky;
+  top: calc(var(--header-h) + var(--sections-h) + 16px);
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.faq-answer h3 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  text-wrap: balance;
+}
+.faq-answer p { margin: 0 0 16px; color: var(--muted); max-width: 65ch; text-wrap: pretty; }
+.faq-followup { font-size: 14px; }
+
+/* Top title on the skill scale: 36/36 on phones, 48/48 on tablets, 60/60 on desktop */
+.hero-home h1.display,
+.hero-area-bg h1.display {
+  font-size: 36px;
+  line-height: 40px;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 700px) {
+  .hero-home h1.display,
+  .hero-area-bg h1.display {
+    font-size: 48px;
+    line-height: 48px;
+  }
+}
+@media (min-width: 1100px) {
+  .hero-home h1.display,
+  .hero-area-bg h1.display {
+    font-size: 60px;
+    line-height: 60px;
+  }
+}
+.faq-list:has(.faq-side) { max-width: none; }
+
+/* Marketing (copywriting/cro skills): one primary button, the second option as a link, risk reduction near the button */
+.hero-link { color: #ededed; font-weight: 600; }
+.hero-link:hover { color: #fff; }
+.hero-risk { margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #d6d6d6; }
+
+/* Area cards on desktop: zig-zag grid (wide + narrow, then narrow + wide). Every photo has the same height
+   and fills it, so the four cards line up and no card has an empty band. */
+@media (min-width: 1100px) {
+  .choices-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .choices-cards > li:nth-child(1),
+  .choices-cards > li:nth-child(4) {
+    grid-column: span 2;
+  }
+  .choices-cards .card-area-photo {
+    aspect-ratio: auto;
+    height: 240px;
+  }
+}
+
+/* Trust badges: no card look, only thin dividers (skill: a card only where elevation means something) */
+.choices-cards-wrap .proof li,
+.proof li {
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 4px 0 4px 16px;
+}
+
+/* Phrase that lights up word by word (src/RevealPhrase.jsx) */
+.phrase-reveal-sec { padding: 64px 0; }
+.phrase-reveal {
+  margin: 0;
+  max-width: 900px;
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+@media (min-width: 900px) {
+  .phrase-reveal { font-size: 48px; line-height: 52px; }
+  .phrase-reveal-sec { padding: 96px 0; }
+}
+.phrase-reveal.phrase-active span { opacity: 0.28; transition: opacity 300ms var(--ease); }
+.phrase-reveal.phrase-active span.lit { opacity: 1; }
+
+/* Full-screen phone menu, items entering in sequence (skill: 60 ms between items, up to 400 ms in total,
+   each rises 24 px as it appears). With "reduce motion", no animation. */
+@media (max-width: 899px) {
+  .menu-mobile.open {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: calc(100dvh - var(--header-h));
+    max-height: none;
+    padding: 8px 20px calc(32px + env(safe-area-inset-bottom));
+  }
+  .menu-mobile.open > * {
+    animation: menu-enter 500ms var(--ease) both;
+  }
+  .menu-mobile.open > :nth-child(2) { animation-delay: 60ms; }
+  .menu-mobile.open > :nth-child(3) { animation-delay: 120ms; }
+  .menu-mobile.open > :nth-child(4) { animation-delay: 180ms; }
+  .menu-mobile.open > :nth-child(5) { animation-delay: 240ms; }
+  .menu-mobile.open > :nth-child(6) { animation-delay: 300ms; }
+  .menu-mobile.open > :nth-child(7) { animation-delay: 360ms; }
+  .menu-mobile.open > :nth-child(n + 8) { animation-delay: 400ms; }
+  .menu-mobile.open .btn { margin-top: 24px; min-height: 52px; justify-content: center; }
+}
+@keyframes menu-enter {
+  from { opacity: 0; transform: translateY(24px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-mobile.open > * { animation: none; }
+}

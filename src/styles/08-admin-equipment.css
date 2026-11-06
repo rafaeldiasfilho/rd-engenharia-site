@@ -1,0 +1,423 @@
+/* Site styles, part 08: internal area, equipment list and translucent materials.
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* Internal area */
+.admin-top {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-top-inner {
+  width: min(1120px, 100% - 40px);
+  margin-inline: auto;
+  min-height: 64px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+
+.admin-top nav {
+  display: flex;
+  gap: 6px;
+  margin-right: auto;
+}
+
+.admin-top button {
+  font: inherit;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.admin-top nav button[aria-pressed="true"] {
+  background: var(--green-light);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.admin-content {
+  width: min(1120px, 100% - 40px);
+  margin: 28px auto 80px;
+  display: grid;
+  gap: 16px;
+}
+
+.admin-login {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.admin-login .form {
+  width: min(420px, 100%);
+  border: 1px solid var(--line);
+}
+
+.admin-login h1 {
+  font-size: 1.4rem;
+}
+
+.admin-notice {
+  background: var(--green-light);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+}
+
+.admin-error {
+  background: #fde8e8;
+  color: #8a1c1c;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+}
+
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.admin-summary div {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.admin-summary strong {
+  display: block;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--accent);
+}
+
+.admin-summary span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.admin-title {
+  font-size: 1.2rem;
+  margin-top: 12px;
+}
+
+.admin-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.admin-title-line label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.admin select,
+.admin input:not([type="checkbox"]),
+.admin textarea {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  min-width: 0;
+}
+
+.admin-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.admin-line > div:first-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-line span,
+.admin-line small {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.admin-overdue {
+  color: #b42318 !important;
+  font-weight: 600;
+}
+
+.admin-none {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-actions .btn {
+  padding: 9px 14px;
+}
+
+.admin-empty {
+  color: var(--muted);
+  padding: 8px 0;
+}
+
+.admin-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-bar input {
+  flex: 1 1 260px;
+}
+
+.admin-form {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.admin-field {
+  display: grid;
+  gap: 5px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+  font-weight: 400;
+  width: 100%;
+}
+
+.admin-record {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.admin-record h2 {
+  font-size: 1.3rem;
+}
+
+.admin-record dl {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-record dt {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.admin-record dd {
+  margin: 0;
+}
+
+.admin-backup {
+  margin-top: 12px;
+}
+
+.admin-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  cursor: pointer;
+}
+
+.admin-consent input {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+  flex: none;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(24px, 4vw, 56px);
+}
+
+.choices li {
+  border-top: 1px solid var(--line);
+}
+
+.choices a {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) 1.6rem;
+  gap: 8px 12px;
+  align-items: start;
+  min-height: 44px;
+  padding: clamp(18px, 2.4vw, 28px) 0;
+  transition: transform 200ms var(--ease);
+}
+
+.choices a:active {
+  transform: scale(0.985);
+}
+
+@media (max-width: 760px) {
+  .choices {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Equipment that may be used */
+.equipment {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(24px, 3.5vw, 44px);
+  min-width: 0;
+}
+
+/* without this the card strip stretches the column and the page scrolls sideways on phones */
+.equipment > * {
+  min-width: 0;
+}
+
+.equipment-lead {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  max-width: 44em;
+}
+
+.equipment .carousel {
+  margin-top: 0;
+}
+
+/* Equipment list in numbered blocks (before: rows with a ruler) */
+.equipment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: eq;
+}
+
+.equipment-list li {
+  counter-increment: eq;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.equipment-list li::before {
+  content: counter(eq, decimal-leading-zero);
+  justify-self: start;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--green-light);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Translucent materials: solid version when the system asks for less transparency or more contrast */
+@media (prefers-reduced-transparency: reduce) {
+  .top {
+    background: var(--paper);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  /* the pill glass has its own style (outside the layers), hence the !important */
+  .section-nav .nimbus-glass {
+    background: var(--paper) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .top {
+    background: var(--paper);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-bottom-color: var(--ink);
+  }
+  /* the pill glass has its own style (outside the layers), hence the !important */
+  .section-nav .nimbus-glass {
+    background: var(--paper) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    outline: 1px solid var(--ink);
+    outline-offset: -1px;
+  }
+}
+
+.footer-logo {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.footer-logo img {
+  display: block;
+  width: 168px;
+  height: auto;
+}

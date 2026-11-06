@@ -1,0 +1,497 @@
+/* Site styles, part 06: footer, guides, public forms, credits and icons.
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* Footer */
+.footer {
+  background: var(--footer-bg);
+  color: #d4dbd5;
+  font-size: 0.95rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.1fr;
+  gap: 40px;
+  padding: 64px 0 40px;
+}
+
+.footer-brand {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.footer p + p {
+  margin-top: 4px;
+}
+
+.footer h4,
+.footer .footer-title {
+  color: #fff;
+  font-size: 0.8rem;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  margin-bottom: 14px;
+}
+
+.footer li + li {
+  margin-top: 8px;
+}
+
+.footer a {
+  text-underline-offset: 3px;
+}
+
+.footer :focus-visible {
+  outline-color: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+.footer-end {
+  width: min(1200px, 100% - 40px);
+  margin: 0 auto;
+  padding: 20px 76px 32px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 700px) {
+  .footer-end {
+    width: min(1200px, 100% - 64px);
+  }
+}
+
+.footer-end p {
+  opacity: 0.72;
+}
+
+.theme {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.theme span {
+  opacity: 0.72;
+  margin-right: 4px;
+}
+
+.theme button {
+  font: inherit;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: #d4dbd5;
+  cursor: pointer;
+  transition: background-color 300ms var(--ease), color 300ms var(--ease), border-color 300ms var(--ease), transform 200ms var(--ease);
+}
+
+.theme button:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .theme button:hover {
+    border-color: #fff;
+  }
+}
+
+.theme button[aria-pressed="true"] {
+  background: #fff;
+  border-color: #fff;
+  color: #17211b;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .footer-grid > div:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.whatsapp-float {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #061a0f;
+  font-size: 1.8rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: transform 200ms var(--ease);
+}
+
+.whatsapp-float:active {
+  transform: scale(0.96);
+}
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -80px;
+  z-index: 100;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 600;
+}
+
+.skip:focus {
+  top: 12px;
+}
+
+/* Guides */
+.article-sec {
+  padding-top: 0;
+}
+
+.article p {
+  margin-bottom: 22px;
+  font-size: 1.15rem;
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+
+.article .article-lead {
+  font-size: clamp(1.3rem, 2.4vw, 1.6rem);
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+}
+
+.article h2 {
+  font-size: 1.7rem;
+  margin: 52px 0 14px;
+}
+
+.notice-guide {
+  font-size: 0.95rem;
+  color: var(--muted);
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin: 24px 0;
+}
+
+.more-links {
+  font-size: 0.98rem;
+}
+
+.profiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  padding: 18px 20px;
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 300ms var(--ease), background-color 300ms var(--ease), transform 200ms var(--ease);
+}
+
+.profile:active {
+  transform: scale(0.98);
+}
+
+.profile .icon {
+  font-size: 1.4rem;
+  color: var(--accent);
+}
+
+.profile.active {
+  border-color: var(--accent);
+  background: var(--green-light);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .profile:hover {
+    border-color: var(--accent);
+  }
+}
+
+.situations,
+.results {
+  display: grid;
+  gap: 10px;
+}
+
+.situation {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-height: 56px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.situation input {
+  margin-top: 4px;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+  flex: none;
+}
+
+.result {
+  background: var(--green-light);
+  border-radius: 18px;
+  padding: 20px 24px;
+}
+
+.result h3 {
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.result p {
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.result a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.quiz-city {
+  display: grid;
+  gap: 6px;
+  margin: 24px 0;
+  font-weight: 600;
+}
+
+.quiz-city input {
+  font: inherit;
+  font-weight: 400;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+/* Public forms */
+.form-public {
+  display: grid;
+  gap: 18px;
+  max-width: 560px;
+}
+
+.form-public label {
+  display: grid;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.form-public input:not([type="checkbox"]):not([type="radio"]),
+.form-public select {
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  min-height: 48px;
+  padding: 12px 14px;
+  width: 100%;
+  min-width: 0;
+}
+
+.form-public input:focus-visible,
+.form-public select:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.form-public .consent {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.form-public .consent input {
+  margin-top: 4px;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+
+.form-public .consent a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.form-public .is-hidden {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.hint-doc {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.error-form {
+  color: #b3261e;
+  margin: 0;
+}
+
+[data-theme="dark"] .error-form {
+  color: #ff8a80;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .error-form {
+    color: #ff8a80;
+  }
+}
+
+.notice-ok {
+  max-width: 560px;
+  background: var(--green-light);
+  border-radius: 20px;
+  padding: 28px;
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+
+.notice-ok h2 {
+  margin: 0;
+}
+
+/* Credits */
+.credits {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px 32px;
+}
+
+.credits li {
+  display: grid;
+  gap: 16px;
+}
+
+.credits img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 18px;
+  outline: 1px solid var(--img-outline);
+  outline-offset: -1px;
+}
+
+.credits dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.credits dt {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.credits dd {
+  margin: 0;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.credits dd a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.credits-others {
+  margin: clamp(48px, 7vw, 88px) 0 0;
+  width: min(720px, 100%);
+}
+
+.credits-others h2 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.credits-others p {
+  color: var(--muted);
+}
+
+@media (max-width: 700px) {
+  .credits {
+    grid-template-columns: 1fr;
+  }
+}
+
+.not-found {
+  padding: clamp(64px, 12vw, 160px) 0;
+}
+
+/* Icons */
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  flex: none;
+}

@@ -1,0 +1,223 @@
+/* Site styles, part 02: page structure, soft entrance and buttons.
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* Page structure */
+.wrap,
+.container {
+  width: min(1200px, 100% - 40px);
+  margin-inline: auto;
+}
+
+@media (min-width: 700px) {
+  .wrap,
+  .container {
+    width: min(1200px, 100% - 64px);
+  }
+}
+
+.container-reading {
+  width: min(720px, 100% - 40px);
+  margin-inline: auto;
+}
+
+.sec {
+  padding-block: clamp(72px, 10vw, 140px);
+}
+
+.sec-alt {
+  background: var(--surface);
+  border-block: 1px solid var(--line);
+}
+
+.sec-fine {
+  padding-bottom: clamp(48px, 7vw, 96px);
+}
+
+.sec-head {
+  margin-bottom: clamp(36px, 6vw, 72px);
+}
+
+.sec-n,
+.label-mini,
+.eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.sec-n {
+  border-top: 1px solid var(--ink);
+  padding-top: 14px;
+  margin-bottom: clamp(22px, 3vw, 36px);
+}
+
+.sec-n span {
+  color: var(--accent);
+  margin-right: 14px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.sec-title {
+  font-size: clamp(2rem, 4.8vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  max-width: 20ch;
+}
+
+.display {
+  font-size: clamp(2.3rem, 6.2vw, 5rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  max-width: 17ch;
+}
+
+.display-m {
+  font-size: clamp(2.2rem, 5.4vw, 4.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  max-width: 20ch;
+}
+
+.lead {
+  font-size: clamp(1.1rem, 1.7vw, 1.4rem);
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 40em;
+  text-wrap: pretty;
+}
+
+.sec-head .lead,
+.hero-inner .lead {
+  margin-top: 22px;
+}
+
+.fine-print {
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  max-width: 62ch;
+}
+
+.fine-print a,
+.more-links a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  margin-top: 32px;
+}
+
+.actions small {
+  color: var(--muted);
+  font-size: 0.9rem;
+  max-width: 34ch;
+  line-height: 1.4;
+}
+
+.center {
+  text-align: center;
+  margin-top: 32px;
+}
+
+/* Soft entrance: opacity and a short shift only, enabled by script (without script everything shows) */
+.reveal {
+  transition: opacity 300ms var(--ease), transform 0.28s var(--ease);
+}
+
+.reveal-on .reveal:not(.vis) {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.98rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 300ms var(--ease), color 300ms var(--ease), border-color 300ms var(--ease), transform 200ms var(--ease);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-whatsapp {
+  background: var(--green);
+  color: #fff;
+}
+
+.btn-sec {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-large {
+  min-height: 56px;
+  padding: 15px 30px;
+  font-size: 1.05rem;
+}
+
+.btn-small {
+  min-height: 44px;
+  padding: 9px 18px;
+  font-size: 0.92rem;
+  margin-top: 18px;
+}
+
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-whatsapp:hover {
+    background: var(--green-dark);
+  }
+  .btn-sec:hover {
+    background: var(--green-light);
+  }
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.link-arrow span,
+.related-list i {
+  transition: transform 200ms var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link-arrow:hover span {
+    transform: translateX(5px);
+  }
+}

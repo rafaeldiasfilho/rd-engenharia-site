@@ -1,0 +1,480 @@
+/* Site styles, part 03: header, navigation island, services panel, mobile menu and breadcrumb.
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* Header */
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 var(--glass-border);
+}
+
+.top-inner {
+  width: min(1200px, 100% - 40px);
+  margin-inline: auto;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (min-width: 700px) {
+  .top-inner {
+    width: min(1200px, 100% - 64px);
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  min-height: 44px;
+}
+
+.brand-initials {
+  display: grid;
+  place-items: center;
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--img-outline);
+}
+
+.brand-initials img {
+  display: block;
+  height: 20px;
+  width: auto;
+}
+
+.brand-name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-name strong {
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.brand-name small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Island: the navigation sits in a solid pill (never glass over the header glass) */
+.menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -14px rgba(0, 0, 0, 0.18);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Background that slides to the item under the mouse */
+.menu-pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: var(--w, 0);
+  border-radius: 999px;
+  background: var(--green-light);
+  transform: translateX(var(--x, 0));
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 220ms var(--ease), width 220ms var(--ease), opacity 300ms var(--ease);
+}
+
+.menu-pill[data-on] {
+  opacity: 1;
+}
+
+.menu-pill[data-jump] {
+  transition: opacity 300ms var(--ease);
+}
+
+.menu > a,
+.menu-services > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: color 300ms var(--ease);
+}
+
+@media (pointer: fine) {
+  .menu > a,
+  .menu-services > button {
+    min-height: 38px;
+  }
+}
+
+.menu .current,
+.menu [aria-current="page"] {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.menu .current::after,
+.menu > a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 5px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.arrow-menu {
+  transition: transform 200ms var(--ease);
+}
+
+.menu-services > button[aria-expanded="true"] .arrow-menu {
+  transform: rotate(180deg);
+}
+
+.menu-services {
+  position: relative;
+}
+
+/* Services panel: a single surface, centred under the button */
+.menu-panel {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 14px);
+  left: 50%;
+  translate: -50% 0;
+  width: 400px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: drop 0.2s var(--ease);
+  transform-origin: top center;
+}
+
+/* Invisible bridge over the gap: the mouse goes from the button to the panel without closing it */
+.menu-panel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -16px;
+  height: 16px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .menu-panel.keyboard {
+    animation: none;
+  }
+}
+
+.menu-panel-top {
+  padding: 10px 12px 6px;
+}
+
+.menu-panel-title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.menu-panel-sub {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.menu-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-arrow-item {
+  flex: none;
+  margin-left: auto;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 300ms var(--ease), transform 0.2s var(--ease);
+}
+
+.menu-panel li a:focus-visible .menu-arrow-item {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-panel li a:hover .menu-arrow-item {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menu-panel-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  min-height: 44px;
+  margin: 6px -6px -6px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 22px 22px;
+  background: var(--paper);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+  transition: background-color 300ms var(--ease);
+}
+
+.menu-panel-footer strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-panel-footer:hover {
+    background: var(--green-light);
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menu-panel li a {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: background-color 300ms var(--ease);
+}
+
+.menu-panel li a strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.menu-panel li a small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.menu-panel li a[aria-current="page"] {
+  background: var(--green-light);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-panel li a:hover {
+    background: var(--green-light);
+  }
+}
+
+.top-whatsapp {
+  min-height: 44px;
+  padding: 8px 18px;
+  margin-left: 8px;
+}
+
+.menu-button {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.05rem;
+  cursor: pointer;
+  place-items: center;
+}
+
+.menu-button:active {
+  transform: scale(0.96);
+}
+
+/* Three bars that turn into an X when the menu opens (transform and opacity only). */
+.menu-icon {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 14px;
+}
+
+.menu-icon i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 280ms var(--ease), opacity 300ms var(--ease);
+}
+
+.menu-icon i:nth-child(1) {
+  top: 0;
+}
+
+.menu-icon i:nth-child(2) {
+  top: 6px;
+}
+
+.menu-icon i:nth-child(3) {
+  top: 12px;
+}
+
+.menu-button[aria-expanded="true"] .menu-icon i:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.menu-button[aria-expanded="true"] .menu-icon i:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.3);
+}
+
+.menu-button[aria-expanded="true"] .menu-icon i:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-icon i {
+    transition: none;
+  }
+}
+
+.menu-mobile {
+  display: none;
+}
+
+@media (max-width: 899px) {
+  .menu {
+    display: none;
+  }
+  .menu-button {
+    display: grid;
+  }
+  .menu-mobile.open {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 20px 24px;
+    border-top: 1px solid var(--line);
+    background: var(--paper);
+    max-height: calc(100dvh - var(--header-h));
+    overflow-y: auto;
+  }
+  .menu-mobile-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    color: var(--muted);
+    padding: 18px 0 6px;
+  }
+  .menu-mobile a:not(.btn) {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    border-bottom: 1px solid var(--line);
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .menu-mobile a[aria-current="page"] {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .menu-mobile .btn {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .top-whatsapp {
+    display: none;
+  }
+  .brand-name small {
+    display: none;
+  }
+}
+
+/* Breadcrumb and page index */
+.breadcrumb {
+  margin-bottom: clamp(28px, 5vw, 56px);
+  font-size: 0.88rem;
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+}
+
+.breadcrumb li + li::before {
+  content: "›";
+  margin-right: 8px;
+  color: var(--muted);
+}
+
+.breadcrumb a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: transparent;
+  transition: color 300ms var(--ease), text-decoration-color 0.2s var(--ease);
+}
+
+.breadcrumb [aria-current="page"] {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .breadcrumb a:hover {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+}

@@ -1,0 +1,528 @@
+/* Site styles, part 18: round 8 (request chips, reminder options) and home page adjustments.
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* ===== Round 8: request chips, reminder options, Recomeçar (restart) arrow ===== */
+
+/* Request builder (src/RequestBuilder.jsx): chips on the left, the message on the right */
+.request {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(20px, 3vw, 36px);
+  margin-top: clamp(32px, 5vw, 56px);
+  padding: clamp(20px, 3.5vw, 36px);
+  border: 1px solid var(--line);
+  border-radius: clamp(22px, 3vw, 32px);
+  background: var(--surface);
+}
+
+.request-head {
+  grid-column: 1 / -1;
+}
+
+.request-head h3 {
+  margin: 0 0 6px;
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  letter-spacing: -0.02em;
+}
+
+.request-head p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.request-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 8px;
+}
+
+.request-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 16px 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 300ms var(--ease), border-color 300ms var(--ease), transform 200ms var(--ease);
+}
+
+.request-brand {
+  position: relative;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--muted);
+  border-radius: 999px;
+  transition: background-color 300ms var(--ease), border-color 300ms var(--ease);
+}
+
+.request-brand::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid var(--surface);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.request-chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--green-light);
+}
+
+.request-chip[aria-pressed="true"] .request-brand {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.request-chip[aria-pressed="true"] .request-brand::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.request-chip:active {
+  transform: scale(0.97);
+}
+
+.request-chip:focus-visible,
+.request-list button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .request-chip:hover {
+    border-color: var(--accent);
+  }
+}
+
+.request-box {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 18px;
+  border: 1px dashed var(--line);
+  border-radius: 20px;
+  background: var(--paper);
+}
+
+.request-box .label-mini {
+  margin: 0;
+}
+
+.request-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.request-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.request-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 2px 2px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.request-list button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.request-box .btn {
+  justify-self: start;
+}
+
+@media (max-width: 800px) {
+  .request {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .request-chip,
+  .request-brand,
+  .request-brand::after {
+    transition: none;
+  }
+}
+
+/* Reminder: the document is chosen from a list of options; the chosen one shows the deadline tip */
+.doc-options {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.doc-options legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.form-public .doc-option {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 6px;
+  padding: 13px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 300ms var(--ease), background-color 300ms var(--ease);
+}
+
+.doc-option input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.doc-option:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--green-light);
+}
+
+.doc-option:has(input:focus-visible) {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.doc-option input:focus-visible {
+  outline: none;
+}
+
+.doc-option .hint-doc {
+  grid-column: 2;
+  animation: tip-enter 260ms var(--ease);
+}
+
+@keyframes tip-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .doc-option:hover {
+    border-color: var(--accent);
+  }
+}
+
+/* Wizard: the Recomeçar (restart) arrow spins once */
+.wizard-restart-arrow {
+  flex: 0 0 auto;
+  transition: transform 520ms var(--ease);
+}
+
+.wizard-restart:active .wizard-restart-arrow {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wizard-restart:hover .wizard-restart-arrow {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doc-option,
+  .wizard-restart-arrow {
+    transition: none;
+  }
+  .doc-option .hint-doc {
+    animation: none;
+  }
+  .wizard-restart:active .wizard-restart-arrow,
+  .wizard-restart:hover .wizard-restart-arrow {
+    transform: none;
+  }
+}
+
+/* Home bands (O que organizamos, Como funciona) and the Contact block: same tone as the page.
+   overflow/isolation keep the contour background and effects inside the block. */
+.band-section,
+.contact-block {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.band-section .sec-n,
+.contact-block .sec-n {
+  color: var(--muted);
+  border-top-color: var(--line);
+}
+
+.band-section .sec-n span,
+.contact-block .sec-n span {
+  color: var(--accent);
+}
+
+.band-section .sec-title,
+.contact-block .sec-title {
+  color: var(--ink);
+}
+
+/* Lime highlights on a light background (readable text) */
+.accent,
+.sec-n span {
+  color: var(--lime-text);
+}
+
+.hero-bg .accent {
+  color: var(--lime);
+}
+
+/* Primary button with a lime glow on hover */
+@media (hover: hover) and (pointer: fine) {
+  .btn-whatsapp:hover {
+    box-shadow: 0 0 0 4px rgba(155, 225, 93, 0.28), 0 14px 30px -14px rgba(12, 46, 28, 0.6);
+  }
+}
+
+/* 3D carousel (coverflow): the neighbours turn and shrink with the distance from the centre.
+   The turn is applied by script on .car-img (the strip is still scroll-snap). */
+.carousel-3d {
+  --sw: 74%;
+  --carousel-gap: 0px;
+}
+
+.carousel-3d .carousel-band {
+  perspective: 1400px;
+  border-radius: 0;
+  padding-block: 18px 6px;
+}
+
+.carousel-3d .carousel-slide {
+  transform-style: preserve-3d;
+}
+
+.carousel-3d .carousel-img {
+  transform-origin: center center;
+  transition: box-shadow 0.4s var(--ease);
+  will-change: transform;
+}
+
+.carousel-3d .carousel-slide.active .carousel-img {
+  box-shadow: 0 30px 60px -30px rgba(8, 25, 15, 0.55);
+}
+
+.carousel-3d.carousel-projects .carousel-slide:not(.active) .carousel-img {
+  clip-path: inset(0 round clamp(16px, 2.2vw, 24px));
+}
+
+@media (min-width: 900px) {
+  .carousel-3d {
+    --sw: 58%;
+  }
+}
+
+/* Motion on scroll: entrance with a slight scale; lists come in as a cascade (no blur: filter on large blocks is heavy on phones) */
+.reveal {
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+
+.reveal-on .reveal:not(.vis) {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+}
+
+.reveal-on .cascade > .reveal:nth-child(2),
+.reveal-on .cascade > * > .reveal:nth-child(2) {
+  transition-delay: 200ms;
+}
+
+.reveal-on .cascade > .reveal:nth-child(3),
+.reveal-on .cascade > * > .reveal:nth-child(3) {
+  transition-delay: 200ms;
+}
+
+.reveal-on .cascade > .reveal:nth-child(4),
+.reveal-on .cascade > * > .reveal:nth-child(4) {
+  transition-delay: 0.24s;
+}
+
+/* Reading progress bar at the top (src/layout/scrollEffects.jsx) */
+.progress-reading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--lime));
+  transform-origin: left center;
+  transform: scaleX(var(--p, 0));
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+.progress-reading {
+    display: none;
+  }
+}
+
+/* Shorter home page on phones: tighter rhythm, people in a row, guarantees in 2 columns */
+.faq-more {
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .sec {
+    padding-block: 52px;
+  }
+  .sec-head {
+    margin-bottom: 24px;
+  }
+  .contact-block {
+    padding-block: 56px;
+  }
+  .proof {
+    gap: 0 16px;
+    margin-top: 24px;
+  }
+  .proof li {
+    padding: 12px 0 4px;
+  }
+  .proof strong {
+    font-size: 1.05rem;
+  }
+  .proof span {
+    font-size: 0.82rem;
+  }
+  .people article {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: start;
+  }
+  .people .person-initials {
+    grid-row: span 3;
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    font-size: 1rem;
+  }
+  .people article > :not(.person-initials) {
+    grid-column: 2;
+  }
+}
+
+/* "Na prática" (in practice): on phones the tabs become a strip that slides sideways (before, stacked) */
+@media (max-width: 600px) {
+  #na-pratica .tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    margin-inline: -20px;
+    padding: 2px 20px 6px;
+    scrollbar-width: none;
+  }
+  #na-pratica .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  #na-pratica .tabs button {
+    flex: none;
+  }
+}
+
+/* Leaner home page (2026-11-04): numbers inside "O que organizamos" and "Quem somos" inside Contact */
+.numbers-line {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: clamp(28px, 4vw, 44px);
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.numbers-line p {
+  margin: 0;
+}
+
+.numbers-line strong {
+  display: block;
+  color: var(--lime);
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.numbers-line strong small {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.numbers-line p > span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.contact-people {
+  margin-top: clamp(40px, 6vw, 72px);
+  padding-top: clamp(32px, 5vw, 56px);
+  border-top: 1px solid var(--line);
+}
+
+.contact-people-title {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  letter-spacing: -0.02em;
+}
+
+.contact-people .people {
+  margin-top: 24px;
+}

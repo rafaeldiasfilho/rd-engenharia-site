@@ -1,0 +1,549 @@
+/* Site styles, part 09: photo carousel, shelf and wizard.
+   Loaded in order by src/styles.css; later parts override earlier ones. */
+
+/* Photo carousel (src/Carousel.jsx): scroll-snap strip, 44 px controls, no library */
+.carousel {
+  --sw: 88%;
+  --carousel-gap: 14px;
+  min-width: 0;
+  margin-top: clamp(20px, 3vw, 36px);
+}
+
+.carousel-band {
+  display: flex;
+  gap: var(--carousel-gap);
+  overflow-x: auto;
+  padding-inline: calc((100% - var(--sw)) / 2);
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 22px;
+}
+
+.carousel-band::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-band:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.carousel-slide {
+  flex: 0 0 100%; /* 100% of the padded area: the strip has width var(--sw) */
+  min-width: 0;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.carousel-slide figure {
+  margin: 0;
+}
+
+.carousel-img {
+  aspect-ratio: var(--carousel-aspect, 16 / 10);
+  overflow: hidden;
+  border-radius: clamp(16px, 2.2vw, 24px);
+  background: var(--line);
+}
+
+.carousel-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  outline: 1px solid var(--img-outline);
+  outline-offset: -1px;
+  border-radius: inherit;
+  transition: opacity 300ms var(--ease);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.carousel-slide:not(.active) .carousel-img img {
+  opacity: 0.55;
+}
+
+.carousel-slide figcaption {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  line-height: 1.35;
+}
+
+.carousel-caption {
+  font-size: clamp(1rem, 1.3vw, 1.12rem);
+  letter-spacing: -0.01em;
+}
+
+.carousel-caption a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 200ms var(--ease);
+}
+
+.carousel-caption a:active {
+  transform: scale(0.97);
+}
+
+.carousel-caption a span {
+  color: var(--accent);
+}
+
+.carousel-slide figcaption small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  max-width: 62ch;
+}
+
+.carousel-slide figcaption small a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding-inline: calc((100% - var(--sw)) / 2);
+}
+
+.carousel-counter {
+  order: 2;
+  margin: 0;
+  min-width: 3.6em;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.carousel-dots {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.carousel-dots button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.carousel-dots i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line);
+  box-shadow: inset 0 0 0 1px var(--muted);
+  transition: transform 200ms var(--ease), background-color 300ms var(--ease);
+}
+
+.carousel-dots button.active i {
+  background: var(--accent);
+  box-shadow: none;
+  transform: scale(1.35);
+}
+
+.carousel-dots button:active i {
+  transform: scale(0.96);
+}
+
+.carousel-dots button:focus-visible,
+.carousel-caption a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (min-width: 900px) {
+  .carousel {
+    --sw: 72%;
+  }
+}
+
+/* A single image, or a carousel in a narrow column: takes the full width */
+.carousel-one,
+.carousel-full {
+  --sw: 100%;
+}
+
+.carousel-one .carousel-slide:not(.active) .carousel-img img,
+.carousel-full .carousel-slide:not(.active) .carousel-img img {
+  opacity: 1;
+}
+
+/* Shelf (equipment): several cards in view, aligned left, each with the photo and the
+   caption inside a card. No automatic switching. */
+.carousel-shelf {
+  --sw: 100%;
+}
+
+.carousel-shelf .carousel-band {
+  padding: 2px 0 4px;
+  border-radius: 0;
+}
+
+.carousel-shelf .carousel-slide {
+  flex: 0 0 min(78%, 330px);
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+.carousel-shelf .carousel-slide figure {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  padding: 8px 8px 0;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+}
+
+.carousel-shelf .carousel-img {
+  border-radius: 17px;
+}
+
+.carousel-shelf .carousel-slide:not(.active) .carousel-img img {
+  opacity: 1;
+}
+
+.carousel-shelf .carousel-slide figcaption {
+  align-content: start;
+  margin: 0;
+  padding: 14px 10px 16px;
+}
+
+.carousel-shelf .carousel-controls {
+  justify-content: flex-start;
+  padding-inline: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carousel-shelf .carousel-img img {
+    transition: opacity 300ms var(--ease), transform 700ms var(--ease);
+  }
+  .carousel-shelf .carousel-slide:hover .carousel-img img {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-shelf .carousel-img img {
+    transition: none;
+  }
+  .carousel-shelf .carousel-slide:hover .carousel-img img {
+    transform: none;
+  }
+}
+
+.area-carousel {
+  margin-top: clamp(28px, 4vw, 52px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-img img,
+  .carousel-dots i,
+  .carousel-caption a {
+    transition: none;
+  }
+  .carousel-band {
+    scroll-behavior: auto;
+  }
+}
+
+.equipment-note {
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+/* Wizard (src/Wizard.jsx): one question per screen */
+.wizard {
+  position: relative;
+  padding: clamp(20px, 4vw, 44px);
+  border: 1px solid var(--line);
+  border-radius: clamp(22px, 3vw, 32px);
+  background: var(--surface);
+  min-height: min(560px, 80vh);
+}
+
+.wizard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.wizard-back,
+.wizard-restart {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 200ms var(--ease), border-color 300ms var(--ease);
+}
+
+.wizard-restart {
+  color: var(--muted);
+}
+
+.wizard-back:active,
+.wizard-restart:active,
+.wizard-option:active {
+  transform: scale(0.97);
+}
+
+.wizard-back:focus-visible,
+.wizard-restart:focus-visible,
+.wizard-option:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.wizard-back-empty {
+  display: block;
+  min-width: 44px;
+}
+
+.wizard-counter {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wizard-bar {
+  height: 6px;
+  margin: 14px 0 clamp(24px, 4vw, 40px);
+  border-radius: 999px;
+  background: var(--green-light);
+  overflow: hidden;
+}
+
+.wizard-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transform-origin: left center;
+  transition: transform 280ms var(--ease);
+}
+
+.wizard-label {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.wizard-question {
+  margin: 0;
+  font-size: clamp(1.6rem, 4.4vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.wizard-question:focus {
+  outline: none;
+}
+
+.wizard-support {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 1.02rem;
+  max-width: 54ch;
+}
+
+.wizard-options {
+  display: grid;
+  gap: 12px;
+  margin-top: clamp(24px, 4vw, 36px);
+}
+
+.wizard-yesno {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wizard-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 76px;
+  padding: 18px 22px;
+  border: 1.5px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 200ms var(--ease), border-color 300ms var(--ease), background-color 300ms var(--ease);
+}
+
+.wizard-option .icon {
+  flex: none;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.wizard-option span {
+  flex: 1 1 auto;
+}
+
+.wizard-option kbd {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.wizard-option.active {
+  border-color: var(--accent);
+  background: var(--green-light);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .wizard-option:hover,
+  .wizard-back:hover,
+  .wizard-restart:hover {
+    border-color: var(--accent);
+  }
+}
+
+@media (max-width: 560px) {
+  .wizard-yesno {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .wizard-option kbd,
+  .keyboard-only {
+    display: none;
+  }
+}
+
+.wizard-hint {
+  margin: clamp(20px, 3vw, 32px) 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.wizard-results {
+  display: grid;
+  gap: 12px;
+  margin: clamp(20px, 3vw, 32px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wizard-results li {
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: var(--green-light);
+}
+
+.wizard-results small {
+  display: block;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.wizard-results h3 {
+  margin: 6px 0 4px;
+  font-size: 1.15rem;
+}
+
+.wizard-results p {
+  margin: 0 0 4px;
+  color: var(--muted);
+}
+
+.wizard-results a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wizard-areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wizard-areas a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wizard-screen {
+    animation: wizard-enter 260ms var(--ease) both;
+  }
+}
+
+@keyframes wizard-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wizard-bar i,
+  .wizard-option,
+  .wizard-back,
+  .wizard-restart {
+    transition: none;
+  }
+}
