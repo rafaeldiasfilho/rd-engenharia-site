@@ -1,58 +1,58 @@
-import Icone from "./Icon";
+import Icon from "./Icon";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, GUIAS, slidesProjetos, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, COMPARATIVO_BOMBEIROS, RESUMOS_GUIAS, achaArea } from "./pagesData";
-import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
-import { ComoLerPrancha, Ilustracao } from "./Illustrations";
-import { enviarLembrete } from "./publicApi/api";
-import Carrossel from "./Carousel";
-import Assistente from "./Wizard";
-import DocsIlustracao, { FolhaLeitura, FolhaSvg, LEGENDA_EXEMPLO } from "./DocIllustration";
-import HeroFundo from "./HeroBackground";
-import IconeArea from "./AreaIcon";
-import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./photos";
-import { ancora } from "./Search";
-import Perguntas from "./Faq";
-import Janela from "./Dialog";
-import MontarPedido from "./RequestBuilder";
+import { AREAS, GUIDES, projectSlides, EQUIPMENT, EQUIPMENT_NOTE, AREA_OVERVIEW, TECHNICAL_LEAD_PHOTO, REMINDER_DOCUMENTS, REMINDER_TIPS, GOOGLE_REVIEWS_URL, DIRECTIONS_URL, MAP_EMBED_URL, ADDRESS, FIRE_LICENSE_COMPARISON, GUIDE_SUMMARIES, findArea } from "./pagesData";
+import { Shell, Breadcrumb, SectionNav, PageClosing, WhatsappButton, whatsappLink } from "./Layout";
+import { HowToReadSheet, Illustration } from "./Illustrations";
+import { sendReminder } from "./publicApi/api";
+import Carousel from "./Carousel";
+import Wizard from "./Wizard";
+import DocIllustration, { SheetReader, SheetSvg, SAMPLE_CAPTION } from "./DocIllustration";
+import HeroBackground from "./HeroBackground";
+import AreaIcon from "./AreaIcon";
+import { slidesFor, PHOTOS_IN_USE, photoPath, srcset } from "./photos";
+import { anchorId } from "./Search";
+import Faq from "./Faq";
+import Dialog from "./Dialog";
+import RequestBuilder from "./RequestBuilder";
 import { AnimatedFolder } from "@/components/ui/3d-folder";
 import { LEGAL_NAME, TRADE_NAME, CNPJ, CREA_NUMBER, PHONE_DISPLAY } from "./company";
-import Cena3D from "./Scene3D";
+import Scene3D from "./Scene3D";
 
 // 3D block on each area page: label, title and text describe the illustration (not a real job or client).
 const AREA_SCENES = {
   "meio-ambiente-topografia": {
-    cena: "terreno",
-    rotulo: "Do campo à planta",
-    titulo: "O terreno medido vira curvas de nível.",
-    texto: "No levantamento, cada ponto medido em campo ganha coordenadas e altitude. Com eles desenhamos as curvas de nível, a planta e o memorial que o seu processo pede.",
+    scene: "terreno",
+    label: "Do campo à planta",
+    title: "O terreno medido vira curvas de nível.",
+    text: "No levantamento, cada ponto medido em campo ganha coordenadas e altitude. Com eles desenhamos as curvas de nível, a planta e o memorial que o seu processo pede.",
     alt: "Ilustração em 3D de um terreno com curvas de nível e pontos levantados",
   },
   "engenharia-civil": {
-    cena: "casa",
-    rotulo: "Do projeto à obra",
-    titulo: "Cada etapa resolvida antes de começar.",
-    texto: "No projeto, a casa é pensada etapa por etapa: fundação, paredes, aberturas e telhado. Assim a obra começa com as dúvidas respondidas no papel.",
+    scene: "casa",
+    label: "Do projeto à obra",
+    title: "Cada etapa resolvida antes de começar.",
+    text: "No projeto, a casa é pensada etapa por etapa: fundação, paredes, aberturas e telhado. Assim a obra começa com as dúvidas respondidas no papel.",
     alt: "Ilustração em 3D de uma casa térrea sendo construída por etapas: contrapiso, paredes, janelas e porta, telhado",
   },
   "corpo-de-bombeiros": {
-    cena: "rota",
-    rotulo: "Rota de fuga",
-    titulo: "De qualquer sala até a saída.",
-    texto: "No projeto de prevenção, cada ambiente tem rota de fuga, sinalização, iluminação de emergência e extintores no lugar certo. É isso que o Corpo de Bombeiros confere na vistoria.",
+    scene: "rota",
+    label: "Rota de fuga",
+    title: "De qualquer sala até a saída.",
+    text: "No projeto de prevenção, cada ambiente tem rota de fuga, sinalização, iluminação de emergência e extintores no lugar certo. É isso que o Corpo de Bombeiros confere na vistoria.",
     alt: "Ilustração em 3D da planta de um pavimento com as rotas de fuga se acendendo até a saída e os extintores marcados",
   },
   "seguranca-do-trabalho": {
-    cena: "capacete",
-    rotulo: "Proteção no trabalho",
-    titulo: "A proteção certa para cada risco.",
-    texto: "No PGR levantamos os riscos de cada função e indicamos as medidas: primeiro as proteções coletivas, depois os EPIs que ainda forem necessários.",
+    scene: "capacete",
+    label: "Proteção no trabalho",
+    title: "A proteção certa para cada risco.",
+    text: "No PGR levantamos os riscos de cada função e indicamos as medidas: primeiro as proteções coletivas, depois os EPIs que ainda forem necessários.",
     alt: "Ilustração em 3D de um capacete de segurança girando, cercado por anéis de proteção",
   },
 };
 
 // Block that starts collapsed on mobile (with a button to open it) and is always open on desktop.
 // It ships open in the HTML (good for Google and for visitors without JavaScript); it closes after mount if the screen is narrow.
-function Collapsible({ rotulo, children }) {
+function Collapsible({ label, children }) {
   const ref = useRef(null);
   useEffect(() => {
     if (ref.current && window.matchMedia && window.matchMedia("(max-width: 700px)").matches) ref.current.open = false;
@@ -60,7 +60,7 @@ function Collapsible({ rotulo, children }) {
   return (
     <details ref={ref} className="collapse" open>
       <summary>
-        <span>{rotulo}</span>
+        <span>{label}</span>
       </summary>
       {children}
     </details>
@@ -69,7 +69,7 @@ function Collapsible({ rotulo, children }) {
 
 // AVCB vs CLCB side by side. On mobile, each row becomes a block with the two columns side by side.
 function Comparison() {
-  const c = COMPARATIVO_BOMBEIROS;
+  const c = FIRE_LICENSE_COMPARISON;
   return (
     <div className="comparison reveal" id="avcb-ou-clcb">
       <h3>AVCB ou CLCB: lado a lado</h3>
@@ -79,20 +79,20 @@ function Comparison() {
           <thead>
             <tr>
               <td />
-              {c.colunas.map((col) => (
-                <th key={col.sigla} scope="col">
-                  <strong>{col.sigla}</strong>
-                  <small>{col.nome}</small>
+              {c.columns.map((col) => (
+                <th key={col.acronym} scope="col">
+                  <strong>{col.acronym}</strong>
+                  <small>{col.name}</small>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {c.linhas.map((l) => (
+            {c.rows.map((l) => (
               <tr key={l.t}>
                 <th scope="row">{l.t}</th>
                 {l.v.map((v, n) => (
-                  <td key={c.colunas[n].sigla} data-col={c.colunas[n].sigla}>
+                  <td key={c.columns[n].acronym} data-col={c.columns[n].acronym}>
                     {v}
                   </td>
                 ))}
@@ -101,9 +101,9 @@ function Comparison() {
           </tbody>
         </table>
       </div>
-      <p className="fine-print">{c.nota}</p>
+      <p className="fine-print">{c.note}</p>
       <div className="actions">
-        <BotaoZap texto={c.zap} rotulo="Descobrir qual é o meu caso" />
+        <WhatsappButton text={c.whatsappMessage} label="Descobrir qual é o meu caso" />
       </div>
     </div>
   );
@@ -112,16 +112,16 @@ function Comparison() {
 const pad = (n) => String(n + 1).padStart(2, "0");
 
 // Section header: number, label, large title and supporting sentence.
-function Section({ id, n, rotulo, titulo, lead, className = "", children }) {
+function Section({ id, n, label, title, lead, className = "", children }) {
   return (
     <section className={`sec ${className}`} id={id} aria-labelledby={`${id}-t`}>
       <div className="container">
         <header className="sec-head reveal">
           <p className="sec-n">
-            <span>{n}</span> {rotulo}
+            <span>{n}</span> {label}
           </p>
           <h2 id={`${id}-t`} className="sec-title">
-            {titulo}
+            {title}
           </h2>
           {lead && <p className="lead">{lead}</p>}
         </header>
@@ -132,14 +132,14 @@ function Section({ id, n, rotulo, titulo, lead, className = "", children }) {
 }
 
 // Opening of the simple inner pages (guides, quiz, reminder, privacy, credits).
-function PageTop({ migalha, eyebrow, titulo, texto, children }) {
+function PageTop({ breadcrumb, eyebrow, title, text, children }) {
   return (
     <header className="hero-inner">
       <div className="container">
-        <Migalha itens={migalha} />
+        <Breadcrumb items={breadcrumb} />
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1 className="display-m">{titulo}</h1>
-        {texto && <p className="lead">{texto}</p>}
+        <h1 className="display-m">{title}</h1>
+        {text && <p className="lead">{text}</p>}
         {children}
       </div>
     </header>
@@ -147,43 +147,43 @@ function PageTop({ migalha, eyebrow, titulo, texto, children }) {
 }
 
 const GENERAL_LINKS = {
-  quiz: { href: "/o-que-preciso", tag: "Passo a passo", titulo: "Descubra o que o seu caso precisa", texto: "Responda uma pergunta por vez e veja o que costuma ser exigido no seu caso." },
-  guias: { href: "/guias", tag: "Guias", titulo: "Guias em linguagem simples", texto: "Explicações curtas sobre PGR, AVCB, CAR, habite-se e outros documentos." },
-  lembrete: { href: "/lembrete-de-vencimento", tag: "Lembrete", titulo: "Lembrete de vencimento", texto: "Receba um aviso no WhatsApp antes de o documento vencer." },
+  quiz: { href: "/o-que-preciso", tag: "Passo a passo", title: "Descubra o que o seu caso precisa", text: "Responda uma pergunta por vez e veja o que costuma ser exigido no seu caso." },
+  guias: { href: "/guias", tag: "Guias", title: "Guias em linguagem simples", text: "Explicações curtas sobre PGR, AVCB, CAR, habite-se e outros documentos." },
+  lembrete: { href: "/lembrete-de-vencimento", tag: "Lembrete", title: "Lembrete de vencimento", text: "Receba um aviso no WhatsApp antes de o documento vencer." },
 };
-const areaLink = (a) => ({ href: `/${a.slug}`, tag: "Serviço", titulo: a.nome, texto: a.curto, area: a.slug });
-const guideLink = (g) => ({ href: `/${g.slug}`, tag: "Guia", titulo: g.h1 });
+const areaLink = (a) => ({ href: `/${a.slug}`, tag: "Serviço", title: a.name, text: a.shortText, area: a.slug });
+const guideLink = (g) => ({ href: `/${g.slug}`, tag: "Guia", title: g.h1 });
 
 function Examples() {
   return (
     <div>
-      <Carrossel
-        itens={slidesProjetos()}
-        rotulo="Desenhos de projetos reais de residências"
-        aspecto="4 / 3"
+      <Carousel
+        items={projectSlides()}
+        label="Desenhos de projetos reais de residências"
+        aspect="4 / 3"
         className="carousel-projects carousel-3d"
       />
       <p className="fine-print">
         Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem
         para ampliar.
       </p>
-      <ComoLerPrancha />
+      <HowToReadSheet />
       <div className="actions">
-        <BotaoZap texto="Olá! Vi os exemplos de projeto no site e gostaria de um projeto para a minha obra." rotulo="Quero um projeto assim" />
+        <WhatsappButton text="Olá! Vi os exemplos de projeto no site e gostaria de um projeto para a minha obra." label="Quero um projeto assim" />
       </div>
     </div>
   );
 }
 
-function AreaPage({ pagina }) {
-  const visual = VISUAL[pagina.slug];
-  const guides = GUIAS.filter((g) => g.area === pagina.slug);
-  const otherAreas = AREAS.filter((a) => a.slug !== pagina.slug);
+function AreaPage({ page }) {
+  const visual = AREA_OVERVIEW[page.slug];
+  const guides = GUIDES.filter((g) => g.area === page.slug);
+  const otherAreas = AREAS.filter((a) => a.slug !== page.slug);
   const related = [...guides.slice(0, 2).map(guideLink), ...otherAreas.map(areaLink)].slice(0, 3);
-  const areaZapText = `Olá! Gostaria de um orçamento na área de ${pagina.nome}.`;
-  const isCivil = pagina.slug === "engenharia-civil";
-  const equipment = EQUIPAMENTOS[pagina.slug];
-  const hasEquipmentPhotos = slidesDe(`equip-${pagina.slug}`).length > 0;
+  const areaZapText = `Olá! Gostaria de um orçamento na área de ${page.name}.`;
+  const isCivil = page.slug === "engenharia-civil";
+  const equipment = EQUIPMENT[page.slug];
+  const hasEquipmentPhotos = slidesFor(`equip-${page.slug}`).length > 0;
   // Section numbering in the order they appear (01, 02, ...), with no fixed numbers.
   let sectionCount = 0;
   const nextNumber = () => pad(sectionCount++);
@@ -191,29 +191,29 @@ function AreaPage({ pagina }) {
   return (
     <>
       <div className="container breadcrumb-over-hero">
-        <Migalha itens={[{ rotulo: "Serviços", href: "/#servicos" }, { rotulo: pagina.nome }]} />
+        <Breadcrumb items={[{ label: "Serviços", href: "/#servicos" }, { label: page.name }]} />
       </div>
-      <HeroFundo chave={`area-${pagina.slug}`} rotulo={`Fotos ilustrativas da área de ${pagina.nome}`} className="hero-area-bg">
+      <HeroBackground setKey={`area-${page.slug}`} label={`Fotos ilustrativas da área de ${page.name}`} className="hero-area-bg">
         <p className="eyebrow eyebrow-icon">
-          <IconeArea slug={pagina.slug} tamanho={22} /> Serviço
+          <AreaIcon slug={page.slug} size={22} /> Serviço
         </p>
-        <h1 className="display">{pagina.h1}</h1>
-        <p className="lead">{pagina.intro}</p>
+        <h1 className="display">{page.h1}</h1>
+        <p className="lead">{page.intro}</p>
         <div className="actions">
-          <BotaoZap className="btn-large" texto={areaZapText} rotulo="Pedir orçamento pelo WhatsApp" />
+          <WhatsappButton className="btn-large" text={areaZapText} label="Pedir orçamento pelo WhatsApp" />
           <small>Orçamento por escrito e sem compromisso. Prazo e valor são informados depois de conhecermos o seu caso.</small>
         </div>
-      </HeroFundo>
+      </HeroBackground>
 
-      <SecoesNav
-        itens={[
-          { id: "situacoes", rotulo: "Situações comuns" },
-          { id: "o-que-fazemos", rotulo: "Serviços" },
-          { id: "equipamentos", rotulo: "Equipamentos" },
-          { id: "na-pratica", rotulo: "Na prática" },
-          { id: "atendimento", rotulo: "Atendimento" },
-          { id: "duvidas", rotulo: "Dúvidas" },
-          { id: "proximo-passo", rotulo: "Próximo passo" },
+      <SectionNav
+        items={[
+          { id: "situacoes", label: "Situações comuns" },
+          { id: "o-que-fazemos", label: "Serviços" },
+          { id: "equipamentos", label: "Equipamentos" },
+          { id: "na-pratica", label: "Na prática" },
+          { id: "atendimento", label: "Atendimento" },
+          { id: "duvidas", label: "Dúvidas" },
+          { id: "proximo-passo", label: "Próximo passo" },
         ]}
       />
 
@@ -222,17 +222,17 @@ function AreaPage({ pagina }) {
           <div className="container summary-editorial-grid">
             <div className="reveal">
               <p className="label-mini">Para quem</p>
-              <p>{visual.quem}</p>
+              <p>{visual.who}</p>
             </div>
             <div className="reveal">
               <p className="label-mini">Você recebe</p>
-              <p>{visual.recebe}</p>
+              <p>{visual.deliverable}</p>
             </div>
             <div className="signer reveal">
               <p className="label-mini">Quem assina</p>
               <div className="signer-line">
-                {FOTO_RESPONSAVEL ? (
-                  <img src={FOTO_RESPONSAVEL} width="56" height="56" alt="Rafael Antonio Dias" />
+                {TECHNICAL_LEAD_PHOTO ? (
+                  <img src={TECHNICAL_LEAD_PHOTO} width="56" height="56" alt="Rafael Antonio Dias" />
                 ) : (
                   <span className="signer-initials" aria-hidden="true">
                     RD
@@ -248,37 +248,37 @@ function AreaPage({ pagina }) {
         </section>
       )}
 
-      {AREA_SCENES[pagina.slug] && (
+      {AREA_SCENES[page.slug] && (
         <section className="band-scene" aria-labelledby="cena-t">
           <div className="container band-scene-grid">
             <div className="band-scene-text reveal">
-              <p className="label-mini">{AREA_SCENES[pagina.slug].rotulo}</p>
+              <p className="label-mini">{AREA_SCENES[page.slug].label}</p>
               <h2 id="cena-t" className="sec-title">
-                {AREA_SCENES[pagina.slug].titulo}
+                {AREA_SCENES[page.slug].title}
               </h2>
-              <p>{AREA_SCENES[pagina.slug].texto}</p>
+              <p>{AREA_SCENES[page.slug].text}</p>
               <p className="fine-print">
                 Ilustração em 3D. Arraste com o mouse ou o dedo para girar.
               </p>
             </div>
-            <Cena3D cena={AREA_SCENES[pagina.slug].cena} className="band-scene-3d" rotulo={AREA_SCENES[pagina.slug].alt} />
+            <Scene3D scene={AREA_SCENES[page.slug].scene} className="band-scene-3d" label={AREA_SCENES[page.slug].alt} />
           </div>
         </section>
       )}
 
-      {pagina.situacoes && (
-        <Section id="situacoes" n={nextNumber()} rotulo="Situações comuns" titulo="Você se reconhece em alguma destas?">
+      {page.situations && (
+        <Section id="situacoes" n={nextNumber()} label="Situações comuns" title="Você se reconhece em alguma destas?">
           <ul className="situations-list">
-            {pagina.situacoes.map((t) => (
+            {page.situations.map((t) => (
               <li key={t} className="reveal">
-                <IconeArea slug={pagina.slug} tamanho={26} />
+                <AreaIcon slug={page.slug} size={26} />
                 <span>{t}</span>
               </li>
             ))}
           </ul>
           <p className="situations-help reveal">
             Não tem certeza de qual é o seu caso? <a href="/o-que-preciso">Responda ao passo a passo</a> ou{" "}
-            <a href={zap(areaZapText)} target="_blank" rel="noopener noreferrer">
+            <a href={whatsappLink(areaZapText)} target="_blank" rel="noopener noreferrer">
               conte pelo WhatsApp
             </a>
             .
@@ -291,8 +291,8 @@ function AreaPage({ pagina }) {
       <Section
         id="o-que-fazemos"
         n={nextNumber()}
-        rotulo="Serviços"
-        titulo={<>O que fazemos nesta área.</>}
+        label="Serviços"
+        title={<>O que fazemos nesta área.</>}
         lead="Cada cartão mostra uma folha de exemplo do documento que você recebe."
       >
         {/* Folder with the sample sheets at reading size (on the card they are small). */}
@@ -300,16 +300,16 @@ function AreaPage({ pagina }) {
           <AnimatedFolder
             title="Documentos de exemplo"
             countLabel={(n) => `${n} folhas desta área`}
-            items={pagina.itens
-              .filter((item) => item.exemplo)
+            items={page.items
+              .filter((item) => item.example)
               .map((item) => ({
-                id: ancora(item.nome),
-                title: item.nome,
-                short: item.nome.split(/ — | \(/)[0],
-                media: <FolhaSvg m={item.exemplo} nome={item.nome} area={pagina.slug} />,
-                expanded: <FolhaLeitura m={item.exemplo} nome={item.nome} area={pagina.slug} />,
-                caption: LEGENDA_EXEMPLO,
-                action: { label: "Pedir orçamento pelo WhatsApp", href: zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`) },
+                id: anchorId(item.name),
+                title: item.name,
+                short: item.name.split(/ — | \(/)[0],
+                media: <SheetSvg m={item.example} name={item.name} area={page.slug} />,
+                expanded: <SheetReader m={item.example} name={item.name} area={page.slug} />,
+                caption: SAMPLE_CAPTION,
+                action: { label: "Pedir orçamento pelo WhatsApp", href: whatsappLink(`Olá! Gostaria de um orçamento para: ${item.name}.`) },
               }))}
           />
           <div className="folder-band-text">
@@ -318,52 +318,52 @@ function AreaPage({ pagina }) {
               Abra a pasta e escolha uma folha. Dá para ampliar, ver uma página interna e, em “Como ler”, entender cada
               parte do documento. Depois, peça o orçamento daquele documento direto pelo WhatsApp.
             </p>
-            <p className="fine-print">{LEGENDA_EXEMPLO} Não há dados de clientes.</p>
+            <p className="fine-print">{SAMPLE_CAPTION} Não há dados de clientes.</p>
           </div>
         </div>
         <ol className="services-grid">
-          {pagina.itens.map((item, n) => (
-            <li className="service-card reveal" key={item.nome} id={ancora(item.nome)}>
-              {item.exemplo && (
+          {page.items.map((item, n) => (
+            <li className="service-card reveal" key={item.name} id={anchorId(item.name)}>
+              {item.example && (
                 <div className="service-sheet" aria-hidden="true">
-                  <FolhaSvg m={item.exemplo} nome={item.nome} area={pagina.slug} />
+                  <SheetSvg m={item.example} name={item.name} area={page.slug} />
                 </div>
               )}
               <div className="service-body">
                 <span className="service-n">{pad(n)}</span>
-                <h3>{item.nome}</h3>
-                <p>{item.texto}</p>
+                <h3>{item.name}</h3>
+                <p>{item.text}</p>
                 <p className="item-who">
-                  <strong>Para quem:</strong> {item.quem}
+                  <strong>Para quem:</strong> {item.who}
                 </p>
                 <a
                   className="btn btn-sec btn-small"
-                  href={zap(`Olá! Gostaria de um orçamento para: ${item.nome}.`)}
+                  href={whatsappLink(`Olá! Gostaria de um orçamento para: ${item.name}.`)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
+                  <Icon name="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
                 </a>
               </div>
             </li>
           ))}
         </ol>
         <p className="fine-print">As folhas são exemplos ilustrativos, não são documentos reais.</p>
-        {pagina.itens.length > 1 && <MontarPedido area={pagina.nome} itens={pagina.itens} />}
-        {pagina.slug === "corpo-de-bombeiros" && <Comparison />}
+        {page.items.length > 1 && <RequestBuilder area={page.name} items={page.items} />}
+        {page.slug === "corpo-de-bombeiros" && <Comparison />}
       </Section>
 
       {equipment && (
-        <Section id="equipamentos" n={nextNumber()} rotulo="Equipamentos" titulo="Equipamentos que podem ser usados." className="sec-alt">
-          <Collapsible rotulo="Ver os equipamentos">
+        <Section id="equipamentos" n={nextNumber()} label="Equipamentos" title="Equipamentos que podem ser usados." className="sec-alt">
+          <Collapsible label="Ver os equipamentos">
           <div className="equipment">
-            <p className="lead equipment-lead reveal">{equipment.texto}</p>
+            <p className="lead equipment-lead reveal">{equipment.text}</p>
             {hasEquipmentPhotos && (
               <div className="reveal">
-                <Carrossel
-                  chave={`equip-${pagina.slug}`}
-                  rotulo={`Equipamentos de referência usados em serviços de ${pagina.nome}`}
-                  aspecto="4 / 3"
+                <Carousel
+                  setKey={`equip-${page.slug}`}
+                  label={`Equipamentos de referência usados em serviços de ${page.name}`}
+                  aspect="4 / 3"
                   className="carousel-shelf"
                   auto={false}
                   sizes="(min-width: 900px) 340px, 78vw"
@@ -371,12 +371,12 @@ function AreaPage({ pagina }) {
               </div>
             )}
             <ul className="equipment-list reveal">
-              {equipment.itens.map((i) => (
+              {equipment.items.map((i) => (
                 <li key={i}>{i}</li>
               ))}
             </ul>
           </div>
-          <p className="fine-print equipment-note">{NOTA_EQUIPAMENTOS}</p>
+          <p className="fine-print equipment-note">{EQUIPMENT_NOTE}</p>
           </Collapsible>
         </Section>
       )}
@@ -384,17 +384,17 @@ function AreaPage({ pagina }) {
       <Section
         id="na-pratica"
         n={nextNumber()}
-        rotulo="Na prática"
-        titulo={isCivil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
+        label="Na prática"
+        title={isCivil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
         lead={isCivil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
       >
-        <Collapsible rotulo={isCivil ? "Ver os projetos" : "Ver os exemplos"}>{isCivil ? <Examples /> : <Ilustracao slug={pagina.slug} />}</Collapsible>
+        <Collapsible label={isCivil ? "Ver os projetos" : "Ver os exemplos"}>{isCivil ? <Examples /> : <Illustration slug={page.slug} />}</Collapsible>
       </Section>
 
-      <Section id="atendimento" n={nextNumber()} rotulo="Atendimento" titulo="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
+      <Section id="atendimento" n={nextNumber()} label="Atendimento" title="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
         {visual && (
           <ol className="steps-editorial timeline reveal">
-            {visual.etapas.map((e, n) => (
+            {visual.steps.map((e, n) => (
               <li key={e.t} className="reveal">
                 <span className="step-big" aria-hidden="true">
                   {n + 1}
@@ -402,8 +402,8 @@ function AreaPage({ pagina }) {
                 <h3>{e.t}</h3>
                 <p>{e.d}</p>
                 {n === 0 && (
-                  <a className="btn btn-whatsapp btn-small" href={zap(areaZapText)} target="_blank" rel="noopener noreferrer">
-                    <Icone nome="fa-brands fa-whatsapp" /> Começar agora
+                  <a className="btn btn-whatsapp btn-small" href={whatsappLink(areaZapText)} target="_blank" rel="noopener noreferrer">
+                    <Icon name="fa-brands fa-whatsapp" /> Começar agora
                   </a>
                 )}
               </li>
@@ -415,64 +415,64 @@ function AreaPage({ pagina }) {
             <div className="split-text">
               <h3>Para agilizar, separe</h3>
               <ul className="list-docs">
-                {pagina.documentos.map((d) => (
+                {page.documents.map((d) => (
                   <li key={d}>
-                    <Icone nome="fa-solid fa-circle-check" /> {d}
+                    <Icon name="fa-solid fa-circle-check" /> {d}
                   </li>
                 ))}
               </ul>
               <p className="notice-reminder">
-                <Icone nome="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o prazo
+                <Icon name="fa-solid fa-bell" /> Pode pedir também o nosso lembrete de vencimento, para não perder o prazo
                 de renovação dos documentos. <a href="/lembrete-de-vencimento">Pedir o lembrete</a>.
               </p>
               <a
                 className="btn btn-sec no-print"
-                href={`/imprimir/${pagina.slug}`}
+                href={`/imprimir/${page.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Abrir a lista para imprimir ou salvar em PDF
               </a>
             </div>
-            <DocsIlustracao slug={pagina.slug} />
+            <DocIllustration slug={page.slug} />
           </div>
         </div>
       </Section>
 
-      <Section id="duvidas" n={nextNumber()} rotulo="Dúvidas" titulo="Perguntas frequentes.">
-        <Perguntas itens={pagina.faq} />
+      <Section id="duvidas" n={nextNumber()} label="Dúvidas" title="Perguntas frequentes.">
+        <Faq items={page.faq} />
       </Section>
 
-      <Final zapTexto={areaZapText} relacionadas={related} />
+      <PageClosing whatsappText={areaZapText} related={related} />
     </>
   );
 }
 
-function GuidePage({ pagina }) {
-  const area = achaArea(pagina.area);
-  const otherGuides = GUIAS.filter((g) => g.area === pagina.area && g.slug !== pagina.slug);
+function GuidePage({ page }) {
+  const area = findArea(page.area);
+  const otherGuides = GUIDES.filter((g) => g.area === page.area && g.slug !== page.slug);
   const related = [area && areaLink(area), ...otherGuides.slice(0, 1).map(guideLink), GENERAL_LINKS.quiz].filter(Boolean);
   return (
     <>
-      <PageTop migalha={[{ rotulo: "Guias", href: "/guias" }, { rotulo: pagina.h1 }]} eyebrow={area ? `Guia · ${area.nome}` : "Guia"} titulo={pagina.h1} />
+      <PageTop breadcrumb={[{ label: "Guias", href: "/guias" }, { label: page.h1 }]} eyebrow={area ? `Guia · ${area.name}` : "Guia"} title={page.h1} />
       <section className="sec article-sec" id="guia" aria-label="Texto do guia">
         <div className="container container-reading article">
-          {RESUMOS_GUIAS[pagina.slug] && (
+          {GUIDE_SUMMARIES[page.slug] && (
             <aside className="summary-guide" aria-label="Em resumo">
               <p className="label-mini">Em resumo</p>
               <ul>
-                {RESUMOS_GUIAS[pagina.slug].map((r) => (
+                {GUIDE_SUMMARIES[page.slug].map((r) => (
                   <li key={r}>{r}</li>
                 ))}
               </ul>
             </aside>
           )}
-          {pagina.paragrafos.map((p, n) => (
+          {page.paragraphs.map((p, n) => (
             <p key={p.slice(0, 40)} className={n === 0 ? "article-lead" : ""}>
               {p}
             </p>
           ))}
-          {pagina.slug === "guias/avcb-ou-clcb-qual-a-diferenca" && <Comparison />}
+          {page.slug === "guias/avcb-ou-clcb-qual-a-diferenca" && <Comparison />}
         </div>
       </section>
       <section className="sec-fine" id="aviso" aria-label="Aviso">
@@ -483,16 +483,16 @@ function GuidePage({ pagina }) {
           </p>
           {area && (
             <p className="more-links">
-              Veja todos os serviços de <a href={`/${area.slug}`}>{area.nome}</a>.
+              Veja todos os serviços de <a href={`/${area.slug}`}>{area.name}</a>.
             </p>
           )}
         </div>
       </section>
-      <Final
-        titulo="Quer isso resolvido para o seu caso?"
-        zapTexto={`Olá! Li o guia do site e gostaria de um orçamento para: ${pagina.servico}.`}
-        zapRotulo="Pedir orçamento deste serviço"
-        relacionadas={related}
+      <PageClosing
+        title="Quer isso resolvido para o seu caso?"
+        whatsappText={`Olá! Li o guia do site e gostaria de um orçamento para: ${page.service}.`}
+        whatsappLabel="Pedir orçamento deste serviço"
+        related={related}
       />
     </>
   );
@@ -502,25 +502,25 @@ function GuidePage({ pagina }) {
 // group; the guide's `area` field still applies to the guide page (breadcrumb and WhatsApp button).
 const GENERAL_GUIDES = new Set(["guias/o-que-e-art-anotacao-de-responsabilidade-tecnica"]);
 
-function GuidesPage({ pagina }) {
+function GuidesPage({ page }) {
   const [preview, setPreview] = useState(null);
-  const previewGuide = GUIAS.find((g) => g.slug === preview);
+  const previewGuide = GUIDES.find((g) => g.slug === preview);
   const groups = [
-    { id: "guias-todas", titulo: "Todas as áreas", curto: "Todas as áreas", lista: GUIAS.filter((g) => GENERAL_GUIDES.has(g.slug)) },
+    { id: "guias-todas", title: "Todas as áreas", shortText: "Todas as áreas", lista: GUIDES.filter((g) => GENERAL_GUIDES.has(g.slug)) },
     ...AREAS.map((a) => ({
       id: `guias-${a.slug}`,
-      titulo: a.nome,
-      curto: a.rotulo,
-      lista: GUIAS.filter((g) => g.area === a.slug && !GENERAL_GUIDES.has(g.slug)),
+      title: a.name,
+      shortText: a.label,
+      lista: GUIDES.filter((g) => g.area === a.slug && !GENERAL_GUIDES.has(g.slug)),
     })),
   ].filter((g) => g.lista.length);
   return (
     <>
       <PageTop
-        migalha={[{ rotulo: "Guias" }]}
+        breadcrumb={[{ label: "Guias" }]}
         eyebrow="Guias"
-        titulo={pagina.h1}
-        texto="Explicações curtas e em linguagem simples sobre os documentos mais pedidos."
+        title={page.h1}
+        text="Explicações curtas e em linguagem simples sobre os documentos mais pedidos."
       />
       <section className="sec-fine" aria-label="Passo a passo">
         <div className="container">
@@ -533,12 +533,12 @@ function GuidesPage({ pagina }) {
           </a>
         </div>
       </section>
-      <SecoesNav
-        rotulo="Áreas dos guias"
-        itens={[...groups.map((g) => ({ id: g.id, rotulo: g.curto })), { id: "proximo-passo", rotulo: "Próximo passo" }]}
+      <SectionNav
+        label="Áreas dos guias"
+        items={[...groups.map((g) => ({ id: g.id, label: g.shortText })), { id: "proximo-passo", label: "Próximo passo" }]}
       />
       {groups.map((group, n) => (
-        <Section key={group.id} id={group.id} n={pad(n)} rotulo="Área" titulo={group.titulo} className={n % 2 ? "sec-alt" : ""}>
+        <Section key={group.id} id={group.id} n={pad(n)} label="Área" title={group.title} className={n % 2 ? "sec-alt" : ""}>
           <ul className="guide-cards">
             {group.lista.map((g, i) => (
               <li className="reveal guide-card" key={g.slug}>
@@ -547,7 +547,7 @@ function GuidesPage({ pagina }) {
                   <strong>{g.h1}</strong>
                   <i aria-hidden="true">→</i>
                 </a>
-                {RESUMOS_GUIAS[g.slug] && (
+                {GUIDE_SUMMARIES[g.slug] && (
                   <button type="button" className="guide-summary-button" aria-haspopup="dialog" onClick={() => setPreview(g.slug)}>
                     Ver o resumo<span className="sr-only">: {g.h1}</span>
                   </button>
@@ -557,12 +557,12 @@ function GuidesPage({ pagina }) {
           </ul>
         </Section>
       ))}
-      <Janela aberta={!!previewGuide} aoFechar={() => setPreview(null)} titulo={previewGuide ? previewGuide.h1 : ""}>
+      <Dialog open={!!previewGuide} onClose={() => setPreview(null)} title={previewGuide ? previewGuide.h1 : ""}>
         {previewGuide && (
           <>
             <p className="label-mini">Em resumo</p>
             <ul className="janela-lista">
-              {RESUMOS_GUIAS[previewGuide.slug].map((r) => (
+              {GUIDE_SUMMARIES[previewGuide.slug].map((r) => (
                 <li key={r}>{r}</li>
               ))}
             </ul>
@@ -571,34 +571,34 @@ function GuidesPage({ pagina }) {
             </a>
           </>
         )}
-      </Janela>
-      <Final
-        titulo="Não achou o seu caso?"
-        zapTexto="Olá! Li os guias do site e tenho uma dúvida."
-        relacionadas={[GENERAL_LINKS.quiz, GENERAL_LINKS.lembrete, areaLink(AREAS[0])]}
+      </Dialog>
+      <PageClosing
+        title="Não achou o seu caso?"
+        whatsappText="Olá! Li os guias do site e tenho uma dúvida."
+        related={[GENERAL_LINKS.quiz, GENERAL_LINKS.lembrete, areaLink(AREAS[0])]}
       />
     </>
   );
 }
 
-function QuizPage({ pagina }) {
+function QuizPage({ page }) {
   return (
     <>
       <PageTop
-        migalha={[{ rotulo: "O que preciso?" }]}
+        breadcrumb={[{ label: "O que preciso?" }]}
         eyebrow="Passo a passo"
-        titulo={pagina.h1}
-        texto="Responda uma pergunta por vez. No fim, você vê o que o seu caso provavelmente exige e fala com a gente pelo WhatsApp."
+        title={page.h1}
+        text="Responda uma pergunta por vez. No fim, você vê o que o seu caso provavelmente exige e fala com a gente pelo WhatsApp."
       />
       <section className="sec quiz" aria-label="Perguntas">
         <div className="container container-reading">
-          <Assistente />
+          <Wizard />
         </div>
       </section>
-      <Final
-        titulo="Prefere conversar direto?"
-        zapTexto="Olá! Tenho uma dúvida sobre o que o meu caso precisa."
-        relacionadas={[GENERAL_LINKS.guias, GENERAL_LINKS.lembrete, areaLink(AREAS[1])]}
+      <PageClosing
+        title="Prefere conversar direto?"
+        whatsappText="Olá! Tenho uma dúvida sobre o que o meu caso precisa."
+        related={[GENERAL_LINKS.guias, GENERAL_LINKS.lembrete, areaLink(AREAS[1])]}
       />
     </>
   );
@@ -612,8 +612,8 @@ function lastDayOfMonth(yearMonth) {
 
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-function ReminderPage({ pagina }) {
-  const [form, setForm] = useState({ nome: "", whatsapp: "", documento: DOCUMENTOS_LEMBRETE[0], mesNum: "", ano: "", aceite: false, site: "" });
+function ReminderPage({ page }) {
+  const [form, setForm] = useState({ name: "", whatsapp: "", document: REMINDER_DOCUMENTS[0], monthNum: "", year: "", consent: false, site: "" });
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   // Years computed in the browser (the prerendered HTML does not freeze the site's build year).
@@ -624,7 +624,7 @@ function ReminderPage({ pagina }) {
   }, []);
   const handleChange = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
   // "Mês do vencimento" (expiry month) as two lists (month and year): the type="month" field does not work in desktop Safari.
-  const expiryMonth = form.mesNum && form.ano ? `${form.ano}-${form.mesNum}` : "";
+  const expiryMonth = form.monthNum && form.year ? `${form.year}-${form.monthNum}` : "";
 
   const submit = async (e) => {
     e.preventDefault();
@@ -636,22 +636,22 @@ function ReminderPage({ pagina }) {
       setError("Confira o número do WhatsApp. Informe o DDD e o número, por exemplo (17) 99999-9999.");
       return;
     }
-    if (form.nome.trim().length < 2) {
+    if (form.name.trim().length < 2) {
       setError("Informe o seu nome.");
       return;
     }
-    if (!form.aceite) {
+    if (!form.consent) {
       setError("Marque a autorização para receber os lembretes.");
       return;
     }
     setStatus("sending");
     try {
-      await enviarLembrete({
-        nome: form.nome.trim(),
+      await sendReminder({
+        name: form.name.trim(),
         whatsapp: phoneNumber,
-        documento: form.documento,
-        vencimento: expiryMonth ? lastDayOfMonth(expiryMonth) : null,
-        consentimento: true,
+        document: form.document,
+        expiry: expiryMonth ? lastDayOfMonth(expiryMonth) : null,
+        consent: true,
       });
       setStatus("ok");
     } catch {
@@ -663,10 +663,10 @@ function ReminderPage({ pagina }) {
   return (
     <>
       <PageTop
-        migalha={[{ rotulo: "Lembrete de vencimento" }]}
+        breadcrumb={[{ label: "Lembrete de vencimento" }]}
         eyebrow="Serviço gratuito"
-        titulo={pagina.h1}
-        texto="Deixe o seu contato e o vencimento do documento. Avisamos pelo WhatsApp com antecedência, para você renovar sem correria."
+        title={page.h1}
+        text="Deixe o seu contato e o vencimento do documento. Avisamos pelo WhatsApp com antecedência, para você renovar sem correria."
       />
       <section className="sec" aria-label="Formulário do lembrete">
         <div className="container reminder-grid">
@@ -686,7 +686,7 @@ function ReminderPage({ pagina }) {
             <form className="form-public" onSubmit={submit} noValidate>
               <label>
                 <span>Seu nome</span>
-                <input value={form.nome} onChange={handleChange("nome")} autoComplete="name" maxLength={120} required />
+                <input value={form.name} onChange={handleChange("name")} autoComplete="name" maxLength={120} required />
               </label>
               <label>
                 <span>WhatsApp com DDD</span>
@@ -701,18 +701,18 @@ function ReminderPage({ pagina }) {
               </label>
               <fieldset className="doc-options">
                 <legend>Qual documento?</legend>
-                {DOCUMENTOS_LEMBRETE.map((d) => (
+                {REMINDER_DOCUMENTS.map((d) => (
                   <label key={d} className="doc-option">
-                    <input type="radio" name="documento" value={d} checked={form.documento === d} onChange={handleChange("documento")} />
+                    <input type="radio" name="document" value={d} checked={form.document === d} onChange={handleChange("document")} />
                     <span className="doc-option-name">{d}</span>
-                    {form.documento === d && DICAS_LEMBRETE[d] && <small className="hint-doc">{DICAS_LEMBRETE[d]}</small>}
+                    {form.document === d && REMINDER_TIPS[d] && <small className="hint-doc">{REMINDER_TIPS[d]}</small>}
                   </label>
                 ))}
               </fieldset>
               <fieldset className="field-month">
                 <legend>Mês do vencimento (se souber)</legend>
                 <div>
-                  <select aria-label="Mês" value={form.mesNum} onChange={handleChange("mesNum")}>
+                  <select aria-label="Mês" value={form.monthNum} onChange={handleChange("monthNum")}>
                     <option value="">Mês</option>
                     {MONTHS.map((m, i) => (
                       <option key={m} value={String(i + 1).padStart(2, "0")}>
@@ -720,7 +720,7 @@ function ReminderPage({ pagina }) {
                       </option>
                     ))}
                   </select>
-                  <select aria-label="Ano" value={form.ano} onChange={handleChange("ano")}>
+                  <select aria-label="Ano" value={form.year} onChange={handleChange("year")}>
                     <option value="">Ano</option>
                     {years.map((y) => (
                       <option key={y} value={y}>
@@ -735,7 +735,7 @@ function ReminderPage({ pagina }) {
                 <input tabIndex={-1} autoComplete="off" value={form.site} onChange={handleChange("site")} />
               </label>
               <label className="consent">
-                <input type="checkbox" checked={form.aceite} onChange={handleChange("aceite")} />
+                <input type="checkbox" checked={form.consent} onChange={handleChange("consent")} />
                 <span>
                   Autorizo a RD Engenharia a me enviar lembretes por WhatsApp sobre o vencimento deste documento. Posso
                   pedir a exclusão dos meus dados quando quiser. Veja a <a href="/privacidade">política de privacidade</a>.
@@ -771,11 +771,11 @@ function ReminderPage({ pagina }) {
           </aside>
         </div>
       </section>
-      <Final
-        titulo="Prefere falar com a gente?"
-        texto="Conte pelo WhatsApp qual documento você quer acompanhar. O lembrete é gratuito e respondemos no horário de atendimento."
-        zapTexto="Olá! Tenho uma dúvida sobre o lembrete de vencimento."
-        relacionadas={[GENERAL_LINKS.guias, GENERAL_LINKS.quiz, areaLink(AREAS[1])]}
+      <PageClosing
+        title="Prefere falar com a gente?"
+        text="Conte pelo WhatsApp qual documento você quer acompanhar. O lembrete é gratuito e respondemos no horário de atendimento."
+        whatsappText="Olá! Tenho uma dúvida sobre o lembrete de vencimento."
+        related={[GENERAL_LINKS.guias, GENERAL_LINKS.quiz, areaLink(AREAS[1])]}
       />
     </>
   );
@@ -784,7 +784,7 @@ function ReminderPage({ pagina }) {
 function PrivacyPage() {
   return (
     <>
-      <PageTop migalha={[{ rotulo: "Privacidade" }]} eyebrow="Transparência" titulo="Política de Privacidade" />
+      <PageTop breadcrumb={[{ label: "Privacidade" }]} eyebrow="Transparência" title="Política de Privacidade" />
       <section className="sec article-sec">
         <div className="container container-reading article">
           <p className="article-lead">
@@ -822,15 +822,15 @@ function PrivacyPage() {
           </p>
           <h2>Contato</h2>
           <p>
-            {TRADE_NAME} · {ENDERECO} · WhatsApp {PHONE_DISPLAY}.
+            {TRADE_NAME} · {ADDRESS} · WhatsApp {PHONE_DISPLAY}.
           </p>
         </div>
       </section>
-      <Final
-        titulo="Dúvida sobre os seus dados?"
-        texto="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
-        zapTexto="Olá! Tenho uma dúvida sobre a política de privacidade do site."
-        relacionadas={[GENERAL_LINKS.lembrete, GENERAL_LINKS.guias, GENERAL_LINKS.quiz]}
+      <PageClosing
+        title="Dúvida sobre os seus dados?"
+        text="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
+        whatsappText="Olá! Tenho uma dúvida sobre a política de privacidade do site."
+        related={[GENERAL_LINKS.lembrete, GENERAL_LINKS.guias, GENERAL_LINKS.quiz]}
       />
     </>
   );
@@ -841,7 +841,7 @@ function PrivacyPage() {
 function TermsPage() {
   return (
     <>
-      <PageTop migalha={[{ rotulo: "Termos de uso" }]} eyebrow="Transparência" titulo="Termos de Uso" />
+      <PageTop breadcrumb={[{ label: "Termos de uso" }]} eyebrow="Transparência" title="Termos de Uso" />
       <section className="sec article-sec">
         <div className="container container-reading article">
           <p className="article-lead">
@@ -891,15 +891,15 @@ function TermsPage() {
           <p>Estes termos podem ser atualizados. A versão válida é sempre a publicada nesta página.</p>
           <h2>Contato</h2>
           <p>
-            {TRADE_NAME} · {ENDERECO} · WhatsApp {PHONE_DISPLAY}.
+            {TRADE_NAME} · {ADDRESS} · WhatsApp {PHONE_DISPLAY}.
           </p>
         </div>
       </section>
-      <Final
-        titulo="Ficou alguma dúvida?"
-        texto="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
-        zapTexto="Olá! Tenho uma dúvida sobre os termos de uso do site."
-        relacionadas={[GENERAL_LINKS.guias, GENERAL_LINKS.quiz, GENERAL_LINKS.lembrete]}
+      <PageClosing
+        title="Ficou alguma dúvida?"
+        text="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
+        whatsappText="Olá! Tenho uma dúvida sobre os termos de uso do site."
+        related={[GENERAL_LINKS.guias, GENERAL_LINKS.quiz, GENERAL_LINKS.lembrete]}
       />
     </>
   );
@@ -907,33 +907,33 @@ function TermsPage() {
 
 function CreditsPage() {
   const groups = [
-    { titulo: "CC0 (Wikimedia Commons)", licenca: "CC0", texto: "Domínio público: uso livre, sem exigência de crédito. Mantemos o autor e a origem por transparência." },
-    { titulo: "Domínio público (Wikimedia Commons)", licenca: "Domínio público", texto: "Fotos de um instituto público dos EUA (NIOSH), sem restrição de uso. Mantemos o autor e a origem por transparência." },
-    { titulo: "Unsplash License", licenca: "Unsplash License", texto: "Licença própria do Unsplash, que permite uso comercial sem pedir autorização. Não é CC0. Texto completo em", link: { href: "https://unsplash.com/license", rotulo: "unsplash.com/license" } },
+    { title: "CC0 (Wikimedia Commons)", license: "CC0", text: "Domínio público: uso livre, sem exigência de crédito. Mantemos o autor e a origem por transparência." },
+    { title: "Domínio público (Wikimedia Commons)", license: "Domínio público", text: "Fotos de um instituto público dos EUA (NIOSH), sem restrição de uso. Mantemos o autor e a origem por transparência." },
+    { title: "Unsplash License", license: "Unsplash License", text: "Licença própria do Unsplash, que permite uso comercial sem pedir autorização. Não é CC0. Texto completo em", link: { href: "https://unsplash.com/license", label: "unsplash.com/license" } },
   ];
   return (
     <>
       <PageTop
-        migalha={[{ rotulo: "Créditos das imagens" }]}
+        breadcrumb={[{ label: "Créditos das imagens" }]}
         eyebrow="Transparência"
-        titulo="Créditos das imagens"
-        texto="A RD Engenharia ainda não tem fotos próprias no site. As fotos abaixo são ilustrativas, de terceiros, e não mostram trabalhos da empresa."
+        title="Créditos das imagens"
+        text="A RD Engenharia ainda não tem fotos próprias no site. As fotos abaixo são ilustrativas, de terceiros, e não mostram trabalhos da empresa."
       />
       <section className="sec" aria-label="Lista de créditos">
         <div className="container">
           {groups.map((g) => {
-            const photos = FOTOS_EM_USO.filter((f) => f.licenca === g.licenca);
+            const photos = PHOTOS_IN_USE.filter((f) => f.license === g.license);
             if (!photos.length) return null;
             return (
-              <div key={g.licenca} className="credits-group">
-                <h2>{g.titulo}</h2>
+              <div key={g.license} className="credits-group">
+                <h2>{g.title}</h2>
                 <p className="credits-note">
-                  {g.texto}
+                  {g.text}
                   {g.link && (
                     <>
                       {" "}
                       <a href={g.link.href} target="_blank" rel="noopener noreferrer">
-                        {g.link.rotulo}
+                        {g.link.label}
                       </a>
                       .
                     </>
@@ -941,36 +941,36 @@ function CreditsPage() {
                 </p>
                 <ul className="credits">
                   {photos.map((f) => (
-                    <li key={f.arq} className="reveal">
-                      <img src={caminho(f)} srcSet={srcset(f)} sizes="160px" width={f.w} height={f.h} loading="lazy" alt={f.alt} />
+                    <li key={f.file} className="reveal">
+                      <img src={photoPath(f)} srcSet={srcset(f)} sizes="160px" width={f.w} height={f.h} loading="lazy" alt={f.alt} />
                       <dl>
-                        {f.arquivo && (
+                        {f.fileName && (
                           <div>
                             <dt>Arquivo</dt>
-                            <dd>{f.arquivo}</dd>
+                            <dd>{f.fileName}</dd>
                           </div>
                         )}
                         <div>
                           <dt>Autor</dt>
-                          <dd>{f.autor || "Consta na página da foto (não anotado aqui)"}</dd>
+                          <dd>{f.author || "Consta na página da foto (não anotado aqui)"}</dd>
                         </div>
                         <div>
                           <dt>Licença</dt>
                           <dd>
-                            {f.licencaUrl ? (
-                              <a href={f.licencaUrl} target="_blank" rel="noopener noreferrer">
-                                {f.licenca}
+                            {f.licenseUrl ? (
+                              <a href={f.licenseUrl} target="_blank" rel="noopener noreferrer">
+                                {f.license}
                               </a>
                             ) : (
-                              f.licenca
+                              f.license
                             )}
                           </dd>
                         </div>
                         <div>
                           <dt>Página de origem</dt>
                           <dd>
-                            <a href={f.fonte} target="_blank" rel="noopener noreferrer">
-                              {f.fonteNome}
+                            <a href={f.source} target="_blank" rel="noopener noreferrer">
+                              {f.sourceName}
                             </a>
                           </dd>
                         </div>
@@ -992,36 +992,36 @@ function CreditsPage() {
           </div>
         </div>
       </section>
-      <Final
-        titulo="Quer ver o trabalho real?"
-        texto="Os desenhos de projeto da página de engenharia civil são da RD. Para outros serviços, conte o seu caso pelo WhatsApp."
-        zapTexto="Olá! Gostaria de conhecer melhor o trabalho da RD Engenharia."
-        relacionadas={[areaLink(AREAS[2]), GENERAL_LINKS.guias, GENERAL_LINKS.quiz]}
+      <PageClosing
+        title="Quer ver o trabalho real?"
+        text="Os desenhos de projeto da página de engenharia civil são da RD. Para outros serviços, conte o seu caso pelo WhatsApp."
+        whatsappText="Olá! Gostaria de conhecer melhor o trabalho da RD Engenharia."
+        related={[areaLink(AREAS[2]), GENERAL_LINKS.guias, GENERAL_LINKS.quiz]}
       />
     </>
   );
 }
 
-function LocationPage({ pagina }) {
+function LocationPage({ page }) {
   const locationZapText = "Olá! Gostaria de saber se vocês atendem o meu endereço.";
   return (
     <>
       <header className="hero-inner hero-area">
         <div className="container">
-          <Migalha itens={[{ rotulo: "Onde atendemos" }]} />
+          <Breadcrumb items={[{ label: "Onde atendemos" }]} />
           <p className="eyebrow">Onde atendemos</p>
-          <h1 className="display-m">{pagina.h1}</h1>
+          <h1 className="display-m">{page.h1}</h1>
           <p className="lead">
             Isso vale para todos os serviços. Conte a sua situação pelo WhatsApp e combinamos a melhor forma de atender você.
           </p>
           <div className="actions">
-            <BotaoZap className="btn-large" texto={locationZapText} rotulo="Perguntar pelo WhatsApp" />
+            <WhatsappButton className="btn-large" text={locationZapText} label="Perguntar pelo WhatsApp" />
           </div>
         </div>
       </header>
 
       {/* This section used to just repeat the page title; now it explains the two service modes. */}
-      <Section id="atendimento-regiao" n="01" rotulo="Formas de atendimento" titulo="Como funciona o atendimento.">
+      <Section id="atendimento-regiao" n="01" label="Formas de atendimento" title="Como funciona o atendimento.">
         <ul className="modes-grid">
           <li className="modes-card reveal">
             <p className="label-mini">Presencial</p>
@@ -1037,7 +1037,7 @@ function LocationPage({ pagina }) {
             <p className="label-mini">Seu endereço</p>
             <h3>Não sabe se está na região?</h3>
             <p>Conte onde fica o imóvel ou a empresa e confirmamos o atendimento.</p>
-            <BotaoZap texto={locationZapText} rotulo="Perguntar" />
+            <WhatsappButton text={locationZapText} label="Perguntar" />
           </li>
         </ul>
       </Section>
@@ -1051,13 +1051,13 @@ function LocationPage({ pagina }) {
             <h2 id="mapa-t" className="sec-title">
               Nosso endereço.
             </h2>
-            <p className="lead">{ENDERECO}</p>
+            <p className="lead">{ADDRESS}</p>
             <p className="map-hours">Segunda a sexta, das 7h às 17h.</p>
             <div className="actions">
-              <a className="btn btn-whatsapp btn-large" href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
+              <a className="btn btn-whatsapp btn-large" href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer">
                 Como chegar
               </a>
-              <a className="btn btn-sec btn-large" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+              <a className="btn btn-sec btn-large" href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
                 Ver no Google Maps
               </a>
             </div>
@@ -1066,7 +1066,7 @@ function LocationPage({ pagina }) {
             <div className="map-box">
               <iframe
                 title="Mapa com a localização da RD Engenharia em Ibirá/SP"
-                src={MAPA_EMBED}
+                src={MAP_EMBED_URL}
                 loading="lazy"
                 referrerPolicy="no-referrer"
                 allowFullScreen
@@ -1077,9 +1077,9 @@ function LocationPage({ pagina }) {
         </div>
       </section>
 
-      <Final
-        zapTexto={locationZapText}
-        relacionadas={[areaLink(AREAS[0]), areaLink(AREAS[2]), GENERAL_LINKS.quiz]}
+      <PageClosing
+        whatsappText={locationZapText}
+        related={[areaLink(AREAS[0]), areaLink(AREAS[2]), GENERAL_LINKS.quiz]}
       />
     </>
   );
@@ -1087,7 +1087,7 @@ function LocationPage({ pagina }) {
 
 // Dedicated page to print or save as PDF an area's document list (/imprimir/<area>).
 // No site header or footer, no state: the button calls window.print() directly. noindex.
-export function PaginaImprimir({ area }) {
+export function PrintPage({ area }) {
   const [date, setDate] = useState("");
   useEffect(() => {
     setDate(new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }));
@@ -1112,9 +1112,9 @@ export function PaginaImprimir({ area }) {
           </div>
         </header>
         <h1>Lista de documentos necessários</h1>
-        <p className="sheet-area">Área: {area.nome}</p>
+        <p className="sheet-area">Área: {area.name}</p>
         <ul className="sheet-list">
-          {area.documentos.map((d) => (
+          {area.documents.map((d) => (
             <li key={d}>
               <span className="sheet-box" aria-hidden="true" />
               {d}
@@ -1125,7 +1125,7 @@ export function PaginaImprimir({ area }) {
         <footer className="sheet-footer">
           <p>{LEGAL_NAME} · CNPJ {CNPJ}</p>
           <p>
-            {ENDERECO} · WhatsApp {PHONE_DISPLAY}
+            {ADDRESS} · WhatsApp {PHONE_DISPLAY}
           </p>
         </footer>
       </main>
@@ -1133,23 +1133,23 @@ export function PaginaImprimir({ area }) {
   );
 }
 
-export default function PaginaView({ pagina }) {
+export default function PageView({ page }) {
   let body = null;
-  if (pagina.tipo === "area") body = <AreaPage pagina={pagina} />;
-  else if (pagina.tipo === "onde") body = <LocationPage pagina={pagina} />;
-  else if (pagina.tipo === "guia") body = <GuidePage pagina={pagina} />;
-  else if (pagina.tipo === "quiz") body = <QuizPage pagina={pagina} />;
-  else if (pagina.tipo === "guias-indice") body = <GuidesPage pagina={pagina} />;
-  else if (pagina.tipo === "lembrete") body = <ReminderPage pagina={pagina} />;
-  else if (pagina.tipo === "creditos") body = <CreditsPage />;
-  else if (pagina.tipo === "termos") body = <TermsPage />;
+  if (page.type === "area") body = <AreaPage page={page} />;
+  else if (page.type === "location") body = <LocationPage page={page} />;
+  else if (page.type === "guide") body = <GuidePage page={page} />;
+  else if (page.type === "quiz") body = <QuizPage page={page} />;
+  else if (page.type === "guide-index") body = <GuidesPage page={page} />;
+  else if (page.type === "reminder") body = <ReminderPage page={page} />;
+  else if (page.type === "credits") body = <CreditsPage />;
+  else if (page.type === "terms") body = <TermsPage />;
   else body = <PrivacyPage />;
-  return <Casca atual={pagina.slug}>{body}</Casca>;
+  return <Shell current={page.slug}>{body}</Shell>;
 }
 
-export function NaoEncontrada() {
+export function NotFound() {
   return (
-    <Casca atual="404">
+    <Shell current="404">
       <section className="not-found">
         <div className="container">
           <p className="eyebrow">Erro 404</p>
@@ -1164,7 +1164,7 @@ export function NaoEncontrada() {
             </a>
             <a
               className="btn btn-sec btn-large"
-              href={zap("Olá! Não encontrei o que procurava no site.")}
+              href={whatsappLink("Olá! Não encontrei o que procurava no site.")}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -1173,6 +1173,6 @@ export function NaoEncontrada() {
           </div>
         </div>
       </section>
-    </Casca>
+    </Shell>
   );
 }

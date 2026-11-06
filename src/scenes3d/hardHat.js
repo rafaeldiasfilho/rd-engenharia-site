@@ -4,7 +4,7 @@ import {
   CylinderGeometry, DirectionalLight, DoubleSide, Group, HemisphereLight, LatheGeometry, Mesh, MeshStandardMaterial,
   PlaneGeometry, ShadowMaterial, TorusGeometry, Vector2,
 } from "three";
-import { REAL, montarCena } from "./base";
+import { REAL_COLORS, mountScene } from "./base";
 
 function profile() {
   const p = [new Vector2(0.95, 0.02), new Vector2(0.96, 0.06), new Vector2(0.84, 0.1)];
@@ -15,8 +15,8 @@ function profile() {
   return p;
 }
 
-export function montar(el) {
-  return montarCena(el, {
+export function mount(el) {
+  return mountScene(el, {
     shadows: true,
     camera: { pos: [0, -3.6, 2.0], target: [0, 0, 0.42] },
     build: ({ scene, group }) => {
@@ -35,7 +35,7 @@ export function montar(el) {
       ground.receiveShadow = true;
       group.add(ground);
 
-      const plastic = new MeshStandardMaterial({ color: REAL.amareloEpi, roughness: 0.32, metalness: 0, side: DoubleSide });
+      const plastic = new MeshStandardMaterial({ color: REAL_COLORS.ppeYellow, roughness: 0.32, metalness: 0, side: DoubleSide });
       const helmet = new Group();
       const shell = new Mesh(new LatheGeometry(profile(), 72), plastic);
       shell.castShadow = true;

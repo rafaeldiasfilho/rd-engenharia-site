@@ -4,9 +4,9 @@ import { useEffect, useRef } from "react";
 // landing-page-design skill): words start dimmed (~30%) and light up in reading order as they cross
 // a line at 65% of the screen height. Without JavaScript or with "reduce motion": the whole phrase is lit.
 // Scrolling is only listened to while the phrase is on screen, and the calculation runs in a requestAnimationFrame.
-export default function FraseRevela({ texto, className = "" }) {
+export default function RevealPhrase({ text, className = "" }) {
   const ref = useRef(null);
-  const words = texto.split(/\s+/);
+  const words = text.split(/\s+/);
 
   useEffect(() => {
     const el = ref.current;

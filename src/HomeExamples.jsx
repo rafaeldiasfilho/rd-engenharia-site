@@ -1,25 +1,25 @@
 import { useState } from "react";
 import Carousel from "./Carousel";
 import AreaIcon from "./AreaIcon";
-import { ComoLerPrancha, Ilustracao } from "./Illustrations";
-import { AREAS, slidesProjetos } from "./pagesData";
+import { HowToReadSheet, Illustration } from "./Illustrations";
+import { AREAS, projectSlides } from "./pagesData";
 
 const TABS = ["engenharia-civil", "corpo-de-bombeiros", "seguranca-do-trabalho", "meio-ambiente-topografia"].map((slug) => ({
   slug,
-  name: AREAS.find((a) => a.slug === slug).rotulo,
+  name: AREAS.find((a) => a.slug === slug).label,
 }));
 
 function Civil() {
   return (
     <div className="home-civil">
       <Carousel
-        itens={slidesProjetos(true)}
-        rotulo="Desenhos de projetos reais de engenharia civil"
-        aspecto="4 / 3"
+        items={projectSlides(true)}
+        label="Desenhos de projetos reais de engenharia civil"
+        aspect="4 / 3"
         className="carousel-projects carousel-3d"
       />
       <p className="fine-print">Projetos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem para ampliar.</p>
-      <ComoLerPrancha />
+      <HowToReadSheet />
       <p className="center">
         <a className="btn btn-sec" href="/engenharia-civil#na-pratica">
           Ver o projeto completo
@@ -29,7 +29,7 @@ function Civil() {
   );
 }
 
-export default function ExemplosHome() {
+export default function HomeExamples() {
   const [activeTab, setActiveTab] = useState(TABS[0].slug);
   return (
     <section className="sec sec-alt" id="na-pratica" aria-labelledby="pratica-t">
@@ -46,12 +46,12 @@ export default function ExemplosHome() {
         <div className="tabs reveal" role="group" aria-label="Áreas">
           {TABS.map((a) => (
             <button key={a.slug} type="button" aria-pressed={activeTab === a.slug} onClick={() => setActiveTab(a.slug)}>
-              <AreaIcon slug={a.slug} tamanho={20} /> {a.name}
+              <AreaIcon slug={a.slug} size={20} /> {a.name}
             </button>
           ))}
         </div>
         <div className="tab-content">
-          {activeTab === "engenharia-civil" ? <Civil /> : <Ilustracao slug={activeTab} />}
+          {activeTab === "engenharia-civil" ? <Civil /> : <Illustration slug={activeTab} />}
         </div>
         <p className="center">
           <a className="link-arrow" href={`/${activeTab}`}>

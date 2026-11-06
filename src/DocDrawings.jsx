@@ -1,11 +1,11 @@
 // Technical content of the example sheets: the drawings on the drawing sheets and the "inner page" of each cover.
 // Everything is fictional ("Exemplo" client, made-up numbers), but follows the real conventions of each document,
 // so the visitor recognizes what they will receive. Coordinates on the 150 × 198 sheet.
-import { AMBAR, AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERDE_CL, VERMELHO, Marca, clienteDe, quebra } from "./SheetBase";
+import { AMBER, BLUE, BORDER, GRAY, BACKGROUND, LINE, BROWN, PAPER, INK, GREEN, LIGHT_GREEN, RED, Logo, clientFor, wrapText } from "./SheetBase";
 
 /* ── common pieces ────────────────────────────────────────────────────────────────────────────── */
 
-function Tx({ x, y, s = 2.6, b, c = TINTA, a, r, children }) {
+function Tx({ x, y, s = 2.6, b, c = INK, a, r, children }) {
   return (
     <text x={x} y={y} fontSize={s} fontWeight={b ? 700 : 400} fill={c} textAnchor={a} transform={r ? `rotate(${r} ${x} ${y})` : undefined}>
       {children}
@@ -16,7 +16,7 @@ function Tx({ x, y, s = 2.6, b, c = TINTA, a, r, children }) {
 function NorthArrow({ x, y }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <path d="M0 -6l2.8 7.6-2.8-1.8-2.8 1.8z" fill={TINTA} />
+      <path d="M0 -6l2.8 7.6-2.8-1.8-2.8 1.8z" fill={INK} />
       <Tx x={0} y={5.6} s={2.8} b a="middle">
         N
       </Tx>
@@ -26,12 +26,12 @@ function NorthArrow({ x, y }) {
 
 function DimensionH({ x1, x2, y, v }) {
   return (
-    <g stroke={CINZA} strokeWidth="0.3">
+    <g stroke={GRAY} strokeWidth="0.3">
       <line x1={x1} y1={y} x2={x2} y2={y} />
       <line x1={x1} y1={y - 1.8} x2={x1} y2={y + 1.8} />
       <line x1={x2} y1={y - 1.8} x2={x2} y2={y + 1.8} />
       <path d={`M${x1 - 1} ${y + 1}l2 -2M${x2 - 1} ${y + 1}l2 -2`} strokeWidth="0.5" />
-      <text x={(x1 + x2) / 2} y={y - 1} fontSize="2.4" fill={CINZA} stroke="none" textAnchor="middle">
+      <text x={(x1 + x2) / 2} y={y - 1} fontSize="2.4" fill={GRAY} stroke="none" textAnchor="middle">
         {v}
       </text>
     </g>
@@ -41,12 +41,12 @@ function DimensionH({ x1, x2, y, v }) {
 function DimensionV({ x, y1, y2, v }) {
   const ym = (y1 + y2) / 2;
   return (
-    <g stroke={CINZA} strokeWidth="0.3">
+    <g stroke={GRAY} strokeWidth="0.3">
       <line x1={x} y1={y1} x2={x} y2={y2} />
       <line x1={x - 1.8} y1={y1} x2={x + 1.8} y2={y1} />
       <line x1={x - 1.8} y1={y2} x2={x + 1.8} y2={y2} />
       <path d={`M${x - 1} ${y1 + 1}l2 -2M${x - 1} ${y2 + 1}l2 -2`} strokeWidth="0.5" />
-      <text x={x - 1} y={ym} fontSize="2.4" fill={CINZA} stroke="none" textAnchor="middle" transform={`rotate(-90 ${x - 1} ${ym})`}>
+      <text x={x - 1} y={ym} fontSize="2.4" fill={GRAY} stroke="none" textAnchor="middle" transform={`rotate(-90 ${x - 1} ${ym})`}>
         {v}
       </text>
     </g>
@@ -58,8 +58,8 @@ function WindowOpening({ x1, y1, x2, y2 }) {
   const h = y1 === y2;
   return (
     <g>
-      <rect x={h ? x1 : x1 - 1.4} y={h ? y1 - 1.4 : y1} width={h ? x2 - x1 : 2.8} height={h ? 2.8 : y2 - y1} fill={PAPEL} />
-      <g stroke={TINTA} strokeWidth="0.35">
+      <rect x={h ? x1 : x1 - 1.4} y={h ? y1 - 1.4 : y1} width={h ? x2 - x1 : 2.8} height={h ? 2.8 : y2 - y1} fill={PAPER} />
+      <g stroke={INK} strokeWidth="0.35">
         {h ? (
           <path d={`M${x1} ${y1 - 0.6}H${x2}M${x1} ${y1 + 0.6}H${x2}M${x1} ${y1 - 1.4}v2.8M${x2} ${y1 - 1.4}v2.8`} />
         ) : (
@@ -74,9 +74,9 @@ function WindowOpening({ x1, y1, x2, y2 }) {
 function Door({ gap, leaf, arc }) {
   return (
     <g>
-      <rect {...gap} fill={PAPEL} />
-      <path d={leaf} stroke={TINTA} strokeWidth="0.6" fill="none" />
-      <path d={arc} stroke={TINTA} strokeWidth="0.3" fill="none" strokeDasharray="1 0.8" />
+      <rect {...gap} fill={PAPER} />
+      <path d={leaf} stroke={INK} strokeWidth="0.6" fill="none" />
+      <path d={arc} stroke={INK} strokeWidth="0.3" fill="none" strokeDasharray="1 0.8" />
     </g>
   );
 }
@@ -88,7 +88,7 @@ function Room({ x, y, name, area }) {
         {name}
       </Tx>
       {area && (
-        <Tx x={x} y={y + 3.4} s={2.2} c={CINZA} a="middle">
+        <Tx x={x} y={y + 3.4} s={2.2} c={GRAY} a="middle">
           {area}
         </Tx>
       )}
@@ -103,7 +103,7 @@ function DrawingTitle({ y = 107, title, scale, x = 75 }) {
         {title}
       </Tx>
       {scale && (
-        <Tx x={x} y={y + 3.8} s={2.3} c={CINZA} a="middle">
+        <Tx x={x} y={y + 3.8} s={2.3} c={GRAY} a="middle">
           {scale}
         </Tx>
       )}
@@ -133,7 +133,7 @@ function HousePlan({ asbuilt }) {
     <g>
       <DimensionH x1={18} x2={132} y={13} v="11,40" />
       <DimensionV x={11} y1={20} y2={96} v="7,60" />
-      <g stroke={TINTA} fill="none" strokeLinecap="square">
+      <g stroke={INK} fill="none" strokeLinecap="square">
         <rect x="18" y="20" width="114" height="76" strokeWidth="1.6" />
         <path d="M70 20V58M104 20V58M18 58H132M56 58V96M76 58V96" strokeWidth="0.9" />
       </g>
@@ -148,7 +148,7 @@ function HousePlan({ asbuilt }) {
       <Door gap={{ x: 59, y: 57, width: 6, height: 2 }} leaf="M59 58V64" arc="M65 58A6 6 0 0 1 59 64" />
       <Door gap={{ x: 82, y: 57, width: 7, height: 2 }} leaf="M82 58V65" arc="M89 58A7 7 0 0 1 82 65" />
       <Door gap={{ x: 103, y: 38, width: 2, height: 7 }} leaf="M104 38H111" arc="M104 45A7 7 0 0 0 111 38" />
-      <rect x="69" y="36" width="2" height="10" fill={PAPEL} />
+      <rect x="69" y="36" width="2" height="10" fill={PAPER} />
       <Room x={44} y={41} name="SALA" area="19,76 m²" />
       <Room x={87} y={41} name="COZINHA" area="12,92 m²" />
       <Room x={118} y={51} name="Á. SERV." area="10,64 m²" />
@@ -157,8 +157,8 @@ function HousePlan({ asbuilt }) {
       <Room x={104} y={80} name="SUÍTE" area="21,28 m²" />
       {asbuilt && (
         <g>
-          <path d={revisionCloud(72, 60, 8, 34)} fill="none" stroke={VERMELHO} strokeWidth="0.5" />
-          <path d="M80 60l3.4 -5.6h-6.8z" fill={VERMELHO} />
+          <path d={revisionCloud(72, 60, 8, 34)} fill="none" stroke={RED} strokeWidth="0.5" />
+          <path d="M80 60l3.4 -5.6h-6.8z" fill={RED} />
           <Tx x={80} y={58.6} s={2.2} b c="#fff" a="middle">
             1
           </Tx>
@@ -166,7 +166,7 @@ function HousePlan({ asbuilt }) {
       )}
       <DrawingTitle title={asbuilt ? "PLANTA BAIXA · COMO CONSTRUÍDO" : "PLANTA BAIXA"} scale="ESCALA 1:50 · ÁREA CONSTRUÍDA 86,64 m²" />
       {asbuilt && (
-        <Tx x={12} y={118} s={2.2} c={VERMELHO}>
+        <Tx x={12} y={118} s={2.2} c={RED}>
           1 · Parede do banheiro executada 0,20 m à direita do projeto aprovado.
         </Tx>
       )}
@@ -183,7 +183,7 @@ function ShopPlan({ route }) {
     <g>
       <DimensionH x1={18} x2={132} y={13} v="22,80" />
       <DimensionV x={11} y1={20} y2={96} v="15,20" />
-      <g stroke={TINTA} fill="none" strokeLinecap="square">
+      <g stroke={INK} fill="none" strokeLinecap="square">
         <rect x="18" y="20" width="114" height="76" strokeWidth="1.6" />
         <path d="M92 20V96M92 62H132M110 62V96" strokeWidth="0.9" />
       </g>
@@ -222,7 +222,7 @@ function ShopPlan({ route }) {
       {!route &&
         extinguishers.map(([x, y]) => (
           <g key={`${x}-${y}`}>
-            <circle cx={x} cy={y} r="2.3" fill={VERMELHO} />
+            <circle cx={x} cy={y} r="2.3" fill={RED} />
             <Tx x={x} y={y + 0.9} s={2.2} b c="#fff" a="middle">
               E
             </Tx>
@@ -234,7 +234,7 @@ function ShopPlan({ route }) {
         <g>
           {[[24, 62], [96, 26]].map(([x, y]) => (
             <g key={`${x}-${y}`}>
-              <rect x={x - 2.6} y={y - 2} width="5.2" height="4" fill={VERMELHO} />
+              <rect x={x - 2.6} y={y - 2} width="5.2" height="4" fill={RED} />
               <Tx x={x} y={y + 1} s={2.4} b c="#fff" a="middle">
                 H
               </Tx>
@@ -242,11 +242,11 @@ function ShopPlan({ route }) {
           ))}
           {[[52, 92], [88, 30]].map(([x, y]) => (
             <g key={`${x}-${y}`}>
-              <circle cx={x} cy={y} r="1.9" fill="#fff" stroke={VERMELHO} strokeWidth="0.8" />
-              <circle cx={x} cy={y} r="0.7" fill={VERMELHO} />
+              <circle cx={x} cy={y} r="1.9" fill="#fff" stroke={RED} strokeWidth="0.8" />
+              <circle cx={x} cy={y} r="0.7" fill={RED} />
             </g>
           ))}
-          <Tx x={12} y={103} s={2.1} c={CINZA}>
+          <Tx x={12} y={103} s={2.1} c={GRAY}>
             Caminhamento máximo: 26 m
           </Tx>
         </g>
@@ -268,13 +268,13 @@ function ShopPlan({ route }) {
             ]
         ).map(([k, label], i) => (
           <g key={k} transform={`translate(${(i % 2) * 62} ${Math.floor(i / 2) * 4.6})`}>
-            {k === "e" && <circle cx="1.6" cy="-0.8" r="1.6" fill={VERMELHO} />}
+            {k === "e" && <circle cx="1.6" cy="-0.8" r="1.6" fill={RED} />}
             {k === "l" && <rect x="0" y="-1.8" width="3.4" height="1.8" fill="#f2c230" stroke="#7a5b00" strokeWidth="0.3" />}
-            {k === "h" && <rect x="0" y="-2" width="3.4" height="2.6" fill={VERMELHO} />}
-            {k === "a" && <circle cx="1.6" cy="-0.8" r="1.4" fill="#fff" stroke={VERMELHO} strokeWidth="0.7" />}
+            {k === "h" && <rect x="0" y="-2" width="3.4" height="2.6" fill={RED} />}
+            {k === "a" && <circle cx="1.6" cy="-0.8" r="1.4" fill="#fff" stroke={RED} strokeWidth="0.7" />}
             {k === "s" && <rect x="0" y="-1.8" width="3.4" height="1.8" fill="#2f8f46" />}
             {k === "r" && <path d="M0 -0.8h3.4" stroke="#2f8f46" strokeWidth="0.8" strokeDasharray="1.2 0.8" />}
-            <text x="5" y="0" fill={TINTA}>
+            <text x="5" y="0" fill={INK}>
               {label}
             </text>
           </g>
@@ -304,24 +304,24 @@ function Schedule() {
   const rowHeight = 8.6;
   return (
     <g>
-      <rect x="10" y="12" width="130" height="14" fill={FUNDO} />
-      <Tx x={12} y={21} s={2.4} b c={CINZA}>
+      <rect x="10" y="12" width="130" height="14" fill={BACKGROUND} />
+      <Tx x={12} y={21} s={2.4} b c={GRAY}>
         ETAPA
       </Tx>
       {["MÊS 1", "MÊS 2", "MÊS 3"].map((m, i) => (
-        <Tx key={m} x={x0 + i * 24 + 12} y={17.4} s={2.3} b c={CINZA} a="middle">
+        <Tx key={m} x={x0 + i * 24 + 12} y={17.4} s={2.3} b c={GRAY} a="middle">
           {m}
         </Tx>
       ))}
       {Array.from({ length: 12 }, (_, i) => (
-        <Tx key={i} x={x0 + i * week + 3} y={23.6} s={1.9} c={CINZA} a="middle">
+        <Tx key={i} x={x0 + i * week + 3} y={23.6} s={1.9} c={GRAY} a="middle">
           {i + 1}
         </Tx>
       ))}
-      <Tx x={135} y={21} s={2.4} b c={CINZA} a="middle">
+      <Tx x={135} y={21} s={2.4} b c={GRAY} a="middle">
         %
       </Tx>
-      <g stroke={LINHA} strokeWidth="0.3">
+      <g stroke={LINE} strokeWidth="0.3">
         {Array.from({ length: 13 }, (_, i) => (
           <line key={i} x1={x0 + i * week} y1={19.6} x2={x0 + i * week} y2={y0 + STAGES.length * rowHeight} strokeWidth={i % 4 === 0 ? 0.6 : 0.3} />
         ))}
@@ -336,7 +336,7 @@ function Schedule() {
             <Tx x={12} y={y + 5.6} s={2.4}>
               {name}
             </Tx>
-            <rect x={x0 + start * week + 0.6} y={y + 2.6} width={dur * week - 1.2} height="3.6" rx="1.2" fill={r % 2 ? "#4f9a5b" : VERDE} />
+            <rect x={x0 + start * week + 0.6} y={y + 2.6} width={dur * week - 1.2} height="3.6" rx="1.2" fill={r % 2 ? "#4f9a5b" : GREEN} />
             <Tx x={135} y={y + 5.6} s={2.4} a="middle">
               {pct}
             </Tx>
@@ -347,7 +347,7 @@ function Schedule() {
         const y = y0 + STAGES.length * rowHeight;
         return (
           <g>
-            <rect x="10" y={y} width="130" height="15" fill={FUNDO} />
+            <rect x="10" y={y} width="130" height="15" fill={BACKGROUND} />
             <Tx x={12} y={y + 5.4} s={2.3} b>
               Desembolso no mês
             </Tx>
@@ -360,7 +360,7 @@ function Schedule() {
               ["30%", "100%"],
             ].map(([m, a], i) => (
               <g key={i}>
-                <Tx x={x0 + i * 24 + 12} y={y + 5.4} s={2.4} b c={VERDE} a="middle">
+                <Tx x={x0 + i * 24 + 12} y={y + 5.4} s={2.4} b c={GREEN} a="middle">
                   {m}
                 </Tx>
                 <Tx x={x0 + i * 24 + 12} y={y + 11.6} s={2.4} a="middle">
@@ -392,51 +392,51 @@ function CarMap({ uid }) {
       </defs>
       <polygon points={boundary} fill="#f3f6ef" />
       <g clipPath={`url(#${uid}-car)`}>
-        <path d={stream} fill="none" stroke={VERDE_CL} strokeWidth="13" opacity="0.7" />
-        <path d={stream} fill="none" stroke={AZUL} strokeWidth="1.1" />
-        <g clipPath={`url(#${uid}-rl)`} stroke={VERDE} strokeWidth="0.45">
+        <path d={stream} fill="none" stroke={LIGHT_GREEN} strokeWidth="13" opacity="0.7" />
+        <path d={stream} fill="none" stroke={BLUE} strokeWidth="1.1" />
+        <g clipPath={`url(#${uid}-rl)`} stroke={GREEN} strokeWidth="0.45">
           {Array.from({ length: 18 }, (_, i) => (
             <line key={i} x1={26 + i * 4 - 34} y1="90" x2={26 + i * 4} y2="56" />
           ))}
         </g>
       </g>
-      <rect x="26" y="56" width="34" height="34" fill="none" stroke={VERDE} strokeWidth="0.7" />
-      <polygon points={boundary} fill="none" stroke={TINTA} strokeWidth="0.9" />
-      <rect x="100" y="56" width="4" height="4" fill={TINTA} />
+      <rect x="26" y="56" width="34" height="34" fill="none" stroke={GREEN} strokeWidth="0.7" />
+      <polygon points={boundary} fill="none" stroke={INK} strokeWidth="0.9" />
+      <rect x="100" y="56" width="4" height="4" fill={INK} />
       <Tx x={102} y={64.4} s={2.2} a="middle">
         Sede
       </Tx>
       <rect x="31" y="68.6" width="24" height="8.4" rx="1" fill="#fff" opacity="0.92" />
-      <Tx x={43} y={72} s={2.2} b c={VERDE} a="middle">
+      <Tx x={43} y={72} s={2.2} b c={GREEN} a="middle">
         RESERVA
       </Tx>
-      <Tx x={43} y={75.4} s={2.2} b c={VERDE} a="middle">
+      <Tx x={43} y={75.4} s={2.2} b c={GREEN} a="middle">
         LEGAL
       </Tx>
       <Tx x={74} y={40} s={2.1} b c="#2c6a34" r={-62}>
         APP 30 m
       </Tx>
-      <Tx x={112} y={78} s={2.1} c={CINZA} a="middle">
+      <Tx x={112} y={78} s={2.1} c={GRAY} a="middle">
         uso consolidado
       </Tx>
       <NorthArrow x={130} y={14} />
       <DrawingTitle y={106} title="MAPA DO IMÓVEL PARA O CAR" scale="ÁREA 48,32 ha · RESERVA LEGAL 9,66 ha (20%)" />
       <g transform="translate(12 117)" fontSize="2.2">
-        <rect x="0" y="-2.2" width="4" height="2.6" fill="none" stroke={VERDE} strokeWidth="0.5" />
-        <path d="M0 0.4l2.6-2.6M1.6 0.4l2.4-2.4" stroke={VERDE} strokeWidth="0.4" />
-        <text x="5.6" y="0" fill={TINTA}>
+        <rect x="0" y="-2.2" width="4" height="2.6" fill="none" stroke={GREEN} strokeWidth="0.5" />
+        <path d="M0 0.4l2.6-2.6M1.6 0.4l2.4-2.4" stroke={GREEN} strokeWidth="0.4" />
+        <text x="5.6" y="0" fill={INK}>
           Reserva legal
         </text>
-        <rect x="34" y="-2.2" width="4" height="2.6" fill={VERDE_CL} />
-        <text x="39.6" y="0" fill={TINTA}>
+        <rect x="34" y="-2.2" width="4" height="2.6" fill={LIGHT_GREEN} />
+        <text x="39.6" y="0" fill={INK}>
           APP
         </text>
-        <path d="M54 -0.8h5" stroke={AZUL} strokeWidth="0.9" />
-        <text x="61" y="0" fill={TINTA}>
+        <path d="M54 -0.8h5" stroke={BLUE} strokeWidth="0.9" />
+        <text x="61" y="0" fill={INK}>
           Córrego
         </text>
-        <path d="M82 -0.8h5" stroke={TINTA} strokeWidth="0.8" />
-        <text x="89" y="0" fill={TINTA}>
+        <path d="M82 -0.8h5" stroke={INK} strokeWidth="0.8" />
+        <text x="89" y="0" fill={INK}>
           Limite do imóvel
         </text>
       </g>
@@ -457,45 +457,45 @@ function GeorefPlan() {
   const pts = VERTICES.map(([, x, y]) => `${x},${y}`).join(" ");
   return (
     <g>
-      <polygon points={pts} fill="#eef4ec" stroke={TINTA} strokeWidth="0.9" />
+      <polygon points={pts} fill="#eef4ec" stroke={INK} strokeWidth="0.9" />
       {VERTICES.map(([id, x, y, , , lx, ly, la]) => (
         <g key={id}>
-          <circle cx={x} cy={y} r="1.3" fill="#fff" stroke={TINTA} strokeWidth="0.5" />
-          <circle cx={x} cy={y} r="0.45" fill={TINTA} />
+          <circle cx={x} cy={y} r="1.3" fill="#fff" stroke={INK} strokeWidth="0.5" />
+          <circle cx={x} cy={y} r="0.45" fill={INK} />
           <Tx x={lx} y={ly} s={2.1} b a={la}>
             {id}
           </Tx>
         </g>
       ))}
-      <Tx x={46} y={16.2} s={1.9} c={CINZA} a="middle" r={-9.9}>
+      <Tx x={46} y={16.2} s={1.9} c={GRAY} a="middle" r={-9.9}>
         Az 80°08' · 467,12 m
       </Tx>
-      <Tx x={83} y={31} s={1.9} c={CINZA} a="middle" r={59.9}>
+      <Tx x={83} y={31} s={1.9} c={GRAY} a="middle" r={59.9}>
         Az 149°55' · 438,90 m
       </Tx>
-      <Tx x={50} y={60} s={2.4} b c={VERDE} a="middle">
+      <Tx x={50} y={60} s={2.4} b c={GREEN} a="middle">
         SÍTIO EXEMPLO
       </Tx>
-      <Tx x={6} y={60} s={1.9} c={CINZA} a="middle" r={-90}>
+      <Tx x={6} y={60} s={1.9} c={GRAY} a="middle" r={-90}>
         Confrontante: Sítio Vizinho A
       </Tx>
-      <Tx x={46} y={110} s={1.9} c={CINZA} a="middle" r={7}>
+      <Tx x={46} y={110} s={1.9} c={GRAY} a="middle" r={7}>
         Estrada municipal
       </Tx>
       <g transform="translate(97 14)">
-        <rect x="0" y="0" width="43" height="6" fill={FUNDO} />
-        <Tx x={1.2} y={4.2} s={1.9} b c={CINZA}>
+        <rect x="0" y="0" width="43" height="6" fill={BACKGROUND} />
+        <Tx x={1.2} y={4.2} s={1.9} b c={GRAY}>
           VÉRTICE
         </Tx>
-        <Tx x={13} y={4.2} s={1.9} b c={CINZA}>
+        <Tx x={13} y={4.2} s={1.9} b c={GRAY}>
           E (m)
         </Tx>
-        <Tx x={27.4} y={4.2} s={1.9} b c={CINZA}>
+        <Tx x={27.4} y={4.2} s={1.9} b c={GRAY}>
           N (m)
         </Tx>
         {VERTICES.map(([id, , , e, n], i) => (
           <g key={id}>
-            <line x1="0" y1={6 + i * 5.4} x2="43" y2={6 + i * 5.4} stroke={LINHA} strokeWidth="0.3" />
+            <line x1="0" y1={6 + i * 5.4} x2="43" y2={6 + i * 5.4} stroke={LINE} strokeWidth="0.3" />
             <Tx x={1.2} y={10 + i * 5.4} s={1.9}>
               {id}
             </Tx>
@@ -507,7 +507,7 @@ function GeorefPlan() {
             </Tx>
           </g>
         ))}
-        <Tx x={0} y={40} s={2.1} c={CINZA}>
+        <Tx x={0} y={40} s={2.1} c={GRAY}>
           SIRGAS 2000 · UTM fuso 22S
         </Tx>
         <Tx x={0} y={44.6} s={2.3} b>
@@ -544,16 +544,16 @@ function ContourPlan({ uid }) {
       </defs>
       <g clipPath={`url(#${uid}-lev)`} fill="none">
         {contours.map((c) => (
-          <path key={c.elevation} d={c.d} stroke={c.major ? MARROM : "#b79a7a"} strokeWidth={c.major ? 0.7 : 0.3} />
+          <path key={c.elevation} d={c.d} stroke={c.major ? BROWN : "#b79a7a"} strokeWidth={c.major ? 0.7 : 0.3} />
         ))}
-        <path d="M82 12C80 40 86 60 84 100" stroke={AZUL} strokeWidth="0.6" strokeDasharray="2 1.2" />
+        <path d="M82 12C80 40 86 60 84 100" stroke={BLUE} strokeWidth="0.6" strokeDasharray="2 1.2" />
       </g>
       {contours
         .filter((c) => c.major)
         .map((c) => (
           <g key={c.elevation}>
-            <rect x="36" y={c.yl - 2.4} width="9" height="3.4" fill={PAPEL} />
-            <Tx x={40.5} y={c.yl + 0.4} s={2.2} b c={MARROM} a="middle">
+            <rect x="36" y={c.yl - 2.4} width="9" height="3.4" fill={PAPER} />
+            <Tx x={40.5} y={c.yl + 0.4} s={2.2} b c={BROWN} a="middle">
               {c.elevation}
             </Tx>
           </g>
@@ -564,19 +564,19 @@ function ContourPlan({ uid }) {
         [62, 54, "+509,40"],
       ].map(([x, y, v]) => (
         <g key={v}>
-          <path d={`M${x - 1.2} ${y}h2.4M${x} ${y - 1.2}v2.4`} stroke={TINTA} strokeWidth="0.4" />
+          <path d={`M${x - 1.2} ${y}h2.4M${x} ${y - 1.2}v2.4`} stroke={INK} strokeWidth="0.4" />
           <Tx x={x + 1.8} y={y - 1} s={2.1}>
             {v}
           </Tx>
         </g>
       ))}
-      <polygon points="12,100 14,14 136,12 138,98" fill="none" stroke={TINTA} strokeWidth="0.9" />
-      <Tx x={86} y={104} s={2} c={AZUL}>
+      <polygon points="12,100 14,14 136,12 138,98" fill="none" stroke={INK} strokeWidth="0.9" />
+      <Tx x={86} y={104} s={2} c={BLUE}>
         drenagem natural
       </Tx>
       <g transform="translate(14 110)">
-        <rect x="0" y="0" width="12" height="1.6" fill={TINTA} />
-        <rect x="12" y="0" width="12" height="1.6" fill="#fff" stroke={TINTA} strokeWidth="0.3" />
+        <rect x="0" y="0" width="12" height="1.6" fill={INK} />
+        <rect x="12" y="0" width="12" height="1.6" fill="#fff" stroke={INK} strokeWidth="0.3" />
         <Tx x={0} y={5} s={2} a="middle">
           0
         </Tx>
@@ -594,8 +594,8 @@ function ContourPlan({ uid }) {
 }
 
 // The drawing on the sheet (area from x 9 to 141 and y 9 to 122; the title block starts at y 126).
-export function Desenho({ tipo, uid }) {
-  switch (tipo) {
+export function Drawing({ type, uid }) {
+  switch (type) {
     case "incendio":
       return <ShopPlan />;
     case "rota":
@@ -620,29 +620,29 @@ export function Desenho({ tipo, uid }) {
 /* ── inner pages of the covers ───────────────────────────────────────────────────────────────── */
 
 const STATUS_COLOR = {
-  Baixo: VERDE,
-  Moderado: AMBAR,
-  Médio: AMBAR,
-  Alto: VERMELHO,
-  Conforme: VERDE,
-  Pendente: AMBAR,
-  Enviado: VERDE,
-  "Em andamento": AMBAR,
-  Exigida: AZUL,
-  "Acima do limite": VERMELHO,
-  "Abaixo do limite": VERDE,
-  "Sem exposição": VERDE,
-  "Insalubre, grau médio": VERMELHO,
-  "Não insalubre": VERDE,
-  "Não perigoso": VERDE,
-  Concluído: VERDE,
-  "Em análise": AMBAR,
-  Aguardando: CINZA,
-  Protocolada: AZUL,
+  Baixo: GREEN,
+  Moderado: AMBER,
+  Médio: AMBER,
+  Alto: RED,
+  Conforme: GREEN,
+  Pendente: AMBER,
+  Enviado: GREEN,
+  "Em andamento": AMBER,
+  Exigida: BLUE,
+  "Acima do limite": RED,
+  "Abaixo do limite": GREEN,
+  "Sem exposição": GREEN,
+  "Insalubre, grau médio": RED,
+  "Não insalubre": GREEN,
+  "Não perigoso": GREEN,
+  Concluído: GREEN,
+  "Em análise": AMBER,
+  Aguardando: GRAY,
+  Protocolada: BLUE,
 };
 
 function Chip({ x, y, t, s = 2.1 }) {
-  const color = STATUS_COLOR[t] || CINZA;
+  const color = STATUS_COLOR[t] || GRAY;
   const w = t.length * s * 0.6 + 3;
   return (
     <g>
@@ -661,9 +661,9 @@ function Table({ x = 10, y, cols, rows, rowHeight = 9.6, s = 2.3 }) {
   const W = xs[xs.length - 1] - x;
   return (
     <g>
-      <rect x={x} y={y} width={W} height="7" fill={FUNDO} />
+      <rect x={x} y={y} width={W} height="7" fill={BACKGROUND} />
       {cols.map((c, i) => (
-        <text key={c.t} x={xs[i] + 1.4} y={y + 4.7} fontSize={s} fontWeight="700" fill={CINZA}>
+        <text key={c.t} x={xs[i] + 1.4} y={y + 4.7} fontSize={s} fontWeight="700" fill={GRAY}>
           {c.t}
         </text>
       ))}
@@ -671,15 +671,15 @@ function Table({ x = 10, y, cols, rows, rowHeight = 9.6, s = 2.3 }) {
         const yy = y + 7 + r * rowHeight;
         return (
           <g key={r}>
-            <line x1={x} y1={yy} x2={x + W} y2={yy} stroke={LINHA} strokeWidth="0.4" />
+            <line x1={x} y1={yy} x2={x + W} y2={yy} stroke={LINE} strokeWidth="0.4" />
             {row.map((cell, i) =>
               cell && typeof cell === "object" ? (
                 <Chip key={i} x={xs[i] + 1.2} y={yy + 4.4} t={cell.chip} s={s * 0.9} />
               ) : (
-                quebra(cell, Math.max(5, Math.floor((cols[i].w - 2.4) / (s * 0.5))))
+                wrapText(cell, Math.max(5, Math.floor((cols[i].w - 2.4) / (s * 0.5))))
                   .slice(0, 2)
                   .map((t, k) => (
-                    <text key={`${i}-${k}`} x={xs[i] + 1.4} y={yy + 3.8 + k * (s + 0.9)} fontSize={s} fill={TINTA}>
+                    <text key={`${i}-${k}`} x={xs[i] + 1.4} y={yy + 3.8 + k * (s + 0.9)} fontSize={s} fill={INK}>
                       {t}
                     </text>
                   ))
@@ -688,7 +688,7 @@ function Table({ x = 10, y, cols, rows, rowHeight = 9.6, s = 2.3 }) {
           </g>
         );
       })}
-      <line x1={x} y1={y + 7 + rows.length * rowHeight} x2={x + W} y2={y + 7 + rows.length * rowHeight} stroke={BORDA} strokeWidth="0.5" />
+      <line x1={x} y1={y + 7 + rows.length * rowHeight} x2={x + W} y2={y + 7 + rows.length * rowHeight} stroke={BORDER} strokeWidth="0.5" />
     </g>
   );
 }
@@ -701,18 +701,18 @@ function Checklist({ y, items }) {
         const done = ["Conforme", "Enviado", "Concluído", "Exigida"].includes(status);
         return (
           <g key={t}>
-            <rect x="10" y={yy - 3.4} width="4.4" height="4.4" rx="1" fill="none" stroke={VERDE} strokeWidth="0.6" />
-            {done && <path d={`M11 ${yy - 1.2}l1.2 1.2 2-2.6`} fill="none" stroke={VERDE} strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" />}
+            <rect x="10" y={yy - 3.4} width="4.4" height="4.4" rx="1" fill="none" stroke={GREEN} strokeWidth="0.6" />
+            {done && <path d={`M11 ${yy - 1.2}l1.2 1.2 2-2.6`} fill="none" stroke={GREEN} strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" />}
             <Tx x={18} y={yy} s={2.7}>
               {t}
             </Tx>
             {note && (
-              <Tx x={18} y={yy + 3.6} s={2.2} c={CINZA}>
+              <Tx x={18} y={yy + 3.6} s={2.2} c={GRAY}>
                 {note}
               </Tx>
             )}
             <Chip x={140 - (status.length * 2.1 * 0.6 + 3)} y={yy} t={status} />
-            <line x1="10" y1={yy + 6} x2="140" y2={yy + 6} stroke={LINHA} strokeWidth="0.35" />
+            <line x1="10" y1={yy + 6} x2="140" y2={yy + 6} stroke={LINE} strokeWidth="0.35" />
           </g>
         );
       })}
@@ -720,8 +720,8 @@ function Checklist({ y, items }) {
   );
 }
 
-function Paragraph({ y, text, s = 2.7, max = 84, c = TINTA }) {
-  return quebra(text, max).map((line, k) => (
+function Paragraph({ y, text, s = 2.7, max = 84, c = INK }) {
+  return wrapText(text, max).map((line, k) => (
     <Tx key={k} x={10} y={y + k * (s + 1.5)} s={s} c={c}>
       {line}
     </Tx>
@@ -782,13 +782,13 @@ const INNER_PAGES = {
         {[0, 1, 2].map((r) =>
           [0, 1, 2].map((c) => {
             const n = r + c;
-            return <rect key={`${r}${c}`} x={10 + c * 8} y={126 + (2 - r) * 8} width="7.4" height="7.4" rx="1" fill={n < 2 ? VERDE : n < 3 ? AMBAR : VERMELHO} opacity="0.75" />;
+            return <rect key={`${r}${c}`} x={10 + c * 8} y={126 + (2 - r) * 8} width="7.4" height="7.4" rx="1" fill={n < 2 ? GREEN : n < 3 ? AMBER : RED} opacity="0.75" />;
           })
         )}
-        <Tx x={22} y={153} s={2} c={CINZA} a="middle">
+        <Tx x={22} y={153} s={2} c={GRAY} a="middle">
           Severidade →
         </Tx>
-        <Tx x={7.6} y={138} s={2} c={CINZA} a="middle" r={-90}>
+        <Tx x={7.6} y={138} s={2} c={GRAY} a="middle" r={-90}>
           Probabilidade →
         </Tx>
         {[
@@ -828,7 +828,7 @@ const INNER_PAGES = {
           ]}
         />
         <Paragraph y={124} text="Registros: manifestos de transporte de resíduos (MTR) e certificados de destinação ficam arquivados por resíduo e por saída." />
-        <Paragraph y={140} s={2.4} c={CINZA} text="Classe I: perigoso. Classe II A: não perigoso e não inerte. Classe II B: não perigoso e inerte." />
+        <Paragraph y={140} s={2.4} c={GRAY} text="Classe I: perigoso. Classe II A: não perigoso e não inerte. Classe II B: não perigoso e inerte." />
       </g>
     ),
   },
@@ -859,14 +859,14 @@ const INNER_PAGES = {
         <Tx x={10} y={122} s={2.6}>
           ( ) Liberada ( ) Não liberada
         </Tx>
-        <g stroke={BORDA} strokeWidth="0.5">
+        <g stroke={BORDER} strokeWidth="0.5">
           <line x1="10" y1="146" x2="68" y2="146" />
           <line x1="82" y1="146" x2="140" y2="146" />
         </g>
-        <Tx x={39} y={150.4} s={2.3} c={CINZA} a="middle">
+        <Tx x={39} y={150.4} s={2.3} c={GRAY} a="middle">
           Elaborado por
         </Tx>
-        <Tx x={111} y={150.4} s={2.3} c={CINZA} a="middle">
+        <Tx x={111} y={150.4} s={2.3} c={GRAY} a="middle">
           Liberado por
         </Tx>
       </g>
@@ -878,9 +878,9 @@ const INNER_PAGES = {
         "PGR × PCMSO": "Informações do PGR que o médico do trabalho usa para elaborar o PCMSO. O PCMSO é de responsabilidade do médico.",
         AVCB: "Situação de cada medida de segurança contra incêndio antes de pedir a vistoria do Corpo de Bombeiros.",
         CLCB: "Dados da edificação usados para verificar se ela pode ser regularizada pelo CLCB, e as medidas exigidas.",
-      })[m.titulo] || null,
+      })[m.title] || null,
     body: (m) =>
-      m.titulo === "CLCB" ? (
+      m.title === "CLCB" ? (
         <g>
           {[
             ["Área construída", "480,00 m²"],
@@ -889,16 +889,16 @@ const INNER_PAGES = {
             ["Pavimentos", "1 (térreo)"],
           ].map(([k, v], i) => (
             <g key={k}>
-              <Tx x={10} y={56 + i * 7} s={2.6} c={CINZA}>
+              <Tx x={10} y={56 + i * 7} s={2.6} c={GRAY}>
                 {k}
               </Tx>
               <Tx x={140} y={56 + i * 7} s={2.6} b a="end">
                 {v}
               </Tx>
-              <line x1="10" y1={58.4 + i * 7} x2="140" y2={58.4 + i * 7} stroke={LINHA} strokeWidth="0.35" />
+              <line x1="10" y1={58.4 + i * 7} x2="140" y2={58.4 + i * 7} stroke={LINE} strokeWidth="0.35" />
             </g>
           ))}
-          <rect x="10" y="88" width="130" height="11" rx="2" fill={FUNDO} />
+          <rect x="10" y="88" width="130" height="11" rx="2" fill={BACKGROUND} />
           <Tx x={14} y={95.2} s={2.8} b>
             Resultado: a edificação atende às condições do CLCB.
           </Tx>
@@ -908,7 +908,7 @@ const INNER_PAGES = {
           <Checklist y={120} items={CHECKLISTS.CLCB} />
         </g>
       ) : (
-        <Checklist y={56} items={CHECKLISTS[m.titulo] || CHECKLISTS.AVCB} />
+        <Checklist y={56} items={CHECKLISTS[m.title] || CHECKLISTS.AVCB} />
       ),
   },
   grafico: {
@@ -928,22 +928,22 @@ const INNER_PAGES = {
               <Tx x={10} y={60 + i * 9} s={2.5}>
                 {job}
               </Tx>
-              <rect x="52" y={56 + i * 9} width={xb(v) - 52} height="5" rx="1" fill={v > 85 ? VERMELHO : VERDE} opacity="0.85" />
+              <rect x="52" y={56 + i * 9} width={xb(v) - 52} height="5" rx="1" fill={v > 85 ? RED : GREEN} opacity="0.85" />
               <Tx x={xb(v) + 1.6} y={60 + i * 9} s={2.4} b>
                 {v.toFixed(1).replace(".", ",")}
               </Tx>
             </g>
           ))}
-          <line x1={xb(85)} y1="52" x2={xb(85)} y2="92" stroke={VERMELHO} strokeWidth="0.5" strokeDasharray="1.6 1" />
-          <Tx x={xb(85)} y={50.6} s={2.1} b c={VERMELHO} a="middle">
+          <line x1={xb(85)} y1="52" x2={xb(85)} y2="92" stroke={RED} strokeWidth="0.5" strokeDasharray="1.6 1" />
+          <Tx x={xb(85)} y={50.6} s={2.1} b c={RED} a="middle">
             85 dB(A)
           </Tx>
           {[60, 70, 80, 90, 100].map((v) => (
-            <Tx key={v} x={xb(v)} y={96} s={1.9} c={CINZA} a="middle">
+            <Tx key={v} x={xb(v)} y={96} s={1.9} c={GRAY} a="middle">
               {v}
             </Tx>
           ))}
-          <Tx x={xb(100)} y={99.6} s={1.9} c={CINZA} a="end">
+          <Tx x={xb(100)} y={99.6} s={1.9} c={GRAY} a="end">
             dB(A)
           </Tx>
           <Table
@@ -969,19 +969,19 @@ const INNER_PAGES = {
     intro: "Resultados das avaliações no posto de trabalho e a conclusão segundo a NR-15 (insalubridade) e a NR-16 (periculosidade).",
     body: () => (
       <g>
-        <path d="M30 84a22 22 0 0 1 44 0" fill="none" stroke={LINHA} strokeWidth="5" />
-        <path d="M30 84a22 22 0 0 1 33.6 -18.6" fill="none" stroke={VERDE_CL} strokeWidth="5" />
-        <path d="M63.6 65.4a22 22 0 0 1 10.4 18.6" fill="none" stroke={VERMELHO} strokeWidth="5" opacity="0.75" />
-        <line x1="52" y1="84" x2="68" y2="70" stroke={TINTA} strokeWidth="1.2" strokeLinecap="round" />
-        <circle cx="52" cy="84" r="2" fill={TINTA} />
+        <path d="M30 84a22 22 0 0 1 44 0" fill="none" stroke={LINE} strokeWidth="5" />
+        <path d="M30 84a22 22 0 0 1 33.6 -18.6" fill="none" stroke={LIGHT_GREEN} strokeWidth="5" />
+        <path d="M63.6 65.4a22 22 0 0 1 10.4 18.6" fill="none" stroke={RED} strokeWidth="5" opacity="0.75" />
+        <line x1="52" y1="84" x2="68" y2="70" stroke={INK} strokeWidth="1.2" strokeLinecap="round" />
+        <circle cx="52" cy="84" r="2" fill={INK} />
         <Tx x={52} y={93} s={4.4} b a="middle">
           88,2 dB(A)
         </Tx>
-        <Tx x={52} y={97.6} s={2.2} c={CINZA} a="middle">
+        <Tx x={52} y={97.6} s={2.2} c={GRAY} a="middle">
           ruído no posto · limite 85 dB(A)
         </Tx>
         {["Posto: operador da serra", "Jornada: 8 horas", "Medição: dosímetro de ruído", "Medidas: 3 dias de trabalho"].map((t, k) => (
-          <Tx key={t} x={84} y={66 + k * 5} s={2.4} c={CINZA}>
+          <Tx key={t} x={84} y={66 + k * 5} s={2.4} c={GRAY}>
             {t}
           </Tx>
         ))}
@@ -1000,7 +1000,7 @@ const INNER_PAGES = {
             ["Inflamáveis", "—", "NR-16", { chip: "Não perigoso" }],
           ]}
         />
-        <Paragraph y={150} s={2.4} c={CINZA} text="Insalubridade em grau médio dá direito ao adicional de 20% sobre o salário mínimo, enquanto a exposição continuar." />
+        <Paragraph y={150} s={2.4} c={GRAY} text="Insalubridade em grau médio dá direito ao adicional de 20% sobre o salário mínimo, enquanto a exposição continuar." />
       </g>
     ),
   },
@@ -1008,17 +1008,17 @@ const INNER_PAGES = {
     intro: "Anomalias encontradas na vistoria da fachada, numeradas no desenho, com a prioridade de correção de cada uma.",
     body: () => (
       <g>
-        <path d="M18 58L75 46L132 58" fill="none" stroke={TINTA} strokeWidth="0.9" />
-        <rect x="22" y="58" width="106" height="44" fill="#f6f4ee" stroke={TINTA} strokeWidth="0.9" />
+        <path d="M18 58L75 46L132 58" fill="none" stroke={INK} strokeWidth="0.9" />
+        <rect x="22" y="58" width="106" height="44" fill="#f6f4ee" stroke={INK} strokeWidth="0.9" />
         {[34, 58, 92, 116].map((x) => (
-          <rect key={x} x={x - 6} y="64" width="12" height="11" fill="#e4ebef" stroke={TINTA} strokeWidth="0.5" />
+          <rect key={x} x={x - 6} y="64" width="12" height="11" fill="#e4ebef" stroke={INK} strokeWidth="0.5" />
         ))}
         {[34, 116].map((x) => (
-          <rect key={x} x={x - 6} y="82" width="12" height="11" fill="#e4ebef" stroke={TINTA} strokeWidth="0.5" />
+          <rect key={x} x={x - 6} y="82" width="12" height="11" fill="#e4ebef" stroke={INK} strokeWidth="0.5" />
         ))}
-        <rect x="68" y="80" width="14" height="22" fill="#d9cdb8" stroke={TINTA} strokeWidth="0.5" />
-        <path d="M64 75l3 4-2 3 3 4-1 3" fill="none" stroke={VERMELHO} strokeWidth="0.7" strokeLinecap="round" />
-        <ellipse cx="100" cy="61.6" rx="9" ry="3" fill={MARROM} opacity="0.35" />
+        <rect x="68" y="80" width="14" height="22" fill="#d9cdb8" stroke={INK} strokeWidth="0.5" />
+        <path d="M64 75l3 4-2 3 3 4-1 3" fill="none" stroke={RED} strokeWidth="0.7" strokeLinecap="round" />
+        <ellipse cx="100" cy="61.6" rx="9" ry="3" fill={BROWN} opacity="0.35" />
         <rect x="40" y="95" width="12" height="7" fill="#c9bfae" />
         <path d="M40 102l4-7M44 102l4-7M48 102l4-7" stroke="#8d8270" strokeWidth="0.4" />
         {[
@@ -1027,7 +1027,7 @@ const INNER_PAGES = {
           [3, 46, 92],
         ].map(([n, x, y]) => (
           <g key={n}>
-            <circle cx={x + 5} cy={y - 3} r="2.6" fill={VERMELHO} />
+            <circle cx={x + 5} cy={y - 3} r="2.6" fill={RED} />
             <Tx x={x + 5} y={y - 2} s={2.6} b c="#fff" a="middle">
               {n}
             </Tx>
@@ -1057,16 +1057,16 @@ const INNER_PAGES = {
       <g>
         <rect x="10" y="50" width="62" height="40" fill="#dfe8ee" />
         <rect x="10" y="76" width="62" height="14" fill="#cfd8c4" />
-        <path d="M24 76V60l17-9 17 9v16z" fill="#f2efe6" stroke={TINTA} strokeWidth="0.5" />
+        <path d="M24 76V60l17-9 17 9v16z" fill="#f2efe6" stroke={INK} strokeWidth="0.5" />
         <rect x="37" y="66" width="8" height="10" fill="#b9a68a" />
         <rect x="78" y="50" width="62" height="40" fill="#efece4" />
         <path d="M96 52l4 8-3 6 5 9-2 6 4 8" fill="none" stroke="#6a5a48" strokeWidth="0.8" strokeLinecap="round" />
-        <rect x="78" y="50" width="62" height="40" fill="none" stroke={BORDA} strokeWidth="0.5" />
-        <rect x="10" y="50" width="62" height="40" fill="none" stroke={BORDA} strokeWidth="0.5" />
-        <Tx x={10} y={95} s={2.4} c={CINZA}>
+        <rect x="78" y="50" width="62" height="40" fill="none" stroke={BORDER} strokeWidth="0.5" />
+        <rect x="10" y="50" width="62" height="40" fill="none" stroke={BORDER} strokeWidth="0.5" />
+        <Tx x={10} y={95} s={2.4} c={GRAY}>
           Foto 1 · Fachada frontal
         </Tx>
-        <Tx x={78} y={95} s={2.4} c={CINZA}>
+        <Tx x={78} y={95} s={2.4} c={GRAY}>
           Foto 2 · Fissura na parede da sala
         </Tx>
         <Tx x={10} y={106} s={2.8} b>
@@ -1094,59 +1094,59 @@ const INNER_PAGES = {
         <g>
           {steps.map(([t, status], i) => (
             <g key={t}>
-              <rect x="10" y={52 + i * 18} width="84" height="12" rx="2.4" fill={i < 2 ? FUNDO : "#fff"} stroke={i === 2 ? AMBAR : BORDA} strokeWidth="0.6" />
+              <rect x="10" y={52 + i * 18} width="84" height="12" rx="2.4" fill={i < 2 ? BACKGROUND : "#fff"} stroke={i === 2 ? AMBER : BORDER} strokeWidth="0.6" />
               <Tx x={14} y={59.6 + i * 18} s={2.7} b>
                 {t}
               </Tx>
               <Chip x={100} y={59.4 + i * 18} t={status} />
-              {i < 3 && <path d={`M52 ${64 + i * 18}v5m-2 -2 2 2 2 -2`} fill="none" stroke={CINZA} strokeWidth="0.6" />}
+              {i < 3 && <path d={`M52 ${64 + i * 18}v5m-2 -2 2 2 2 -2`} fill="none" stroke={GRAY} strokeWidth="0.6" />}
             </g>
           ))}
-          <rect x="10" y="126" width="130" height="14" rx="2.4" fill="#fff" stroke={AZUL} strokeWidth="0.6" strokeDasharray="2 1.2" />
+          <rect x="10" y="126" width="130" height="14" rx="2.4" fill="#fff" stroke={BLUE} strokeWidth="0.6" strokeDasharray="2 1.2" />
           <Tx x={14} y={134.6} s={2.7} b>
             Outorga de uso da água (poço)
           </Tx>
           <Chip x={100} y={134.4} t="Protocolada" />
-          <Paragraph y={150} s={2.4} c={CINZA} text="Protocolo nº 000000/2026 (exemplo). A RD acompanha os prazos e responde às exigências do órgão ambiental." />
+          <Paragraph y={150} s={2.4} c={GRAY} text="Protocolo nº 000000/2026 (exemplo). A RD acompanha os prazos e responde às exigências do órgão ambiental." />
         </g>
       );
     },
   },
 };
 
-export const TEM_MIOLO = new Set(Object.keys(INNER_PAGES));
+export const HAS_INNER_PAGE = new Set(Object.keys(INNER_PAGES));
 
-export function Miolo({ m, area }) {
-  const page = INNER_PAGES[m.corpo];
+export function InnerPage({ m, area }) {
+  const page = INNER_PAGES[m.body];
   if (!page) return null;
-  const [client] = clienteDe(m, area);
+  const [client] = clientFor(m, area);
   const intro = typeof page.intro === "function" ? page.intro(m) : page.intro;
   const i = page.idx ?? 1;
-  const section = m.sumario?.[i] ? `${i + 1}. ${m.sumario[i]}` : m.doc || m.sub;
+  const section = m.contents?.[i] ? `${i + 1}. ${m.contents[i]}` : m.doc || m.subtitle;
   return (
     <g fontFamily="inherit">
-      <Marca x={10} y={7} s={0.62} />
-      <Tx x={140} y={11} s={2.6} c={CINZA} a="end">
-        {m.ref || m.titulo}
+      <Logo x={10} y={7} s={0.62} />
+      <Tx x={140} y={11} s={2.6} c={GRAY} a="end">
+        {m.ref || m.title}
       </Tx>
-      <Tx x={140} y={15.2} s={2.6} c={CINZA} a="end">
+      <Tx x={140} y={15.2} s={2.6} c={GRAY} a="end">
         Página 4 de 18
       </Tx>
-      <line x1="10" y1="19.5" x2="140" y2="19.5" stroke={VERDE} strokeWidth="0.5" />
-      {quebra(section, 34)
+      <line x1="10" y1="19.5" x2="140" y2="19.5" stroke={GREEN} strokeWidth="0.5" />
+      {wrapText(section, 34)
         .slice(0, 2)
         .map((l, k) => (
           <Tx key={l} x={10} y={30 + k * 5.6} s={4.4} b>
             {l}
           </Tx>
         ))}
-      {intro && <Paragraph y={quebra(section, 34).length > 1 ? 43 : 38} s={2.6} c={CINZA} max={88} text={intro} />}
+      {intro && <Paragraph y={wrapText(section, 34).length > 1 ? 43 : 38} s={2.6} c={GRAY} max={88} text={intro} />}
       {page.body(m)}
-      <line x1="10" y1="182" x2="140" y2="182" stroke={BORDA} strokeWidth="0.5" />
-      <Tx x={10} y={187.4} s={2.4} c={CINZA}>
-        {client} · {m.titulo}
+      <line x1="10" y1="182" x2="140" y2="182" stroke={BORDER} strokeWidth="0.5" />
+      <Tx x={10} y={187.4} s={2.4} c={GRAY}>
+        {client} · {m.title}
       </Tx>
-      <Tx x={140} y={187.4} s={2.4} c={CINZA} a="end">
+      <Tx x={140} y={187.4} s={2.4} c={GRAY} a="end">
         Revisão 00 · RD Engenharia
       </Tx>
     </g>
@@ -1155,7 +1155,7 @@ export function Miolo({ m, area }) {
 
 /* ── "Como ler" (how to read): numbered pins on the sheet ───────────────────────────────────────────────── */
 
-export const PINOS = {
+export const PINS = {
   capa: [
     { x: 4.6, y: 47, t: "Nome do documento e a norma que ele atende." },
     { x: 4.6, y: 118, t: "Contratante: a sua empresa ou você." },

@@ -11,21 +11,21 @@ const SCENES = {
   capacete: () => import("./scenes3d/hardHat"),
 };
 
-export default function Cena3D({ cena, className = "", rotulo }) {
+export default function Scene3D({ scene, className = "", label }) {
   const boxRef = useRef(null);
   const [no3d, setNo3d] = useState(false);
 
   useEffect(() => {
     const el = boxRef.current;
-    const load = SCENES[cena];
+    const load = SCENES[scene];
     if (!el || !load) return undefined;
     let stop = () => {};
     let cancelled = false;
 
     const start = async () => {
-      const { montar } = await load();
+      const { mount } = await load();
       if (cancelled) return;
-      const unmount = montar(el);
+      const unmount = mount(el);
       if (!unmount) setNo3d(true);
       else stop = unmount;
     };
@@ -45,7 +45,7 @@ export default function Cena3D({ cena, className = "", rotulo }) {
       nearObserver.disconnect();
       stop();
     };
-  }, [cena]);
+  }, [scene]);
 
-  return <div ref={boxRef} className={`scene3d ${no3d ? "cena-sem3d" : ""} ${className}`} role="img" aria-label={rotulo} />;
+  return <div ref={boxRef} className={`scene3d ${no3d ? "cena-sem3d" : ""} ${className}`} role="img" aria-label={label} />;
 }

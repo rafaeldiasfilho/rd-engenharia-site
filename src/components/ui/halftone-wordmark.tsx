@@ -10,7 +10,7 @@ import * as React from "react";
 
 type Color = [number, number, number, number];
 
-export function hwCor(css: string): Color | null {
+export function hwColor(css: string): Color | null {
   const s = (css || "").trim();
   const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(s);
   if (hex) {
@@ -24,13 +24,13 @@ export function hwCor(css: string): Color | null {
 }
 
 // Radius proportional to area: the tone stays even.
-export function hwRaio(coverage: number, step: number) {
+export function hwRadius(coverage: number, step: number) {
   const c = coverage < 0 ? 0 : coverage > 1 ? 1 : coverage;
   return Math.sqrt(c) * step * 0.56;
 }
 
 // One spring step back home, plus the pointer's push at (px, py) within radius r.
-export function hwPasso(x: number, y: number, vx: number, vy: number, hx: number, hy: number, px: number, py: number, r: number) {
+export function hwStep(x: number, y: number, vx: number, vy: number, hx: number, hy: number, px: number, py: number, r: number) {
   const dx = x - px;
   const dy = y - py;
   const d2 = dx * dx + dy * dy;
@@ -46,17 +46,17 @@ export function hwPasso(x: number, y: number, vx: number, vy: number, hx: number
 }
 
 type Props = {
-  palavra: string;
+  word: string;
   className?: string;
   /** Distance between dot centers, in px. */
-  passo?: number;
+  step?: number;
   /** Pointer reach, in px. */
-  raio?: number;
+  radius?: number;
   /** How much of the cap height sits below the edge, 0 to 0.6. */
-  corte?: number;
+  cut?: number;
 };
 
-export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80, corte = 0.18 }: Props) {
+export function HalftoneWordmark({ word, className = "", step = 6, radius = 80, cut = 0.18 }: Props) {
   const boxRef = React.useRef<HTMLDivElement | null>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const [ready, setReady] = React.useState(false);
@@ -70,8 +70,8 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const style = getComputedStyle(root);
-    const ink = hwCor(style.getPropertyValue("--hw-ink")) || [255, 255, 255, 0.2];
-    const warm = hwCor(style.getPropertyValue("--hw-warm")) || [111, 211, 124, 1];
+    const ink = hwColor(style.getPropertyValue("--hw-ink")) || [255, 255, 255, 0.2];
+    const warm = hwColor(style.getPropertyValue("--hw-warm")) || [111, 211, 124, 1];
     const font = style.fontFamily || "sans-serif";
     const weight = style.fontWeight || "700";
     const inkColor = `rgba(${ink[0]},${ink[1]},${ink[2]},${ink[3]})`;
@@ -108,21 +108,21 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
       };
       m.font = `${weight} 100px ${font}`;
       setSpacing(100);
-      const em100 = m.measureText(palavra);
-      const c = Math.max(0, Math.min(0.6, corte));
+      const em100 = m.measureText(word);
+      const c = Math.max(0, Math.min(0.6, cut));
       const byWidth = (Math.max(1, w - 32) / Math.max(1, em100.width)) * 100;
       const byHeight = (h * 0.94) / Math.max(0.01, ((em100.actualBoundingBoxAscent || 72) / 100) * (1 - c));
       const fontSize = Math.min(byWidth, byHeight);
       m.font = `${weight} ${fontSize}px ${font}`;
       setSpacing(fontSize);
-      const metrics = m.measureText(palavra);
+      const metrics = m.measureText(word);
       const cap = metrics.actualBoundingBoxAscent || fontSize * 0.72;
       m.fillStyle = "#000";
       m.textBaseline = "alphabetic";
-      m.fillText(palavra, (w - metrics.width) / 2, h + cap * c);
+      m.fillText(word, (w - metrics.width) / 2, h + cap * c);
       const img = m.getImageData(0, 0, w, h).data;
 
-      const g = Math.max(3, passo);
+      const g = Math.max(3, step);
       const cols = Math.ceil(w / g);
       const rows = Math.ceil(h / g);
       const list: number[] = [];
@@ -141,7 +141,7 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
           const hx = gx * g + g / 2;
           const hy = gy * g + g / 2;
           const falloff = 1 - 0.6 * (hy / h); // smaller dots toward the bottom: the halftone fade
-          list.push(hx, hy, 0, 0, hx, hy, hwRaio(coverage * falloff, g));
+          list.push(hx, hy, 0, 0, hx, hy, hwRadius(coverage * falloff, g));
         }
       }
       dots = new Float32Array(list);
@@ -152,7 +152,7 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
     const draw = (now: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
-      const r = reduce ? 0 : raio;
+      const r = reduce ? 0 : radius;
       const age = wave.t < 0 ? 1e9 : now - wave.t;
       const waveRadius = age * 0.9;
       let moving = false;
@@ -181,7 +181,7 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
               vy += (dy / d) * f;
             }
           }
-          const s = hwPasso(x, y, vx, vy, hx, hy, px, py, r);
+          const s = hwStep(x, y, vx, vy, hx, hy, px, py, r);
           [x, y, vx, vy] = s;
           if (Math.abs(vx) + Math.abs(vy) > 0.02 || Math.abs(x - hx) + Math.abs(y - hy) > 0.05) moving = true;
           else {
@@ -296,12 +296,12 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
       root.removeEventListener("pointercancel", onLeave);
       root.removeEventListener("pointerdown", onDown);
     };
-  }, [palavra, passo, raio, corte]);
+  }, [word, step, radius, cut]);
 
   return (
     <div ref={boxRef} className={`hw-brand ${ready ? "ready" : ""} ${className}`} aria-hidden="true">
       <canvas ref={canvasRef} />
-      <p className="hw-brand-text">{palavra}</p>
+      <p className="hw-brand-text">{word}</p>
     </div>
   );
 }

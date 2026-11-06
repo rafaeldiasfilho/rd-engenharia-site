@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { slidesDe, caminho, srcset, aviso } from "./photos";
+import { slidesFor, photoPath, srcset, photoNotice } from "./photos";
 
 // Opening (hero) with full-screen background photos, switched by an opacity transition.
 // Same motion rules as the Carousel: auto-advance only starts after mount, pauses on mouse hover,
@@ -19,8 +19,8 @@ function hasKeyboardFocus(el) {
   }
 }
 
-export default function HeroFundo({ chave, rotulo, className = "", children }) {
-  const slides = slidesDe(chave);
+export default function HeroBackground({ setKey, label, className = "", children }) {
+  const slides = slidesFor(setKey);
   const total = slides.length;
   const [i, setI] = useState(0);
   const [previous, setPrevious] = useState(-1); // photo that is leaving (stays mounted during the transition)
@@ -109,7 +109,7 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
       className={`hero-bg ${className}`}
       role="region"
       aria-roledescription="carrossel"
-      aria-label={rotulo}
+      aria-label={label}
       onPointerDown={onPress}
       onPointerUp={onRelease}
       onPointerCancel={() => (dragStart.current = null)}
@@ -120,8 +120,8 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
           // Only the first photo, the current one, the next one and the leaving one stay in the DOM (and download).
           n === 0 || n === i || n === (i + 1) % total || n === previous ? (
           <img
-            key={x.foto}
-            src={caminho(x.f)}
+            key={x.photo}
+            src={photoPath(x.f)}
             srcSet={srcset(x.f)}
             sizes="100vw"
             width={x.f.w}
@@ -145,21 +145,21 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
             <strong>
               {s.href ? (
                 <a href={s.href}>
-                  {s.legenda} <span aria-hidden="true">→</span>
+                  {s.caption} <span aria-hidden="true">→</span>
                 </a>
               ) : (
-                s.legenda
+                s.caption
               )}
             </strong>
             <small>
-              {aviso(s.f)} <a href="/creditos">Créditos</a>
+              {photoNotice(s.f)} <a href="/creditos">Créditos</a>
             </small>
           </p>
           {total > 1 && (
             <div className="hero-dots">
               {slides.map((x, n) => (
                 <button
-                  key={x.foto}
+                  key={x.photo}
                   type="button"
                   className={n === i ? "active" : ""}
                   aria-label={`Ir para a imagem ${n + 1} de ${total}`}

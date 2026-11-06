@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { BotaoZap } from "./Layout";
+import { WhatsappButton } from "./Layout";
 
 // During prerender (Node) there is no layout: use useEffect there to avoid a warning.
 const useSafeLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -9,7 +9,7 @@ const shortName = (name) => name.split(/ — | \(/)[0];
 // Select several services of the area and send them all in a single message. The item that enters the message box
 // starts from the tapped chip's position and slides to its place (animation on that element only, without blocking the page).
 // With "reduce motion", it appears directly.
-export default function MontarPedido({ area, itens }) {
+export default function RequestBuilder({ area, items }) {
   const [selected, setSelected] = useState([]);
   const buttons = useRef({});
   const boxItems = useRef({});
@@ -51,17 +51,17 @@ export default function MontarPedido({ area, itens }) {
         <p>Toque nos serviços que você precisa e envie tudo numa mensagem só.</p>
       </div>
       <div className="request-options" role="group" aria-label="Serviços desta área">
-        {itens.map((item) => (
+        {items.map((item) => (
           <button
             type="button"
-            key={item.nome}
-            ref={(el) => (buttons.current[item.nome] = el)}
+            key={item.name}
+            ref={(el) => (buttons.current[item.name] = el)}
             className="request-chip"
-            aria-pressed={selected.includes(item.nome)}
-            onClick={() => toggle(item.nome)}
+            aria-pressed={selected.includes(item.name)}
+            onClick={() => toggle(item.name)}
           >
             <span className="request-brand" aria-hidden="true" />
-            {shortName(item.nome)}
+            {shortName(item.name)}
           </button>
         ))}
       </div>
@@ -85,7 +85,7 @@ export default function MontarPedido({ area, itens }) {
             ))}
           </ul>
         )}
-        <BotaoZap texto={message} rotulo={selected.length ? "Enviar pelo WhatsApp" : "Falar no WhatsApp"} />
+        <WhatsappButton text={message} label={selected.length ? "Enviar pelo WhatsApp" : "Falar no WhatsApp"} />
       </div>
     </div>
   );

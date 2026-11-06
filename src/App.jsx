@@ -1,20 +1,20 @@
 import Icon from "./Icon";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faqItems";
-import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE, ENDERECO } from "./pagesData";
-import { Casca, SecoesNav, zap } from "./Layout";
+import { AREAS, GOOGLE_REVIEWS_URL, DIRECTIONS_URL, MAP_EMBED_URL, GOOGLE_RATING, ADDRESS } from "./pagesData";
+import { Shell, SectionNav, whatsappLink } from "./Layout";
 import HomeExamples from "./HomeExamples";
 import HeroBackground from "./HeroBackground";
-import { FaixaDocumentos, PainelExemplo, NumerosLinha } from "./Showcase";
+import { DocumentsMarquee, ExamplePanel, NumbersLine } from "./Showcase";
 import Dialog from "./Dialog";
 import { TopoField } from "@/components/ui/contour-field";
-import { FOTOS, caminho, srcset } from "./photos";
+import { PHOTOS, photoPath, srcset } from "./photos";
 import AreaIcon from "./AreaIcon";
 import FaqList from "./Faq";
 import Reviews from "./Reviews";
 import DocumentSearch from "./Search";
 import WhatsappQr from "./WhatsappQr";
-import { WHATSAPP_PROJETOS } from "./contact";
+import { WHATSAPP_PROJECTS } from "./contact";
 import { CREA_NUMBER, PHONE_DISPLAY } from "./company";
 import StepStack from "./StepStack";
 import Tilt3D from "./Tilt3D";
@@ -42,13 +42,13 @@ const NEEDS = [
     photo: "rio-mata-vista-aerea",
     phrase: "Tenho imóvel rural e preciso de CAR, georreferenciamento ou topografia.",
   },
-].map((n) => ({ ...n, title: AREAS.find((a) => a.slug === n.slug).rotulo }));
+].map((n) => ({ ...n, title: AREAS.find((a) => a.slug === n.slug).label }));
 
 const STEPS = [
-  { titulo: "Você chama no WhatsApp", texto: "Conte o que precisa. Respondemos no horário de atendimento." },
-  { titulo: "Entendemos o seu caso", texto: "Analisamos a situação e os documentos que você já tem." },
-  { titulo: "Você recebe o orçamento", texto: "Valor e condições claros, por escrito e sem compromisso." },
-  { titulo: "Executamos e entregamos", texto: "Trabalho feito por responsável técnico habilitado, com ART." },
+  { title: "Você chama no WhatsApp", text: "Conte o que precisa. Respondemos no horário de atendimento." },
+  { title: "Entendemos o seu caso", text: "Analisamos a situação e os documentos que você já tem." },
+  { title: "Você recebe o orçamento", text: "Valor e condições claros, por escrito e sem compromisso." },
+  { title: "Executamos e entregamos", text: "Trabalho feito por responsável técnico habilitado, com ART." },
 ];
 
 const EDUCATION = [
@@ -60,14 +60,14 @@ const EDUCATION = [
   "Técnico em Segurança do Trabalho",
 ];
 
-const FORM_SERVICES = AREAS.map((a) => a.nome);
+const FORM_SERVICES = AREAS.map((a) => a.name);
 
 const HOME_SECTIONS = [
-  { id: "organizamos", rotulo: "O que organizamos" },
-  { id: "na-pratica", rotulo: "Na prática" },
-  { id: "como-funciona", rotulo: "Como funciona" },
-  { id: "duvidas", rotulo: "Dúvidas" },
-  { id: "contato", rotulo: "Contato" },
+  { id: "organizamos", label: "O que organizamos" },
+  { id: "na-pratica", label: "Na prática" },
+  { id: "como-funciona", label: "Como funciona" },
+  { id: "duvidas", label: "Dúvidas" },
+  { id: "contato", label: "Contato" },
 ];
 
 const isWithinOfficeHours = () => {
@@ -109,17 +109,17 @@ export default function App() {
     if (request.city.trim()) lines.push(`Cidade: ${request.city.trim()}`);
     if (request.service) lines.push(`Área: ${request.service}`);
     if (request.message.trim()) lines.push(`Mensagem: ${request.message.trim()}`);
-    window.open(zap(lines.join("\n")), "_blank", "noopener,noreferrer");
+    window.open(whatsappLink(lines.join("\n")), "_blank", "noopener,noreferrer");
   };
 
   return (
-    <Casca atual="">
-      <HeroBackground chave="home" rotulo="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
-        <a className="badge-top" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+    <Shell current="">
+      <HeroBackground setKey="home" label="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
+        <a className="badge-top" href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
           <span className="badge-top-stars" aria-hidden="true">
             ★★★★★
           </span>
-          <span>{NOTA_GOOGLE}</span>
+          <span>{GOOGLE_RATING}</span>
           <span className="badge-top-arrow" aria-hidden="true">
             →
           </span>
@@ -133,8 +133,8 @@ export default function App() {
           Engenharia, segurança do trabalho e meio ambiente em Ibirá e região, presencial e online. Você fala direto com o responsável técnico pelo WhatsApp.
         </p>
         <div className="actions">
-          <a className="btn btn-whatsapp btn-large" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-            <Icon nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
+          <a className="btn btn-whatsapp btn-large" href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+            <Icon name="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
           </a>
           <a className="link-arrow hero-link" href="/o-que-preciso">
             Não sabe o que precisa? Descubra aqui <span aria-hidden="true">→</span>
@@ -142,7 +142,7 @@ export default function App() {
         </div>
         <p className="hero-risk">Orçamento por escrito e sem compromisso.</p>
         <p className={`status status-bg ${isOpenNow ? "on" : ""}`}>
-          <Icon nome="fa-solid fa-circle" />{" "}
+          <Icon name="fa-solid fa-circle" />{" "}
           {isOpenNow === null
             ? "Atendimento de segunda a sexta, das 7h às 17h"
             : isOpenNow
@@ -157,15 +157,15 @@ export default function App() {
           <DocumentSearch className="search-home" />
           <ol className="choices-cards">
             {NEEDS.map((n, i) => {
-              const f = FOTOS[n.photo];
+              const f = PHOTOS[n.photo];
               return (
                 <li key={n.slug}>
                   <a href={`/${n.slug}`} className="card-area">
                     <span className="card-area-photo">
-                      <img src={caminho(f)} srcSet={srcset(f)} sizes={i === 0 || i === 3 ? "(min-width: 1100px) 800px, (min-width: 700px) 50vw, 100vw" : "(min-width: 1100px) 400px, (min-width: 700px) 50vw, 100vw"} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
+                      <img src={photoPath(f)} srcSet={srcset(f)} sizes={i === 0 || i === 3 ? "(min-width: 1100px) 800px, (min-width: 700px) 50vw, 100vw" : "(min-width: 1100px) 400px, (min-width: 700px) 50vw, 100vw"} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
                     <span className="icon-tile card-area-icon">
-                      <AreaIcon slug={n.slug} tamanho={30} />
+                      <AreaIcon slug={n.slug} size={30} />
                     </span>
                     <span className="card-area-n" aria-hidden="true">
                       0{i + 1}
@@ -204,11 +204,11 @@ export default function App() {
         </div>
       </div>
 
-      <RevealPhrase texto="Todo serviço é assinado por profissional habilitado no CREA-SP, e você conversa direto com quem vai executar." />
+      <RevealPhrase text="Todo serviço é assinado por profissional habilitado no CREA-SP, e você conversa direto com quem vai executar." />
 
-      <FaixaDocumentos />
+      <DocumentsMarquee />
 
-      <SecoesNav itens={HOME_SECTIONS} rotulo="Nesta página" />
+      <SectionNav items={HOME_SECTIONS} label="Nesta página" />
 
       <section className="sec band-section organize" id="organizamos" aria-labelledby="org-t">
         <div className="container organize-grid">
@@ -232,11 +232,11 @@ export default function App() {
                 Pedir o lembrete de vencimento <span aria-hidden="true">→</span>
               </a>
             </div>
-            <NumerosLinha />
+            <NumbersLine />
           </div>
           <div className="reveal">
             <Tilt3D>
-              <PainelExemplo />
+              <ExamplePanel />
             </Tilt3D>
           </div>
         </div>
@@ -255,10 +255,10 @@ export default function App() {
             </h2>
           </header>
           <StepStack
-            etapas={STEPS}
-            acaoPrimeira={
-              <a className="btn btn-whatsapp btn-small" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-                <Icon nome="fa-brands fa-whatsapp" /> Começar agora
+            steps={STEPS}
+            firstAction={
+              <a className="btn btn-whatsapp btn-small" href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+                <Icon name="fa-brands fa-whatsapp" /> Começar agora
               </a>
             }
           />
@@ -277,7 +277,7 @@ export default function App() {
               Dúvidas frequentes.
             </h2>
           </header>
-          <FaqList itens={FAQ} limite={5} />
+          <FaqList items={FAQ} limit={5} />
         </div>
       </section>
 
@@ -300,9 +300,9 @@ export default function App() {
               <div>
                 <dt>Escritório</dt>
                 <dd>
-                  {ENDERECO}
+                  {ADDRESS}
                   <span className="contact-links">
-                    <a href={URL_COMO_CHEGAR} target="_blank" rel="noopener noreferrer">
+                    <a href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer">
                       Como chegar
                     </a>
                     <button
@@ -324,7 +324,7 @@ export default function App() {
                         {!mapReady && <p className="where-map-loading">Carregando o mapa…</p>}
                         <iframe
                           title="Mapa com a localização da RD Engenharia em Ibirá/SP"
-                          src={MAPA_EMBED}
+                          src={MAP_EMBED_URL}
                           referrerPolicy="no-referrer"
                           allowFullScreen
                           onLoad={() => setMapReady(true)}
@@ -385,7 +385,7 @@ export default function App() {
               <textarea rows="4" value={request.message} onChange={handleChange("message")} />
             </label>
             <button className="btn btn-whatsapp btn-large" type="submit">
-              <Icon nome="fa-brands fa-whatsapp" /> Continuar no WhatsApp
+              <Icon name="fa-brands fa-whatsapp" /> Continuar no WhatsApp
             </button>
           </form>
         </div>
@@ -414,14 +414,14 @@ export default function App() {
                 </button>
                 <a
                   className="btn btn-sec"
-                  href={zap("Olá Rafael! Gostaria de solicitar um orçamento.")}
+                  href={whatsappLink("Olá Rafael! Gostaria de solicitar um orçamento.")}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Icon nome="fa-brands fa-whatsapp" /> {PHONE_DISPLAY}
+                  <Icon name="fa-brands fa-whatsapp" /> {PHONE_DISPLAY}
                 </a>
               </div>
-              <Dialog aberta={showEducation} aoFechar={() => setShowEducation(false)} titulo="Rafael Antonio Dias">
+              <Dialog open={showEducation} onClose={() => setShowEducation(false)} title="Rafael Antonio Dias">
                 <p className="person-role">
                   Engenheiro civil e ambiental · Especialista em segurança do trabalho · {CREA_NUMBER}
                 </p>
@@ -441,16 +441,16 @@ export default function App() {
               <p className="person-role">Técnico em edificações · Projetos e atendimento</p>
               <a
                 className="btn btn-sec"
-                href={zap("Olá! Gostaria de solicitar um orçamento.", WHATSAPP_PROJETOS)}
+                href={whatsappLink("Olá! Gostaria de solicitar um orçamento.", WHATSAPP_PROJECTS)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon nome="fa-brands fa-whatsapp" /> (17) 99659-0330
+                <Icon name="fa-brands fa-whatsapp" /> (17) 99659-0330
               </a>
             </article>
           </div>
         </div>
       </section>
-    </Casca>
+    </Shell>
   );
 }

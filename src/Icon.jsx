@@ -40,10 +40,10 @@ const ICONS = {
   "fa-solid fa-xmark": X,
 };
 
-export default function Icone({ nome }) {
-  const Component = ICONS[nome];
+export default function Icon({ name }) {
+  const Component = ICONS[name];
   if (!Component) return null;
   // The status dot ("Atendendo agora") is a filled circle, not an outline icon.
-  const weight = nome === "fa-solid fa-circle" ? "fill" : "regular";
+  const weight = name === "fa-solid fa-circle" ? "fill" : "regular";
   return <Component className="icon" size="1em" weight={weight} aria-hidden="true" focusable="false" />;
 }

@@ -9,8 +9,8 @@ const AREA = {
   "meio-ambiente-topografia": Mountains,
 };
 
-export default function IconeArea({ slug, tamanho = 24, className = "" }) {
+export default function AreaIcon({ slug, size = 24, className = "" }) {
   const Component = AREA[slug];
   if (!Component) return null;
-  return <Component className={`icon-area ${className}`} size={tamanho} weight="regular" aria-hidden="true" focusable="false" />;
+  return <Component className={`icon-area ${className}`} size={size} weight="regular" aria-hidden="true" focusable="false" />;
 }

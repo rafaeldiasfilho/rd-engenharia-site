@@ -17,7 +17,7 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { zap } from "../src/contact.js";
+import { whatsappLink } from "../src/contact.js";
 
 const ECC_PER_BLOCK_M = [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28];
 const BLOCKS_M = [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16, 17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49];
@@ -258,7 +258,7 @@ export function codificar(text) {
   }
   applyMask(best);
   drawFormat(best);
-  return { versao: v, mascara: best, modulos: mod, dados: data, palavras: codewords };
+  return { version: v, mask: best, modulos: mod, dados: data, palavras: codewords };
 }
 
 export function svg(modules, border = 4) {
@@ -275,8 +275,8 @@ export function svg(modules, border = 4) {
 
 // Run directly (not imported by the test): writes the file.
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  const link = zap("Olá! Gostaria de solicitar um orçamento.");
+  const link = whatsappLink("Olá! Gostaria de solicitar um orçamento.");
   const qr = codificar(link);
   writeFileSync(new URL("../public/marca/qr-whatsapp.svg", import.meta.url), svg(qr.modulos));
-  console.log(`QR versão ${qr.versao}, máscara ${qr.mascara}, ${link.length} caracteres: ${link}`);
+  console.log(`QR versão ${qr.version}, máscara ${qr.mask}, ${link.length} caracteres: ${link}`);
 }

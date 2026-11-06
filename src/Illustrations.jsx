@@ -1,27 +1,27 @@
 import { useState } from "react";
-import { AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERMELHO, SeloExemplo } from "./SheetBase";
+import { BLUE, BORDER, GRAY, BACKGROUND, LINE, BROWN, PAPER, INK, GREEN, RED, ExampleStamp } from "./SheetBase";
 
 // Illustrative drawings and template, on the same paper and stamp as the sample sheets. Nothing here comes
 // from a real client. Each drawing is interactive: tapping a legend item (or the drawing) highlights the element
 // and explains what it is.
 
-const LABEL = { fontSize: 11, fill: CINZA, fontFamily: "inherit" };
-const LABEL_BOLD = { ...LABEL, fill: TINTA, fontWeight: 700 };
+const LABEL = { fontSize: 11, fill: GRAY, fontFamily: "inherit" };
+const LABEL_BOLD = { ...LABEL, fill: INK, fontWeight: 700 };
 
 // Title-block style footer, the same in every drawing.
 function Stamp({ title, client }) {
   return (
     <g fontFamily="inherit">
-      <rect x="0" y="300" width="420" height="34" fill={FUNDO} />
-      <line x1="0" y1="300" x2="420" y2="300" stroke={BORDA} />
-      <rect x="14" y="309" width="16" height="16" rx="3.4" fill={VERDE} />
+      <rect x="0" y="300" width="420" height="34" fill={BACKGROUND} />
+      <line x1="0" y1="300" x2="420" y2="300" stroke={BORDER} />
+      <rect x="14" y="309" width="16" height="16" rx="3.4" fill={GREEN} />
       <text x="22" y="320.4" fontSize="7.4" fontWeight="700" fill="#fff" textAnchor="middle">
         RD
       </text>
-      <text x="38" y="315" fontSize="9.6" fontWeight="700" fill={TINTA}>
+      <text x="38" y="315" fontSize="9.6" fontWeight="700" fill={INK}>
         {title}
       </text>
-      <text x="38" y="327" fontSize="8.6" fill={CINZA}>
+      <text x="38" y="327" fontSize="8.6" fill={GRAY}>
         {client} · RD Engenharia
       </text>
     </g>
@@ -41,10 +41,10 @@ function Interactive({ items, label, title, titleId, finalCaption, drawing, help
     <figure className="illustration">
       <svg viewBox="0 0 420 334" role="img" aria-labelledby={titleId}>
         <title id={titleId}>{title}</title>
-        <rect x="0" y="0" width="420" height="334" fill={PAPEL} />
+        <rect x="0" y="0" width="420" height="334" fill={PAPER} />
         {drawing({ opacityFor, choose })}
         <Stamp {...stamp} />
-        <SeloExemplo x={318} y={10} rot={-6} s={1.7} />
+        <ExampleStamp x={318} y={10} rot={-6} s={1.7} />
       </svg>
       <ul className="caption" aria-label={label}>
         {items.map((x) => (
@@ -75,14 +75,14 @@ const EXIT_GREEN = "#2f8f46";
 const LIGHT_YELLOW = "#f2c230";
 
 const FIRE_ITEMS = [
-  { id: "extintor", color: VERMELHO, name: "Extintor", text: "Primeiro combate ao fogo. O projeto define o tipo (aqui, pó químico ABC), quantos são e onde ficam, sempre sinalizados e fáceis de alcançar." },
+  { id: "extintor", color: RED, name: "Extintor", text: "Primeiro combate ao fogo. O projeto define o tipo (aqui, pó químico ABC), quantos são e onde ficam, sempre sinalizados e fáceis de alcançar." },
   { id: "luz", color: LIGHT_YELLOW, name: "Iluminação de emergência", text: "Acende sozinha quando falta energia, para que as pessoas enxerguem o caminho até a saída." },
   { id: "rota", color: EXIT_GREEN, name: "Rota de fuga", text: "Caminho até a saída, que precisa ficar sempre livre de mercadorias e obstáculos." },
   { id: "placa", color: "#1f6b36", name: "Placa de saída", text: "Placa fotoluminescente que indica a saída mesmo no escuro. Fica sobre a porta e nas mudanças de direção." },
 ];
 
 function FireSafety() {
-  const wall = { stroke: TINTA, fill: "none", strokeLinecap: "square" };
+  const wall = { stroke: INK, fill: "none", strokeLinecap: "square" };
   return (
     <Interactive
       items={FIRE_ITEMS}
@@ -98,13 +98,13 @@ function FireSafety() {
             <path d="M262 40V272M262 160H396M330 160V272" strokeWidth="3" />
           </g>
           {/* openings and doors */}
-          <g fill={PAPEL}>
+          <g fill={PAPER}>
             <rect x="112" y="268" width="44" height="8" />
             <rect x="259" y="88" width="6" height="22" />
             <rect x="272" y="157" width="22" height="6" />
             <rect x="340" y="157" width="22" height="6" />
           </g>
-          <g stroke={TINTA} fill="none" strokeWidth="1.4">
+          <g stroke={INK} fill="none" strokeWidth="1.4">
             <path d="M112 272v22M156 272v22" />
             <path d="M134 272a22 22 0 0 1 -22 22M134 272a22 22 0 0 0 22 22" strokeWidth="0.8" strokeDasharray="3 2" />
             <path d="M262 88h22" />
@@ -147,7 +147,7 @@ function FireSafety() {
               [374, 252],
             ].map(([x, y]) => (
               <g key={`${x}-${y}`}>
-                <circle cx={x} cy={y} r="10" fill={VERMELHO} />
+                <circle cx={x} cy={y} r="10" fill={RED} />
                 <text x={x} y={y + 4} fontSize="11" fontWeight="700" fill="#fff" textAnchor="middle" fontFamily="inherit">
                   E
                 </text>
@@ -167,8 +167,8 @@ function FireSafety() {
             ))}
           </g>
           <g transform="translate(14 286)">
-            <path d="M0 -10l5 13-5-3-5 3z" fill={TINTA} />
-            <text x="0" y="12" fontSize="10" fontWeight="700" fill={TINTA} textAnchor="middle" fontFamily="inherit">
+            <path d="M0 -10l5 13-5-3-5 3z" fill={INK} />
+            <text x="0" y="12" fontSize="10" fontWeight="700" fill={INK} textAnchor="middle" fontFamily="inherit">
               N
             </text>
           </g>
@@ -184,11 +184,11 @@ function FireSafety() {
 /* ── Surveying and georeferencing ───────────────────────────────────────────────────────────── */
 
 const SURVEY_ITEMS = [
-  { id: "marco", color: TINTA, name: "Marcos nos vértices", text: "Peças fixadas em cada canto do terreno, com código próprio (M-0001, M-0002...). São elas que dão base oficial aos limites." },
-  { id: "limite", color: VERDE, name: "Limite do imóvel", text: "Linha que separa o imóvel dos vizinhos. Cada lado tem azimute (direção) e distância medidos em campo." },
-  { id: "curvas", color: MARROM, name: "Curvas de nível", text: "Mostram o relevo: cada linha une pontos de mesma altitude. Ajudam a planejar obras, estradas e a drenagem da água." },
-  { id: "coord", color: AZUL, name: "Coordenadas", text: "Cada marco tem coordenadas E e N no sistema SIRGAS 2000, que localizam o ponto no mapa oficial usado pelo INCRA." },
-  { id: "conf", color: CINZA, name: "Confrontantes", text: "Os vizinhos que fazem divisa com o imóvel, identificados no levantamento e no memorial descritivo." },
+  { id: "marco", color: INK, name: "Marcos nos vértices", text: "Peças fixadas em cada canto do terreno, com código próprio (M-0001, M-0002...). São elas que dão base oficial aos limites." },
+  { id: "limite", color: GREEN, name: "Limite do imóvel", text: "Linha que separa o imóvel dos vizinhos. Cada lado tem azimute (direção) e distância medidos em campo." },
+  { id: "curvas", color: BROWN, name: "Curvas de nível", text: "Mostram o relevo: cada linha une pontos de mesma altitude. Ajudam a planejar obras, estradas e a drenagem da água." },
+  { id: "coord", color: BLUE, name: "Coordenadas", text: "Cada marco tem coordenadas E e N no sistema SIRGAS 2000, que localizam o ponto no mapa oficial usado pelo INCRA." },
+  { id: "conf", color: GRAY, name: "Confrontantes", text: "Os vizinhos que fazem divisa com o imóvel, identificados no levantamento e no memorial descritivo." },
 ];
 
 const MARKERS = [
@@ -222,64 +222,64 @@ function Survey() {
           <g style={opacityFor("curvas")} onClick={() => choose("curvas")}>
             <g clipPath="url(#recorte-terreno)" fill="none">
               {contours.map((c) => (
-                <path key={c.elevation} d={c.d} stroke={MARROM} strokeWidth={c.elevation % 10 === 0 ? 2 : 1} opacity="0.75" />
+                <path key={c.elevation} d={c.d} stroke={BROWN} strokeWidth={c.elevation % 10 === 0 ? 2 : 1} opacity="0.75" />
               ))}
             </g>
             {contours.slice(0, 4).map((c, i) => (
-              <text key={c.elevation} x={118} y={222 - i * 36} fontSize="10" fontWeight="700" fill={MARROM} fontFamily="inherit">
+              <text key={c.elevation} x={118} y={222 - i * 36} fontSize="10" fontWeight="700" fill={BROWN} fontFamily="inherit">
                 {c.elevation}
               </text>
             ))}
           </g>
           <g style={opacityFor("limite")} onClick={() => choose("limite")}>
-            <polygon points={polygonPoints} fill="none" stroke={VERDE} strokeWidth="3" />
-            <text x="186" y="52" fontSize="10" fill={VERDE} fontWeight="700" textAnchor="middle" transform="rotate(-4.3 186 52)" fontFamily="inherit">
+            <polygon points={polygonPoints} fill="none" stroke={GREEN} strokeWidth="3" />
+            <text x="186" y="52" fontSize="10" fill={GREEN} fontWeight="700" textAnchor="middle" transform="rotate(-4.3 186 52)" fontFamily="inherit">
               Az 85°42' · 461,20 m
             </text>
-            <text x="338" y="118" fontSize="10" fill={VERDE} fontWeight="700" textAnchor="middle" transform="rotate(70 338 118)" fontFamily="inherit">
+            <text x="338" y="118" fontSize="10" fill={GREEN} fontWeight="700" textAnchor="middle" transform="rotate(70 338 118)" fontFamily="inherit">
               Az 160°08' · 306,85 m
             </text>
           </g>
           <g style={opacityFor("marco")} onClick={() => choose("marco")}>
             {MARKERS.map(([id, x, y]) => (
               <g key={id}>
-                <rect x={x - 6} y={y - 6} width="12" height="12" fill={TINTA} />
-                <text x={x + (x > 200 ? 10 : -10)} y={y + (y < 100 ? -9 : 20)} fontSize="11" fontWeight="700" fill={TINTA} textAnchor={x > 200 ? "start" : "end"} fontFamily="inherit">
+                <rect x={x - 6} y={y - 6} width="12" height="12" fill={INK} />
+                <text x={x + (x > 200 ? 10 : -10)} y={y + (y < 100 ? -9 : 20)} fontSize="11" fontWeight="700" fill={INK} textAnchor={x > 200 ? "start" : "end"} fontFamily="inherit">
                   {id}
                 </text>
               </g>
             ))}
           </g>
           <g style={opacityFor("coord")} onClick={() => choose("coord")}>
-            <rect x="262" y="236" width="146" height="54" rx="6" fill="#fff" stroke={AZUL} strokeWidth="1.4" />
-            <text x="272" y="253" fontSize="10" fontWeight="700" fill={AZUL} fontFamily="inherit">
+            <rect x="262" y="236" width="146" height="54" rx="6" fill="#fff" stroke={BLUE} strokeWidth="1.4" />
+            <text x="272" y="253" fontSize="10" fontWeight="700" fill={BLUE} fontFamily="inherit">
               M-0003 (SIRGAS 2000)
             </text>
-            <text x="272" y="268" fontSize="10" fill={TINTA} fontFamily="inherit">
+            <text x="272" y="268" fontSize="10" fill={INK} fontFamily="inherit">
               E 675.891,05 m
             </text>
-            <text x="272" y="282" fontSize="10" fill={TINTA} fontFamily="inherit">
+            <text x="272" y="282" fontSize="10" fill={INK} fontFamily="inherit">
               N 7.671.607,22 m
             </text>
-            <path d="M352 196L340 236" stroke={AZUL} strokeWidth="1.2" strokeDasharray="3 2" />
+            <path d="M352 196L340 236" stroke={BLUE} strokeWidth="1.2" strokeDasharray="3 2" />
           </g>
           <g style={opacityFor("conf")} onClick={() => choose("conf")} fontFamily="inherit">
-            <text x="160" y="30" fontSize="11" fill={CINZA}>
+            <text x="160" y="30" fontSize="11" fill={GRAY}>
               Confrontante: Sítio Vizinho A
             </text>
-            <text x="12" y="150" fontSize="11" fill={CINZA} transform="rotate(-90 12 150)" textAnchor="middle">
+            <text x="12" y="150" fontSize="11" fill={GRAY} transform="rotate(-90 12 150)" textAnchor="middle">
               Córrego
             </text>
-            <text x="70" y="248" fontSize="11" fill={CINZA} transform="rotate(15 70 248)">
+            <text x="70" y="248" fontSize="11" fill={GRAY} transform="rotate(15 70 248)">
               Estrada municipal
             </text>
           </g>
-          <text x="250" y="146" fontSize="14" fontWeight="700" fill={VERDE} textAnchor="middle" letterSpacing="1" fontFamily="inherit">
+          <text x="250" y="146" fontSize="14" fontWeight="700" fill={GREEN} textAnchor="middle" letterSpacing="1" fontFamily="inherit">
             ÁREA 12,46 ha
           </text>
           <g transform="translate(14 286)">
-            <path d="M0 -10l5 13-5-3-5 3z" fill={TINTA} />
-            <text x="0" y="12" fontSize="10" fontWeight="700" fill={TINTA} textAnchor="middle" fontFamily="inherit">
+            <path d="M0 -10l5 13-5-3-5 3z" fill={INK} />
+            <text x="0" y="12" fontSize="10" fontWeight="700" fill={INK} textAnchor="middle" fontFamily="inherit">
               N
             </text>
           </g>
@@ -295,10 +295,10 @@ function Survey() {
 // (small, medium, large) and the number shows how many workers are exposed.
 const RISK_ITEMS = [
   { id: "fisico", color: "#2e9e4d", name: "Físico", text: "Ruído, calor, vibração. Aqui: a serra do corte (risco grande). Na prática: protetor auricular, manutenção e pausas." },
-  { id: "quimico", color: VERMELHO, name: "Químico", text: "Tintas, solventes, poeiras e vapores. Aqui: a cabine de pintura. Na prática: exaustão, máscara adequada e produtos identificados." },
-  { id: "biologico", color: MARROM, name: "Biológico", text: "Fungos, bactérias e vírus. Aqui: a limpeza dos banheiros. Na prática: luvas, produtos de limpeza e higiene das mãos." },
+  { id: "quimico", color: RED, name: "Químico", text: "Tintas, solventes, poeiras e vapores. Aqui: a cabine de pintura. Na prática: exaustão, máscara adequada e produtos identificados." },
+  { id: "biologico", color: BROWN, name: "Biológico", text: "Fungos, bactérias e vírus. Aqui: a limpeza dos banheiros. Na prática: luvas, produtos de limpeza e higiene das mãos." },
   { id: "ergo", color: "#e3b007", name: "Ergonômico", text: "Postura, esforço e repetição. Aqui: a bancada de montagem e o escritório. Na prática: altura certa, cadeiras ajustáveis e pausas." },
-  { id: "acidente", color: AZUL, name: "Acidente", text: "Cortes, quedas e choques. Aqui: a serra e o empilhamento no depósito. Na prática: proteção nas máquinas, piso organizado e sinalização." },
+  { id: "acidente", color: BLUE, name: "Acidente", text: "Cortes, quedas e choques. Aqui: a serra e o empilhamento no depósito. Na prática: proteção nas máquinas, piso organizado e sinalização." },
 ];
 
 const RADIUS = { P: 13, M: 20, G: 28 };
@@ -329,7 +329,7 @@ function RiskMap() {
         const r = (id) => ({ style: opacityFor(id), onClick: () => choose(id) });
         return (
           <>
-            <g stroke={TINTA} fill="none">
+            <g stroke={INK} fill="none">
               <rect x="20" y="40" width="380" height="216" strokeWidth="4" />
               <path d="M200 40V150M20 150H120M160 150H260M300 150H400M290 150V256M340 150V256" strokeWidth="2" />
             </g>
@@ -350,9 +350,9 @@ function RiskMap() {
                 ESCRIT.
               </text>
             </g>
-            <rect x="60" y="88" width="56" height="30" fill={LINHA} stroke={BORDA} />
-            <rect x="250" y="80" width="90" height="46" fill={LINHA} stroke={BORDA} />
-            <rect x="80" y="180" width="120" height="26" fill={LINHA} stroke={BORDA} />
+            <rect x="60" y="88" width="56" height="30" fill={LINE} stroke={BORDER} />
+            <rect x="250" y="80" width="90" height="46" fill={LINE} stroke={BORDER} />
+            <rect x="80" y="180" width="120" height="26" fill={LINE} stroke={BORDER} />
             <RiskCircle x={96} y={104} size="G" color={color.fisico} n="3" {...r("fisico")} />
             <RiskCircle x={150} y={112} size="M" color={color.acidente} n="3" {...r("acidente")} />
             <RiskCircle x={300} y={104} size="G" color={color.quimico} n="2" {...r("quimico")} />
@@ -364,7 +364,7 @@ function RiskMap() {
               depósito
             </text>
             <g transform="translate(22 270)" fontFamily="inherit">
-              <text x="0" y="12" fontSize="10" fontWeight="700" fill={CINZA}>
+              <text x="0" y="12" fontSize="10" fontWeight="700" fill={GRAY}>
                 INTENSIDADE
               </text>
               {[
@@ -373,13 +373,13 @@ function RiskMap() {
                 ["G", "grande", 232],
               ].map(([t, label, x]) => (
                 <g key={t}>
-                  <circle cx={x} cy={8} r={RADIUS[t] * 0.42} fill="none" stroke={TINTA} strokeWidth="1.2" />
-                  <text x={x + RADIUS[t] * 0.42 + 5} y={12} fontSize="10" fill={TINTA}>
+                  <circle cx={x} cy={8} r={RADIUS[t] * 0.42} fill="none" stroke={INK} strokeWidth="1.2" />
+                  <text x={x + RADIUS[t] * 0.42 + 5} y={12} fontSize="10" fill={INK}>
                     {label}
                   </text>
                 </g>
               ))}
-              <text x="290" y="12" fontSize="10" fill={CINZA}>
+              <text x="290" y="12" fontSize="10" fill={GRAY}>
                 nº = pessoas expostas
               </text>
             </g>
@@ -477,7 +477,7 @@ const SHEET_PARTS = [
   ["Planta, corte e fachada", "A planta é a casa vista de cima; o corte, como se ela fosse fatiada de lado; a fachada, vista de frente, de fora."],
 ];
 
-export function ComoLerPrancha() {
+export function HowToReadSheet() {
   const [active, setActive] = useState(-1);
   return (
     <div className="how-read">
@@ -504,7 +504,7 @@ export function ComoLerPrancha() {
   );
 }
 
-export function Ilustracao({ slug }) {
+export function Illustration({ slug }) {
   if (slug === "corpo-de-bombeiros") return <FireSafety />;
   if (slug === "meio-ambiente-topografia") return <Survey />;
   if (slug === "seguranca-do-trabalho")

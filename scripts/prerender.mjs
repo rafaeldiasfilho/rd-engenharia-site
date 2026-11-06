@@ -14,7 +14,7 @@ const vite = await createServer({
 });
 
 try {
-  const { render, render404, renderImpressao, renderHome, PAGINAS, AREAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
+  const { render, render404, renderPrint, renderHome, PAGES, AREAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
   const template = fs.readFileSync(path.join(dist, "index.html"), "utf8");
   const esc = (t) => t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   const jsonScript = (obj) =>
@@ -31,13 +31,13 @@ try {
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/g, "")
     .replace(/<noscript>[\s\S]*?<\/noscript>/, "");
 
-  for (const page of PAGINAS) {
+  for (const page of PAGES) {
     const url = `${SITE_URL}/${page.slug}`;
     // Middle level of the breadcrumb: areas go under "Serviços", guides under "Guias".
     const middleLevel =
-      page.tipo === "area"
+      page.type === "area"
         ? { name: "Serviços", url: `${SITE_URL}/#servicos` }
-        : page.tipo === "guia"
+        : page.type === "guide"
           ? { name: "Guias", url: `${SITE_URL}/guias` }
           : null;
     const data = [
@@ -47,15 +47,15 @@ try {
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Início", item: `${SITE_URL}/` },
           ...(middleLevel ? [{ "@type": "ListItem", position: 2, name: middleLevel.name, item: middleLevel.url }] : []),
-          { "@type": "ListItem", position: middleLevel ? 3 : 2, name: page.tipo === "area" ? page.nome : page.h1, item: url },
+          { "@type": "ListItem", position: middleLevel ? 3 : 2, name: page.type === "area" ? page.name : page.h1, item: url },
         ],
       },
     ];
-    if (page.tipo === "area") {
+    if (page.type === "area") {
       data.push({
         "@context": "https://schema.org",
         "@type": "Service",
-        name: page.nome,
+        name: page.name,
         description: page.description,
         url,
         provider: { "@type": "ProfessionalService", name: "RD Engenharia Segurança e Meio Ambiente", url: `${SITE_URL}/` },
@@ -71,7 +71,7 @@ try {
         })),
       });
     }
-    if (page.tipo === "guia") {
+    if (page.type === "guide") {
       data.push({
         "@context": "https://schema.org",
         "@type": "Article",
@@ -107,8 +107,8 @@ try {
   // Print pages for the document checklist: noindex, outside the sitemap, no JSON-LD or canonical.
   for (const area of AREAS) {
     const htmlPrint = base
-      .replace("</head>", `    <title>Lista de documentos | ${esc(area.nome)} | RD Engenharia</title>\n    <meta name="robots" content="noindex, nofollow" />\n  </head>`)
-      .replace('<div id="root"></div>', `<div id="root">${renderImpressao(area)}</div>`);
+      .replace("</head>", `    <title>Lista de documentos | ${esc(area.name)} | RD Engenharia</title>\n    <meta name="robots" content="noindex, nofollow" />\n  </head>`)
+      .replace('<div id="root"></div>', `<div id="root">${renderPrint(area)}</div>`);
     const dest = path.join(dist, "imprimir", area.slug, "index.html");
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.writeFileSync(dest, htmlPrint);
@@ -129,7 +129,7 @@ try {
   fs.writeFileSync(path.join(dist, "index.html"), template.replace('<div id="root"></div>', `<div id="root">${renderHome()}</div>`));
 
   const today = new Date().toISOString().slice(0, 10);
-  const urls = ["", ...PAGINAS.filter((p) => !["privacidade", "termos"].includes(p.tipo)).map((p) => p.slug)];
+  const urls = ["", ...PAGES.filter((p) => !["privacy", "terms"].includes(p.type)).map((p) => p.slug)];
   const sitemap =
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls
@@ -141,7 +141,7 @@ try {
   // llms.txt: site summary for AI assistants (format proposed at llmstxt.org; optional, no guarantee
   // that any product uses it). Generated from the same page data, so it never goes stale.
   const line = (p) => `- [${p.h1}](${SITE_URL}/${p.slug}): ${p.description}`;
-  const group = (types) => PAGINAS.filter((p) => types.includes(p.tipo)).map(line).join(String.fromCharCode(10));
+  const group = (types) => PAGES.filter((p) => types.includes(p.type)).map(line).join(String.fromCharCode(10));
   const llms = [
     "# RD Engenharia Segurança e Meio Ambiente",
     "",
@@ -155,17 +155,17 @@ try {
     group(["area"]),
     "",
     "## Guias",
-    group(["guia"]),
+    group(["guide"]),
     "",
     "## Outras páginas",
-    group(["onde", "quiz", "lembrete", "guias-indice"]),
+    group(["location", "quiz", "reminder", "guide-index"]),
     "",
     "## Opcional",
-    group(["privacidade", "termos", "creditos"]),
+    group(["privacy", "terms", "credits"]),
     "",
   ].join(String.fromCharCode(10));
   fs.writeFileSync(path.join(dist, "llms.txt"), llms);
-  console.log(`Pré-renderizadas ${PAGINAS.length} páginas (mais ${AREAS.length} de impressão, fora do sitemap).`);
+  console.log(`Pré-renderizadas ${PAGES.length} páginas (mais ${AREAS.length} de impressão, fora do sitemap).`);
 } finally {
   await vite.close();
 }

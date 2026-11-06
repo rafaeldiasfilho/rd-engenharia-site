@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 // "reduce motion" and listens to scrolling only while the list is on screen.
 const SHRINK = 0.045;
 
-export default function PilhaEtapas({ etapas, acaoPrimeira }) {
+export default function StepStack({ steps, firstAction }) {
   const listRef = useRef(null);
 
   useEffect(() => {
@@ -76,19 +76,19 @@ export default function PilhaEtapas({ etapas, acaoPrimeira }) {
 
   return (
     <ol className="stack" ref={listRef}>
-      {etapas.map((e, i) => (
-        <li key={e.titulo} className="stack-item" style={{ "--i": i }}>
+      {steps.map((e, i) => (
+        <li key={e.title} className="stack-item" style={{ "--i": i }}>
           <article className="stack-card">
             <span className="stack-num" aria-hidden="true">
               {i + 1}
             </span>
             <div>
               <p className="stack-step">
-                Passo {i + 1} de {etapas.length}
+                Passo {i + 1} de {steps.length}
               </p>
-              <h3>{e.titulo}</h3>
-              <p>{e.texto}</p>
-              {i === 0 && acaoPrimeira}
+              <h3>{e.title}</h3>
+              <p>{e.text}</p>
+              {i === 0 && firstAction}
             </div>
           </article>
         </li>

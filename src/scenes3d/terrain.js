@@ -1,6 +1,6 @@
 // Environment and Surveying: terrain with natural colors, contour lines (in the shader) and surveyed points.
 import { BufferAttribute, BufferGeometry, Mesh, PlaneGeometry, Points, PointsMaterial, ShaderMaterial } from "three";
-import { montarCena } from "./base";
+import { mountScene } from "./base";
 
 function height(x, y) {
   return (
@@ -55,8 +55,8 @@ const FRAG = /* glsl */ `
   }
 `;
 
-export function montar(el) {
-  return montarCena(el, {
+export function mount(el) {
+  return mountScene(el, {
     camera: { pos: [0, -4.4, 3.4], target: [0, 0, -0.1] },
     build: ({ group }) => {
       const geo = new PlaneGeometry(4.4, 4.4, 140, 140);

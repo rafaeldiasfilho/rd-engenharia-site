@@ -6,37 +6,37 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { WebGLRenderer, Scene, PerspectiveCamera, Clock, Group, ACESFilmicToneMapping, PCFSoftShadowMap } from "three";
 
 // Real material colors (concrete, plaster, roof tile, wood, glass, signage)
-export const REAL = {
-  concreto: "#b8b4aa",
-  reboco: "#efe7d6",
-  telha: "#b4532a",
-  madeira: "#7a4a2a",
-  vidro: "#8fb9cc",
-  esquadria: "#f4f4f2",
-  grama: "#6b9a45",
-  piso: "#d8d3c6",
-  parede: "#f2f0ea",
-  saida: "#14a04a",
-  extintor: "#c8102e",
-  amareloEpi: "#f2c200",
+export const REAL_COLORS = {
+  concrete: "#b8b4aa",
+  plaster: "#efe7d6",
+  roofTile: "#b4532a",
+  wood: "#7a4a2a",
+  glass: "#8fb9cc",
+  frame: "#f4f4f2",
+  grass: "#6b9a45",
+  floor: "#d8d3c6",
+  wall: "#f2f0ea",
+  exit: "#14a04a",
+  extinguisher: "#c8102e",
+  ppeYellow: "#f2c200",
 };
 
-export const COR = {
-  fundo: "#0c2e1c",
-  verde: "#2f8a45",
-  verdeClaro: "#3a9a52",
-  lima: "#9be15d",
-  limaClaro: "#d9ffb0",
-  alerta: "#ff6b4a",
+export const COLORS = {
+  background: "#0c2e1c",
+  green: "#2f8a45",
+  lightGreen: "#3a9a52",
+  lime: "#9be15d",
+  lightLime: "#d9ffb0",
+  alert: "#ff6b4a",
 };
 
-export function suportaWebGL() {
+export function supportsWebGL() {
   const c = document.createElement("canvas");
   return !!(c.getContext("webgl2") || c.getContext("webgl"));
 }
 
-export function montarCena(el, { camera: cam = {}, shadows = false, build }) {
-  if (!suportaWebGL()) return null;
+export function mountScene(el, { camera: cam = {}, shadows = false, build }) {
+  if (!supportsWebGL()) return null;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { slidesDe, caminho, srcset, aviso } from "./photos";
+import { slidesFor, photoPath, srcset, photoNotice } from "./photos";
 import PhotoViewer from "./PhotoViewer";
 
 // Image strip in the style of Apple "Photos", no library. It is the only carousel on the site.
@@ -30,21 +30,21 @@ const INTERVAL = 5000;
 const MAX_LOOPS = 3; // after 3 full loops autoplay stops
 const RESUME_DELAY = 8000;
 
-export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", className = "", prioridade = false, auto = true, sizes = "(min-width: 900px) 50vw, 90vw" }) {
-  const slides = itens
-    ? itens
-    : slidesDe(chave || "").map((s) => ({
-        key: s.foto,
-        src: caminho(s.f),
+export default function Carousel({ setKey, items, label, aspect = "16 / 10", className = "", priority = false, auto = true, sizes = "(min-width: 900px) 50vw, 90vw" }) {
+  const slides = items
+    ? items
+    : slidesFor(setKey || "").map((s) => ({
+        key: s.photo,
+        src: photoPath(s.f),
         srcSet: srcset(s.f),
         w: s.f.w,
         h: s.f.h,
         alt: s.f.alt,
-        legenda: s.legenda,
+        caption: s.caption,
         href: s.href,
-        imgHref: caminho(s.f), // every carousel photo zooms in on the page itself
-        nota: aviso(s.f),
-        creditos: true,
+        imgHref: photoPath(s.f), // every carousel photo zooms in on the page itself
+        note: photoNotice(s.f),
+        credits: true,
         pos: s.pos,
       }));
   const total = slides.length;
@@ -286,15 +286,15 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
       className={`carousel ${total < 2 ? "carousel-one" : ""} ${className}`}
       role="region"
       aria-roledescription="carrossel"
-      aria-label={rotulo}
-      style={{ "--carousel-aspect": aspecto }}
+      aria-label={label}
+      style={{ "--carousel-aspect": aspect }}
       onKeyDown={onKeys}
     >
       <div
         className={`carousel-band ${dragging ? "dragging" : ""}`}
         ref={bandRef}
         tabIndex={0}
-        aria-label={`${rotulo}: use as setas do teclado, deslize ou arraste`}
+        aria-label={`${label}: use as setas do teclado, deslize ou arraste`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -310,8 +310,8 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
               width={s.w}
               height={s.h}
               alt={s.alt}
-              loading={prioridade && n === 0 ? "eager" : "lazy"}
-              fetchpriority={prioridade && n === 0 ? "high" : undefined}
+              loading={priority && n === 0 ? "eager" : "lazy"}
+              fetchpriority={priority && n === 0 ? "high" : undefined}
               decoding="async"
               draggable={false}
               style={s.pos ? { objectPosition: s.pos } : undefined}
@@ -337,14 +337,14 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
                 />
               )}
               <figure>
-                <div className={`carousel-img ${s.contem ? "contain" : ""} ${s.node ? "node" : ""}`}>
+                <div className={`carousel-img ${s.contain ? "contain" : ""} ${s.node ? "node" : ""}`}>
                   {s.node ? (
                     s.node
                   ) : s.imgHref ? (
                     <a
                       href={s.imgHref}
                       draggable={false}
-                      aria-label={`Ampliar: ${s.legenda || s.alt}`}
+                      aria-label={`Ampliar: ${s.caption || s.alt}`}
                       aria-haspopup="dialog"
                       onClick={(e) => {
                         // Without JavaScript the link opens the image; with JavaScript it zooms in right here.
@@ -364,15 +364,15 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
                   <strong className="carousel-caption">
                     {s.href ? (
                       <a href={s.href}>
-                        {s.legenda} <span aria-hidden="true">→</span>
+                        {s.caption} <span aria-hidden="true">→</span>
                       </a>
                     ) : (
-                      s.legenda
+                      s.caption
                     )}
                   </strong>
-                  {s.nota && (
+                  {s.note && (
                     <small>
-                      {s.nota} {s.creditos && <a href="/creditos">Créditos</a>}
+                      {s.note} {s.credits && <a href="/creditos">Créditos</a>}
                     </small>
                   )}
                 </figcaption>
@@ -410,10 +410,10 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
       {zoomed &&
         createPortal(
           <PhotoViewer
-            itens={slides.filter((x) => x.imgHref && !x.node).map((x) => ({ src: x.imgHref, alt: x.alt, legenda: x.legenda }))}
-            indice={zoomed.i}
-            origem={zoomed.el}
-            aoFechar={() => setZoomed(null)}
+            items={slides.filter((x) => x.imgHref && !x.node).map((x) => ({ src: x.imgHref, alt: x.alt, caption: x.caption }))}
+            index={zoomed.i}
+            origin={zoomed.el}
+            onClose={() => setZoomed(null)}
           />,
           document.body,
         )}

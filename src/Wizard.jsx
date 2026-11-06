@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import Icon from "./Icon";
 import AreaIcon from "./AreaIcon";
-import { AREAS, PERFIS, RESULTADOS, achaArea } from "./pagesData";
-import { BotaoZap } from "./Layout";
+import { AREAS, PROFILES, RESULTS, findArea } from "./pagesData";
+import { WhatsappButton } from "./Layout";
 
 // Step-by-step guide for the /o-que-preciso page: one question per screen, large choices, progress bar,
 // back button and result screen. Uses the same PERFIS/RESULTADOS rules (src/pagesData.js).
 // Nothing is stored: the answers live only in the page's memory and become the WhatsApp message.
-export default function Assistente() {
+export default function Wizard() {
   const [profileId, setProfileId] = useState("");
   const [answers, setAnswers] = useState({}); // situation index -> true | false
   const [step, setStep] = useState(0); // 0 = profile; 1..n = situations; n+1 = result
@@ -15,11 +15,11 @@ export default function Assistente() {
   const titleRef = useRef(null);
   const mounted = useRef(false);
 
-  const profile = PERFIS.find((p) => p.id === profileId);
-  const n = profile ? profile.situacoes.length : 0;
+  const profile = PROFILES.find((p) => p.id === profileId);
+  const n = profile ? profile.situations.length : 0;
   const total = 1 + n; // questions (the result does not count)
   const onResult = profile && step > n;
-  const situation = profile && step >= 1 && step <= n ? profile.situacoes[step - 1] : null;
+  const situation = profile && step >= 1 && step <= n ? profile.situations[step - 1] : null;
 
   // Focus the new screen's heading (keyboard and screen reader), but not on the page's first render.
   useEffect(() => {
@@ -29,11 +29,11 @@ export default function Assistente() {
 
   const ids = [];
   if (profile) {
-    profile.situacoes.forEach((s, i) => {
-      if (answers[i]) s.itens.forEach((id) => !ids.includes(id) && ids.push(id));
+    profile.situations.forEach((s, i) => {
+      if (answers[i]) s.items.forEach((id) => !ids.includes(id) && ids.push(id));
     });
   }
-  const results = ids.map((id) => ({ id, ...RESULTADOS[id] }));
+  const results = ids.map((id) => ({ id, ...RESULTS[id] }));
 
   const chooseProfile = (id) => {
     if (id !== profileId) setAnswers({});
@@ -59,7 +59,7 @@ export default function Assistente() {
     const tag = e.target && e.target.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || e.altKey || e.ctrlKey || e.metaKey) return;
     if (!onResult && step === 0 && ["1", "2", "3"].includes(e.key)) {
-      const p = PERFIS[Number(e.key) - 1];
+      const p = PROFILES[Number(e.key) - 1];
       if (p) chooseProfile(p.id);
     } else if (situation && (e.key === "1" || e.key === "2")) {
       answer(e.key === "1");
@@ -71,10 +71,10 @@ export default function Assistente() {
     return () => document.removeEventListener("keydown", f);
   }, []);
 
-  const profileName = profile ? profile.nome : "";
+  const profileName = profile ? profile.name : "";
   const message = [
     "Olá! Fiz o guia do site e acho que preciso de:",
-    ...results.map((r) => `- ${r.nome}`),
+    ...results.map((r) => `- ${r.name}`),
     profileName ? `Meu caso: ${profileName.charAt(0).toLowerCase() + profileName.slice(1)}` : "",
     city.trim() ? `Cidade: ${city.trim()}` : "",
   ]
@@ -135,7 +135,7 @@ export default function Assistente() {
             </h2>
             <p className="wizard-support">Escolha a que mais se parece com o seu caso.</p>
             <div className="wizard-options" role="group" aria-label="Qual é a sua situação?">
-              {PERFIS.map((p, i) => (
+              {PROFILES.map((p, i) => (
                 <button
                   type="button"
                   key={p.id}
@@ -143,8 +143,8 @@ export default function Assistente() {
                   aria-pressed={profileId === p.id}
                   onClick={() => chooseProfile(p.id)}
                 >
-                  <Icon nome={p.icone} />
-                  <span>{p.nome}</span>
+                  <Icon name={p.icon} />
+                  <span>{p.name}</span>
                   <kbd aria-hidden="true">{i + 1}</kbd>
                 </button>
               ))}
@@ -156,9 +156,9 @@ export default function Assistente() {
           <>
             <p className="wizard-label">Isso se aplica ao seu caso?</p>
             <h2 className="wizard-question" tabIndex={-1} ref={titleRef}>
-              {situation.texto}
+              {situation.text}
             </h2>
-            <div className="wizard-options wizard-yesno" role="group" aria-label={`${situation.texto}. Isso se aplica ao seu caso?`}>
+            <div className="wizard-options wizard-yesno" role="group" aria-label={`${situation.text}. Isso se aplica ao seu caso?`}>
               <button
                 type="button"
                 className={`wizard-option ${answers[step - 1] === true ? "active" : ""}`}
@@ -191,15 +191,15 @@ export default function Assistente() {
             {results.length > 0 ? (
               <ul className="wizard-results">
                 {results.map((r) => {
-                  const area = achaArea(r.area);
+                  const area = findArea(r.area);
                   return (
                     <li key={r.id}>
                       <small className="wizard-area">
-                        {area && <AreaIcon slug={area.slug} tamanho={18} />} {area ? area.nome : ""}
+                        {area && <AreaIcon slug={area.slug} size={18} />} {area ? area.name : ""}
                       </small>
-                      <h3>{r.nome}</h3>
-                      <p>{r.texto}</p>
-                      <a href={`/${r.area}`} aria-label={`${r.nome}: ver na página da área`}>
+                      <h3>{r.name}</h3>
+                      <p>{r.text}</p>
+                      <a href={`/${r.area}`} aria-label={`${r.name}: ver na página da área`}>
                         Ver na página da área <span aria-hidden="true">→</span>
                       </a>
                     </li>
@@ -216,7 +216,7 @@ export default function Assistente() {
                   {AREAS.map((a) => (
                     <li key={a.slug}>
                       <a href={`/${a.slug}`}>
-                        <AreaIcon slug={a.slug} tamanho={18} /> {a.nome}
+                        <AreaIcon slug={a.slug} size={18} /> {a.name}
                       </a>
                     </li>
                   ))}
@@ -238,10 +238,10 @@ export default function Assistente() {
               />
             </div>
             <div className="actions">
-              <BotaoZap
+              <WhatsappButton
                 className="btn-large"
-                texto={results.length ? message : messageNoItems}
-                rotulo={results.length ? "Enviar para a RD pelo WhatsApp" : "Contar o meu caso no WhatsApp"}
+                text={results.length ? message : messageNoItems}
+                label={results.length ? "Enviar para a RD pelo WhatsApp" : "Contar o meu caso no WhatsApp"}
               />
               <button type="button" className="btn btn-sec btn-large" onClick={restart}>
                 Recomeçar
@@ -256,7 +256,7 @@ export default function Assistente() {
           Este passo a passo precisa de JavaScript. Sem ele, veja as áreas:{" "}
           {AREAS.map((a) => (
             <a key={a.slug} href={`/${a.slug}`}>
-              {a.nome}{" "}
+              {a.name}{" "}
             </a>
           ))}
         </p>

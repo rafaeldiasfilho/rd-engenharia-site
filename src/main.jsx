@@ -1,8 +1,8 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import PageView, { NaoEncontrada, PaginaImprimir } from "./Pages.jsx";
-import { achaPagina, achaArea } from "./pagesData";
+import PageView, { NotFound, PrintPage } from "./Pages.jsx";
+import { findPage, findArea } from "./pagesData";
 import "./styles.css";
 import { inject, track } from "@vercel/analytics";
 
@@ -33,9 +33,9 @@ document.addEventListener(
 
 const root = document.getElementById("root");
 const slug = window.location.pathname.replace(/^\/+|\/+$/g, "");
-const page = slug ? achaPagina(slug) : null;
+const page = slug ? findPage(slug) : null;
 
-const printArea = slug.startsWith("imprimir/") ? achaArea(slug.slice(9)) : null;
+const printArea = slug.startsWith("imprimir/") ? findArea(slug.slice(9)) : null;
 
 const Admin = lazy(() => import("./admin/Admin"));
 
@@ -46,14 +46,14 @@ if (slug === "admin") {
     </Suspense>
   );
 } else if (printArea) {
-  ReactDOM.hydrateRoot(root, <PaginaImprimir area={printArea} />);
+  ReactDOM.hydrateRoot(root, <PrintPage area={printArea} />);
 } else if (root.dataset.erro) {
-  ReactDOM.hydrateRoot(root, <NaoEncontrada />);
+  ReactDOM.hydrateRoot(root, <NotFound />);
 } else if (page) {
   ReactDOM.hydrateRoot(
     root,
     <React.StrictMode>
-      <PageView pagina={page} />
+      <PageView page={page} />
     </React.StrictMode>
   );
 } else if (root.hasChildNodes()) {

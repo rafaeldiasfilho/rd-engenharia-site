@@ -1,4 +1,4 @@
-import { AVALIACOES, NOTA_GOOGLE, URL_AVALIACOES_GOOGLE } from "./pagesData";
+import { REVIEWS, GOOGLE_RATING, GOOGLE_REVIEWS_URL } from "./pagesData";
 
 // Google reviews strip on the home page. The rating and the total come from NOTA_GOOGLE; the cards only
 // appear for the reviews listed in AVALIACOES (real texts, copied from Google by Rafael).
@@ -12,8 +12,8 @@ const Stars = ({ n = 5 }) => (
   </span>
 );
 
-export default function Avaliacoes() {
-  if (AVALIACOES.length === 0) return null;
+export default function Reviews() {
+  if (REVIEWS.length === 0) return null;
   return (
     <section className="review" aria-labelledby="aval-t">
       <div className="container">
@@ -24,20 +24,20 @@ export default function Avaliacoes() {
               O que dizem os clientes.
             </h2>
           </div>
-          <a className="review-note" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
+          <a className="review-note" href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
             <Stars n={5} />
-            <span>{NOTA_GOOGLE}</span>
+            <span>{GOOGLE_RATING}</span>
             <small>Ver todas no Google →</small>
           </a>
         </div>
         <ul className="review-list">
-          {AVALIACOES.map((a) => (
-            <li key={`${a.nome}-${a.texto.slice(0, 20)}`} className="review-card reveal">
-              <Stars n={a.estrelas || 5} />
+          {REVIEWS.map((a) => (
+            <li key={`${a.name}-${a.text.slice(0, 20)}`} className="review-card reveal">
+              <Stars n={a.stars || 5} />
               <blockquote>
-                <p>“{a.texto}”</p>
+                <p>“{a.text}”</p>
               </blockquote>
-              <p className="review-author">{a.nome}, no Google</p>
+              <p className="review-author">{a.name}, no Google</p>
             </li>
           ))}
         </ul>

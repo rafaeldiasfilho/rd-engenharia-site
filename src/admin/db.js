@@ -103,11 +103,11 @@ async function createSupabase() {
   };
 }
 
-export async function abrirBanco() {
+export async function openDatabase() {
   // Demo mode: only on the developer's computer (VITE_DEMO=1 in dev mode); off on the published site.
   if (import.meta.env.DEV && import.meta.env.VITE_DEMO === "1") return createDemo();
   if (URL && KEY) return createSupabase();
   return { mode: "unavailable" };
 }
 
-export { URL as SUPABASE_URL, KEY as SUPABASE_CHAVE };
+export { URL as SUPABASE_URL, KEY as SUPABASE_KEY };

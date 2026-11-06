@@ -12,7 +12,7 @@ const DOCUMENTS = [
 ];
 
 // Slow-moving strip; stops on hover or focus and stays still with "reduce motion" (CSS).
-export function FaixaDocumentos() {
+export function DocumentsMarquee() {
   const group = (hidden) => (
     <ul className="marquee-group" aria-hidden={hidden ? "true" : undefined}>
       {DOCUMENTS.map((d) => (
@@ -42,7 +42,7 @@ const LABEL = { ok: "Em dia", vence: "Vence em 30 dias", pendente: "Pendente" };
 const SYMBOL = { ok: "✓", vence: "◔", pendente: "○" };
 
 // Dashboard-style card, only to explain how documents are organized. Made-up data.
-export function PainelExemplo() {
+export function ExamplePanel() {
   const [openName, setOpenName] = useState("");
   const upToDate = PANEL_ITEMS.filter((x) => x.status === "ok").length;
   const pct = Math.round((upToDate / PANEL_ITEMS.length) * 100);
@@ -140,7 +140,7 @@ function CountUp({ target, suffix = "" }) {
 
 // Numbers stated by the owner, inline, inside the "O que organizamos" section (they used to be a separate
 // strip; merging the two shortened the home page).
-export function NumerosLinha() {
+export function NumbersLine() {
   return (
     <div className="numbers-line cascade" role="group" aria-label="A RD em números">
       <p className="reveal">

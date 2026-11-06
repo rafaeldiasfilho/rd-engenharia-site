@@ -12,16 +12,16 @@ import { CaretLeft, CaretRight, MagnifyingGlassMinus, MagnifyingGlassPlus, X } f
 const EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
 const ZOOM_MAX = 4;
 
-export default function Ampliar({ itens, indice, origem, aoFechar }) {
+export default function PhotoViewer({ items, index, origin, onClose }) {
   const dlg = useRef(null);
   const stage = useRef(null);
   const photo = useRef(null);
-  const [i, setI] = useState(indice ?? 0);
+  const [i, setI] = useState(index ?? 0);
   const [zoom, setZoom] = useState(1);
   const gesture = useRef({ zoom: 1, x: 0, y: 0, fingers: new Map(), start: null, pinch: null, lastTap: 0, drag: null });
   const reducedMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const total = itens.length;
-  const current = itens[i];
+  const total = items.length;
+  const current = items[i];
 
   const apply = (extra = "") => {
     const s = gesture.current;
@@ -48,7 +48,7 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
 
   // Thumbnail rectangle relative to the open photo: used to grow in / shrink back
   const fromThumbnail = () => {
-    const a = origem?.getBoundingClientRect?.();
+    const a = origin?.getBoundingClientRect?.();
     const b = photo.current?.getBoundingClientRect();
     if (!a || !b || !b.width || !a.width) return null;
     const ratio = Math.max(a.width / b.width, a.height / b.height);
@@ -61,19 +61,19 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
     d.dataset.closing = "1";
     const finish = () => {
       d.close();
-      aoFechar();
+      onClose();
     };
     if (reducedMotion || !photo.current) return finish();
     const s = gesture.current;
     const from = `translate(${s.x}px, ${s.y}px) scale(${s.zoom})`;
-    const to = i === indice ? fromThumbnail() : null;
+    const to = i === index ? fromThumbnail() : null;
     d.animate([{ backgroundColor: getComputedStyle(d).backgroundColor }, { backgroundColor: "rgba(0,0,0,0)" }], { duration: 400, easing: EASING, fill: "forwards" });
     const anim = photo.current.animate(
       to ? [{ transform: from }, { transform: to }] : [{ transform: from, opacity: 1 }, { transform: `${from} translateY(40px)`, opacity: 0 }],
       { duration: 400, easing: EASING, fill: "forwards" },
     );
     anim.onfinish = finish;
-  }, [aoFechar, i, indice, reducedMotion]);
+  }, [onClose, i, index, reducedMotion]);
 
   // Opens and grows the photo from the thumbnail
   useEffect(() => {
@@ -111,10 +111,10 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
   // Preloads the neighbouring photos
   useEffect(() => {
     [1, -1].forEach((d) => {
-      const v = itens[(i + d + total) % total];
+      const v = items[(i + d + total) % total];
       if (v) new Image().src = v.src;
     });
-  }, [i, itens, total]);
+  }, [i, items, total]);
 
   const clamp = () => {
     const s = gesture.current;
@@ -235,7 +235,7 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
     <dialog
       ref={dlg}
       className="viewer"
-      aria-label={current?.legenda || current?.alt || "Foto ampliada"}
+      aria-label={current?.caption || current?.alt || "Foto ampliada"}
       onCancel={(e) => {
         e.preventDefault();
         closeViewer();
@@ -265,7 +265,7 @@ export default function Ampliar({ itens, indice, origem, aoFechar }) {
               {i + 1} / {total}
             </span>
           )}
-          {current?.legenda}
+          {current?.caption}
         </p>
         <div className="viewer-buttons">
           <button type="button" onClick={() => (zoom > 1 ? reset() : zoomTo(2))} aria-label={zoom > 1 ? "Tirar o zoom" : "Dar zoom"}>

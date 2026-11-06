@@ -4,7 +4,7 @@ import {
   BoxGeometry, BufferGeometry, CircleGeometry, DirectionalLight, DoubleSide, Float32BufferAttribute, Group,
   HemisphereLight, Mesh, MeshStandardMaterial,
 } from "three";
-import { REAL, montarCena } from "./base";
+import { REAL_COLORS, mountScene } from "./base";
 
 const L = 2.0; // length (x)
 const W = 1.4; // width (y)
@@ -26,8 +26,8 @@ function box(w, d, h, mat, x, y, z) {
   return m;
 }
 
-export function montar(el) {
-  return montarCena(el, {
+export function mount(el) {
+  return mountScene(el, {
     shadows: true,
     camera: { pos: [3.7, -4.2, 2.9], target: [0, 0, 0.4] },
     build: ({ scene, group }) => {
@@ -41,14 +41,14 @@ export function montar(el) {
       scene.add(sun);
 
       const mat = (color, roughness = 0.85, extra = {}) => new MeshStandardMaterial({ color, roughness, ...extra });
-      const concrete = mat(REAL.concreto, 0.95);
-      const plaster = mat(REAL.reboco, 0.9);
-      const tile = mat(REAL.telha, 0.7);
-      const wood = mat(REAL.madeira, 0.6);
-      const glass = mat(REAL.vidro, 0.15, { metalness: 0.2 });
-      const frame = mat(REAL.esquadria, 0.5);
+      const concrete = mat(REAL_COLORS.concrete, 0.95);
+      const plaster = mat(REAL_COLORS.plaster, 0.9);
+      const tile = mat(REAL_COLORS.roofTile, 0.7);
+      const wood = mat(REAL_COLORS.wood, 0.6);
+      const glass = mat(REAL_COLORS.glass, 0.15, { metalness: 0.2 });
+      const frame = mat(REAL_COLORS.frame, 0.5);
 
-      const grass = new Mesh(new CircleGeometry(1.85, 64), mat(REAL.grama, 1));
+      const grass = new Mesh(new CircleGeometry(1.85, 64), mat(REAL_COLORS.grass, 1));
       grass.receiveShadow = true;
       group.add(grass);
       // walkway to the door
@@ -106,7 +106,7 @@ export function montar(el) {
       [-L / 2 + 0.005, L / 2 - 0.005].forEach((x) => v.push(x, -W / 2, 0, x, W / 2, 0, x, 0, ROOF_HEIGHT));
       tri.setAttribute("position", new Float32BufferAttribute(v, 3));
       tri.computeVertexNormals();
-      const gables = new Mesh(tri, new MeshStandardMaterial({ color: REAL.reboco, roughness: 0.9, side: DoubleSide }));
+      const gables = new Mesh(tri, new MeshStandardMaterial({ color: REAL_COLORS.plaster, roughness: 0.9, side: DoubleSide }));
       gables.castShadow = true;
       roof.add(gables);
       const ridge = box(L + 0.3, 0.08, 0.06, tile, 0, 0, ROOF_HEIGHT + 0.03);

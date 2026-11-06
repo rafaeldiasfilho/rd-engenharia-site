@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { abrirBanco } from "./db";
+import { openDatabase } from "./db";
 
 const SERVICE_TYPES = [
   "PGR (gerenciamento de riscos)",
@@ -730,7 +730,7 @@ export default function Admin() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    abrirBanco().then(async (b) => {
+    openDatabase().then(async (b) => {
       setDb(b);
       setUser(b.mode === "unavailable" ? null : await b.auth.session());
     });

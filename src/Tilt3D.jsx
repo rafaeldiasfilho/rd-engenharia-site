@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 // animation" prompt, rebuilt without framer-motion): progress goes from 0 (bottom edge of the screen)
 // to 1 (middle of the screen) and becomes the CSS variable --p; the CSS applies rotateX and scale from it.
 // With "reduce motion" nothing is turned on and the frame stays flat.
-export default function Inclinado3D({ children, className = "" }) {
+export default function Tilt3D({ children, className = "" }) {
   const ref = useRef(null);
 
   useEffect(() => {

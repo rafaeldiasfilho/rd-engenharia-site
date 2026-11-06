@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { zap } from "./contact";
+import { whatsappLink } from "./contact";
 
 // For desktop visitors: QR code that opens the chat on the phone. The SVG is static
 // (scripts/generate-whatsapp-qr.mjs). Only shows on screens with a mouse (CSS); on mobile the WhatsApp button is enough.
 const MESSAGE = "Olá! Gostaria de solicitar um orçamento.";
 
-export default function QrWhatsapp() {
+export default function WhatsappQr() {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const timer = useRef(0);
@@ -13,7 +13,7 @@ export default function QrWhatsapp() {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(zap(MESSAGE));
+      await navigator.clipboard.writeText(whatsappLink(MESSAGE));
       setCopied(true);
       clearTimeout(timer.current);
       timer.current = setTimeout(() => setCopied(false), 2000);

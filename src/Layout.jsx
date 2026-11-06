@@ -4,17 +4,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import { HalftoneWordmark } from "@/components/ui/halftone-wordmark";
-import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./pagesData";
-import { zap } from "./contact";
+import { AREAS, GUIDES, GOOGLE_REVIEWS_URL, ADDRESS, GOOGLE_RATING } from "./pagesData";
+import { whatsappLink } from "./contact";
 import { LEGAL_NAME, CNPJ, OPEN_SINCE, TECHNICAL_LEAD, CREA_NUMBER } from "./company";
-import { BotaoBusca } from "./Search";
+import { SearchButton } from "./Search";
 
-export { WHATSAPP, zap } from "./contact";
+export { WHATSAPP, whatsappLink } from "./contact";
 
-export function BotaoZap({ texto, rotulo, className = "" }) {
+export function WhatsappButton({ text, label, className = "" }) {
   return (
-    <a className={`btn btn-whatsapp ${className}`} href={zap(texto)} target="_blank" rel="noopener noreferrer">
-      <Icon nome="fa-brands fa-whatsapp" /> {rotulo}
+    <a className={`btn btn-whatsapp ${className}`} href={whatsappLink(text)} target="_blank" rel="noopener noreferrer">
+      <Icon name="fa-brands fa-whatsapp" /> {label}
     </a>
   );
 }
@@ -85,7 +85,7 @@ function ThemeSelector() {
 }
 
 // "atual" is the page slug ("" on the home page). Marks the menu item with aria-current.
-export function Cabecalho({ atual = "" }) {
+export function Header({ current = "" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const servicesBox = useRef(null);
@@ -98,9 +98,9 @@ export function Cabecalho({ atual = "" }) {
   const hoverTimer = useRef(0);
   const [pill, setPill] = useState({ x: 0, w: 0, on: false, jump: true });
 
-  const inServices = AREAS.some((a) => a.slug === atual);
-  const inGuides = atual === "guias" || atual.startsWith("guias/");
-  const inCoverage = atual === "onde-atendemos";
+  const inServices = AREAS.some((a) => a.slug === current);
+  const inGuides = current === "guias" || current.startsWith("guias/");
+  const inCoverage = current === "onde-atendemos";
   const cur = (v) => (v ? "page" : undefined);
 
   useEffect(() => {
@@ -245,13 +245,13 @@ export function Cabecalho({ atual = "" }) {
               <ul>
                 {AREAS.map((a) => (
                   <li key={a.slug}>
-                    <a href={`/${a.slug}`} aria-current={cur(atual === a.slug)} className="menu-item-area">
+                    <a href={`/${a.slug}`} aria-current={cur(current === a.slug)} className="menu-item-area">
                       <span className="icon-tile">
-                        <AreaIcon slug={a.slug} tamanho={22} />
+                        <AreaIcon slug={a.slug} size={22} />
                       </span>
                       <span>
-                        <strong>{a.nome}</strong>
-                        <small>{a.curto}</small>
+                        <strong>{a.name}</strong>
+                        <small>{a.shortText}</small>
                       </span>
                       <svg className="menu-arrow-item" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                         <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -260,13 +260,13 @@ export function Cabecalho({ atual = "" }) {
                   </li>
                 ))}
               </ul>
-              <a className="menu-panel-footer" href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")}>
+              <a className="menu-panel-footer" href="/o-que-preciso" aria-current={cur(current === "o-que-preciso")}>
                 <span>Não sabe qual área?</span>
                 <strong>Descubra o que o seu caso precisa</strong>
               </a>
             </div>
           </div>
-          <a href="/guias" className={inGuides ? "current" : ""} aria-current={cur(atual === "guias")} onPointerEnter={movePill}>
+          <a href="/guias" className={inGuides ? "current" : ""} aria-current={cur(current === "guias")} onPointerEnter={movePill}>
             Guias
           </a>
           <a href="/onde-atendemos" className={inCoverage ? "current" : ""} aria-current={cur(inCoverage)} onPointerEnter={movePill}>
@@ -274,15 +274,15 @@ export function Cabecalho({ atual = "" }) {
           </a>
         </nav>
 
-        <BotaoBusca />
+        <SearchButton />
 
         <a
           className="btn btn-whatsapp top-whatsapp"
-          href={zap("Olá! Gostaria de solicitar um orçamento.")}
+          href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Icon nome="fa-brands fa-whatsapp" /> WhatsApp
+          <Icon name="fa-brands fa-whatsapp" /> WhatsApp
         </a>
 
         <button
@@ -304,22 +304,22 @@ export function Cabecalho({ atual = "" }) {
       <nav id="menu-mobile" className={`menu-mobile ${mobileOpen ? "open" : ""}`} aria-label="Menu" hidden={!mobileOpen}>
         <p className="menu-mobile-title">Serviços</p>
         {AREAS.map((a) => (
-          <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(atual === a.slug)} onClick={() => setMobileOpen(false)}>
-            <AreaIcon slug={a.slug} tamanho={22} /> {a.nome}
+          <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(current === a.slug)} onClick={() => setMobileOpen(false)}>
+            <AreaIcon slug={a.slug} size={22} /> {a.name}
           </a>
         ))}
         <p className="menu-mobile-title">Mais</p>
-        <a href="/guias" aria-current={cur(atual === "guias")} onClick={() => setMobileOpen(false)}>
+        <a href="/guias" aria-current={cur(current === "guias")} onClick={() => setMobileOpen(false)}>
           Guias
         </a>
         <a href="/onde-atendemos" aria-current={cur(inCoverage)} onClick={() => setMobileOpen(false)}>
           Onde atendemos
         </a>
-        <a href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")} onClick={() => setMobileOpen(false)}>
+        <a href="/o-que-preciso" aria-current={cur(current === "o-que-preciso")} onClick={() => setMobileOpen(false)}>
           Descobrir o que o meu caso precisa
         </a>
-        <a className="btn btn-whatsapp" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-          <Icon nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
+        <a className="btn btn-whatsapp" href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+          <Icon name="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
         </a>
       </nav>
     </header>
@@ -327,19 +327,19 @@ export function Cabecalho({ atual = "" }) {
 }
 
 // Trail "Início › Serviços › Segurança do trabalho". The last item is the current page.
-export function Migalha({ itens }) {
+export function Breadcrumb({ items }) {
   return (
     <nav className="breadcrumb" aria-label="Você está aqui">
       <ol>
         <li>
           <a href="/">Início</a>
         </li>
-        {itens.map((it, n) => (
-          <li key={it.rotulo}>
-            {it.href && n < itens.length - 1 ? (
-              <a href={it.href}>{it.rotulo}</a>
+        {items.map((it, n) => (
+          <li key={it.label}>
+            {it.href && n < items.length - 1 ? (
+              <a href={it.href}>{it.label}</a>
             ) : (
-              <span aria-current="page">{it.rotulo}</span>
+              <span aria-current="page">{it.label}</span>
             )}
           </li>
         ))}
@@ -355,20 +355,20 @@ export function Migalha({ itens }) {
 // are links (Tab + Enter) and the bar is always in view, so the water only animates when something changes.
 // On mobile the pill takes the screen width and the items scroll sideways inside it (the component
 // centers the active item and the drop follows).
-export function SecoesNav({ itens, rotulo = "Nesta página" }) {
+export function SectionNav({ items, label = "Nesta página" }) {
   const [active, setActive] = useState(0);
   const locked = useRef(false);
   const refresh = useRef(() => {});
-  const itemsKey = itens.map((i) => i.id).join("|");
+  const itemsKey = items.map((i) => i.id).join("|");
 
   useEffect(() => {
-    const els = itens.map((i) => document.getElementById(i.id)).filter(Boolean);
+    const els = items.map((i) => document.getElementById(i.id)).filter(Boolean);
     if (!els.length || !("IntersectionObserver" in window)) return undefined;
     const visible = new Map();
     refresh.current = () => {
       if (locked.current) return;
       const first = els.find((el) => visible.get(el.id));
-      if (first) setActive(itens.findIndex((i) => i.id === first.id));
+      if (first) setActive(items.findIndex((i) => i.id === first.id));
     };
     const io = new IntersectionObserver(
       (entries) => {
@@ -402,7 +402,7 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
   };
 
   const barItems = useMemo(
-    () => itens.map((i) => ({ label: i.rotulo, href: `#${i.id}`, fx: "none" })),
+    () => items.map((i) => ({ label: i.label, href: `#${i.id}`, fx: "none" })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [itemsKey]
   );
@@ -422,7 +422,7 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
           refraction={false}
           tone="auto"
           compact={false}
-          label={rotulo}
+          label={label}
           current="location"
         />
       </div>
@@ -431,7 +431,7 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
 }
 
 // Closing block of every inner page, always in the same order: next step, related pages, footer.
-export function Final({ titulo = "Fale com o responsável técnico.", texto, zapTexto, zapRotulo = "Falar no WhatsApp", relacionadas = [] }) {
+export function PageClosing({ title = "Fale com o responsável técnico.", text, whatsappText, whatsappLabel = "Falar no WhatsApp", related = [] }) {
   return (
     <>
       <section className="sec next" id="proximo-passo" aria-labelledby="proximo-titulo">
@@ -441,18 +441,18 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
           </p>
           <div className="next-grid reveal">
             <h2 id="proximo-titulo" className="sec-title">
-              {titulo}
+              {title}
             </h2>
             <div>
               <p className="lead">
-                {texto || "Conte o seu caso pelo WhatsApp. A mensagem já vai pronta, sem compromisso. Valor e prazo são informados depois de conhecermos o seu caso."}
+                {text || "Conte o seu caso pelo WhatsApp. A mensagem já vai pronta, sem compromisso. Valor e prazo são informados depois de conhecermos o seu caso."}
               </p>
-              <BotaoZap className="btn-large" texto={zapTexto} rotulo={zapRotulo} />
+              <WhatsappButton className="btn-large" text={whatsappText} label={whatsappLabel} />
             </div>
           </div>
         </div>
       </section>
-      {relacionadas.length > 0 && (
+      {related.length > 0 && (
         <section className="sec related" aria-labelledby="rel-titulo">
           <div className="container">
             <p className="sec-n">
@@ -462,17 +462,17 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
               Páginas relacionadas
             </h2>
             <ul className="related-list">
-              {relacionadas.slice(0, 3).map((r) => (
+              {related.slice(0, 3).map((r) => (
                 <li key={r.href} className="reveal">
                   <a href={r.href}>
                     {r.area && (
                       <span className="icon-tile related-icon">
-                        <AreaIcon slug={r.area} tamanho={24} />
+                        <AreaIcon slug={r.area} size={24} />
                       </span>
                     )}
                     <small>{r.tag}</small>
-                    <strong>{r.titulo}</strong>
-                    {r.texto && <span>{r.texto}</span>}
+                    <strong>{r.title}</strong>
+                    {r.text && <span>{r.text}</span>}
                     <i aria-hidden="true">→</i>
                   </a>
                 </li>
@@ -485,7 +485,7 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
   );
 }
 
-export function Rodape() {
+export function Footer() {
   return (
     <footer className="footer">
       {/* No WhatsApp invitation here: the "Próximo passo" section (or Contact, on the home page) and the floating button already do that */}
@@ -497,14 +497,14 @@ export function Rodape() {
           <p className="footer-brand">{LEGAL_NAME}</p>
           <p>CNPJ {CNPJ} · ativo desde {OPEN_SINCE}</p>
           <p>
-            <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
-              {ENDERECO}
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
+              {ADDRESS}
             </a>
           </p>
           <p>Segunda a sexta, das 7h às 17h</p>
           <p>
-            <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
-              {NOTA_GOOGLE}
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
+              {GOOGLE_RATING}
             </a>
           </p>
           <p>Responsável técnico: {TECHNICAL_LEAD} · {CREA_NUMBER}</p>
@@ -515,7 +515,7 @@ export function Rodape() {
             {AREAS.map((a) => (
               <li key={a.slug}>
                 <a href={`/${a.slug}`} className="footer-area">
-                  <AreaIcon slug={a.slug} tamanho={18} /> {a.nome}
+                  <AreaIcon slug={a.slug} size={18} /> {a.name}
                 </a>
               </li>
             ))}
@@ -565,7 +565,7 @@ export function Rodape() {
         <ThemeSelector />
       </div>
       {/* Giant wordmark at the end of the page, decorative, in halftone dots that react to the pointer */}
-      <HalftoneWordmark palavra="RD Engenharia" className="footer-halftone" />
+      <HalftoneWordmark word="RD Engenharia" className="footer-halftone" />
     </footer>
   );
 }
@@ -631,15 +631,15 @@ function ReadingProgress() {
 
 // Area of the current page: the area itself or the guide's area. Changes the floating WhatsApp button.
 function areaForPage(currentSlug) {
-  const guide = GUIAS.find((g) => g.slug === currentSlug);
+  const guide = GUIDES.find((g) => g.slug === currentSlug);
   return AREAS.find((a) => a.slug === (guide ? guide.area : currentSlug)) || null;
 }
 
 // Floating WhatsApp button. On area and guide pages it becomes a pill with the subject
 // ("Falar sobre AVCB e CLCB") and the message already includes the area. The pill appears only after the
 // header (which already has the quote button) leaves the screen; without JavaScript it is always visible.
-function FloatingWhatsapp({ atual }) {
-  const area = areaForPage(atual);
+function FloatingWhatsapp({ current }) {
+  const area = areaForPage(current);
   const [scrolledAway, setScrolledAway] = useState(true);
 
   useEffect(() => {
@@ -654,27 +654,27 @@ function FloatingWhatsapp({ atual }) {
     return (
       <a
         className="whatsapp-float"
-        href={zap("Olá! Gostaria de um orçamento.")}
+        href={whatsappLink("Olá! Gostaria de um orçamento.")}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Falar pelo WhatsApp"
       >
-        <Icon nome="fa-brands fa-whatsapp" />
+        <Icon name="fa-brands fa-whatsapp" />
       </a>
     );
   }
   return (
     <a
       className={`whatsapp-float whatsapp-pill ${scrolledAway ? "" : "hidden"}`}
-      href={zap(`Olá! Gostaria de um orçamento na área de ${area.nome}.`)}
+      href={whatsappLink(`Olá! Gostaria de um orçamento na área de ${area.name}.`)}
       target="_blank"
       rel="noopener noreferrer"
       tabIndex={scrolledAway ? undefined : -1}
       aria-hidden={scrolledAway ? undefined : "true"}
-      aria-label={`Falar sobre ${area.assunto} pelo WhatsApp`}
+      aria-label={`Falar sobre ${area.subject} pelo WhatsApp`}
     >
-      <Icon nome="fa-brands fa-whatsapp" />
-      <span>Falar sobre {area.assunto}</span>
+      <Icon name="fa-brands fa-whatsapp" />
+      <span>Falar sobre {area.subject}</span>
     </a>
   );
 }
@@ -690,7 +690,7 @@ function useAnchor() {
   }, []);
 }
 
-export function Casca({ children, atual = "" }) {
+export function Shell({ children, current = "" }) {
   useReveal();
   useAnchor();
   return (
@@ -699,10 +699,10 @@ export function Casca({ children, atual = "" }) {
         Pular para o conteúdo
       </a>
       <ReadingProgress />
-      <Cabecalho atual={atual} />
+      <Header current={current} />
       <main id="conteudo">{children}</main>
-      <Rodape />
-      <FloatingWhatsapp atual={atual} />
+      <Footer />
+      <FloatingWhatsapp current={current} />
     </>
   );
 }
