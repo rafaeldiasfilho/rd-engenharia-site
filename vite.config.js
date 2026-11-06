@@ -4,9 +4,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { FAQ } from "./src/faqItems.js";
 
-const raiz = path.dirname(fileURLToPath(import.meta.url));
+const root = path.dirname(fileURLToPath(import.meta.url));
 
-// Injeta o JSON-LD FAQPage no index.html a partir de src/faq.js (fonte única do FAQ).
+// Injects the FAQPage JSON-LD into index.html from src/faqItems.js (single source of the FAQ).
 const faqJsonLd = () => ({
   name: "faq-jsonld",
   transformIndexHtml(html) {
@@ -24,11 +24,11 @@ const faqJsonLd = () => ({
   },
 });
 
-// Tailwind só para os componentes de components/ui (padrão shadcn/21st.dev); o resto do site segue
-// em styles.css. "@/..." aponta para src/, como esses componentes esperam.
+// Tailwind only for the components in components/ui (shadcn/21st.dev pattern); the rest of the site stays
+// in styles.css. "@/..." points to src/, as those components expect.
 export default defineConfig({
   plugins: [react(), faqJsonLd()],
   resolve: {
-    alias: { "@": path.resolve(raiz, "src") },
+    alias: { "@": path.resolve(root, "src") },
   },
 });

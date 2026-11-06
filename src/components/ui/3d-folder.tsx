@@ -1,21 +1,21 @@
 "use client"
 
 /**
- * "3D Folder" (AnimatedFolder + ImageLightbox) de 21st.dev, adaptado para o site da RD Engenharia.
- * Mantém a ideia do original: uma pasta que abre em perspectiva e solta até três cartões em leque;
- * o cartão clicado amplia a partir da própria posição e dá para passar para os outros.
- * Mudanças:
- * - sem Tailwind, cn e lucide-react: estilo em src/styles.css (classes .pasta-*), cores do site
- *   (família verde, temas claro e escuro) e ícones em SVG inline;
- * - cada item traz `media` (qualquer elemento, ex.: a folha de exemplo em SVG) no lugar de `image`,
- *   e pode trazer uma ação (link) no rodapé da ampliação, no lugar do botão "View" que não levava a nada;
- * - abre com o mouse em cima (como o original) E com toque/clique/teclado (o original só abria com hover,
- *   então não funcionava no celular); a pasta fechada já mostra as pontas das folhas;
- * - a ampliação percorre todos os itens (o leque mostra só os três primeiros);
- * - ampliação acessível: role="dialog", foco vai para o botão fechar e volta ao cartão, Tab fica dentro,
- *   Esc fecha, ← → navegam, pontinhos com rótulo; renderizada em portal (ancestrais com transform
- *   quebravam o position: fixed);
- * - textos em português; com "reduzir movimento" nada voa nem gira, só aparece.
+ * "3D Folder" (AnimatedFolder + ImageLightbox) from 21st.dev, adapted for the RD Engenharia site.
+ * Keeps the original idea: a folder that opens in perspective and fans out up to three cards;
+ * the clicked card enlarges from its own position and you can move on to the others.
+ * Changes:
+ * - no Tailwind, cn or lucide-react: styles in src/styles.css (.folder-* classes), site colors
+ *   (green family, light and dark themes) and inline SVG icons;
+ * - each item carries `media` (any element, e.g. the sample SVG sheet) instead of `image`,
+ *   and may carry an action (link) in the enlarged view's footer, instead of the "View" button that led nowhere;
+ * - opens on mouse hover (like the original) AND on touch/click/keyboard (the original only opened on hover,
+ *   so it did not work on phones); the closed folder already shows the tips of the sheets;
+ * - the enlarged view goes through all items (the fan shows only the first three);
+ * - accessible enlarged view: role="dialog", focus moves to the close button and back to the card, Tab stays inside,
+ *   Esc closes, ← → navigate, labelled dots; rendered in a portal (ancestors with transform
+ *   broke position: fixed);
+ * - texts in Portuguese; with "reduced motion" nothing flies or spins, it just appears.
  */
 
 import * as React from "react"
@@ -24,10 +24,10 @@ import { createPortal } from "react-dom"
 export type FolderItem = {
   id: string
   title: string
-  /** nome curto escrito na folha do leque (padrão: title) */
+  /** short name written on the fan sheet (default: title) */
   short?: string
   media: React.ReactNode
-  /** conteúdo da ampliação, se diferente da miniatura (ex.: folha com abas e zoom) */
+  /** content of the enlarged view, if different from the thumbnail (e.g. sheet with tabs and zoom) */
   expanded?: React.ReactNode
   caption?: string
   action?: { label: string; href: string }
@@ -36,62 +36,62 @@ export type FolderItem = {
 type AnimatedFolderProps = {
   title: string
   items: FolderItem[]
-  /** texto da contagem, ex.: (n) => `${n} documentos de exemplo` */
+  /** count text, e.g. (n) => `${n} documentos de exemplo` */
   countLabel?: (n: number) => string
   className?: string
 }
 
-const reduzMovimento = () =>
+const prefersReducedMotion = () =>
   typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
-const Seta = ({ lado }: { lado: "esq" | "dir" }) => (
+const Arrow = ({ side }: { side: "left" | "right" }) => (
   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-    <path d={lado === "esq" ? "m15 6-6 6 6 6" : "m9 6 6 6-6 6"} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d={side === "left" ? "m15 6-6 6 6 6" : "m9 6 6 6-6 6"} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
 export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`, className }: AnimatedFolderProps) {
   const [hover, setHover] = React.useState(false)
-  const [fixa, setFixa] = React.useState(false)
-  const [aberto, setAberto] = React.useState<number | null>(null)
-  const [origem, setOrigem] = React.useState<DOMRect | null>(null)
+  const [pinned, setPinned] = React.useState(false)
+  const [openIndex, setOpenIndex] = React.useState<number | null>(null)
+  const [origin, setOrigin] = React.useState<DOMRect | null>(null)
   const cardRefs = React.useRef<(HTMLButtonElement | null)[]>([])
-  const pastaRef = React.useRef<HTMLButtonElement>(null)
+  const folderRef = React.useRef<HTMLButtonElement>(null)
   const id = React.useId()
-  const aberta = hover || fixa
-  const leque = items.slice(0, 3)
+  const isOpen = hover || pinned
+  const fan = items.slice(0, 3)
 
-  const abrirItem = (i: number) => {
+  const openItem = (i: number) => {
     const el = cardRefs.current[i]
-    setOrigem(el ? el.getBoundingClientRect() : null)
-    setAberto(i)
+    setOrigin(el ? el.getBoundingClientRect() : null)
+    setOpenIndex(i)
   }
 
-  const fechar = () => {
-    const i = aberto
-    setAberto(null)
-    // o foco volta para o cartão de onde saiu (ou para a pasta, se o item não está no leque)
+  const close = () => {
+    const i = openIndex
+    setOpenIndex(null)
+    // focus returns to the card it came from (or to the folder, if the item is not in the fan)
     requestAnimationFrame(() => {
-      const alvo = i !== null && i < leque.length ? cardRefs.current[i] : pastaRef.current
-      alvo?.focus()
+      const target = i !== null && i < fan.length ? cardRefs.current[i] : folderRef.current
+      target?.focus()
     })
   }
 
   return (
     <div
       className={["folder", className].filter(Boolean).join(" ")}
-      data-aberta={aberta ? "true" : "false"}
+      data-aberta={isOpen ? "true" : "false"}
       onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
       onPointerLeave={(e) => e.pointerType === "mouse" && setHover(false)}
     >
       <button
-        ref={pastaRef}
+        ref={folderRef}
         type="button"
         className="folder-button"
-        aria-expanded={aberta}
+        aria-expanded={isOpen}
         aria-controls={`${id}-cartoes`}
-        aria-label={`${aberta ? "Fechar" : "Abrir"} a pasta ${title}: ${countLabel(items.length)}`}
-        onClick={() => setFixa((v) => !v)}
+        aria-label={`${isOpen ? "Fechar" : "Abrir"} a pasta ${title}: ${countLabel(items.length)}`}
+        onClick={() => setPinned((v) => !v)}
       />
       <div className="folder-graphic" aria-hidden="true">
         <span className="folder-bg" />
@@ -99,19 +99,19 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
         <span className="folder-front" />
       </div>
       <ul className="folder-cards" id={`${id}-cartoes`}>
-        {leque.map((it, i) => (
-          <li key={it.id} className="folder-card" data-i={i} data-oculto={aberto === i ? "true" : undefined}>
+        {fan.map((it, i) => (
+          <li key={it.id} className="folder-card" data-i={i} data-oculto={openIndex === i ? "true" : undefined}>
             <button
               ref={(el) => {
                 cardRefs.current[i] = el
               }}
               type="button"
-              tabIndex={aberta ? 0 : -1}
-              aria-hidden={aberta ? undefined : true}
+              tabIndex={isOpen ? 0 : -1}
+              aria-hidden={isOpen ? undefined : true}
               aria-label={`Ampliar: ${it.title}`}
               onClick={(e) => {
                 e.stopPropagation()
-                abrirItem(i)
+                openItem(i)
               }}
             >
               <span className="folder-card-media">{it.media}</span>
@@ -124,143 +124,143 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
         <h3 className="folder-title">{title}</h3>
         <p className="folder-count">{countLabel(items.length)}</p>
         <p className="folder-hint">
-          <span className="folder-hint-mouse">{aberta ? "Clique numa folha para ampliar" : "Passe o mouse para abrir"}</span>
-          <span className="folder-hint-touch">{aberta ? "Toque numa folha para ampliar" : "Toque para abrir"}</span>
+          <span className="folder-hint-mouse">{isOpen ? "Clique numa folha para ampliar" : "Passe o mouse para abrir"}</span>
+          <span className="folder-hint-touch">{isOpen ? "Toque numa folha para ampliar" : "Toque para abrir"}</span>
         </p>
       </div>
-      {aberto !== null && (
-        <Ampliacao
+      {openIndex !== null && (
+        <Viewer
           items={items}
-          indice={aberto}
-          origem={origem}
-          titulo={title}
-          onNavegar={(i) => {
-            setOrigem(null)
-            setAberto(i)
+          index={openIndex}
+          origin={origin}
+          folderTitle={title}
+          onNavigate={(i) => {
+            setOrigin(null)
+            setOpenIndex(i)
           }}
-          onFechar={fechar}
+          onClose={close}
         />
       )}
     </div>
   )
 }
 
-type AmpliacaoProps = {
+type ViewerProps = {
   items: FolderItem[]
-  indice: number
-  origem: DOMRect | null
-  titulo: string
-  onNavegar: (i: number) => void
-  onFechar: () => void
+  index: number
+  origin: DOMRect | null
+  folderTitle: string
+  onNavigate: (i: number) => void
+  onClose: () => void
 }
 
-function Ampliacao({ items, indice, origem, titulo, onNavegar, onFechar }: AmpliacaoProps) {
-  const [fase, setFase] = React.useState<"inicio" | "aberta" | "saindo">("inicio")
-  const [direcao, setDirecao] = React.useState<"esq" | "dir">("dir")
-  const painel = React.useRef<HTMLDivElement>(null)
-  const fecharRef = React.useRef<HTMLButtonElement>(null)
-  const item = items[indice]
-  const temAnt = indice > 0
-  const temProx = indice < items.length - 1
-  const tituloId = React.useId()
+function Viewer({ items, index, origin, folderTitle, onNavigate, onClose }: ViewerProps) {
+  const [phase, setPhase] = React.useState<"inicio" | "aberta" | "saindo">("inicio")
+  const [direction, setDirection] = React.useState<"esq" | "dir">("dir")
+  const panel = React.useRef<HTMLDivElement>(null)
+  const closeRef = React.useRef<HTMLButtonElement>(null)
+  const item = items[index]
+  const hasPrev = index > 0
+  const hasNext = index < items.length - 1
+  const titleId = React.useId()
 
-  // entrada: o painel começa do tamanho e lugar do cartão e cresce até o centro (FLIP)
-  const [inicial, setInicial] = React.useState<React.CSSProperties | undefined>(undefined)
+  // entry: the panel starts at the card's size and place and grows to the center (FLIP)
+  const [initialStyle, setInitialStyle] = React.useState<React.CSSProperties | undefined>(undefined)
   React.useLayoutEffect(() => {
-    const p = painel.current
-    let reserva = 0
-    if (p && origem && !reduzMovimento()) {
+    const p = panel.current
+    let fallback = 0
+    if (p && origin && !prefersReducedMotion()) {
       const r = p.getBoundingClientRect()
-      const s = Math.max(origem.width / r.width, origem.height / r.height)
-      const dx = origem.left + origem.width / 2 - (r.left + r.width / 2)
-      const dy = origem.top + origem.height / 2 - (r.top + r.height / 2)
-      setInicial({ transform: `translate(${dx}px, ${dy}px) scale(${s})`, transition: "none" })
-      const crescer = () => {
-        clearTimeout(reserva)
-        setInicial(undefined)
-        setFase("aberta")
+      const s = Math.max(origin.width / r.width, origin.height / r.height)
+      const dx = origin.left + origin.width / 2 - (r.left + r.width / 2)
+      const dy = origin.top + origin.height / 2 - (r.top + r.height / 2)
+      setInitialStyle({ transform: `translate(${dx}px, ${dy}px) scale(${s})`, transition: "none" })
+      const grow = () => {
+        clearTimeout(fallback)
+        setInitialStyle(undefined)
+        setPhase("aberta")
       }
-      requestAnimationFrame(() => requestAnimationFrame(crescer))
-      // se o navegador atrasar os quadros (aba em segundo plano, aparelho lento), abre mesmo assim
-      reserva = window.setTimeout(crescer, 150)
+      requestAnimationFrame(() => requestAnimationFrame(grow))
+      // if the browser delays frames (background tab, slow device), open anyway
+      fallback = window.setTimeout(grow, 150)
     } else {
-      setFase("aberta")
+      setPhase("aberta")
     }
-    fecharRef.current?.focus()
-    const corpo = document.body.style.overflow
+    closeRef.current?.focus()
+    const bodyOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
     return () => {
-      clearTimeout(reserva)
-      document.body.style.overflow = corpo
+      clearTimeout(fallback)
+      document.body.style.overflow = bodyOverflow
     }
-    // só na abertura
+    // only on open
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const sair = React.useCallback(() => {
-    if (reduzMovimento()) return onFechar()
-    setFase("saindo")
-    setTimeout(onFechar, 260)
-  }, [onFechar])
+  const exit = React.useCallback(() => {
+    if (prefersReducedMotion()) return onClose()
+    setPhase("saindo")
+    setTimeout(onClose, 260)
+  }, [onClose])
 
-  const ir = React.useCallback(
+  const go = React.useCallback(
     (i: number) => {
-      if (i < 0 || i >= items.length || i === indice) return
-      setDirecao(i > indice ? "dir" : "esq")
-      onNavegar(i)
+      if (i < 0 || i >= items.length || i === index) return
+      setDirection(i > index ? "dir" : "esq")
+      onNavigate(i)
     },
-    [items.length, indice, onNavegar]
+    [items.length, index, onNavigate]
   )
 
   React.useEffect(() => {
-    const tecla = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault()
-        sair()
-      } else if (e.key === "ArrowRight") ir(indice + 1)
-      else if (e.key === "ArrowLeft") ir(indice - 1)
+        exit()
+      } else if (e.key === "ArrowRight") go(index + 1)
+      else if (e.key === "ArrowLeft") go(index - 1)
       else if (e.key === "Tab") {
-        // o foco fica dentro da ampliação
-        const raiz = painel.current?.closest(".folder-viewer")
-        const focaveis = raiz ? Array.from(raiz.querySelectorAll<HTMLElement>("button:not([disabled]), a[href]")) : []
-        if (!focaveis.length) return
-        const primeiro = focaveis[0], ultimo = focaveis[focaveis.length - 1]
-        if (e.shiftKey && document.activeElement === primeiro) {
+        // focus stays inside the enlarged view
+        const root = panel.current?.closest(".folder-viewer")
+        const focusables = root ? Array.from(root.querySelectorAll<HTMLElement>("button:not([disabled]), a[href]")) : []
+        if (!focusables.length) return
+        const first = focusables[0], last = focusables[focusables.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
           e.preventDefault()
-          ultimo.focus()
-        } else if (!e.shiftKey && document.activeElement === ultimo) {
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
           e.preventDefault()
-          primeiro.focus()
+          first.focus()
         }
       }
     }
-    document.addEventListener("keydown", tecla)
-    return () => document.removeEventListener("keydown", tecla)
-  }, [ir, indice, sair])
+    document.addEventListener("keydown", onKey)
+    return () => document.removeEventListener("keydown", onKey)
+  }, [go, index, exit])
 
   if (!item) return null
 
   return createPortal(
-    <div className="folder-viewer" data-fase={fase} role="dialog" aria-modal="true" aria-labelledby={tituloId}>
-      <div className="folder-viewer-bg" onClick={sair} />
-      <button ref={fecharRef} type="button" className="folder-viewer-close" onClick={sair} aria-label="Fechar">
+    <div className="folder-viewer" data-fase={phase} role="dialog" aria-modal="true" aria-labelledby={titleId}>
+      <div className="folder-viewer-bg" onClick={exit} />
+      <button ref={closeRef} type="button" className="folder-viewer-close" onClick={exit} aria-label="Fechar">
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
           <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
         </svg>
       </button>
-      <button type="button" className="folder-viewer-nav folder-viewer-prev" onClick={() => ir(indice - 1)} disabled={!temAnt} aria-label="Anterior">
-        <Seta lado="esq" />
+      <button type="button" className="folder-viewer-nav folder-viewer-prev" onClick={() => go(index - 1)} disabled={!hasPrev} aria-label="Anterior">
+        <Arrow side="left" />
       </button>
-      <button type="button" className="folder-viewer-nav folder-viewer-next" onClick={() => ir(indice + 1)} disabled={!temProx} aria-label="Próximo">
-        <Seta lado="dir" />
+      <button type="button" className="folder-viewer-nav folder-viewer-next" onClick={() => go(index + 1)} disabled={!hasNext} aria-label="Próximo">
+        <Arrow side="right" />
       </button>
-      <div className="folder-viewer-panel" ref={painel} style={inicial}>
-        <div className="folder-viewer-media" key={item.id} data-dir={direcao}>
+      <div className="folder-viewer-panel" ref={panel} style={initialStyle}>
+        <div className="folder-viewer-media" key={item.id} data-dir={direction}>
           {item.expanded ?? item.media}
         </div>
         <div className="folder-viewer-footer">
-          <p className="folder-viewer-folder">{titulo}</p>
-          <h3 id={tituloId} className="folder-viewer-title">
+          <p className="folder-viewer-folder">{folderTitle}</p>
+          <h3 id={titleId} className="folder-viewer-title">
             {item.title}
           </h3>
           {item.caption && <p className="folder-viewer-caption">{item.caption}</p>}
@@ -271,13 +271,13 @@ function Ampliacao({ items, indice, origem, titulo, onNavegar, onFechar }: Ampli
                   key={it.id}
                   type="button"
                   aria-label={`Ver ${i + 1} de ${items.length}: ${it.title}`}
-                  aria-current={i === indice ? "true" : undefined}
-                  onClick={() => ir(i)}
+                  aria-current={i === index ? "true" : undefined}
+                  onClick={() => go(i)}
                 />
               ))}
             </div>
             <span className="folder-viewer-n" aria-live="polite">
-              {indice + 1} de {items.length}
+              {index + 1} de {items.length}
             </span>
           </div>
           {item.action && (

@@ -1,36 +1,36 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BotaoZap } from "./Layout";
 
-// No prerender (Node) não há layout: usa useEffect lá para não gerar aviso.
-const useLayoutSeguro = typeof window === "undefined" ? useEffect : useLayoutEffect;
+// During prerender (Node) there is no layout: use useEffect there to avoid a warning.
+const useSafeLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-const curto = (nome) => nome.split(/ — | \(/)[0];
+const shortName = (name) => name.split(/ — | \(/)[0];
 
-// Marcar vários serviços da área e mandar tudo numa mensagem só. O item que entra na caixa da mensagem
-// sai da posição do chip tocado e desliza até o lugar dele (animação só nesse elemento, sem travar a página).
-// Com "reduzir movimento", aparece direto.
+// Select several services of the area and send them all in a single message. The item that enters the message box
+// starts from the tapped chip's position and slides to its place (animation on that element only, without blocking the page).
+// With "reduce motion", it appears directly.
 export default function MontarPedido({ area, itens }) {
-  const [marcados, setMarcados] = useState([]);
-  const botoes = useRef({});
-  const itensCaixa = useRef({});
-  const voo = useRef(null);
+  const [selected, setSelected] = useState([]);
+  const buttons = useRef({});
+  const boxItems = useRef({});
+  const flight = useRef(null);
 
-  const alternar = (nome, voltarFoco) => {
-    const entrando = !marcados.includes(nome);
-    if (entrando && botoes.current[nome]) voo.current = { nome, origem: botoes.current[nome].getBoundingClientRect() };
-    setMarcados((atual) => (atual.includes(nome) ? atual.filter((n) => n !== nome) : [...atual, nome]));
-    if (voltarFoco && botoes.current[nome]) botoes.current[nome].focus();
+  const toggle = (name, restoreFocus) => {
+    const adding = !selected.includes(name);
+    if (adding && buttons.current[name]) flight.current = { name, origin: buttons.current[name].getBoundingClientRect() };
+    setSelected((prev) => (prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]));
+    if (restoreFocus && buttons.current[name]) buttons.current[name].focus();
   };
 
-  useLayoutSeguro(() => {
-    const v = voo.current;
-    voo.current = null;
-    const el = v && itensCaixa.current[v.nome];
+  useSafeLayoutEffect(() => {
+    const v = flight.current;
+    flight.current = null;
+    const el = v && boxItems.current[v.name];
     if (!el || !el.animate) return;
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const destino = el.getBoundingClientRect();
-    const dx = v.origem.left - destino.left;
-    const dy = v.origem.top - destino.top;
+    const target = el.getBoundingClientRect();
+    const dx = v.origin.left - target.left;
+    const dy = v.origin.top - target.top;
     el.animate(
       [
         { transform: `translate(${dx}px, ${dy}px) scale(0.92)`, opacity: 0.4 },
@@ -38,10 +38,10 @@ export default function MontarPedido({ area, itens }) {
       ],
       { duration: 460, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }
     );
-  }, [marcados]);
+  }, [selected]);
 
-  const texto = marcados.length
-    ? `Olá! Gostaria de um orçamento na área de ${area} para: ${marcados.join("; ")}.`
+  const message = selected.length
+    ? `Olá! Gostaria de um orçamento na área de ${area} para: ${selected.join("; ")}.`
     : `Olá! Gostaria de um orçamento na área de ${area}.`;
 
   return (
@@ -55,28 +55,28 @@ export default function MontarPedido({ area, itens }) {
           <button
             type="button"
             key={item.nome}
-            ref={(el) => (botoes.current[item.nome] = el)}
+            ref={(el) => (buttons.current[item.nome] = el)}
             className="request-chip"
-            aria-pressed={marcados.includes(item.nome)}
-            onClick={() => alternar(item.nome)}
+            aria-pressed={selected.includes(item.nome)}
+            onClick={() => toggle(item.nome)}
           >
             <span className="request-brand" aria-hidden="true" />
-            {curto(item.nome)}
+            {shortName(item.nome)}
           </button>
         ))}
       </div>
       <div className="request-box">
         <p className="label-mini" aria-live="polite">
-          {marcados.length === 0 ? "Sua mensagem" : marcados.length === 1 ? "Sua mensagem · 1 serviço" : `Sua mensagem · ${marcados.length} serviços`}
+          {selected.length === 0 ? "Sua mensagem" : selected.length === 1 ? "Sua mensagem · 1 serviço" : `Sua mensagem · ${selected.length} serviços`}
         </p>
-        {marcados.length === 0 ? (
+        {selected.length === 0 ? (
           <p className="request-empty">Nenhum serviço marcado. Você também pode enviar sem marcar e contar o caso na conversa.</p>
         ) : (
           <ul className="request-list">
-            {marcados.map((nome) => (
-              <li key={nome} ref={(el) => (itensCaixa.current[nome] = el)}>
-                <span>{curto(nome)}</span>
-                <button type="button" aria-label={`Tirar: ${curto(nome)}`} onClick={() => alternar(nome, true)}>
+            {selected.map((name) => (
+              <li key={name} ref={(el) => (boxItems.current[name] = el)}>
+                <span>{shortName(name)}</span>
+                <button type="button" aria-label={`Tirar: ${shortName(name)}`} onClick={() => toggle(name, true)}>
                   <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
                     <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                   </svg>
@@ -85,7 +85,7 @@ export default function MontarPedido({ area, itens }) {
             ))}
           </ul>
         )}
-        <BotaoZap texto={texto} rotulo={marcados.length ? "Enviar pelo WhatsApp" : "Falar no WhatsApp"} />
+        <BotaoZap texto={message} rotulo={selected.length ? "Enviar pelo WhatsApp" : "Falar no WhatsApp"} />
       </div>
     </div>
   );

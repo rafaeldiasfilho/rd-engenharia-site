@@ -1,29 +1,29 @@
-// Mapa de fotos do site. Para trocar uma foto, edite só este arquivo (e coloque o .webp em
-// public/fotos/otim/). Todas as fotos são de terceiros (Wikimedia Commons CC0 e Unsplash License)
-// e NÃO são trabalhos da RD Engenharia. Cada uma aparece com a legenda "Imagem ilustrativa".
-// A página /creditos é gerada daqui e lista só as fotos que estão em uso.
-// Unsplash License NÃO é CC0: nunca rotular como CC0. Autores do Unsplash lidos na página de cada foto em 20/10/2026.
+// Photo map of the site. To change a photo, edit only this file (and put the .webp in
+// public/fotos/otim/). All photos are third-party (Wikimedia Commons CC0 and Unsplash License)
+// and are NOT RD Engenharia's work. Each one is shown with the caption "Imagem ilustrativa" (illustrative image).
+// The /creditos page is generated from here and lists only the photos in use.
+// The Unsplash License is NOT CC0: never label it as CC0. Unsplash authors read from each photo's page on 2026-10-20.
 
 const COMMONS = "https://commons.wikimedia.org/wiki/File:";
-const UNSPLASH_LICENCA = "https://unsplash.com/license";
+const UNSPLASH_LICENSE_URL = "https://unsplash.com/license";
 
-const unsplash = (id, autor) => ({
-  autor,
+const unsplash = (id, author) => ({
+  autor: author,
   licenca: "Unsplash License",
-  licencaUrl: UNSPLASH_LICENCA,
+  licencaUrl: UNSPLASH_LICENSE_URL,
   fonte: `https://unsplash.com/photos/${id}`,
   fonteNome: "Unsplash",
 });
 
-const commons = (arquivo, autor, licenca = "CC0") => ({
-  licenca,
-  autor,
-  arquivo,
-  fonte: COMMONS + encodeURIComponent(arquivo.replace(/ /g, "_")).replace(/%2C/g, ","),
+const commons = (fileName, author, license = "CC0") => ({
+  licenca: license,
+  autor: author,
+  arquivo: fileName,
+  fonte: COMMONS + encodeURIComponent(fileName.replace(/ /g, "_")).replace(/%2C/g, ","),
   fonteNome: "Wikimedia Commons",
 });
 
-// Cada foto tem um arquivo único em public/fotos/otim/<arq>.webp.
+// Each photo has a unique file at public/fotos/otim/<arq>.webp.
 export const FOTOS = {
   "capacete-vermelho-epi": {
     arq: "capacete-vermelho-epi", w: 1600, h: 900,
@@ -187,13 +187,13 @@ export const FOTOS = {
   },
 };
 
-// Slot (lugar do site) -> foto única. Valor null = sem foto.
+// Slot (place on the site) -> single photo. A null value = no photo.
 export const SLOTS = {};
 
-// Carrosséis: chave = lugar do site; cada slide aponta para uma foto de FOTOS, com legenda curta e,
-// opcionalmente, link para a página da área. Um carrossel sem fotos não aparece na página.
-// "equip-*": só equipamento GENÉRICO de referência (nunca o inventário da RD) e só quando há 3 ou mais
-// fotos que combinam de verdade com a lista da página (marcas visíveis são permitidas aqui; pessoas não).
+// Carousels: key = place on the site; each slide points to a photo in FOTOS, with a short caption and,
+// optionally, a link to the area page. A carousel with no photos does not appear on the page.
+// "equip-*": only GENERIC reference equipment (never RD's inventory) and only when there are 3 or more
+// photos that truly match the page's list (visible brands are allowed here; people are not).
 export const CARROSSEIS = {
   home: [
     { foto: "capacete-vermelho-epi", legenda: "Segurança do trabalho", href: "/seguranca-do-trabalho" },
@@ -252,8 +252,8 @@ export const CARROSSEIS = {
   ],
 };
 
-export const slidesDe = (chave) =>
-  (CARROSSEIS[chave] || []).filter((s) => FOTOS[s.foto]).map((s) => ({ ...s, f: FOTOS[s.foto] }));
+export const slidesDe = (key) =>
+  (CARROSSEIS[key] || []).filter((s) => FOTOS[s.foto]).map((s) => ({ ...s, f: FOTOS[s.foto] }));
 
 export const foto = (slot) => {
   const id = SLOTS[slot];
@@ -262,18 +262,18 @@ export const foto = (slot) => {
 
 export const caminho = (f) => `/fotos/otim/${f.arq}.webp`;
 
-// Versões menores (480 e 960 px de largura, geradas ao lado do original em public/fotos/otim/<arq>-<w>.webp)
-// para o navegador baixar só o tamanho que vai mostrar. Use junto com um "sizes" que diga a largura exibida.
+// Smaller versions (480 and 960 px wide, generated next to the original at public/fotos/otim/<arq>-<w>.webp)
+// so the browser downloads only the size it will show. Use together with a "sizes" that states the displayed width.
 export const srcset = (f) =>
   [...[480, 960].filter((w) => w < f.w).map((w) => `/fotos/otim/${f.arq}-${w}.webp ${w}w`), `${caminho(f)} ${f.w}w`].join(", ");
 
-// Legenda curta com a licença correta de cada foto.
-// Legenda curta por foto; a frase completa ("não são trabalhos da RD") fica uma vez na home e em /creditos.
+// Short caption with the correct license of each photo.
+// Short caption per photo; the full sentence ("não são trabalhos da RD", not RD's work) appears once on the home page and on /creditos.
 export const aviso = (f) => `Imagem ilustrativa (${f.licenca}).`;
 
-// Lista para a página de créditos: só as fotos em uso (slots e carrosséis), sem repetir.
-const idsEmUso = new Set([
+// List for the credits page: only the photos in use (slots and carousels), without repeats.
+const idsInUse = new Set([
   ...Object.values(SLOTS).filter(Boolean),
-  ...Object.values(CARROSSEIS).flatMap((l) => l.map((s) => s.foto)),
+  ...Object.values(CARROSSEIS).flatMap((list) => list.map((s) => s.foto)),
 ]);
-export const FOTOS_EM_USO = [...idsEmUso].filter((id) => FOTOS[id]).map((id) => FOTOS[id]);
+export const FOTOS_EM_USO = [...idsInUse].filter((id) => FOTOS[id]).map((id) => FOTOS[id]);

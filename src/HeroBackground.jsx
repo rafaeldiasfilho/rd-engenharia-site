@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { slidesDe, caminho, srcset, aviso } from "./photos";
 
-// Abertura (hero) com fotos de fundo em tela cheia, troca por transição de opacidade.
-// Mesmas regras de movimento do Carrossel: a troca automática só começa depois de montar, pausa com o
-// mouse em cima, foco de teclado, ponteiro pressionado, aba oculta ou hero fora da tela; para de vez
-// depois da primeira interação (ponto, seta do teclado, deslizar) e depois de 3 voltas; nunca roda com
-// "reduzir movimento". Deslizar para o lado (toque ou mouse) troca de foto.
-// A foto da vez fica ativa; as demais ficam com aria-hidden. A legenda mostra a área e o aviso de foto
-// ilustrativa com link para /creditos.
-const INTERVALO = 6000;
-const VOLTAS_MAX = 3;
+// Opening (hero) with full-screen background photos, switched by an opacity transition.
+// Same motion rules as the Carousel: auto-advance only starts after mount, pauses on mouse hover,
+// keyboard focus, pressed pointer, hidden tab or hero off screen; stops for good after the first
+// interaction (dot, keyboard arrow, swipe) and after 3 loops; never runs with "reduce motion".
+// Swiping sideways (touch or mouse) changes the photo.
+// The current photo is active; the others get aria-hidden. The caption shows the area and the
+// illustrative-photo notice with a link to /creditos.
+const INTERVAL = 6000;
+const MAX_LOOPS = 3;
 
-function focoDoTeclado(el) {
+function hasKeyboardFocus(el) {
   try {
     return el.matches(":has(:focus-visible)");
   } catch {
@@ -23,102 +23,102 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
   const slides = slidesDe(chave);
   const total = slides.length;
   const [i, setI] = useState(0);
-  const [anterior, setAnterior] = useState(-1); // foto que está saindo (fica montada durante a transição)
-  const secao = useRef(null);
-  const atual = useRef(0);
-  const parou = useRef(false);
-  const voltas = useRef(0);
-  const reduz = useRef(false);
-  const ponteiros = useRef(new Set());
-  const inicio = useRef(null);
+  const [previous, setPrevious] = useState(-1); // photo that is leaving (stays mounted during the transition)
+  const sectionRef = useRef(null);
+  const currentIndex = useRef(0);
+  const stopped = useRef(false);
+  const loops = useRef(0);
+  const reduceMotion = useRef(false);
+  const pointers = useRef(new Set());
+  const dragStart = useRef(null);
 
-  const ir = (n) => {
-    setAnterior(atual.current);
-    atual.current = n;
+  const goTo = (n) => {
+    setPrevious(currentIndex.current);
+    currentIndex.current = n;
     setI(n);
   };
-  const manual = (n) => {
-    parou.current = true;
-    ir(((n % total) + total) % total);
+  const goManual = (n) => {
+    stopped.current = true;
+    goTo(((n % total) + total) % total);
   };
 
   useEffect(() => {
     const mq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
-    reduz.current = !!(mq && mq.matches);
-    const aoMudar = () => {
-      reduz.current = !!(mq && mq.matches);
+    reduceMotion.current = !!(mq && mq.matches);
+    const onMotionChange = () => {
+      reduceMotion.current = !!(mq && mq.matches);
     };
-    if (mq && mq.addEventListener) mq.addEventListener("change", aoMudar);
-    const el = secao.current;
-    let visivel = true;
-    const io = "IntersectionObserver" in window && el ? new IntersectionObserver(([e]) => (visivel = e.isIntersecting), { threshold: 0.3 }) : null;
+    if (mq && mq.addEventListener) mq.addEventListener("change", onMotionChange);
+    const el = sectionRef.current;
+    let visible = true;
+    const io = "IntersectionObserver" in window && el ? new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.3 }) : null;
     if (io && el) io.observe(el);
-    const desce = (e) => ponteiros.current.add(e.pointerId);
-    const sobe = (e) => ponteiros.current.delete(e.pointerId);
-    if (el) el.addEventListener("pointerdown", desce, { passive: true });
-    window.addEventListener("pointerup", sobe, { passive: true });
-    window.addEventListener("pointercancel", sobe, { passive: true });
+    const onDown = (e) => pointers.current.add(e.pointerId);
+    const onUp = (e) => pointers.current.delete(e.pointerId);
+    if (el) el.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerup", onUp, { passive: true });
+    window.addEventListener("pointercancel", onUp, { passive: true });
 
     const tick = () => {
-      if (total < 2 || parou.current || reduz.current || !visivel || document.hidden) return;
-      if (ponteiros.current.size > 0) return;
-      if (el && (el.matches(":hover") || focoDoTeclado(el))) return;
-      const prox = (atual.current + 1) % total;
-      if (prox === 0) {
-        voltas.current += 1;
-        if (voltas.current >= VOLTAS_MAX) {
-          parou.current = true;
+      if (total < 2 || stopped.current || reduceMotion.current || !visible || document.hidden) return;
+      if (pointers.current.size > 0) return;
+      if (el && (el.matches(":hover") || hasKeyboardFocus(el))) return;
+      const next = (currentIndex.current + 1) % total;
+      if (next === 0) {
+        loops.current += 1;
+        if (loops.current >= MAX_LOOPS) {
+          stopped.current = true;
           return;
         }
       }
-      ir(prox);
+      goTo(next);
     };
-    const t = total > 1 ? setInterval(tick, INTERVALO) : 0;
+    const t = total > 1 ? setInterval(tick, INTERVAL) : 0;
     return () => {
       clearInterval(t);
       if (io) io.disconnect();
-      if (el) el.removeEventListener("pointerdown", desce);
-      window.removeEventListener("pointerup", sobe);
-      window.removeEventListener("pointercancel", sobe);
-      if (mq && mq.removeEventListener) mq.removeEventListener("change", aoMudar);
+      if (el) el.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      if (mq && mq.removeEventListener) mq.removeEventListener("change", onMotionChange);
     };
   }, [total]);
 
-  // Deslizar para o lado em qualquer ponto do hero que não seja controle.
-  const aoApertar = (e) => {
+  // Swipe sideways anywhere on the hero that is not a control.
+  const onPress = (e) => {
     if (total < 2 || e.target.closest("a, button, input, select, textarea, label")) return;
-    inicio.current = { x: e.clientX, y: e.clientY };
+    dragStart.current = { x: e.clientX, y: e.clientY };
   };
-  const aoSoltar = (e) => {
-    const p = inicio.current;
-    inicio.current = null;
+  const onRelease = (e) => {
+    const p = dragStart.current;
+    dragStart.current = null;
     if (!p) return;
     const dx = e.clientX - p.x;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(e.clientY - p.y) * 1.5) manual(atual.current + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(e.clientY - p.y) * 1.5) goManual(currentIndex.current + (dx < 0 ? 1 : -1));
   };
-  const teclas = (e) => {
+  const onKeys = (e) => {
     if (total < 2 || e.target.closest("input, select, textarea")) return;
-    if (e.key === "ArrowRight") manual(atual.current + 1);
-    else if (e.key === "ArrowLeft") manual(atual.current - 1);
+    if (e.key === "ArrowRight") goManual(currentIndex.current + 1);
+    else if (e.key === "ArrowLeft") goManual(currentIndex.current - 1);
   };
 
   const s = slides[i];
   return (
     <section
-      ref={secao}
+      ref={sectionRef}
       className={`hero-bg ${className}`}
       role="region"
       aria-roledescription="carrossel"
       aria-label={rotulo}
-      onPointerDown={aoApertar}
-      onPointerUp={aoSoltar}
-      onPointerCancel={() => (inicio.current = null)}
-      onKeyDown={teclas}
+      onPointerDown={onPress}
+      onPointerUp={onRelease}
+      onPointerCancel={() => (dragStart.current = null)}
+      onKeyDown={onKeys}
     >
       <div className="hero-slides">
         {slides.map((x, n) =>
-          // Só ficam no DOM (e só baixam) a primeira foto, a da vez, a próxima e a que está saindo.
-          n === 0 || n === i || n === (i + 1) % total || n === anterior ? (
+          // Only the first photo, the current one, the next one and the leaving one stay in the DOM (and download).
+          n === 0 || n === i || n === (i + 1) % total || n === previous ? (
           <img
             key={x.foto}
             src={caminho(x.f)}
@@ -164,7 +164,7 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
                   className={n === i ? "active" : ""}
                   aria-label={`Ir para a imagem ${n + 1} de ${total}`}
                   aria-current={n === i ? "true" : undefined}
-                  onClick={() => manual(n)}
+                  onClick={() => goManual(n)}
                 >
                   <i aria-hidden="true" />
                 </button>

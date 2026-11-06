@@ -1,6 +1,6 @@
-// Conteúdo das páginas internas do site (áreas de atuação, guias, quiz e privacidade).
-// Texto simples, sem preços e sem prazos fixos. Normas citadas conforme o conhecimento
-// disponível em 2026; cada caso é confirmado pela equipe antes de qualquer orçamento.
+// Content of the site's inner pages (service areas, guides, quiz and privacy).
+// Plain text, with no prices and no fixed deadlines. Standards are cited as known
+// in 2026; the team confirms each case before any quote.
 
 export const SITE_URL = "https://rdibiraengenharia.com.br";
 
@@ -10,7 +10,7 @@ export const AREAS = [
     slug: "seguranca-do-trabalho",
     situacoes: ["Contratei funcionários e não sei por onde começar: PGR, laudos ou treinamentos?","A empresa responde a uma ação trabalhista que pede laudo de insalubridade ou periculosidade.","Um empregado precisa do PPP e a empresa não tem o LTCAT.","Minha equipe trabalha com eletricidade, em altura ou em espaço confinado e precisa de treinamento."],
     nome: "Segurança do Trabalho",
-    rotulo: "Segurança do Trabalho", // nome curto, igual em cartões, abas e listas
+    rotulo: "Segurança do Trabalho", // short name, the same on cards, tabs and lists
     assunto: "segurança do trabalho",
     icone: "fa-solid fa-helmet-safety",
     curto: "PGR, LTCAT, laudos de insalubridade e periculosidade e treinamentos.",
@@ -442,7 +442,7 @@ export const GUIAS = [
   },
 ];
 
-// "Em resumo" no topo de cada guia: 3 pontos tirados do próprio texto do guia (nada novo aqui).
+// "Em resumo" (summary) box at the top of each guide: 3 points taken from the guide's own text (nothing new here).
 export const RESUMOS_GUIAS = {
   "guias/quando-minha-empresa-precisa-de-pgr": [
     "O PGR é o documento da NR-1 que identifica os perigos, avalia os riscos e define as medidas de controle.",
@@ -529,7 +529,7 @@ export const PAGINAS = [
     h1: "Política de Privacidade",
   },
   {
-    // RASCUNHO (2026-11-06): texto escrito pela IA a partir do que o site já diz; o dono revisa antes de publicar.
+    // DRAFT (2026-11-06): text written by the AI from what the site already says; the owner reviews it before publishing.
     tipo: "termos",
     slug: "termos-de-uso",
     title: "Termos de Uso | RD Engenharia",
@@ -558,21 +558,21 @@ export const DOCUMENTOS_LEMBRETE = [
 
 export const URL_AVALIACOES_GOOGLE =
   "https://www.google.com/maps/place/RD+Engenharia+Seguran%C3%A7a+e+Meio+Ambiente/@-21.0824485,-49.2433844,1046m/data=!3m2!1e3!4b1!4m6!3m5!1s0x94bc3184084c66fb:0x9998e55c89839066!8m2!3d-21.0824485!4d-49.2433844!16s%2Fg%2F11fky31jy7";
-// Endereço da empresa e links do Google Maps (o mesmo cartão do Google usado nas avaliações).
+// Company address and Google Maps links (the same Google listing used for the reviews).
 export { ADDRESS as ENDERECO } from "./company.js";
 export const URL_COMO_CHEGAR = "https://www.google.com/maps/dir/?api=1&destination=-21.0824485,-49.2433844";
 export const MAPA_EMBED = "https://maps.google.com/maps?q=-21.0824485,-49.2433844&z=16&output=embed";
-// Nota verificada no perfil do Google em 20/10/2026 e de novo em 26/10/2026. Atualizar à mão; não usar marcação AggregateRating.
+// Rating checked on the Google profile on 2026-10-20 and again on 2026-10-26. Update by hand; do not use AggregateRating markup.
 export const NOTA_GOOGLE = "5,0 no Google · 8 avaliações";
 
-// Avaliações do Google mostradas na página inicial. O Rafael autorizou em 26/10/2026 publicar os textos
-// e os primeiros nomes. Regras: texto EXATAMENTE como está no Google (sem editar nem resumir), só o
-// primeiro nome, só avaliações que têm texto. Sem marcação Review/AggregateRating no JSON-LD.
-// Formato: { nome: "Primeiro nome", texto: "Texto como está no Google", estrelas: 5 }
+// Google reviews shown on the home page. Rafael authorized on 2026-10-26 publishing the texts
+// and first names. Rules: text EXACTLY as it is on Google (no editing or summarizing), first name
+// only, only reviews that have text. No Review/AggregateRating markup in the JSON-LD.
+// Format: { nome: "First name", texto: "Text as it appears on Google", estrelas: 5 }
 export const AVALIACOES = [];
 
-// Orientação de prazo mostrada na página do lembrete. Cada documento traz a própria validade;
-// a norma só fixa prazo em alguns casos. Confirmamos o prazo exato de cada caso na renovação.
+// Deadline guidance shown on the reminder page. Each document states its own validity;
+// the standards fix a deadline only in some cases. The exact deadline is confirmed for each case at renewal.
 export const DICAS_LEMBRETE = {
   "AVCB ou CLCB (Corpo de Bombeiros)":
     "A validade varia conforme o risco da edificação e está impressa no certificado. A renovação leva tempo, por isso vale começar com antecedência.",
@@ -592,7 +592,7 @@ export const achaPagina = (slug) => PAGINAS.find((p) => p.slug === slug);
 export const achaArea = (slug) => AREAS.find((p) => p.slug === slug);
 
 
-// Guia "o que preciso?": cada situação aponta para os documentos/serviços prováveis.
+// "O que preciso?" (what do I need?) guide: each situation points to the likely documents/services.
 export const PERFIS = [
   {
     id: "empresa",
@@ -655,7 +655,7 @@ export const RESULTADOS = {
   inspecao: { nome: "Inspeção predial e laudo de patologias", area: "engenharia-civil", texto: "Diagnóstico de trincas, infiltrações e problemas estruturais." },
 };
 
-const ITENS_RESIDENCIA = [
+const HOUSE_ITEMS = [
   { arq: "planta-baixa", forma: "alto", w: 829, h: 1631, titulo: "Planta baixa", texto: "Residência térrea de 105 m², com 2 suítes, closet e sala integrada à cozinha gourmet.", alt: "Planta baixa de uma residência térrea com duas suítes, closet, sala e cozinha integradas" },
   { arq: "cobertura-implantacao", w: 788, h: 895, titulo: "Cobertura e implantação", texto: "Posição da casa no terreno e desenho do telhado, com os recuos e beirais.", alt: "Plantas de cobertura e de implantação de uma residência térrea" },
   { arq: "fachada", w: 624, h: 392, titulo: "Fachada frontal", texto: "Vista da frente da casa, com telhado cerâmico e esquadrias.", alt: "Fachada frontal de uma residência térrea com telhado cerâmico" },
@@ -663,7 +663,7 @@ const ITENS_RESIDENCIA = [
   { arq: "quadros", forma: "largo", w: 901, h: 321, titulo: "Quadro de aberturas", texto: "Áreas, iluminação e ventilação de cada ambiente, conforme exigido na aprovação.", alt: "Quadro com áreas e aberturas de iluminação e ventilação dos ambientes" },
 ];
 
-const ITENS_COMPACTA = [
+const COMPACT_HOUSE_ITEMS = [
   { arq: "planta-baixa", forma: "alto", w: 768, h: 1497, titulo: "Planta baixa", texto: "Casa térrea de cerca de 62 m², com 2 dormitórios, banheiro e cozinha integrada à sala, e área permeável no fundo do lote.", alt: "Planta baixa de uma casa térrea com dois dormitórios, banheiro, cozinha integrada à sala, área de serviço e área permeável" },
   { arq: "cobertura-implantacao", w: 766, h: 838, titulo: "Cobertura e implantação", texto: "Posição da casa no lote de 10 × 22 m e desenho do telhado, com os recuos exigidos.", alt: "Plantas de cobertura e de implantação de uma casa térrea em lote retangular" },
   { arq: "fachada", w: 544, h: 332, titulo: "Fachada frontal", texto: "Vista da frente da casa, com platibanda e esquadrias.", alt: "Fachada frontal de uma casa térrea com platibanda, porta e duas janelas" },
@@ -671,25 +671,25 @@ const ITENS_COMPACTA = [
   { arq: "quadros", forma: "largo", w: 893, h: 207, titulo: "Quadro de aberturas", texto: "Áreas, iluminação e ventilação de cada ambiente, conforme exigido na aprovação.", alt: "Quadro com as áreas e as aberturas de cada ambiente da casa" },
 ];
 
-// Para incluir outro projeto: crie a pasta public/exemplos/<pasta> com os mesmos 5 arquivos
-// (qualquer quantidade de imagens; forma: "alto" ocupa duas linhas, "largo" ocupa a linha toda).
-// Exemplo de arquivos: (planta-baixa, cobertura-implantacao, fachada, cortes, quadros) e acrescente um item aqui.
+// To add another project: create the folder public/exemplos/<pasta> with the same 5 files
+// (any number of images; forma: "alto" spans two rows, "largo" spans the full row).
+// Example files: (planta-baixa, cobertura-implantacao, fachada, cortes, quadros), then add an item here.
 export const PROJETOS = [
   {
     pasta: "residencia-terrea",
     nome: "Residência térrea",
     resumo: "105 m² · 2 suítes · terreno de 11 × 25 m",
-    itens: ITENS_RESIDENCIA,
+    itens: HOUSE_ITEMS,
   },
   {
     pasta: "residencia-compacta",
     nome: "Casa térrea compacta",
     resumo: "62 m² · 2 dormitórios · lote de 10 × 22 m",
-    itens: ITENS_COMPACTA,
+    itens: COMPACT_HOUSE_ITEMS,
   },
 ];
 
-// Resumo rápido e etapas de cada área (sem prazos nem valores fixos).
+// Quick summary and steps for each area (no fixed deadlines or prices).
 export const VISUAL = {
   "seguranca-do-trabalho": {
     quem: "Empresas com empregados, de qualquer porte.",
@@ -733,8 +733,8 @@ export const VISUAL = {
   },
 };
 
-// Comparativo AVCB x CLCB (página de Corpo de Bombeiros e guia). Só reúne o que o site já afirma
-// nos textos da área e do guia; os limites exatos de área, altura e ocupação NÃO são citados aqui.
+// AVCB vs CLCB comparison (fire department page and guide). It only gathers what the site already states
+// in the area and guide texts; the exact limits of area, height and occupancy are NOT cited here.
 export const COMPARATIVO_BOMBEIROS = {
   colunas: [
     { sigla: "AVCB", nome: "Auto de Vistoria do Corpo de Bombeiros" },
@@ -772,11 +772,11 @@ export const COMPARATIVO_BOMBEIROS = {
   zap: "Olá! Quero saber se o meu imóvel precisa de AVCB ou de CLCB.\nUso do imóvel (comércio, indústria, escola etc.): \nÁrea construída (m²): \nNúmero de pavimentos: \nCidade: ",
 };
 
-// Foto do responsável técnico. Quando houver o arquivo em public/ (ex.: "/rafael.webp"), coloque o caminho aqui.
+// Photo of the technical lead. When the file exists in public/ (e.g. "/rafael.webp"), put its path here.
 export const FOTO_RESPONSAVEL = null;
 
-// Equipamentos que COSTUMAM ser usados em serviços desse tipo (lista geral de referência).
-// Nunca afirmar que a RD possui ou usa algum deles; sem marcas e sem preços.
+// Equipment that is USUALLY used in services of this kind (general reference list).
+// Never state that RD owns or uses any of it; no brands and no prices.
 export const NOTA_EQUIPAMENTOS = "Lista geral de referência, não é o inventário da RD.";
 export const EQUIPAMENTOS = {
   "seguranca-do-trabalho": {
@@ -825,12 +825,12 @@ export const EQUIPAMENTOS = {
   },
 };
 
-// Desenhos dos projetos reais como slides do Carrossel (uma imagem por slide).
-// destaques = true: só planta baixa e fachada (usado na página inicial).
-export const slidesProjetos = (destaques = false) =>
+// Drawings of the real projects as Carousel slides (one image per slide).
+// highlightsOnly = true: floor plan and front elevation only (used on the home page).
+export const slidesProjetos = (highlightsOnly = false) =>
   PROJETOS.flatMap((p) =>
     p.itens
-      .filter((e) => !destaques || ["planta-baixa", "fachada"].includes(e.arq))
+      .filter((e) => !highlightsOnly || ["planta-baixa", "fachada"].includes(e.arq))
       .map((e) => ({
         key: `${p.pasta}-${e.arq}`,
         src: `/exemplos/${p.pasta}/${e.arq}.webp`,

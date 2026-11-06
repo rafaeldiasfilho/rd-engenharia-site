@@ -1,57 +1,57 @@
-import Icone from "./Icon";
+import Icon from "./Icon";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faqItems";
 import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE, ENDERECO } from "./pagesData";
 import { Casca, SecoesNav, zap } from "./Layout";
-import ExemplosHome from "./HomeExamples";
-import HeroFundo from "./HeroBackground";
+import HomeExamples from "./HomeExamples";
+import HeroBackground from "./HeroBackground";
 import { FaixaDocumentos, PainelExemplo, NumerosLinha } from "./Showcase";
-import Janela from "./Dialog";
+import Dialog from "./Dialog";
 import { TopoField } from "@/components/ui/contour-field";
 import { FOTOS, caminho, srcset } from "./photos";
-import IconeArea from "./AreaIcon";
-import Perguntas from "./Faq";
-import Avaliacoes from "./Reviews";
-import BuscaDocumento from "./Search";
-import QrWhatsapp from "./WhatsappQr";
+import AreaIcon from "./AreaIcon";
+import FaqList from "./Faq";
+import Reviews from "./Reviews";
+import DocumentSearch from "./Search";
+import WhatsappQr from "./WhatsappQr";
 import { WHATSAPP_PROJETOS } from "./contact";
 import { CREA_NUMBER, PHONE_DISPLAY } from "./company";
-import PilhaEtapas from "./StepStack";
-import Inclinado3D from "./Tilt3D";
-import FraseRevela from "./RevealPhrase";
+import StepStack from "./StepStack";
+import Tilt3D from "./Tilt3D";
+import RevealPhrase from "./RevealPhrase";
 
-// O título de cada cartão vem de AREAS (rotulo), para o nome da área ser o mesmo no site todo.
-const NECESSIDADES = [
+// Each card's title comes from AREAS (rotulo), so the area name is the same across the whole site.
+const NEEDS = [
   {
     slug: "seguranca-do-trabalho",
-    foto: "capacete-vermelho-epi",
-    frase: "Tenho funcionários e preciso de PGR, laudos ou treinamentos.",
+    photo: "capacete-vermelho-epi",
+    phrase: "Tenho funcionários e preciso de PGR, laudos ou treinamentos.",
   },
   {
     slug: "corpo-de-bombeiros",
-    foto: "extintor-parede-concreto-pictograma",
-    frase: "Preciso de AVCB ou CLCB para o meu imóvel ou comércio.",
+    photo: "extintor-parede-concreto-pictograma",
+    phrase: "Preciso de AVCB ou CLCB para o meu imóvel ou comércio.",
   },
   {
     slug: "engenharia-civil",
-    foto: "edificio-estrutura-concreto-pavimentos",
-    frase: "Vou construir, reformar ou regularizar um imóvel.",
+    photo: "edificio-estrutura-concreto-pavimentos",
+    phrase: "Vou construir, reformar ou regularizar um imóvel.",
   },
   {
     slug: "meio-ambiente-topografia",
-    foto: "rio-mata-vista-aerea",
-    frase: "Tenho imóvel rural e preciso de CAR, georreferenciamento ou topografia.",
+    photo: "rio-mata-vista-aerea",
+    phrase: "Tenho imóvel rural e preciso de CAR, georreferenciamento ou topografia.",
   },
-].map((n) => ({ ...n, titulo: AREAS.find((a) => a.slug === n.slug).rotulo }));
+].map((n) => ({ ...n, title: AREAS.find((a) => a.slug === n.slug).rotulo }));
 
-const ETAPAS = [
+const STEPS = [
   { titulo: "Você chama no WhatsApp", texto: "Conte o que precisa. Respondemos no horário de atendimento." },
   { titulo: "Entendemos o seu caso", texto: "Analisamos a situação e os documentos que você já tem." },
   { titulo: "Você recebe o orçamento", texto: "Valor e condições claros, por escrito e sem compromisso." },
   { titulo: "Executamos e entregamos", texto: "Trabalho feito por responsável técnico habilitado, com ART." },
 ];
 
-const FORMACAO = [
+const EDUCATION = [
   "Engenharia Civil e Engenharia Ambiental (bacharelados)",
   "Pós-graduação em Engenharia de Segurança do Trabalho",
   "Pós-graduação em Georreferenciamento de Imóveis Rurais",
@@ -60,9 +60,9 @@ const FORMACAO = [
   "Técnico em Segurança do Trabalho",
 ];
 
-const SERVICOS_FORM = AREAS.map((a) => a.nome);
+const FORM_SERVICES = AREAS.map((a) => a.nome);
 
-const SECOES_HOME = [
+const HOME_SECTIONS = [
   { id: "organizamos", rotulo: "O que organizamos" },
   { id: "na-pratica", rotulo: "Na prática" },
   { id: "como-funciona", rotulo: "Como funciona" },
@@ -70,51 +70,51 @@ const SECOES_HOME = [
   { id: "contato", rotulo: "Contato" },
 ];
 
-const dentroDoHorario = () => {
+const isWithinOfficeHours = () => {
   try {
-    const partes = new Intl.DateTimeFormat("en-US", {
+    const parts = new Intl.DateTimeFormat("en-US", {
       timeZone: "America/Sao_Paulo",
       weekday: "short",
       hour: "numeric",
       hour12: false,
     }).formatToParts(new Date());
-    const dia = partes.find((p) => p.type === "weekday").value;
-    const hora = Number(partes.find((p) => p.type === "hour").value) % 24;
-    return !["Sat", "Sun"].includes(dia) && hora >= 7 && hora < 17;
+    const day = parts.find((p) => p.type === "weekday").value;
+    const hour = Number(parts.find((p) => p.type === "hour").value) % 24;
+    return !["Sat", "Sun"].includes(day) && hour >= 7 && hour < 17;
   } catch {
     return false;
   }
 };
 
 export default function App() {
-  // null até montar: o HTML pré-gerado (Google e primeira pintura) mostra só o horário, sem "fora do horário"
-  const [atendendo, setAtendendo] = useState(null);
-  const [pedido, setPedido] = useState({ nome: "", cidade: "", servico: "", mensagem: "" });
-  const [mapa, setMapa] = useState(false);
-  const [mapaPronto, setMapaPronto] = useState(false);
-  const [formacao, setFormacao] = useState(false);
+  // null until mount: the prerendered HTML (Google and first paint) shows only the hours, without "fora do horário"
+  const [isOpenNow, setIsOpenNow] = useState(null);
+  const [request, setRequest] = useState({ name: "", city: "", service: "", message: "" });
+  const [showMap, setShowMap] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+  const [showEducation, setShowEducation] = useState(false);
 
   useEffect(() => {
-    setAtendendo(dentroDoHorario());
-    const id = setInterval(() => setAtendendo(dentroDoHorario()), 60000);
+    setIsOpenNow(isWithinOfficeHours());
+    const id = setInterval(() => setIsOpenNow(isWithinOfficeHours()), 60000);
     return () => clearInterval(id);
   }, []);
 
-  const mudar = (campo) => (e) => setPedido((p) => ({ ...p, [campo]: e.target.value }));
+  const handleChange = (field) => (e) => setRequest((p) => ({ ...p, [field]: e.target.value }));
 
-  const enviar = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const linhas = ["Olá! Gostaria de solicitar um orçamento."];
-    if (pedido.nome.trim()) linhas.push(`Nome: ${pedido.nome.trim()}`);
-    if (pedido.cidade.trim()) linhas.push(`Cidade: ${pedido.cidade.trim()}`);
-    if (pedido.servico) linhas.push(`Área: ${pedido.servico}`);
-    if (pedido.mensagem.trim()) linhas.push(`Mensagem: ${pedido.mensagem.trim()}`);
-    window.open(zap(linhas.join("\n")), "_blank", "noopener,noreferrer");
+    const lines = ["Olá! Gostaria de solicitar um orçamento."];
+    if (request.name.trim()) lines.push(`Nome: ${request.name.trim()}`);
+    if (request.city.trim()) lines.push(`Cidade: ${request.city.trim()}`);
+    if (request.service) lines.push(`Área: ${request.service}`);
+    if (request.message.trim()) lines.push(`Mensagem: ${request.message.trim()}`);
+    window.open(zap(lines.join("\n")), "_blank", "noopener,noreferrer");
   };
 
   return (
     <Casca atual="">
-      <HeroFundo chave="home" rotulo="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
+      <HeroBackground chave="home" rotulo="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
         <a className="badge-top" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
           <span className="badge-top-stars" aria-hidden="true">
             ★★★★★
@@ -134,30 +134,30 @@ export default function App() {
         </p>
         <div className="actions">
           <a className="btn btn-whatsapp btn-large" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-            <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
+            <Icon nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
           </a>
           <a className="link-arrow hero-link" href="/o-que-preciso">
             Não sabe o que precisa? Descubra aqui <span aria-hidden="true">→</span>
           </a>
         </div>
         <p className="hero-risk">Orçamento por escrito e sem compromisso.</p>
-        <p className={`status status-bg ${atendendo ? "on" : ""}`}>
-          <Icone nome="fa-solid fa-circle" />{" "}
-          {atendendo === null
+        <p className={`status status-bg ${isOpenNow ? "on" : ""}`}>
+          <Icon nome="fa-solid fa-circle" />{" "}
+          {isOpenNow === null
             ? "Atendimento de segunda a sexta, das 7h às 17h"
-            : atendendo
+            : isOpenNow
               ? "Atendendo agora. Seg. a sex., das 7h às 17h"
               : "Fora do horário. Respondemos no próximo dia útil (seg. a sex., das 7h às 17h)"}
         </p>
-      </HeroFundo>
+      </HeroBackground>
 
       <div className="choices-cards-wrap" id="servicos">
         <div className="container">
           <h2 className="sr-only">Do que você precisa?</h2>
-          <BuscaDocumento className="search-home" />
+          <DocumentSearch className="search-home" />
           <ol className="choices-cards">
-            {NECESSIDADES.map((n, i) => {
-              const f = FOTOS[n.foto];
+            {NEEDS.map((n, i) => {
+              const f = FOTOS[n.photo];
               return (
                 <li key={n.slug}>
                   <a href={`/${n.slug}`} className="card-area">
@@ -165,13 +165,13 @@ export default function App() {
                       <img src={caminho(f)} srcSet={srcset(f)} sizes={i === 0 || i === 3 ? "(min-width: 1100px) 800px, (min-width: 700px) 50vw, 100vw" : "(min-width: 1100px) 400px, (min-width: 700px) 50vw, 100vw"} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
                     <span className="icon-tile card-area-icon">
-                      <IconeArea slug={n.slug} tamanho={30} />
+                      <AreaIcon slug={n.slug} tamanho={30} />
                     </span>
                     <span className="card-area-n" aria-hidden="true">
                       0{i + 1}
                     </span>
-                    <strong>{n.titulo}</strong>
-                    <small>{n.frase}</small>
+                    <strong>{n.title}</strong>
+                    <small>{n.phrase}</small>
                     <span className="card-area-arrow" aria-hidden="true">
                       →
                     </span>
@@ -204,11 +204,11 @@ export default function App() {
         </div>
       </div>
 
-      <FraseRevela texto="Todo serviço é assinado por profissional habilitado no CREA-SP, e você conversa direto com quem vai executar." />
+      <RevealPhrase texto="Todo serviço é assinado por profissional habilitado no CREA-SP, e você conversa direto com quem vai executar." />
 
       <FaixaDocumentos />
 
-      <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
+      <SecoesNav itens={HOME_SECTIONS} rotulo="Nesta página" />
 
       <section className="sec band-section organize" id="organizamos" aria-labelledby="org-t">
         <div className="container organize-grid">
@@ -235,14 +235,14 @@ export default function App() {
             <NumerosLinha />
           </div>
           <div className="reveal">
-            <Inclinado3D>
+            <Tilt3D>
               <PainelExemplo />
-            </Inclinado3D>
+            </Tilt3D>
           </div>
         </div>
       </section>
 
-      <ExemplosHome />
+      <HomeExamples />
 
       <section className="sec band-section" id="como-funciona" aria-labelledby="como-t">
         <div className="container">
@@ -254,18 +254,18 @@ export default function App() {
               Quatro passos, sem surpresa.
             </h2>
           </header>
-          <PilhaEtapas
-            etapas={ETAPAS}
+          <StepStack
+            etapas={STEPS}
             acaoPrimeira={
               <a className="btn btn-whatsapp btn-small" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-                <Icone nome="fa-brands fa-whatsapp" /> Começar agora
+                <Icon nome="fa-brands fa-whatsapp" /> Começar agora
               </a>
             }
           />
         </div>
       </section>
 
-      <Avaliacoes />
+      <Reviews />
 
       <section className="sec sec-alt" id="duvidas" aria-labelledby="duvidas-t">
         <div className="container">
@@ -277,12 +277,12 @@ export default function App() {
               Dúvidas frequentes.
             </h2>
           </header>
-          <Perguntas itens={FAQ} limite={5} />
+          <FaqList itens={FAQ} limite={5} />
         </div>
       </section>
 
-      {/* Contato e "onde atendemos" num bloco só: endereço, horário e região aparecem aqui uma vez
-          (o selo do topo e o rodapé são os outros lugares fixos). O fundo de curvas de nível veio junto. */}
+      {/* Contact and "onde atendemos" in a single block: address, hours and region appear here once
+          (the top badge and the footer are the other fixed places). The contour-line background came along. */}
       <section className="contact-block sec-top" id="contato" aria-labelledby="contato-t">
         <TopoField className="sec-top-field contact-top" grid={0} lines={0.4} />
         <div className="container contact-grid">
@@ -308,27 +308,27 @@ export default function App() {
                     <button
                       type="button"
                       className="contact-map-button"
-                      aria-expanded={mapa}
-                      aria-controls={mapa ? "contato-mapa" : undefined}
+                      aria-expanded={showMap}
+                      aria-controls={showMap ? "contato-mapa" : undefined}
                       onClick={() => {
-                        setMapa((v) => !v);
-                        setMapaPronto(false);
+                        setShowMap((v) => !v);
+                        setMapReady(false);
                       }}
                     >
-                      {mapa ? "Fechar o mapa" : "Ver o mapa aqui"}
+                      {showMap ? "Fechar o mapa" : "Ver o mapa aqui"}
                     </button>
                   </span>
-                  {mapa && (
+                  {showMap && (
                     <figure id="contato-mapa" className="where-map">
                       <div className="map-box">
-                        {!mapaPronto && <p className="where-map-loading">Carregando o mapa…</p>}
+                        {!mapReady && <p className="where-map-loading">Carregando o mapa…</p>}
                         <iframe
                           title="Mapa com a localização da RD Engenharia em Ibirá/SP"
                           src={MAPA_EMBED}
                           referrerPolicy="no-referrer"
                           allowFullScreen
-                          onLoad={() => setMapaPronto(true)}
-                          className={mapaPronto ? "ready" : ""}
+                          onLoad={() => setMapReady(true)}
+                          className={mapReady ? "ready" : ""}
                         />
                       </div>
                       <figcaption>O mapa é fornecido pelo Google.</figcaption>
@@ -356,23 +356,23 @@ export default function App() {
                 </dd>
               </div>
             </dl>
-            <QrWhatsapp />
+            <WhatsappQr />
           </div>
 
-          <form className="form" onSubmit={enviar}>
+          <form className="form" onSubmit={handleSubmit}>
             <label>
               Seu nome
-              <input value={pedido.nome} onChange={mudar("nome")} autoComplete="name" />
+              <input value={request.name} onChange={handleChange("name")} autoComplete="name" />
             </label>
             <label>
               Cidade
-              <input value={pedido.cidade} onChange={mudar("cidade")} />
+              <input value={request.city} onChange={handleChange("city")} />
             </label>
             <label>
               Área do serviço
-              <select value={pedido.servico} onChange={mudar("servico")}>
+              <select value={request.service} onChange={handleChange("service")}>
                 <option value="">Escolha uma área</option>
-                {SERVICOS_FORM.map((s) => (
+                {FORM_SERVICES.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
@@ -382,14 +382,14 @@ export default function App() {
             </label>
             <label>
               O que você precisa
-              <textarea rows="4" value={pedido.mensagem} onChange={mudar("mensagem")} />
+              <textarea rows="4" value={request.message} onChange={handleChange("message")} />
             </label>
             <button className="btn btn-whatsapp btn-large" type="submit">
-              <Icone nome="fa-brands fa-whatsapp" /> Continuar no WhatsApp
+              <Icon nome="fa-brands fa-whatsapp" /> Continuar no WhatsApp
             </button>
           </form>
         </div>
-        {/* Quem somos fica dentro do Contato: as pessoas e os telefones ao lado do formulário. */}
+        {/* "Quem somos" sits inside Contact: the people and the phone numbers next to the form. */}
         <div className="container contact-people" id="quem-somos">
           <h3 className="contact-people-title">Quem responde pelo seu serviço</h3>
           <p className="contact-text">
@@ -406,10 +406,10 @@ export default function App() {
                 Engenheiro civil e ambiental · Especialista em segurança do trabalho · {CREA_NUMBER}
               </p>
               <p className="person-summary">
-                {FORMACAO.length} formações, entre bacharelados, pós-graduações e curso técnico.
+                {EDUCATION.length} formações, entre bacharelados, pós-graduações e curso técnico.
               </p>
               <div className="person-actions">
-                <button type="button" className="btn btn-sec" onClick={() => setFormacao(true)} aria-haspopup="dialog">
+                <button type="button" className="btn btn-sec" onClick={() => setShowEducation(true)} aria-haspopup="dialog">
                   Ver formação completa
                 </button>
                 <a
@@ -418,20 +418,20 @@ export default function App() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Icone nome="fa-brands fa-whatsapp" /> {PHONE_DISPLAY}
+                  <Icon nome="fa-brands fa-whatsapp" /> {PHONE_DISPLAY}
                 </a>
               </div>
-              <Janela aberta={formacao} aoFechar={() => setFormacao(false)} titulo="Rafael Antonio Dias">
+              <Dialog aberta={showEducation} aoFechar={() => setShowEducation(false)} titulo="Rafael Antonio Dias">
                 <p className="person-role">
                   Engenheiro civil e ambiental · Especialista em segurança do trabalho · {CREA_NUMBER}
                 </p>
                 <ul className="person-education">
-                  {FORMACAO.map((f) => (
+                  {EDUCATION.map((f) => (
                     <li key={f}>{f}</li>
                   ))}
                 </ul>
                 <p className="person-extra">Também corretor de imóveis e perito grafotécnico.</p>
-              </Janela>
+              </Dialog>
             </article>
             <article className="reveal">
               <span className="person-initials" aria-hidden="true">
@@ -445,7 +445,7 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icone nome="fa-brands fa-whatsapp" /> (17) 99659-0330
+                <Icon nome="fa-brands fa-whatsapp" /> (17) 99659-0330
               </a>
             </article>
           </div>

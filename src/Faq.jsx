@@ -2,48 +2,48 @@ import { useEffect, useState } from "react";
 import { normaliza } from "./Search";
 import { zap } from "./contact";
 
-// Lista de perguntas frequentes. Com 6 perguntas ou mais, ganha um campo para filtrar (pergunta e
-// resposta, sem acentos). Sem JavaScript, o campo não atrapalha: todas as perguntas aparecem.
-// `limite`: mostra só as primeiras N (a página fica mais curta) e um botão para ver todas; ao filtrar,
-// a busca vale para todas.
-// Telas largas (≥ 900 px, depois de montar): perguntas numa coluna e a resposta ao lado, no lugar do
-// "acordeão com setinhas" (skill de redesign). No celular e no HTML pré-gerado: <details>, como antes.
+// FAQ list. With 6 or more questions it gets a filter field (question and answer, accent-insensitive).
+// Without JavaScript the field does no harm: all questions show.
+// `limite`: shows only the first N (the page gets shorter) and a button to see all; when filtering,
+// the search covers all of them.
+// Wide screens (≥ 900 px, after mount): questions in one column and the answer beside it, instead of the
+// "accordion with little arrows" (redesign skill). On mobile and in the prerendered HTML: <details>, as before.
 export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
   const [q, setQ] = useState("");
-  const [todas, setTodas] = useState(false);
-  const [largo, setLargo] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [wide, setWide] = useState(false);
   const [sel, setSel] = useState(0);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 900px)");
-    const ver = () => setLargo(mq.matches);
-    ver();
-    mq.addEventListener("change", ver);
-    return () => mq.removeEventListener("change", ver);
+    const update = () => setWide(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
-  const termos = normaliza(q).split(/\s+/).filter((t) => t.length >= 2);
-  const visiveis = termos.length ? itens.filter((f) => termos.every((t) => normaliza(`${f.q} ${f.a}`).includes(t))) : itens;
-  const comFiltro = itens.length >= minimoFiltro;
+  const terms = normaliza(q).split(/\s+/).filter((t) => t.length >= 2);
+  const visible = terms.length ? itens.filter((f) => terms.every((t) => normaliza(`${f.q} ${f.a}`).includes(t))) : itens;
+  const hasFilter = itens.length >= minimoFiltro;
 
   return (
     <div className="faq-list reveal">
-      {comFiltro && (
+      {hasFilter && (
         <div className="faq-filter">
           <label>
             <span>Filtrar perguntas</span>
             <input type="search" placeholder="Ex.: ART, CAR, orçamento" value={q} onChange={(e) => setQ(e.target.value)} />
           </label>
           <p aria-live="polite">
-            {termos.length ? `${visiveis.length} de ${itens.length} perguntas` : ""}
+            {terms.length ? `${visible.length} de ${itens.length} perguntas` : ""}
           </p>
         </div>
       )}
-      {largo && visiveis.length > 0 && (
+      {wide && visible.length > 0 && (
         <div className="faq-side">
           <ul className="faq-questions">
-            {visiveis.map((f, n) =>
-              limite > 0 && !todas && !termos.length && n >= limite ? null : (
+            {visible.map((f, n) =>
+              limite > 0 && !showAll && !terms.length && n >= limite ? null : (
                 <li key={f.q}>
-                  <button type="button" aria-pressed={Math.min(sel, visiveis.length - 1) === n} aria-controls="faq-resposta" onClick={() => setSel(n)}>
+                  <button type="button" aria-pressed={Math.min(sel, visible.length - 1) === n} aria-controls="faq-resposta" onClick={() => setSel(n)}>
                     {f.q}
                   </button>
                 </li>
@@ -51,7 +51,7 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
             )}
           </ul>
           {(() => {
-            const f = visiveis[Math.min(sel, visiveis.length - 1)];
+            const f = visible[Math.min(sel, visible.length - 1)];
             return (
               <div className="faq-answer" id="faq-resposta" aria-live="polite">
                 <h3>{f.q}</h3>
@@ -74,8 +74,8 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
           })()}
         </div>
       )}
-      {!largo && visiveis.map((f, n) => (
-        <details className="faq-item" key={f.q} hidden={limite > 0 && !todas && !termos.length && n >= limite}>
+      {!wide && visible.map((f, n) => (
+        <details className="faq-item" key={f.q} hidden={limite > 0 && !showAll && !terms.length && n >= limite}>
           <summary>{f.q}</summary>
           <p>{f.a}</p>
           {f.guia && (
@@ -87,12 +87,12 @@ export default function Perguntas({ itens, minimoFiltro = 6, limite = 0 }) {
           )}
         </details>
       ))}
-      {limite > 0 && !todas && !termos.length && itens.length > limite && (
-        <button type="button" className="btn btn-sec faq-more" onClick={() => setTodas(true)}>
+      {limite > 0 && !showAll && !terms.length && itens.length > limite && (
+        <button type="button" className="btn btn-sec faq-more" onClick={() => setShowAll(true)}>
           Ver todas as {itens.length} perguntas
         </button>
       )}
-      {comFiltro && termos.length > 0 && visiveis.length === 0 && (
+      {hasFilter && terms.length > 0 && visible.length === 0 && (
         <p className="faq-empty">
           Nenhuma pergunta com “{q.trim()}”.{" "}
           <a href={zap(`Olá! Tenho uma dúvida sobre: ${q.trim()}`)} target="_blank" rel="noopener noreferrer">

@@ -1,6 +1,6 @@
-// Perguntas frequentes da seção "Dúvidas" da página inicial.
-// Texto simples (sem HTML). Sem preços nem prazos fixos: variam conforme cada caso.
-// Quando existe um guia sobre o assunto, a resposta fica curta e `guia` leva ao texto completo.
+// Frequently asked questions for the "Dúvidas" (questions) section of the home page.
+// Plain text (no HTML). No prices or fixed deadlines: they vary case by case.
+// When a guide exists on the topic, the answer stays short and `guia` links to the full text.
 export const FAQ = [
   {
     q: "O que é o PGR e minha empresa precisa ter?",

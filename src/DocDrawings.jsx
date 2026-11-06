@@ -1,9 +1,9 @@
-// Conteúdo técnico das folhas de exemplo: os desenhos das pranchas e a "página interna" de cada capa.
-// Tudo é fictício (cliente "Exemplo", números inventados), mas segue as convenções reais de cada documento,
-// para o visitante reconhecer o que vai receber. Coordenadas na folha de 150 × 198.
+// Technical content of the example sheets: the drawings on the drawing sheets and the "inner page" of each cover.
+// Everything is fictional ("Exemplo" client, made-up numbers), but follows the real conventions of each document,
+// so the visitor recognizes what they will receive. Coordinates on the 150 × 198 sheet.
 import { AMBAR, AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERDE_CL, VERMELHO, Marca, clienteDe, quebra } from "./SheetBase";
 
-/* ── peças comuns ─────────────────────────────────────────────────────────────────────────────── */
+/* ── common pieces ────────────────────────────────────────────────────────────────────────────── */
 
 function Tx({ x, y, s = 2.6, b, c = TINTA, a, r, children }) {
   return (
@@ -13,7 +13,7 @@ function Tx({ x, y, s = 2.6, b, c = TINTA, a, r, children }) {
   );
 }
 
-function Norte({ x, y }) {
+function NorthArrow({ x, y }) {
   return (
     <g transform={`translate(${x} ${y})`}>
       <path d="M0 -6l2.8 7.6-2.8-1.8-2.8 1.8z" fill={TINTA} />
@@ -24,7 +24,7 @@ function Norte({ x, y }) {
   );
 }
 
-function CotaH({ x1, x2, y, v }) {
+function DimensionH({ x1, x2, y, v }) {
   return (
     <g stroke={CINZA} strokeWidth="0.3">
       <line x1={x1} y1={y} x2={x2} y2={y} />
@@ -38,7 +38,7 @@ function CotaH({ x1, x2, y, v }) {
   );
 }
 
-function CotaV({ x, y1, y2, v }) {
+function DimensionV({ x, y1, y2, v }) {
   const ym = (y1 + y2) / 2;
   return (
     <g stroke={CINZA} strokeWidth="0.3">
@@ -53,8 +53,8 @@ function CotaV({ x, y1, y2, v }) {
   );
 }
 
-// Janela: abertura na parede (papel por cima) com as duas linhas do caixilho.
-function Janela({ x1, y1, x2, y2 }) {
+// Window: opening in the wall (paper on top) with the two frame lines.
+function WindowOpening({ x1, y1, x2, y2 }) {
   const h = y1 === y2;
   return (
     <g>
@@ -70,22 +70,22 @@ function Janela({ x1, y1, x2, y2 }) {
   );
 }
 
-// Porta: vão na parede, folha e arco de abertura. `arco` é o caminho do arco já calculado.
-function Porta({ vao, folha, arco }) {
+// Door: wall opening, door leaf and swing arc. `arc` is the precomputed arc path.
+function Door({ gap, leaf, arc }) {
   return (
     <g>
-      <rect {...vao} fill={PAPEL} />
-      <path d={folha} stroke={TINTA} strokeWidth="0.6" fill="none" />
-      <path d={arco} stroke={TINTA} strokeWidth="0.3" fill="none" strokeDasharray="1 0.8" />
+      <rect {...gap} fill={PAPEL} />
+      <path d={leaf} stroke={TINTA} strokeWidth="0.6" fill="none" />
+      <path d={arc} stroke={TINTA} strokeWidth="0.3" fill="none" strokeDasharray="1 0.8" />
     </g>
   );
 }
 
-function Comodo({ x, y, nome, area }) {
+function Room({ x, y, name, area }) {
   return (
     <g>
       <Tx x={x} y={y} s={2.6} b a="middle">
-        {nome}
+        {name}
       </Tx>
       {area && (
         <Tx x={x} y={y + 3.4} s={2.2} c={CINZA} a="middle">
@@ -96,23 +96,23 @@ function Comodo({ x, y, nome, area }) {
   );
 }
 
-function TituloDesenho({ y = 107, titulo, escala, x = 75 }) {
+function DrawingTitle({ y = 107, title, scale, x = 75 }) {
   return (
     <g>
       <Tx x={x} y={y} s={3} b a="middle">
-        {titulo}
+        {title}
       </Tx>
-      {escala && (
+      {scale && (
         <Tx x={x} y={y + 3.8} s={2.3} c={CINZA} a="middle">
-          {escala}
+          {scale}
         </Tx>
       )}
     </g>
   );
 }
 
-// Nuvem de revisão (contorno em arcos), como nas pranchas revisadas.
-function nuvem(x, y, w, h, r = 1.6) {
+// Revision cloud (outline made of arcs), as on revised drawing sheets.
+function revisionCloud(x, y, w, h, r = 1.6) {
   const nx = Math.max(1, Math.round(w / (2 * r)));
   const ny = Math.max(1, Math.round(h / (2 * r)));
   const dx = w / nx;
@@ -125,92 +125,92 @@ function nuvem(x, y, w, h, r = 1.6) {
   return d;
 }
 
-/* ── pranchas ─────────────────────────────────────────────────────────────────────────────────── */
+/* ── drawing sheets ─────────────────────────────────────────────────────────────────────────────────── */
 
-// Residência térrea (projeto arquitetônico e as-built). 1 unidade = 10 cm.
-function PlantaCasa({ asbuilt }) {
+// Single-storey house (architectural design and as-built). 1 unit = 10 cm.
+function HousePlan({ asbuilt }) {
   return (
     <g>
-      <CotaH x1={18} x2={132} y={13} v="11,40" />
-      <CotaV x={11} y1={20} y2={96} v="7,60" />
+      <DimensionH x1={18} x2={132} y={13} v="11,40" />
+      <DimensionV x={11} y1={20} y2={96} v="7,60" />
       <g stroke={TINTA} fill="none" strokeLinecap="square">
         <rect x="18" y="20" width="114" height="76" strokeWidth="1.6" />
         <path d="M70 20V58M104 20V58M18 58H132M56 58V96M76 58V96" strokeWidth="0.9" />
       </g>
-      <Janela x1={18} y1={30} x2={18} y2={44} />
-      <Janela x1={78} y1={20} x2={96} y2={20} />
-      <Janela x1={132} y1={28} x2={132} y2={40} />
-      <Janela x1={26} y1={96} x2={44} y2={96} />
-      <Janela x1={62} y1={96} x2={70} y2={96} />
-      <Janela x1={92} y1={96} x2={116} y2={96} />
-      <Porta vao={{ x: 30, y: 18.6, width: 9, height: 2.8 }} folha="M30 20V29" arco="M39 20A9 9 0 0 1 30 29" />
-      <Porta vao={{ x: 40, y: 57, width: 7, height: 2 }} folha="M40 58V65" arco="M47 58A7 7 0 0 1 40 65" />
-      <Porta vao={{ x: 59, y: 57, width: 6, height: 2 }} folha="M59 58V64" arco="M65 58A6 6 0 0 1 59 64" />
-      <Porta vao={{ x: 82, y: 57, width: 7, height: 2 }} folha="M82 58V65" arco="M89 58A7 7 0 0 1 82 65" />
-      <Porta vao={{ x: 103, y: 38, width: 2, height: 7 }} folha="M104 38H111" arco="M104 45A7 7 0 0 0 111 38" />
+      <WindowOpening x1={18} y1={30} x2={18} y2={44} />
+      <WindowOpening x1={78} y1={20} x2={96} y2={20} />
+      <WindowOpening x1={132} y1={28} x2={132} y2={40} />
+      <WindowOpening x1={26} y1={96} x2={44} y2={96} />
+      <WindowOpening x1={62} y1={96} x2={70} y2={96} />
+      <WindowOpening x1={92} y1={96} x2={116} y2={96} />
+      <Door gap={{ x: 30, y: 18.6, width: 9, height: 2.8 }} leaf="M30 20V29" arc="M39 20A9 9 0 0 1 30 29" />
+      <Door gap={{ x: 40, y: 57, width: 7, height: 2 }} leaf="M40 58V65" arc="M47 58A7 7 0 0 1 40 65" />
+      <Door gap={{ x: 59, y: 57, width: 6, height: 2 }} leaf="M59 58V64" arc="M65 58A6 6 0 0 1 59 64" />
+      <Door gap={{ x: 82, y: 57, width: 7, height: 2 }} leaf="M82 58V65" arc="M89 58A7 7 0 0 1 82 65" />
+      <Door gap={{ x: 103, y: 38, width: 2, height: 7 }} leaf="M104 38H111" arc="M104 45A7 7 0 0 0 111 38" />
       <rect x="69" y="36" width="2" height="10" fill={PAPEL} />
-      <Comodo x={44} y={41} nome="SALA" area="19,76 m²" />
-      <Comodo x={87} y={41} nome="COZINHA" area="12,92 m²" />
-      <Comodo x={118} y={51} nome="Á. SERV." area="10,64 m²" />
-      <Comodo x={37} y={80} nome="QUARTO" area="14,44 m²" />
-      <Comodo x={66} y={80} nome="BWC" area="7,60 m²" />
-      <Comodo x={104} y={80} nome="SUÍTE" area="21,28 m²" />
+      <Room x={44} y={41} name="SALA" area="19,76 m²" />
+      <Room x={87} y={41} name="COZINHA" area="12,92 m²" />
+      <Room x={118} y={51} name="Á. SERV." area="10,64 m²" />
+      <Room x={37} y={80} name="QUARTO" area="14,44 m²" />
+      <Room x={66} y={80} name="BWC" area="7,60 m²" />
+      <Room x={104} y={80} name="SUÍTE" area="21,28 m²" />
       {asbuilt && (
         <g>
-          <path d={nuvem(72, 60, 8, 34)} fill="none" stroke={VERMELHO} strokeWidth="0.5" />
+          <path d={revisionCloud(72, 60, 8, 34)} fill="none" stroke={VERMELHO} strokeWidth="0.5" />
           <path d="M80 60l3.4 -5.6h-6.8z" fill={VERMELHO} />
           <Tx x={80} y={58.6} s={2.2} b c="#fff" a="middle">
             1
           </Tx>
         </g>
       )}
-      <TituloDesenho titulo={asbuilt ? "PLANTA BAIXA · COMO CONSTRUÍDO" : "PLANTA BAIXA"} escala="ESCALA 1:50 · ÁREA CONSTRUÍDA 86,64 m²" />
+      <DrawingTitle title={asbuilt ? "PLANTA BAIXA · COMO CONSTRUÍDO" : "PLANTA BAIXA"} scale="ESCALA 1:50 · ÁREA CONSTRUÍDA 86,64 m²" />
       {asbuilt && (
         <Tx x={12} y={118} s={2.2} c={VERMELHO}>
           1 · Parede do banheiro executada 0,20 m à direita do projeto aprovado.
         </Tx>
       )}
-      <Norte x={136} y={108} />
+      <NorthArrow x={136} y={108} />
     </g>
   );
 }
 
-// Salão comercial (projeto de incêndio e rota de fuga). 1 unidade = 20 cm.
-function PlantaComercio({ rota }) {
-  const ext = [[26, 88], [62, 26], [88, 50], [126, 90]];
-  const luz = [[36, 40], [70, 40], [36, 76], [72, 76], [112, 30], [101, 75]];
+// Commercial hall (fire safety design and escape route). 1 unit = 20 cm.
+function ShopPlan({ route }) {
+  const extinguishers = [[26, 88], [62, 26], [88, 50], [126, 90]];
+  const lights = [[36, 40], [70, 40], [36, 76], [72, 76], [112, 30], [101, 75]];
   return (
     <g>
-      <CotaH x1={18} x2={132} y={13} v="22,80" />
-      <CotaV x={11} y1={20} y2={96} v="15,20" />
+      <DimensionH x1={18} x2={132} y={13} v="22,80" />
+      <DimensionV x={11} y1={20} y2={96} v="15,20" />
       <g stroke={TINTA} fill="none" strokeLinecap="square">
         <rect x="18" y="20" width="114" height="76" strokeWidth="1.6" />
         <path d="M92 20V96M92 62H132M110 62V96" strokeWidth="0.9" />
       </g>
-      <Janela x1={60} y1={20} x2={84} y2={20} />
-      <Porta vao={{ x: 40, y: 94.6, width: 14, height: 2.8 }} folha="M40 96V103M54 96V103" arco="M47 96A7 7 0 0 1 40 103M47 96A7 7 0 0 0 54 103" />
-      <Porta vao={{ x: 91, y: 40, width: 2, height: 7 }} folha="M92 40H99" arco="M92 47A7 7 0 0 0 99 40" />
-      <Porta vao={{ x: 95, y: 61, width: 6, height: 2 }} folha="M95 62V68" arco="M101 62A6 6 0 0 1 95 68" />
-      <Porta vao={{ x: 114, y: 61, width: 6, height: 2 }} folha="M114 62V68" arco="M120 62A6 6 0 0 1 114 68" />
-      {rota && <Porta vao={{ x: 16.6, y: 34, width: 2.8, height: 8 }} folha="M18 34H10" arco="M18 42A8 8 0 0 1 10 34" />}
-      <Comodo x={55} y={58} nome="SALÃO DE VENDAS" area="224,96 m²" />
-      <Comodo x={112} y={40} nome="ESTOQUE" area="67,20 m²" />
-      <Comodo x={101} y={84} nome="WC" />
-      <Comodo x={121} y={80} nome="ESCRIT." />
-      {/* rota de fuga até a(s) saída(s) */}
+      <WindowOpening x1={60} y1={20} x2={84} y2={20} />
+      <Door gap={{ x: 40, y: 94.6, width: 14, height: 2.8 }} leaf="M40 96V103M54 96V103" arc="M47 96A7 7 0 0 1 40 103M47 96A7 7 0 0 0 54 103" />
+      <Door gap={{ x: 91, y: 40, width: 2, height: 7 }} leaf="M92 40H99" arc="M92 47A7 7 0 0 0 99 40" />
+      <Door gap={{ x: 95, y: 61, width: 6, height: 2 }} leaf="M95 62V68" arc="M101 62A6 6 0 0 1 95 68" />
+      <Door gap={{ x: 114, y: 61, width: 6, height: 2 }} leaf="M114 62V68" arc="M120 62A6 6 0 0 1 114 68" />
+      {route && <Door gap={{ x: 16.6, y: 34, width: 2.8, height: 8 }} leaf="M18 34H10" arc="M18 42A8 8 0 0 1 10 34" />}
+      <Room x={55} y={58} name="SALÃO DE VENDAS" area="224,96 m²" />
+      <Room x={112} y={40} name="ESTOQUE" area="67,20 m²" />
+      <Room x={101} y={84} name="WC" />
+      <Room x={121} y={80} name="ESCRIT." />
+      {/* escape route to the exit(s) */}
       <g fill="none" stroke="#2f8f46" strokeWidth="0.8" strokeDasharray="2 1.4" strokeLinecap="round">
         <path d="M121 86L117 66L104 52L92 44L64 68L47 90" />
-        {rota && <path d="M40 46L22 38" />}
+        {route && <path d="M40 46L22 38" />}
       </g>
       <path d="M47 92l-2.6 -3.4h5.2z" fill="#2f8f46" />
-      {rota && <path d="M19.4 37.4l3.8 -2.2 -0.4 4.4z" fill="#2f8f46" />}
-      {/* sinalização de saída */}
+      {route && <path d="M19.4 37.4l3.8 -2.2 -0.4 4.4z" fill="#2f8f46" />}
+      {/* exit signage */}
       <g>
         <rect x="42.5" y="90" width="9" height="3.4" rx="0.6" fill="#2f8f46" />
         <Tx x={47} y={92.5} s={1.8} b c="#fff" a="middle">
           SAÍDA
         </Tx>
-        {rota && (
+        {route && (
           <g>
             <rect x="20.5" y="43" width="9" height="3.4" rx="0.6" fill="#2f8f46" />
             <Tx x={25} y={45.5} s={1.8} b c="#fff" a="middle">
@@ -219,8 +219,8 @@ function PlantaComercio({ rota }) {
           </g>
         )}
       </g>
-      {!rota &&
-        ext.map(([x, y]) => (
+      {!route &&
+        extinguishers.map(([x, y]) => (
           <g key={`${x}-${y}`}>
             <circle cx={x} cy={y} r="2.3" fill={VERMELHO} />
             <Tx x={x} y={y + 0.9} s={2.2} b c="#fff" a="middle">
@@ -228,9 +228,9 @@ function PlantaComercio({ rota }) {
             </Tx>
           </g>
         ))}
-      {!rota &&
-        luz.map(([x, y]) => <rect key={`${x}-${y}`} x={x - 2} y={y - 1} width="4" height="2" rx="0.4" fill="#f2c230" stroke="#7a5b00" strokeWidth="0.3" />)}
-      {rota && (
+      {!route &&
+        lights.map(([x, y]) => <rect key={`${x}-${y}`} x={x - 2} y={y - 1} width="4" height="2" rx="0.4" fill="#f2c230" stroke="#7a5b00" strokeWidth="0.3" />)}
+      {route && (
         <g>
           {[[24, 62], [96, 26]].map(([x, y]) => (
             <g key={`${x}-${y}`}>
@@ -251,9 +251,9 @@ function PlantaComercio({ rota }) {
           </Tx>
         </g>
       )}
-      <TituloDesenho titulo={rota ? "ROTA DE FUGA, HIDRANTES E ALARME" : "PLANTA DE MEDIDAS DE SEGURANÇA"} escala="ESCALA 1:100 · ÁREA 346,56 m²" />
+      <DrawingTitle title={route ? "ROTA DE FUGA, HIDRANTES E ALARME" : "PLANTA DE MEDIDAS DE SEGURANÇA"} scale="ESCALA 1:100 · ÁREA 346,56 m²" />
       <g transform="translate(12 115)" fontSize="2.2">
-        {(rota
+        {(route
           ? [
               ["h", "Hidrante"],
               ["a", "Acionador de alarme"],
@@ -266,7 +266,7 @@ function PlantaComercio({ rota }) {
               ["s", "Saída"],
               ["r", "Rota de fuga"],
             ]
-        ).map(([k, rotulo], i) => (
+        ).map(([k, label], i) => (
           <g key={k} transform={`translate(${(i % 2) * 62} ${Math.floor(i / 2) * 4.6})`}>
             {k === "e" && <circle cx="1.6" cy="-0.8" r="1.6" fill={VERMELHO} />}
             {k === "l" && <rect x="0" y="-1.8" width="3.4" height="1.8" fill="#f2c230" stroke="#7a5b00" strokeWidth="0.3" />}
@@ -275,18 +275,18 @@ function PlantaComercio({ rota }) {
             {k === "s" && <rect x="0" y="-1.8" width="3.4" height="1.8" fill="#2f8f46" />}
             {k === "r" && <path d="M0 -0.8h3.4" stroke="#2f8f46" strokeWidth="0.8" strokeDasharray="1.2 0.8" />}
             <text x="5" y="0" fill={TINTA}>
-              {rotulo}
+              {label}
             </text>
           </g>
         ))}
       </g>
-      <Norte x={137} y={110} />
+      <NorthArrow x={137} y={110} />
     </g>
   );
 }
 
-// Cronograma físico-financeiro: etapas por semana e desembolso por mês.
-const ETAPAS = [
+// Physical-financial schedule: stages per week and spending per month.
+const STAGES = [
   ["Serviços preliminares", 0, 1, 4],
   ["Fundação", 1, 2, 12],
   ["Estrutura", 2, 4, 22],
@@ -297,11 +297,11 @@ const ETAPAS = [
   ["Limpeza e entrega", 11, 1, 4],
 ];
 
-function Cronograma() {
+function Schedule() {
   const x0 = 54;
-  const sem = 6;
+  const week = 6;
   const y0 = 26;
-  const alto = 8.6;
+  const rowHeight = 8.6;
   return (
     <g>
       <rect x="10" y="12" width="130" height="14" fill={FUNDO} />
@@ -314,7 +314,7 @@ function Cronograma() {
         </Tx>
       ))}
       {Array.from({ length: 12 }, (_, i) => (
-        <Tx key={i} x={x0 + i * sem + 3} y={23.6} s={1.9} c={CINZA} a="middle">
+        <Tx key={i} x={x0 + i * week + 3} y={23.6} s={1.9} c={CINZA} a="middle">
           {i + 1}
         </Tx>
       ))}
@@ -323,20 +323,20 @@ function Cronograma() {
       </Tx>
       <g stroke={LINHA} strokeWidth="0.3">
         {Array.from({ length: 13 }, (_, i) => (
-          <line key={i} x1={x0 + i * sem} y1={19.6} x2={x0 + i * sem} y2={y0 + ETAPAS.length * alto} strokeWidth={i % 4 === 0 ? 0.6 : 0.3} />
+          <line key={i} x1={x0 + i * week} y1={19.6} x2={x0 + i * week} y2={y0 + STAGES.length * rowHeight} strokeWidth={i % 4 === 0 ? 0.6 : 0.3} />
         ))}
-        {ETAPAS.map((_, r) => (
-          <line key={r} x1="10" y1={y0 + (r + 1) * alto} x2="140" y2={y0 + (r + 1) * alto} />
+        {STAGES.map((_, r) => (
+          <line key={r} x1="10" y1={y0 + (r + 1) * rowHeight} x2="140" y2={y0 + (r + 1) * rowHeight} />
         ))}
       </g>
-      {ETAPAS.map(([nome, ini, dur, pct], r) => {
-        const y = y0 + r * alto;
+      {STAGES.map(([name, start, dur, pct], r) => {
+        const y = y0 + r * rowHeight;
         return (
-          <g key={nome}>
+          <g key={name}>
             <Tx x={12} y={y + 5.6} s={2.4}>
-              {nome}
+              {name}
             </Tx>
-            <rect x={x0 + ini * sem + 0.6} y={y + 2.6} width={dur * sem - 1.2} height="3.6" rx="1.2" fill={r % 2 ? "#4f9a5b" : VERDE} />
+            <rect x={x0 + start * week + 0.6} y={y + 2.6} width={dur * week - 1.2} height="3.6" rx="1.2" fill={r % 2 ? "#4f9a5b" : VERDE} />
             <Tx x={135} y={y + 5.6} s={2.4} a="middle">
               {pct}
             </Tx>
@@ -344,7 +344,7 @@ function Cronograma() {
         );
       })}
       {(() => {
-        const y = y0 + ETAPAS.length * alto;
+        const y = y0 + STAGES.length * rowHeight;
         return (
           <g>
             <rect x="10" y={y} width="130" height="15" fill={FUNDO} />
@@ -371,29 +371,29 @@ function Cronograma() {
           </g>
         );
       })()}
-      <TituloDesenho y={115} titulo="CRONOGRAMA FÍSICO-FINANCEIRO" escala="PRAZO TOTAL: 12 SEMANAS" />
+      <DrawingTitle y={115} title="CRONOGRAMA FÍSICO-FINANCEIRO" scale="PRAZO TOTAL: 12 SEMANAS" />
     </g>
   );
 }
 
-// Mapa do imóvel para o CAR: APP ao longo do córrego, reserva legal e área de uso consolidado.
-function MapaCar({ uid }) {
-  const poli = "16,98 28,22 98,14 136,40 126,100";
-  const rio = "M70 8C78 32 60 50 78 64S106 84 114 110";
+// Property map for the CAR: APP along the stream, legal reserve and consolidated-use area.
+function CarMap({ uid }) {
+  const boundary = "16,98 28,22 98,14 136,40 126,100";
+  const stream = "M70 8C78 32 60 50 78 64S106 84 114 110";
   return (
     <g>
       <defs>
         <clipPath id={`${uid}-car`}>
-          <polygon points={poli} />
+          <polygon points={boundary} />
         </clipPath>
         <clipPath id={`${uid}-rl`}>
           <rect x="26" y="56" width="34" height="34" />
         </clipPath>
       </defs>
-      <polygon points={poli} fill="#f3f6ef" />
+      <polygon points={boundary} fill="#f3f6ef" />
       <g clipPath={`url(#${uid}-car)`}>
-        <path d={rio} fill="none" stroke={VERDE_CL} strokeWidth="13" opacity="0.7" />
-        <path d={rio} fill="none" stroke={AZUL} strokeWidth="1.1" />
+        <path d={stream} fill="none" stroke={VERDE_CL} strokeWidth="13" opacity="0.7" />
+        <path d={stream} fill="none" stroke={AZUL} strokeWidth="1.1" />
         <g clipPath={`url(#${uid}-rl)`} stroke={VERDE} strokeWidth="0.45">
           {Array.from({ length: 18 }, (_, i) => (
             <line key={i} x1={26 + i * 4 - 34} y1="90" x2={26 + i * 4} y2="56" />
@@ -401,7 +401,7 @@ function MapaCar({ uid }) {
         </g>
       </g>
       <rect x="26" y="56" width="34" height="34" fill="none" stroke={VERDE} strokeWidth="0.7" />
-      <polygon points={poli} fill="none" stroke={TINTA} strokeWidth="0.9" />
+      <polygon points={boundary} fill="none" stroke={TINTA} strokeWidth="0.9" />
       <rect x="100" y="56" width="4" height="4" fill={TINTA} />
       <Tx x={102} y={64.4} s={2.2} a="middle">
         Sede
@@ -419,8 +419,8 @@ function MapaCar({ uid }) {
       <Tx x={112} y={78} s={2.1} c={CINZA} a="middle">
         uso consolidado
       </Tx>
-      <Norte x={130} y={14} />
-      <TituloDesenho y={106} titulo="MAPA DO IMÓVEL PARA O CAR" escala="ÁREA 48,32 ha · RESERVA LEGAL 9,66 ha (20%)" />
+      <NorthArrow x={130} y={14} />
+      <DrawingTitle y={106} title="MAPA DO IMÓVEL PARA O CAR" scale="ÁREA 48,32 ha · RESERVA LEGAL 9,66 ha (20%)" />
       <g transform="translate(12 117)" fontSize="2.2">
         <rect x="0" y="-2.2" width="4" height="2.6" fill="none" stroke={VERDE} strokeWidth="0.5" />
         <path d="M0 0.4l2.6-2.6M1.6 0.4l2.4-2.4" stroke={VERDE} strokeWidth="0.4" />
@@ -444,7 +444,7 @@ function MapaCar({ uid }) {
   );
 }
 
-// Planta do georreferenciamento: vértices, azimutes e distâncias, e a tabela de coordenadas.
+// Georeferencing plan: vertices, azimuths and distances, and the coordinate table.
 const VERTICES = [
   ["M-0001", 14, 96, "675.108,90", "7.671.233,84", 16, 101.6, "start"],
   ["M-0002", 24, 22, "675.212,48", "7.671.905,12", 22, 19.6, "end"],
@@ -453,7 +453,7 @@ const VERTICES = [
   ["M-0005", 78, 104, "675.749,63", "7.671.120,57", 80, 108.2, "start"],
 ];
 
-function Georref() {
+function GeorefPlan() {
   const pts = VERTICES.map(([, x, y]) => `${x},${y}`).join(" ");
   return (
     <g>
@@ -517,23 +517,23 @@ function Georref() {
           Perímetro: 2.914,36 m
         </Tx>
       </g>
-      <Norte x={128} y={74} />
-      <TituloDesenho y={118} x={56} titulo="PLANTA DO IMÓVEL GEORREFERENCIADO" escala="ESCALA 1:5.000" />
+      <NorthArrow x={128} y={74} />
+      <DrawingTitle y={118} x={56} title="PLANTA DO IMÓVEL GEORREFERENCIADO" scale="ESCALA 1:5.000" />
     </g>
   );
 }
 
-// Levantamento planialtimétrico: curvas a cada 1 m, mestras a cada 5 m, pontos cotados.
-function Curvas({ uid }) {
-  const curvas = Array.from({ length: 12 }, (_, i) => {
-    const cota = 505 + i;
+// Topographic survey: contours every 1 m, index contours every 5 m, spot elevations.
+function ContourPlan({ uid }) {
+  const contours = Array.from({ length: 12 }, (_, i) => {
+    const elevation = 505 + i;
     const base = 96 - i * 7.2;
     let d = "";
     for (let x = 12; x <= 138; x += 6) {
       const y = base + 4.2 * Math.sin(x * 0.045 + i * 0.35) - (x > 70 && x < 96 ? 3 : 0);
       d += `${d ? "L" : "M"}${x} ${y.toFixed(2)}`;
     }
-    return { cota, d, mestra: cota % 5 === 0, yl: base + 4.2 * Math.sin(40 * 0.045 + i * 0.35) };
+    return { elevation, d, major: elevation % 5 === 0, yl: base + 4.2 * Math.sin(40 * 0.045 + i * 0.35) };
   });
   return (
     <g>
@@ -543,18 +543,18 @@ function Curvas({ uid }) {
         </clipPath>
       </defs>
       <g clipPath={`url(#${uid}-lev)`} fill="none">
-        {curvas.map((c) => (
-          <path key={c.cota} d={c.d} stroke={c.mestra ? MARROM : "#b79a7a"} strokeWidth={c.mestra ? 0.7 : 0.3} />
+        {contours.map((c) => (
+          <path key={c.elevation} d={c.d} stroke={c.major ? MARROM : "#b79a7a"} strokeWidth={c.major ? 0.7 : 0.3} />
         ))}
         <path d="M82 12C80 40 86 60 84 100" stroke={AZUL} strokeWidth="0.6" strokeDasharray="2 1.2" />
       </g>
-      {curvas
-        .filter((c) => c.mestra)
+      {contours
+        .filter((c) => c.major)
         .map((c) => (
-          <g key={c.cota}>
+          <g key={c.elevation}>
             <rect x="36" y={c.yl - 2.4} width="9" height="3.4" fill={PAPEL} />
             <Tx x={40.5} y={c.yl + 0.4} s={2.2} b c={MARROM} a="middle">
-              {c.cota}
+              {c.elevation}
             </Tx>
           </g>
         ))}
@@ -587,39 +587,39 @@ function Curvas({ uid }) {
           50 m
         </Tx>
       </g>
-      <TituloDesenho y={111} x={82} titulo="PLANTA PLANIALTIMÉTRICA" escala="CURVAS A CADA 1 m · ESCALA 1:1.000" />
-      <Norte x={136} y={110} />
+      <DrawingTitle y={111} x={82} title="PLANTA PLANIALTIMÉTRICA" scale="CURVAS A CADA 1 m · ESCALA 1:1.000" />
+      <NorthArrow x={136} y={110} />
     </g>
   );
 }
 
-// Desenho da prancha (área de x 9 a 141 e y 9 a 122; o carimbo começa em y 126).
+// The drawing on the sheet (area from x 9 to 141 and y 9 to 122; the title block starts at y 126).
 export function Desenho({ tipo, uid }) {
   switch (tipo) {
     case "incendio":
-      return <PlantaComercio />;
+      return <ShopPlan />;
     case "rota":
-      return <PlantaComercio rota />;
+      return <ShopPlan route />;
     case "planta":
-      return <PlantaCasa />;
+      return <HousePlan />;
     case "asbuilt":
-      return <PlantaCasa asbuilt />;
+      return <HousePlan asbuilt />;
     case "gantt":
-      return <Cronograma />;
+      return <Schedule />;
     case "car":
-      return <MapaCar uid={uid} />;
+      return <CarMap uid={uid} />;
     case "terreno":
-      return <Georref />;
+      return <GeorefPlan />;
     case "curvas":
-      return <Curvas uid={uid} />;
+      return <ContourPlan uid={uid} />;
     default:
       return null;
   }
 }
 
-/* ── páginas internas das capas ───────────────────────────────────────────────────────────────── */
+/* ── inner pages of the covers ───────────────────────────────────────────────────────────────── */
 
-const COR_ESTADO = {
+const STATUS_COLOR = {
   Baixo: VERDE,
   Moderado: AMBAR,
   Médio: AMBAR,
@@ -642,20 +642,20 @@ const COR_ESTADO = {
 };
 
 function Chip({ x, y, t, s = 2.1 }) {
-  const cor = COR_ESTADO[t] || CINZA;
+  const color = STATUS_COLOR[t] || CINZA;
   const w = t.length * s * 0.6 + 3;
   return (
     <g>
-      <rect x={x} y={y - s - 0.4} width={w} height={s + 2.2} rx="1.4" fill={cor} fillOpacity="0.12" stroke={cor} strokeWidth="0.35" />
-      <text x={x + 1.5} y={y + 0.2} fontSize={s} fontWeight="700" fill={cor}>
+      <rect x={x} y={y - s - 0.4} width={w} height={s + 2.2} rx="1.4" fill={color} fillOpacity="0.12" stroke={color} strokeWidth="0.35" />
+      <text x={x + 1.5} y={y + 0.2} fontSize={s} fontWeight="700" fill={color}>
         {t}
       </text>
     </g>
   );
 }
 
-// Tabela com cabeçalho; células com até duas linhas. Uma célula { chip: "Alto" } vira etiqueta colorida.
-function Tabela({ x = 10, y, cols, linhas, alto = 9.6, s = 2.3 }) {
+// Table with a header; cells with up to two lines. A cell { chip: "Alto" } becomes a colored tag.
+function Table({ x = 10, y, cols, rows, rowHeight = 9.6, s = 2.3 }) {
   const xs = [x];
   cols.forEach((c) => xs.push(xs[xs.length - 1] + c.w));
   const W = xs[xs.length - 1] - x;
@@ -667,16 +667,16 @@ function Tabela({ x = 10, y, cols, linhas, alto = 9.6, s = 2.3 }) {
           {c.t}
         </text>
       ))}
-      {linhas.map((l, r) => {
-        const yy = y + 7 + r * alto;
+      {rows.map((row, r) => {
+        const yy = y + 7 + r * rowHeight;
         return (
           <g key={r}>
             <line x1={x} y1={yy} x2={x + W} y2={yy} stroke={LINHA} strokeWidth="0.4" />
-            {l.map((cel, i) =>
-              cel && typeof cel === "object" ? (
-                <Chip key={i} x={xs[i] + 1.2} y={yy + 4.4} t={cel.chip} s={s * 0.9} />
+            {row.map((cell, i) =>
+              cell && typeof cell === "object" ? (
+                <Chip key={i} x={xs[i] + 1.2} y={yy + 4.4} t={cell.chip} s={s * 0.9} />
               ) : (
-                quebra(cel, Math.max(5, Math.floor((cols[i].w - 2.4) / (s * 0.5))))
+                quebra(cell, Math.max(5, Math.floor((cols[i].w - 2.4) / (s * 0.5))))
                   .slice(0, 2)
                   .map((t, k) => (
                     <text key={`${i}-${k}`} x={xs[i] + 1.4} y={yy + 3.8 + k * (s + 0.9)} fontSize={s} fill={TINTA}>
@@ -688,30 +688,30 @@ function Tabela({ x = 10, y, cols, linhas, alto = 9.6, s = 2.3 }) {
           </g>
         );
       })}
-      <line x1={x} y1={y + 7 + linhas.length * alto} x2={x + W} y2={y + 7 + linhas.length * alto} stroke={BORDA} strokeWidth="0.5" />
+      <line x1={x} y1={y + 7 + rows.length * rowHeight} x2={x + W} y2={y + 7 + rows.length * rowHeight} stroke={BORDA} strokeWidth="0.5" />
     </g>
   );
 }
 
-function Lista({ y, itens }) {
+function Checklist({ y, items }) {
   return (
     <g>
-      {itens.map(([t, estado, obs], k) => {
+      {items.map(([t, status, note], k) => {
         const yy = y + k * 10.4;
-        const feito = ["Conforme", "Enviado", "Concluído", "Exigida"].includes(estado);
+        const done = ["Conforme", "Enviado", "Concluído", "Exigida"].includes(status);
         return (
           <g key={t}>
             <rect x="10" y={yy - 3.4} width="4.4" height="4.4" rx="1" fill="none" stroke={VERDE} strokeWidth="0.6" />
-            {feito && <path d={`M11 ${yy - 1.2}l1.2 1.2 2-2.6`} fill="none" stroke={VERDE} strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" />}
+            {done && <path d={`M11 ${yy - 1.2}l1.2 1.2 2-2.6`} fill="none" stroke={VERDE} strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" />}
             <Tx x={18} y={yy} s={2.7}>
               {t}
             </Tx>
-            {obs && (
+            {note && (
               <Tx x={18} y={yy + 3.6} s={2.2} c={CINZA}>
-                {obs}
+                {note}
               </Tx>
             )}
-            <Chip x={140 - (estado.length * 2.1 * 0.6 + 3)} y={yy} t={estado} />
+            <Chip x={140 - (status.length * 2.1 * 0.6 + 3)} y={yy} t={status} />
             <line x1="10" y1={yy + 6} x2="140" y2={yy + 6} stroke={LINHA} strokeWidth="0.35" />
           </g>
         );
@@ -720,15 +720,15 @@ function Lista({ y, itens }) {
   );
 }
 
-function Paragrafo({ y, texto, s = 2.7, max = 84, c = TINTA }) {
-  return quebra(texto, max).map((l, k) => (
+function Paragraph({ y, text, s = 2.7, max = 84, c = TINTA }) {
+  return quebra(text, max).map((line, k) => (
     <Tx key={k} x={10} y={y + k * (s + 1.5)} s={s} c={c}>
-      {l}
+      {line}
     </Tx>
   ));
 }
 
-const LISTAS = {
+const CHECKLISTS = {
   "PGR × PCMSO": [
     ["Funções e setores da empresa", "Enviado"],
     ["Riscos de cada função (inventário do PGR)", "Enviado"],
@@ -752,15 +752,15 @@ const LISTAS = {
   ],
 };
 
-// Cada capa ganha uma página interna: { secao, intro, conteudo(y) }.
-const MIOLOS = {
+// Each cover gets an inner page: { idx, intro, body(m) }.
+const INNER_PAGES = {
   tabela: {
     intro: "Para cada setor: os perigos, as possíveis lesões, o nível de risco (probabilidade × severidade) e as medidas de prevenção.",
-    corpo: () => (
+    body: () => (
       <g>
-        <Tabela
+        <Table
           y={52}
-          alto={10.4}
+          rowHeight={10.4}
           cols={[
             { t: "Setor", w: 20 },
             { t: "Perigo", w: 27 },
@@ -768,7 +768,7 @@ const MIOLOS = {
             { t: "Nível", w: 19 },
             { t: "Medida de prevenção", w: 38 },
           ]}
-          linhas={[
+          rows={[
             ["Produção", "Ruído de máquinas", "Perda auditiva", { chip: "Moderado" }, "Protetor auricular; manutenção"],
             ["Produção", "Partes móveis da serra", "Cortes e esmagamento", { chip: "Alto" }, "Proteção fixa; bloqueio na manutenção"],
             ["Depósito", "Empilhamento alto", "Queda de objetos", { chip: "Moderado" }, "Prateleiras fixas; limite de altura"],
@@ -808,18 +808,18 @@ const MIOLOS = {
   },
   residuos: {
     intro: "Resíduos gerados na empresa, classificados conforme a ABNT NBR 10004, com a forma de guardar e o destino de cada um.",
-    corpo: () => (
+    body: () => (
       <g>
-        <Tabela
+        <Table
           y={52}
-          alto={10.4}
+          rowHeight={10.4}
           cols={[
             { t: "Resíduo", w: 30 },
             { t: "Classe", w: 14 },
             { t: "Acondicionamento", w: 40 },
             { t: "Destino", w: 46 },
           ]}
-          linhas={[
+          rows={[
             ["Papel e papelão", "II A", "Contêiner azul em área coberta", "Coleta seletiva e reciclagem"],
             ["Lâmpadas fluorescentes", "I", "Caixa original, local seco", "Logística reversa (empresa licenciada)"],
             ["Óleo lubrificante usado", "I", "Tambor sobre bacia de contenção", "Coleta para rerrefino"],
@@ -827,18 +827,18 @@ const MIOLOS = {
             ["Entulho de reforma", "II B", "Caçamba identificada", "Aterro de inertes licenciado"],
           ]}
         />
-        <Paragrafo y={124} texto="Registros: manifestos de transporte de resíduos (MTR) e certificados de destinação ficam arquivados por resíduo e por saída." />
-        <Paragrafo y={140} s={2.4} c={CINZA} texto="Classe I: perigoso. Classe II A: não perigoso e não inerte. Classe II B: não perigoso e inerte." />
+        <Paragraph y={124} text="Registros: manifestos de transporte de resíduos (MTR) e certificados de destinação ficam arquivados por resíduo e por saída." />
+        <Paragraph y={140} s={2.4} c={CINZA} text="Classe I: perigoso. Classe II A: não perigoso e não inerte. Classe II B: não perigoso e inerte." />
       </g>
     ),
   },
   apr: {
     intro: "Atividade: troca de telhas do galpão (trabalho em altura). Antes de começar, a equipe confere cada etapa e as medidas de controle.",
-    corpo: () => (
+    body: () => (
       <g>
-        <Tabela
+        <Table
           y={52}
-          alto={10.4}
+          rowHeight={10.4}
           cols={[
             { t: "Etapa", w: 24 },
             { t: "Perigo", w: 23 },
@@ -846,7 +846,7 @@ const MIOLOS = {
             { t: "Medida de controle", w: 46 },
             { t: "Resp.", w: 22 },
           ]}
-          linhas={[
+          rows={[
             ["Acesso ao telhado", "Queda de altura", { chip: "Alto" }, "Linha de vida, cinto paraquedista, equipe treinada na NR-35", "Encarregado"],
             ["Retirada das telhas", "Queda de materiais", { chip: "Médio" }, "Isolar a área abaixo; capacete com jugular", "Encarregado"],
             ["Corte e fixação", "Cortes nas mãos", { chip: "Baixo" }, "Luvas e ferramenta adequada", "Equipe"],
@@ -879,7 +879,7 @@ const MIOLOS = {
         AVCB: "Situação de cada medida de segurança contra incêndio antes de pedir a vistoria do Corpo de Bombeiros.",
         CLCB: "Dados da edificação usados para verificar se ela pode ser regularizada pelo CLCB, e as medidas exigidas.",
       })[m.titulo] || null,
-    corpo: (m) =>
+    body: (m) =>
       m.titulo === "CLCB" ? (
         <g>
           {[
@@ -905,16 +905,16 @@ const MIOLOS = {
           <Tx x={10} y={110} s={2.8} b>
             Medidas de segurança exigidas
           </Tx>
-          <Lista y={120} itens={LISTAS.CLCB} />
+          <Checklist y={120} items={CHECKLISTS.CLCB} />
         </g>
       ) : (
-        <Lista y={56} itens={LISTAS[m.titulo] || LISTAS.AVCB} />
+        <Checklist y={56} items={CHECKLISTS[m.titulo] || CHECKLISTS.AVCB} />
       ),
   },
   grafico: {
     intro: "Ruído medido por função, comparado ao limite de tolerância de 85 dB(A) para 8 horas de trabalho (NR-15, Anexo 1).",
-    corpo: () => {
-      const funcoes = [
+    body: () => {
+      const jobs = [
         ["Operador de máquina", 91.3],
         ["Auxiliar de produção", 86.8],
         ["Almoxarife", 79.5],
@@ -923,10 +923,10 @@ const MIOLOS = {
       const xb = (v) => 52 + (v - 60) * 2;
       return (
         <g>
-          {funcoes.map(([f, v], i) => (
-            <g key={f}>
+          {jobs.map(([job, v], i) => (
+            <g key={job}>
               <Tx x={10} y={60 + i * 9} s={2.5}>
-                {f}
+                {job}
               </Tx>
               <rect x="52" y={56 + i * 9} width={xb(v) - 52} height="5" rx="1" fill={v > 85 ? VERMELHO : VERDE} opacity="0.85" />
               <Tx x={xb(v) + 1.6} y={60 + i * 9} s={2.4} b>
@@ -946,15 +946,15 @@ const MIOLOS = {
           <Tx x={xb(100)} y={99.6} s={1.9} c={CINZA} a="end">
             dB(A)
           </Tx>
-          <Tabela
+          <Table
             y={104}
-            alto={8}
+            rowHeight={8}
             cols={[
               { t: "Função", w: 40 },
               { t: "Agente", w: 24 },
               { t: "Conclusão", w: 66 },
             ]}
-            linhas={[
+            rows={[
               ["Operador de máquina", "Ruído", { chip: "Acima do limite" }],
               ["Auxiliar de produção", "Ruído", { chip: "Acima do limite" }],
               ["Almoxarife", "Ruído", { chip: "Abaixo do limite" }],
@@ -967,7 +967,7 @@ const MIOLOS = {
   },
   medicao: {
     intro: "Resultados das avaliações no posto de trabalho e a conclusão segundo a NR-15 (insalubridade) e a NR-16 (periculosidade).",
-    corpo: () => (
+    body: () => (
       <g>
         <path d="M30 84a22 22 0 0 1 44 0" fill="none" stroke={LINHA} strokeWidth="5" />
         <path d="M30 84a22 22 0 0 1 33.6 -18.6" fill="none" stroke={VERDE_CL} strokeWidth="5" />
@@ -985,28 +985,28 @@ const MIOLOS = {
             {t}
           </Tx>
         ))}
-        <Tabela
+        <Table
           y={104}
-          alto={10.4}
+          rowHeight={10.4}
           cols={[
             { t: "Agente", w: 26 },
             { t: "Medido", w: 24 },
             { t: "Critério", w: 26 },
             { t: "Conclusão", w: 54 },
           ]}
-          linhas={[
+          rows={[
             ["Ruído contínuo", "88,2 dB(A)", "NR-15, Anexo 1", { chip: "Insalubre, grau médio" }],
             ["Calor", "IBUTG 25,9 °C", "NR-15, Anexo 3", { chip: "Não insalubre" }],
             ["Inflamáveis", "—", "NR-16", { chip: "Não perigoso" }],
           ]}
         />
-        <Paragrafo y={150} s={2.4} c={CINZA} texto="Insalubridade em grau médio dá direito ao adicional de 20% sobre o salário mínimo, enquanto a exposição continuar." />
+        <Paragraph y={150} s={2.4} c={CINZA} text="Insalubridade em grau médio dá direito ao adicional de 20% sobre o salário mínimo, enquanto a exposição continuar." />
       </g>
     ),
   },
   fachada: {
     intro: "Anomalias encontradas na vistoria da fachada, numeradas no desenho, com a prioridade de correção de cada uma.",
-    corpo: () => (
+    body: () => (
       <g>
         <path d="M18 58L75 46L132 58" fill="none" stroke={TINTA} strokeWidth="0.9" />
         <rect x="22" y="58" width="106" height="44" fill="#f6f4ee" stroke={TINTA} strokeWidth="0.9" />
@@ -1033,16 +1033,16 @@ const MIOLOS = {
             </Tx>
           </g>
         ))}
-        <Tabela
+        <Table
           y={108}
-          alto={9}
+          rowHeight={9}
           cols={[
             { t: "Nº", w: 10 },
             { t: "Anomalia", w: 56 },
             { t: "Sistema", w: 30 },
             { t: "Grau de risco", w: 34 },
           ]}
-          linhas={[
+          rows={[
             ["1", "Fissura inclinada no canto da janela", "Vedação", { chip: "Médio" }],
             ["2", "Mancha de umidade sob o beiral", "Cobertura", { chip: "Alto" }],
             ["3", "Desplacamento do reboco junto ao piso", "Revestimento", { chip: "Alto" }],
@@ -1053,7 +1053,7 @@ const MIOLOS = {
   },
   laudo: {
     intro: "Registro fotográfico da vistoria, com a descrição de cada ponto observado no imóvel.",
-    corpo: () => (
+    body: () => (
       <g>
         <rect x="10" y="50" width="62" height="40" fill="#dfe8ee" />
         <rect x="10" y="76" width="62" height="14" fill="#cfd8c4" />
@@ -1072,19 +1072,19 @@ const MIOLOS = {
         <Tx x={10} y={106} s={2.8} b>
           Observações
         </Tx>
-        <Paragrafo y={112} texto="A fissura da foto 2 é superficial, no reboco, sem sinais de movimentação da estrutura nesta vistoria. Recomenda-se abrir a fissura, aplicar selante flexível e refazer a pintura." />
+        <Paragraph y={112} text="A fissura da foto 2 é superficial, no reboco, sem sinais de movimentação da estrutura nesta vistoria. Recomenda-se abrir a fissura, aplicar selante flexível e refazer a pintura." />
         <Tx x={10} y={134} s={2.8} b>
           Conclusão
         </Tx>
-        <Paragrafo y={140} texto="O imóvel apresenta condições de uso. As correções indicadas são de manutenção e podem ser feitas sem desocupar o imóvel." />
+        <Paragraph y={140} text="O imóvel apresenta condições de uso. As correções indicadas são de manutenção e podem ser feitas sem desocupar o imóvel." />
       </g>
     ),
   },
   fluxo: {
     idx: 2,
     intro: "Etapas do licenciamento ambiental da atividade e do pedido de outorga de uso da água, com a situação de cada uma.",
-    corpo: () => {
-      const etapas = [
+    body: () => {
+      const steps = [
         ["1. Enquadramento da atividade", "Concluído"],
         ["2. Licença Prévia (LP)", "Concluído"],
         ["3. Licença de Instalação (LI)", "Em análise"],
@@ -1092,13 +1092,13 @@ const MIOLOS = {
       ];
       return (
         <g>
-          {etapas.map(([t, e], i) => (
+          {steps.map(([t, status], i) => (
             <g key={t}>
               <rect x="10" y={52 + i * 18} width="84" height="12" rx="2.4" fill={i < 2 ? FUNDO : "#fff"} stroke={i === 2 ? AMBAR : BORDA} strokeWidth="0.6" />
               <Tx x={14} y={59.6 + i * 18} s={2.7} b>
                 {t}
               </Tx>
-              <Chip x={100} y={59.4 + i * 18} t={e} />
+              <Chip x={100} y={59.4 + i * 18} t={status} />
               {i < 3 && <path d={`M52 ${64 + i * 18}v5m-2 -2 2 2 2 -2`} fill="none" stroke={CINZA} strokeWidth="0.6" />}
             </g>
           ))}
@@ -1107,22 +1107,22 @@ const MIOLOS = {
             Outorga de uso da água (poço)
           </Tx>
           <Chip x={100} y={134.4} t="Protocolada" />
-          <Paragrafo y={150} s={2.4} c={CINZA} texto="Protocolo nº 000000/2026 (exemplo). A RD acompanha os prazos e responde às exigências do órgão ambiental." />
+          <Paragraph y={150} s={2.4} c={CINZA} text="Protocolo nº 000000/2026 (exemplo). A RD acompanha os prazos e responde às exigências do órgão ambiental." />
         </g>
       );
     },
   },
 };
 
-export const TEM_MIOLO = new Set(Object.keys(MIOLOS));
+export const TEM_MIOLO = new Set(Object.keys(INNER_PAGES));
 
 export function Miolo({ m, area }) {
-  const conteudo = MIOLOS[m.corpo];
-  if (!conteudo) return null;
-  const [cli] = clienteDe(m, area);
-  const intro = typeof conteudo.intro === "function" ? conteudo.intro(m) : conteudo.intro;
-  const i = conteudo.idx ?? 1;
-  const secao = m.sumario?.[i] ? `${i + 1}. ${m.sumario[i]}` : m.doc || m.sub;
+  const page = INNER_PAGES[m.corpo];
+  if (!page) return null;
+  const [client] = clienteDe(m, area);
+  const intro = typeof page.intro === "function" ? page.intro(m) : page.intro;
+  const i = page.idx ?? 1;
+  const section = m.sumario?.[i] ? `${i + 1}. ${m.sumario[i]}` : m.doc || m.sub;
   return (
     <g fontFamily="inherit">
       <Marca x={10} y={7} s={0.62} />
@@ -1133,18 +1133,18 @@ export function Miolo({ m, area }) {
         Página 4 de 18
       </Tx>
       <line x1="10" y1="19.5" x2="140" y2="19.5" stroke={VERDE} strokeWidth="0.5" />
-      {quebra(secao, 34)
+      {quebra(section, 34)
         .slice(0, 2)
         .map((l, k) => (
           <Tx key={l} x={10} y={30 + k * 5.6} s={4.4} b>
             {l}
           </Tx>
         ))}
-      {intro && <Paragrafo y={quebra(secao, 34).length > 1 ? 43 : 38} s={2.6} c={CINZA} max={88} texto={intro} />}
-      {conteudo.corpo(m)}
+      {intro && <Paragraph y={quebra(section, 34).length > 1 ? 43 : 38} s={2.6} c={CINZA} max={88} text={intro} />}
+      {page.body(m)}
       <line x1="10" y1="182" x2="140" y2="182" stroke={BORDA} strokeWidth="0.5" />
       <Tx x={10} y={187.4} s={2.4} c={CINZA}>
-        {cli} · {m.titulo}
+        {client} · {m.titulo}
       </Tx>
       <Tx x={140} y={187.4} s={2.4} c={CINZA} a="end">
         Revisão 00 · RD Engenharia
@@ -1153,7 +1153,7 @@ export function Miolo({ m, area }) {
   );
 }
 
-/* ── "Como ler": pontos numerados sobre a folha ───────────────────────────────────────────────── */
+/* ── "Como ler" (how to read): numbered pins on the sheet ───────────────────────────────────────────────── */
 
 export const PINOS = {
   capa: [

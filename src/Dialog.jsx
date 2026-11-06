@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef } from "react";
 
-// Janela sobre a página (adaptado dos "cartões expansíveis" da biblioteca de prompts, sem biblioteca de
-// animação): <dialog> nativo, que já prende o foco, fecha com Esc e devolve o foco ao botão que abriu.
-// Clicar fora do painel também fecha. A entrada é só opacidade e escala (CSS), parada com "reduzir movimento".
-// O conteúdo fica no HTML pré-gerado (o Google lê), só escondido até abrir.
+// Dialog over the page (adapted from the prompt library's "expandable cards", without an animation
+// library): native <dialog>, which already traps focus, closes with Esc and returns focus to the button that opened it.
+// Clicking outside the panel also closes it. The entrance is only opacity and scale (CSS), disabled with "reduce motion".
+// The content stays in the prerendered HTML (Google reads it), only hidden until opened.
 export default function Janela({ aberta, aoFechar, titulo, children }) {
   const ref = useRef(null);
   const id = useId();

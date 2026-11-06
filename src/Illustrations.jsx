@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERMELHO, SeloExemplo } from "./SheetBase";
 
-// Desenhos e modelo ilustrativos, no mesmo papel e carimbo das folhas de exemplo. Nada aqui vem de um
-// cliente real. Cada desenho é interativo: tocar num item da legenda (ou no desenho) destaca o elemento e
-// explica o que é.
+// Illustrative drawings and template, on the same paper and stamp as the sample sheets. Nothing here comes
+// from a real client. Each drawing is interactive: tapping a legend item (or the drawing) highlights the element
+// and explains what it is.
 
-const ROT = { fontSize: 11, fill: CINZA, fontFamily: "inherit" };
-const ROT_B = { ...ROT, fill: TINTA, fontWeight: 700 };
+const LABEL = { fontSize: 11, fill: CINZA, fontFamily: "inherit" };
+const LABEL_BOLD = { ...LABEL, fill: TINTA, fontWeight: 700 };
 
-// Rodapé no estilo carimbo, igual em todos os desenhos.
-function Carimbo({ titulo, cliente }) {
+// Title-block style footer, the same in every drawing.
+function Stamp({ title, client }) {
   return (
     <g fontFamily="inherit">
       <rect x="0" y="300" width="420" height="34" fill={FUNDO} />
@@ -19,85 +19,85 @@ function Carimbo({ titulo, cliente }) {
         RD
       </text>
       <text x="38" y="315" fontSize="9.6" fontWeight="700" fill={TINTA}>
-        {titulo}
+        {title}
       </text>
       <text x="38" y="327" fontSize="8.6" fill={CINZA}>
-        {cliente} · RD Engenharia
+        {client} · RD Engenharia
       </text>
     </g>
   );
 }
 
-function Interativa({ itens, rotulo, titulo, idTitulo, legendaFinal, desenho, ajuda, carimbo }) {
-  const [ativo, setAtivo] = useState("");
-  const escolher = (id) => setAtivo((a) => (a === id ? "" : id));
-  const op = (id) => ({
-    opacity: !ativo || ativo === id ? 1 : 0.18,
+function Interactive({ items, label, title, titleId, finalCaption, drawing, help, stamp }) {
+  const [active, setActive] = useState("");
+  const choose = (id) => setActive((a) => (a === id ? "" : id));
+  const opacityFor = (id) => ({
+    opacity: !active || active === id ? 1 : 0.18,
     cursor: "pointer",
     transition: "opacity .2s",
   });
-  const atual = itens.find((x) => x.id === ativo);
+  const current = items.find((x) => x.id === active);
   return (
     <figure className="illustration">
-      <svg viewBox="0 0 420 334" role="img" aria-labelledby={idTitulo}>
-        <title id={idTitulo}>{titulo}</title>
+      <svg viewBox="0 0 420 334" role="img" aria-labelledby={titleId}>
+        <title id={titleId}>{title}</title>
         <rect x="0" y="0" width="420" height="334" fill={PAPEL} />
-        {desenho({ op, escolher })}
-        <Carimbo {...carimbo} />
+        {drawing({ opacityFor, choose })}
+        <Stamp {...stamp} />
         <SeloExemplo x={318} y={10} rot={-6} s={1.7} />
       </svg>
-      <ul className="caption" aria-label={rotulo}>
-        {itens.map((x) => (
+      <ul className="caption" aria-label={label}>
+        {items.map((x) => (
           <li key={x.id}>
-            <button type="button" aria-pressed={ativo === x.id} onClick={() => escolher(x.id)}>
-              <i style={{ background: x.cor }} aria-hidden="true" /> {x.nome}
+            <button type="button" aria-pressed={active === x.id} onClick={() => choose(x.id)}>
+              <i style={{ background: x.color }} aria-hidden="true" /> {x.name}
             </button>
           </li>
         ))}
       </ul>
       <p className="illustration-explain" aria-live="polite">
-        {atual ? (
+        {current ? (
           <>
-            <strong>{atual.nome}.</strong> {atual.texto}
+            <strong>{current.name}.</strong> {current.text}
           </>
         ) : (
-          ajuda || "Toque num item acima, ou no desenho, para ver o que ele significa."
+          help || "Toque num item acima, ou no desenho, para ver o que ele significa."
         )}
       </p>
-      <figcaption>{legendaFinal}</figcaption>
+      <figcaption>{finalCaption}</figcaption>
     </figure>
   );
 }
 
-/* ── Segurança contra incêndio ──────────────────────────────────────────────────────────────── */
+/* ── Fire safety ────────────────────────────────────────────────────────────────────────────── */
 
-const SAIDA = "#2f8f46";
-const LUZ = "#f2c230";
+const EXIT_GREEN = "#2f8f46";
+const LIGHT_YELLOW = "#f2c230";
 
-const ITENS_BOMBEIROS = [
-  { id: "extintor", cor: VERMELHO, nome: "Extintor", texto: "Primeiro combate ao fogo. O projeto define o tipo (aqui, pó químico ABC), quantos são e onde ficam, sempre sinalizados e fáceis de alcançar." },
-  { id: "luz", cor: LUZ, nome: "Iluminação de emergência", texto: "Acende sozinha quando falta energia, para que as pessoas enxerguem o caminho até a saída." },
-  { id: "rota", cor: SAIDA, nome: "Rota de fuga", texto: "Caminho até a saída, que precisa ficar sempre livre de mercadorias e obstáculos." },
-  { id: "placa", cor: "#1f6b36", nome: "Placa de saída", texto: "Placa fotoluminescente que indica a saída mesmo no escuro. Fica sobre a porta e nas mudanças de direção." },
+const FIRE_ITEMS = [
+  { id: "extintor", color: VERMELHO, name: "Extintor", text: "Primeiro combate ao fogo. O projeto define o tipo (aqui, pó químico ABC), quantos são e onde ficam, sempre sinalizados e fáceis de alcançar." },
+  { id: "luz", color: LIGHT_YELLOW, name: "Iluminação de emergência", text: "Acende sozinha quando falta energia, para que as pessoas enxerguem o caminho até a saída." },
+  { id: "rota", color: EXIT_GREEN, name: "Rota de fuga", text: "Caminho até a saída, que precisa ficar sempre livre de mercadorias e obstáculos." },
+  { id: "placa", color: "#1f6b36", name: "Placa de saída", text: "Placa fotoluminescente que indica a saída mesmo no escuro. Fica sobre a porta e nas mudanças de direção." },
 ];
 
-function Bombeiros() {
-  const parede = { stroke: TINTA, fill: "none", strokeLinecap: "square" };
+function FireSafety() {
+  const wall = { stroke: TINTA, fill: "none", strokeLinecap: "square" };
   return (
-    <Interativa
-      itens={ITENS_BOMBEIROS}
-      rotulo="Elementos da planta"
-      titulo="Planta ilustrativa de segurança contra incêndio de um pequeno comércio"
-      idTitulo="t-bomb"
-      carimbo={{ titulo: "Planta de medidas de segurança contra incêndio", cliente: "Comércio Exemplo Ltda." }}
-      legendaFinal="Desenho ilustrativo de um projeto de incêndio. Não representa nenhum imóvel real."
-      desenho={({ op, escolher }) => (
+    <Interactive
+      items={FIRE_ITEMS}
+      label="Elementos da planta"
+      title="Planta ilustrativa de segurança contra incêndio de um pequeno comércio"
+      titleId="t-bomb"
+      stamp={{ title: "Planta de medidas de segurança contra incêndio", client: "Comércio Exemplo Ltda." }}
+      finalCaption="Desenho ilustrativo de um projeto de incêndio. Não representa nenhum imóvel real."
+      drawing={({ opacityFor, choose }) => (
         <>
-          <g {...parede}>
+          <g {...wall}>
             <rect x="24" y="40" width="372" height="232" strokeWidth="5" />
             <path d="M262 40V272M262 160H396M330 160V272" strokeWidth="3" />
           </g>
-          {/* vãos e portas */}
+          {/* openings and doors */}
           <g fill={PAPEL}>
             <rect x="112" y="268" width="44" height="8" />
             <rect x="259" y="88" width="6" height="22" />
@@ -112,26 +112,26 @@ function Bombeiros() {
             <path d="M272 160v22M340 160v22" />
             <path d="M294 160A22 22 0 0 1 272 182M362 160A22 22 0 0 1 340 182" strokeWidth="0.8" strokeDasharray="3 2" />
           </g>
-          <text x="140" y="120" style={ROT_B} textAnchor="middle">
+          <text x="140" y="120" style={LABEL_BOLD} textAnchor="middle">
             LOJA
           </text>
-          <text x="140" y="134" style={ROT} textAnchor="middle">
+          <text x="140" y="134" style={LABEL} textAnchor="middle">
             186,40 m²
           </text>
-          <text x="330" y="96" style={ROT_B} textAnchor="middle">
+          <text x="330" y="96" style={LABEL_BOLD} textAnchor="middle">
             ESTOQUE
           </text>
-          <text x="296" y="226" style={ROT_B} textAnchor="middle">
+          <text x="296" y="226" style={LABEL_BOLD} textAnchor="middle">
             WC
           </text>
-          <text x="364" y="226" style={ROT_B} textAnchor="middle">
+          <text x="364" y="226" style={LABEL_BOLD} textAnchor="middle">
             ESCRIT.
           </text>
-          <g style={op("rota")} onClick={() => escolher("rota")}>
-            <path d="M360 236L352 172L320 140L262 102L180 170L136 252" fill="none" stroke={SAIDA} strokeWidth="3" strokeDasharray="9 6" strokeLinecap="round" />
-            <path d="M136 262l-8 -12h16z" fill={SAIDA} />
+          <g style={opacityFor("rota")} onClick={() => choose("rota")}>
+            <path d="M360 236L352 172L320 140L262 102L180 170L136 252" fill="none" stroke={EXIT_GREEN} strokeWidth="3" strokeDasharray="9 6" strokeLinecap="round" />
+            <path d="M136 262l-8 -12h16z" fill={EXIT_GREEN} />
           </g>
-          <g style={op("placa")} onClick={() => escolher("placa")}>
+          <g style={opacityFor("placa")} onClick={() => choose("placa")}>
             <rect x="112" y="244" width="44" height="16" rx="2" fill="#1f6b36" />
             <text x="134" y="256" fontSize="10" fontWeight="700" fill="#fff" textAnchor="middle" fontFamily="inherit">
               SAÍDA
@@ -139,7 +139,7 @@ function Bombeiros() {
             <rect x="230" y="96" width="26" height="12" rx="2" fill="#1f6b36" />
             <path d="M236 102h12m-4 -4 4 4-4 4" stroke="#fff" strokeWidth="1.6" fill="none" />
           </g>
-          <g style={op("extintor")} onClick={() => escolher("extintor")}>
+          <g style={opacityFor("extintor")} onClick={() => choose("extintor")}>
             {[
               [50, 250],
               [210, 62],
@@ -154,7 +154,7 @@ function Bombeiros() {
               </g>
             ))}
           </g>
-          <g style={op("luz")} onClick={() => escolher("luz")} fill={LUZ} stroke="#7a5b00" strokeWidth="1.2">
+          <g style={opacityFor("luz")} onClick={() => choose("luz")} fill={LIGHT_YELLOW} stroke="#7a5b00" strokeWidth="1.2">
             {[
               [80, 90],
               [200, 90],
@@ -172,7 +172,7 @@ function Bombeiros() {
               N
             </text>
           </g>
-          <text x="24" y="28" style={ROT}>
+          <text x="24" y="28" style={LABEL}>
             Escala 1:100 · área 288,00 m²
           </text>
         </>
@@ -181,17 +181,17 @@ function Bombeiros() {
   );
 }
 
-/* ── Topografia e georreferenciamento ───────────────────────────────────────────────────────── */
+/* ── Surveying and georeferencing ───────────────────────────────────────────────────────────── */
 
-const ITENS_TOPO = [
-  { id: "marco", cor: TINTA, nome: "Marcos nos vértices", texto: "Peças fixadas em cada canto do terreno, com código próprio (M-0001, M-0002...). São elas que dão base oficial aos limites." },
-  { id: "limite", cor: VERDE, nome: "Limite do imóvel", texto: "Linha que separa o imóvel dos vizinhos. Cada lado tem azimute (direção) e distância medidos em campo." },
-  { id: "curvas", cor: MARROM, nome: "Curvas de nível", texto: "Mostram o relevo: cada linha une pontos de mesma altitude. Ajudam a planejar obras, estradas e a drenagem da água." },
-  { id: "coord", cor: AZUL, nome: "Coordenadas", texto: "Cada marco tem coordenadas E e N no sistema SIRGAS 2000, que localizam o ponto no mapa oficial usado pelo INCRA." },
-  { id: "conf", cor: CINZA, nome: "Confrontantes", texto: "Os vizinhos que fazem divisa com o imóvel, identificados no levantamento e no memorial descritivo." },
+const SURVEY_ITEMS = [
+  { id: "marco", color: TINTA, name: "Marcos nos vértices", text: "Peças fixadas em cada canto do terreno, com código próprio (M-0001, M-0002...). São elas que dão base oficial aos limites." },
+  { id: "limite", color: VERDE, name: "Limite do imóvel", text: "Linha que separa o imóvel dos vizinhos. Cada lado tem azimute (direção) e distância medidos em campo." },
+  { id: "curvas", color: MARROM, name: "Curvas de nível", text: "Mostram o relevo: cada linha une pontos de mesma altitude. Ajudam a planejar obras, estradas e a drenagem da água." },
+  { id: "coord", color: AZUL, name: "Coordenadas", text: "Cada marco tem coordenadas E e N no sistema SIRGAS 2000, que localizam o ponto no mapa oficial usado pelo INCRA." },
+  { id: "conf", color: CINZA, name: "Confrontantes", text: "Os vizinhos que fazem divisa com o imóvel, identificados no levantamento e no memorial descritivo." },
 ];
 
-const MARCOS = [
+const MARKERS = [
   ["M-0001", 70, 70],
   ["M-0002", 300, 52],
   ["M-0003", 352, 196],
@@ -199,40 +199,40 @@ const MARCOS = [
   ["M-0005", 50, 222],
 ];
 
-function Topografia() {
-  const poli = MARCOS.map(([, x, y]) => `${x},${y}`).join(" ");
-  const curvas = [0, 1, 2, 3, 4].map((i) => ({
-    cota: 510 + i * 2,
+function Survey() {
+  const polygonPoints = MARKERS.map(([, x, y]) => `${x},${y}`).join(" ");
+  const contours = [0, 1, 2, 3, 4].map((i) => ({
+    elevation: 510 + i * 2,
     d: `M40 ${232 - i * 36}C140 ${206 - i * 36} 230 ${262 - i * 36} 380 ${214 - i * 36}`,
   }));
   return (
-    <Interativa
-      itens={ITENS_TOPO}
-      rotulo="Elementos do levantamento"
-      titulo="Desenho ilustrativo de um imóvel rural com marcos, limites, curvas de nível e coordenadas"
-      idTitulo="t-topo"
-      carimbo={{ titulo: "Planta do imóvel georreferenciado · SIRGAS 2000 · UTM 22S", cliente: "Sítio Exemplo" }}
-      legendaFinal="Desenho ilustrativo de um levantamento. Não representa nenhuma propriedade real."
-      desenho={({ op, escolher }) => (
+    <Interactive
+      items={SURVEY_ITEMS}
+      label="Elementos do levantamento"
+      title="Desenho ilustrativo de um imóvel rural com marcos, limites, curvas de nível e coordenadas"
+      titleId="t-topo"
+      stamp={{ title: "Planta do imóvel georreferenciado · SIRGAS 2000 · UTM 22S", client: "Sítio Exemplo" }}
+      finalCaption="Desenho ilustrativo de um levantamento. Não representa nenhuma propriedade real."
+      drawing={({ opacityFor, choose }) => (
         <>
           <clipPath id="recorte-terreno">
-            <polygon points={poli} />
+            <polygon points={polygonPoints} />
           </clipPath>
-          <polygon points={poli} fill="#eef4ec" stroke="none" />
-          <g style={op("curvas")} onClick={() => escolher("curvas")}>
+          <polygon points={polygonPoints} fill="#eef4ec" stroke="none" />
+          <g style={opacityFor("curvas")} onClick={() => choose("curvas")}>
             <g clipPath="url(#recorte-terreno)" fill="none">
-              {curvas.map((c) => (
-                <path key={c.cota} d={c.d} stroke={MARROM} strokeWidth={c.cota % 10 === 0 ? 2 : 1} opacity="0.75" />
+              {contours.map((c) => (
+                <path key={c.elevation} d={c.d} stroke={MARROM} strokeWidth={c.elevation % 10 === 0 ? 2 : 1} opacity="0.75" />
               ))}
             </g>
-            {curvas.slice(0, 4).map((c, i) => (
-              <text key={c.cota} x={118} y={222 - i * 36} fontSize="10" fontWeight="700" fill={MARROM} fontFamily="inherit">
-                {c.cota}
+            {contours.slice(0, 4).map((c, i) => (
+              <text key={c.elevation} x={118} y={222 - i * 36} fontSize="10" fontWeight="700" fill={MARROM} fontFamily="inherit">
+                {c.elevation}
               </text>
             ))}
           </g>
-          <g style={op("limite")} onClick={() => escolher("limite")}>
-            <polygon points={poli} fill="none" stroke={VERDE} strokeWidth="3" />
+          <g style={opacityFor("limite")} onClick={() => choose("limite")}>
+            <polygon points={polygonPoints} fill="none" stroke={VERDE} strokeWidth="3" />
             <text x="186" y="52" fontSize="10" fill={VERDE} fontWeight="700" textAnchor="middle" transform="rotate(-4.3 186 52)" fontFamily="inherit">
               Az 85°42' · 461,20 m
             </text>
@@ -240,8 +240,8 @@ function Topografia() {
               Az 160°08' · 306,85 m
             </text>
           </g>
-          <g style={op("marco")} onClick={() => escolher("marco")}>
-            {MARCOS.map(([id, x, y]) => (
+          <g style={opacityFor("marco")} onClick={() => choose("marco")}>
+            {MARKERS.map(([id, x, y]) => (
               <g key={id}>
                 <rect x={x - 6} y={y - 6} width="12" height="12" fill={TINTA} />
                 <text x={x + (x > 200 ? 10 : -10)} y={y + (y < 100 ? -9 : 20)} fontSize="11" fontWeight="700" fill={TINTA} textAnchor={x > 200 ? "start" : "end"} fontFamily="inherit">
@@ -250,7 +250,7 @@ function Topografia() {
               </g>
             ))}
           </g>
-          <g style={op("coord")} onClick={() => escolher("coord")}>
+          <g style={opacityFor("coord")} onClick={() => choose("coord")}>
             <rect x="262" y="236" width="146" height="54" rx="6" fill="#fff" stroke={AZUL} strokeWidth="1.4" />
             <text x="272" y="253" fontSize="10" fontWeight="700" fill={AZUL} fontFamily="inherit">
               M-0003 (SIRGAS 2000)
@@ -263,7 +263,7 @@ function Topografia() {
             </text>
             <path d="M352 196L340 236" stroke={AZUL} strokeWidth="1.2" strokeDasharray="3 2" />
           </g>
-          <g style={op("conf")} onClick={() => escolher("conf")} fontFamily="inherit">
+          <g style={opacityFor("conf")} onClick={() => choose("conf")} fontFamily="inherit">
             <text x="160" y="30" fontSize="11" fill={CINZA}>
               Confrontante: Sítio Vizinho A
             </text>
@@ -289,24 +289,24 @@ function Topografia() {
   );
 }
 
-/* ── Mapa de riscos ─────────────────────────────────────────────────────────────────────────── */
+/* ── Risk map ───────────────────────────────────────────────────────────────────────────────── */
 
-// Convenção dos mapas de riscos: uma cor por grupo; o tamanho do círculo indica a intensidade
-// (pequeno, médio, grande) e o número, quantos trabalhadores estão expostos.
-const ITENS_RISCOS = [
-  { id: "fisico", cor: "#2e9e4d", nome: "Físico", texto: "Ruído, calor, vibração. Aqui: a serra do corte (risco grande). Na prática: protetor auricular, manutenção e pausas." },
-  { id: "quimico", cor: VERMELHO, nome: "Químico", texto: "Tintas, solventes, poeiras e vapores. Aqui: a cabine de pintura. Na prática: exaustão, máscara adequada e produtos identificados." },
-  { id: "biologico", cor: MARROM, nome: "Biológico", texto: "Fungos, bactérias e vírus. Aqui: a limpeza dos banheiros. Na prática: luvas, produtos de limpeza e higiene das mãos." },
-  { id: "ergo", cor: "#e3b007", nome: "Ergonômico", texto: "Postura, esforço e repetição. Aqui: a bancada de montagem e o escritório. Na prática: altura certa, cadeiras ajustáveis e pausas." },
-  { id: "acidente", cor: AZUL, nome: "Acidente", texto: "Cortes, quedas e choques. Aqui: a serra e o empilhamento no depósito. Na prática: proteção nas máquinas, piso organizado e sinalização." },
+// Risk map convention: one colour per group; the circle size shows the intensity
+// (small, medium, large) and the number shows how many workers are exposed.
+const RISK_ITEMS = [
+  { id: "fisico", color: "#2e9e4d", name: "Físico", text: "Ruído, calor, vibração. Aqui: a serra do corte (risco grande). Na prática: protetor auricular, manutenção e pausas." },
+  { id: "quimico", color: VERMELHO, name: "Químico", text: "Tintas, solventes, poeiras e vapores. Aqui: a cabine de pintura. Na prática: exaustão, máscara adequada e produtos identificados." },
+  { id: "biologico", color: MARROM, name: "Biológico", text: "Fungos, bactérias e vírus. Aqui: a limpeza dos banheiros. Na prática: luvas, produtos de limpeza e higiene das mãos." },
+  { id: "ergo", color: "#e3b007", name: "Ergonômico", text: "Postura, esforço e repetição. Aqui: a bancada de montagem e o escritório. Na prática: altura certa, cadeiras ajustáveis e pausas." },
+  { id: "acidente", color: AZUL, name: "Acidente", text: "Cortes, quedas e choques. Aqui: a serra e o empilhamento no depósito. Na prática: proteção nas máquinas, piso organizado e sinalização." },
 ];
 
-const RAIO = { P: 13, M: 20, G: 28 };
+const RADIUS = { P: 13, M: 20, G: 28 };
 
-function Risco({ x, y, tam, cor, n, ...eventos }) {
+function RiskCircle({ x, y, size, color, n, ...handlers }) {
   return (
-    <g {...eventos}>
-      <circle cx={x} cy={y} r={RAIO[tam]} fill={cor} fillOpacity=".72" stroke="#fff" strokeWidth="2" />
+    <g {...handlers}>
+      <circle cx={x} cy={y} r={RADIUS[size]} fill={color} fillOpacity=".72" stroke="#fff" strokeWidth="2" />
       <text x={x} y={y + 4.5} fontSize="13" fontWeight="700" fill="#fff" textAnchor="middle" fontFamily="inherit">
         {n}
       </text>
@@ -314,19 +314,19 @@ function Risco({ x, y, tam, cor, n, ...eventos }) {
   );
 }
 
-function MapaRiscos() {
-  const cor = Object.fromEntries(ITENS_RISCOS.map((x) => [x.id, x.cor]));
+function RiskMap() {
+  const color = Object.fromEntries(RISK_ITEMS.map((x) => [x.id, x.color]));
   return (
-    <Interativa
-      itens={ITENS_RISCOS}
-      rotulo="Grupos de risco"
-      titulo="Mapa de riscos ilustrativo de uma pequena oficina, com cinco grupos de risco"
-      idTitulo="t-risco"
-      carimbo={{ titulo: "Mapa de riscos · oficina", cliente: "Empresa Exemplo Ltda." }}
-      ajuda="Cada cor é um grupo de risco. O tamanho do círculo mostra a intensidade, e o número, quantas pessoas estão expostas."
-      legendaFinal="Mapa de riscos ilustrativo. Não representa nenhuma empresa real."
-      desenho={({ op, escolher }) => {
-        const r = (id) => ({ style: op(id), onClick: () => escolher(id) });
+    <Interactive
+      items={RISK_ITEMS}
+      label="Grupos de risco"
+      title="Mapa de riscos ilustrativo de uma pequena oficina, com cinco grupos de risco"
+      titleId="t-risco"
+      stamp={{ title: "Mapa de riscos · oficina", client: "Empresa Exemplo Ltda." }}
+      help="Cada cor é um grupo de risco. O tamanho do círculo mostra a intensidade, e o número, quantas pessoas estão expostas."
+      finalCaption="Mapa de riscos ilustrativo. Não representa nenhuma empresa real."
+      drawing={({ opacityFor, choose }) => {
+        const r = (id) => ({ style: opacityFor(id), onClick: () => choose(id) });
         return (
           <>
             <g stroke={TINTA} fill="none">
@@ -334,33 +334,33 @@ function MapaRiscos() {
               <path d="M200 40V150M20 150H120M160 150H260M300 150H400M290 150V256M340 150V256" strokeWidth="2" />
             </g>
             <g fontFamily="inherit">
-              <text x="110" y="60" style={ROT_B} textAnchor="middle">
+              <text x="110" y="60" style={LABEL_BOLD} textAnchor="middle">
                 CORTE
               </text>
-              <text x="300" y="60" style={ROT_B} textAnchor="middle">
+              <text x="300" y="60" style={LABEL_BOLD} textAnchor="middle">
                 PINTURA
               </text>
-              <text x="150" y="244" style={ROT_B} textAnchor="middle">
+              <text x="150" y="244" style={LABEL_BOLD} textAnchor="middle">
                 MONTAGEM
               </text>
-              <text x="315" y="244" style={ROT_B} textAnchor="middle">
+              <text x="315" y="244" style={LABEL_BOLD} textAnchor="middle">
                 WC
               </text>
-              <text x="370" y="244" style={ROT_B} textAnchor="middle">
+              <text x="370" y="244" style={LABEL_BOLD} textAnchor="middle">
                 ESCRIT.
               </text>
             </g>
             <rect x="60" y="88" width="56" height="30" fill={LINHA} stroke={BORDA} />
             <rect x="250" y="80" width="90" height="46" fill={LINHA} stroke={BORDA} />
             <rect x="80" y="180" width="120" height="26" fill={LINHA} stroke={BORDA} />
-            <Risco x={96} y={104} tam="G" cor={cor.fisico} n="3" {...r("fisico")} />
-            <Risco x={150} y={112} tam="M" cor={cor.acidente} n="3" {...r("acidente")} />
-            <Risco x={300} y={104} tam="G" cor={cor.quimico} n="2" {...r("quimico")} />
-            <Risco x={140} y={196} tam="M" cor={cor.ergo} n="4" {...r("ergo")} />
-            <Risco x={240} y={206} tam="P" cor={cor.acidente} n="1" {...r("acidente")} />
-            <Risco x={315} y={196} tam="P" cor={cor.biologico} n="1" {...r("biologico")} />
-            <Risco x={370} y={196} tam="P" cor={cor.ergo} n="2" {...r("ergo")} />
-            <text x="240" y="236" style={ROT} textAnchor="middle">
+            <RiskCircle x={96} y={104} size="G" color={color.fisico} n="3" {...r("fisico")} />
+            <RiskCircle x={150} y={112} size="M" color={color.acidente} n="3" {...r("acidente")} />
+            <RiskCircle x={300} y={104} size="G" color={color.quimico} n="2" {...r("quimico")} />
+            <RiskCircle x={140} y={196} size="M" color={color.ergo} n="4" {...r("ergo")} />
+            <RiskCircle x={240} y={206} size="P" color={color.acidente} n="1" {...r("acidente")} />
+            <RiskCircle x={315} y={196} size="P" color={color.biologico} n="1" {...r("biologico")} />
+            <RiskCircle x={370} y={196} size="P" color={color.ergo} n="2" {...r("ergo")} />
+            <text x="240" y="236" style={LABEL} textAnchor="middle">
               depósito
             </text>
             <g transform="translate(22 270)" fontFamily="inherit">
@@ -371,11 +371,11 @@ function MapaRiscos() {
                 ["P", "pequena", 96],
                 ["M", "média", 168],
                 ["G", "grande", 232],
-              ].map(([t, rotulo, x]) => (
+              ].map(([t, label, x]) => (
                 <g key={t}>
-                  <circle cx={x} cy={8} r={RAIO[t] * 0.42} fill="none" stroke={TINTA} strokeWidth="1.2" />
-                  <text x={x + RAIO[t] * 0.42 + 5} y={12} fontSize="10" fill={TINTA}>
-                    {rotulo}
+                  <circle cx={x} cy={8} r={RADIUS[t] * 0.42} fill="none" stroke={TINTA} strokeWidth="1.2" />
+                  <text x={x + RADIUS[t] * 0.42 + 5} y={12} fontSize="10" fill={TINTA}>
+                    {label}
                   </text>
                 </g>
               ))}
@@ -390,9 +390,9 @@ function MapaRiscos() {
   );
 }
 
-/* ── Modelo de PGR (tabela de verdade, legível no celular) ──────────────────────────────────── */
+/* ── PGR template (a real table, readable on a phone) ───────────────────────────────────────── */
 
-const COLUNAS_PGR = [
+const PGR_COLUMNS = [
   ["Setor", "Onde o trabalho acontece."],
   ["Perigo", "O que pode causar dano: máquina, produto, postura, altura."],
   ["Possível lesão", "O que pode acontecer com a pessoa se nada for feito."],
@@ -400,14 +400,14 @@ const COLUNAS_PGR = [
   ["Medida de prevenção", "O que a empresa faz para eliminar ou reduzir o risco, com responsável e prazo no plano de ação."],
 ];
 
-const LINHAS_PGR = [
+const PGR_ROWS = [
   ["Produção", "Ruído de máquinas", "Perda auditiva", "Moderado", "Protetor auricular e manutenção"],
   ["Produção", "Partes móveis da serra", "Cortes e esmagamento", "Alto", "Proteção fixa e bloqueio na manutenção"],
   ["Depósito", "Materiais empilhados", "Queda de objetos", "Moderado", "Prateleiras fixas e limite de altura"],
   ["Escritório", "Postura sentada por horas", "Dor nas costas", "Baixo", "Cadeira ajustável e pausas"],
 ];
 
-function ModeloPGR() {
+function PgrTemplate() {
   const [col, setCol] = useState(-1);
   return (
     <figure className="template">
@@ -429,10 +429,10 @@ function ModeloPGR() {
           <table>
             <thead>
               <tr>
-                {COLUNAS_PGR.map(([nome], i) => (
-                  <th key={nome} scope="col">
+                {PGR_COLUMNS.map(([name], i) => (
+                  <th key={name} scope="col">
                     <button type="button" aria-pressed={col === i} onClick={() => setCol((c) => (c === i ? -1 : i))}>
-                      {nome}
+                      {name}
                       <span aria-hidden="true">?</span>
                     </button>
                   </th>
@@ -440,7 +440,7 @@ function ModeloPGR() {
               </tr>
             </thead>
             <tbody>
-              {LINHAS_PGR.map((l, r) => (
+              {PGR_ROWS.map((l, r) => (
                 <tr key={r}>
                   {l.map((c, i) => (
                     <td key={i} data-ativa={col === i ? "" : undefined}>
@@ -455,7 +455,7 @@ function ModeloPGR() {
         <p className="template-explain" aria-live="polite">
           {col >= 0 ? (
             <>
-              <strong>{COLUNAS_PGR[col][0]}:</strong> {COLUNAS_PGR[col][1]}
+              <strong>{PGR_COLUMNS[col][0]}:</strong> {PGR_COLUMNS[col][1]}
             </>
           ) : (
             "Toque no título de uma coluna para ver o que ela significa."
@@ -468,9 +468,9 @@ function ModeloPGR() {
   );
 }
 
-/* ── Como ler uma prancha (ao lado dos projetos reais, que não são redesenhados) ────────────── */
+/* ── How to read a drawing sheet (next to the real projects, which are not redrawn) ─────────── */
 
-const PARTES_PRANCHA = [
+const SHEET_PARTS = [
   ["Carimbo", "O quadro no canto inferior da folha: título do desenho, escala, data, número da folha e o responsável técnico."],
   ["Escala", "1:50 quer dizer que 1 cm no papel são 50 cm na obra. Por isso o desenho cabe na folha e continua na proporção certa."],
   ["Cotas", "Os números nas linhas de medida. Dão o tamanho de paredes, vãos e cômodos, em metros."],
@@ -478,23 +478,23 @@ const PARTES_PRANCHA = [
 ];
 
 export function ComoLerPrancha() {
-  const [ativo, setAtivo] = useState(-1);
+  const [active, setActive] = useState(-1);
   return (
     <div className="how-read">
       <p className="how-read-title">Como ler uma prancha</p>
       <ul className="caption" aria-label="Partes de uma prancha">
-        {PARTES_PRANCHA.map(([nome], i) => (
-          <li key={nome}>
-            <button type="button" aria-pressed={ativo === i} onClick={() => setAtivo((a) => (a === i ? -1 : i))}>
-              {nome}
+        {SHEET_PARTS.map(([name], i) => (
+          <li key={name}>
+            <button type="button" aria-pressed={active === i} onClick={() => setActive((a) => (a === i ? -1 : i))}>
+              {name}
             </button>
           </li>
         ))}
       </ul>
       <p className="illustration-explain" aria-live="polite">
-        {ativo >= 0 ? (
+        {active >= 0 ? (
           <>
-            <strong>{PARTES_PRANCHA[ativo][0]}.</strong> {PARTES_PRANCHA[ativo][1]}
+            <strong>{SHEET_PARTS[active][0]}.</strong> {SHEET_PARTS[active][1]}
           </>
         ) : (
           "Toque numa parte para ver o que ela mostra no desenho."
@@ -505,13 +505,13 @@ export function ComoLerPrancha() {
 }
 
 export function Ilustracao({ slug }) {
-  if (slug === "corpo-de-bombeiros") return <Bombeiros />;
-  if (slug === "meio-ambiente-topografia") return <Topografia />;
+  if (slug === "corpo-de-bombeiros") return <FireSafety />;
+  if (slug === "meio-ambiente-topografia") return <Survey />;
   if (slug === "seguranca-do-trabalho")
     return (
       <div className="illustration-two">
-        <MapaRiscos />
-        <ModeloPGR />
+        <RiskMap />
+        <PgrTemplate />
       </div>
     );
   return null;

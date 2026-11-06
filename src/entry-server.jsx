@@ -1,17 +1,17 @@
 import { renderToString } from "react-dom/server";
 import App from "./App";
-import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Pages.jsx";
+import PageView, { NaoEncontrada, PaginaImprimir } from "./Pages.jsx";
 import { PAGINAS, SITE_URL, AREAS } from "./pagesData";
 
 export { PAGINAS, SITE_URL, AREAS };
 
-// Página inicial também sai pronta no HTML (antes só aparecia depois do JavaScript).
+// The home page is also output ready in the HTML (before, it only appeared after JavaScript ran).
 export function renderHome() {
   return renderToString(<App />);
 }
 
-export function render(pagina) {
-  return renderToString(<PaginaView pagina={pagina} />);
+export function render(page) {
+  return renderToString(<PageView pagina={page} />);
 }
 
 export function render404() {

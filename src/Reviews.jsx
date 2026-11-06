@@ -1,9 +1,9 @@
 import { AVALIACOES, NOTA_GOOGLE, URL_AVALIACOES_GOOGLE } from "./pagesData";
 
-// Faixa de avaliações do Google na página inicial. A nota e o total vêm de NOTA_GOOGLE; os cartões só
-// aparecem para as avaliações listadas em AVALIACOES (textos reais, copiados do Google pelo Rafael).
-// Sem lista, a faixa não aparece: a nota e o link para o Google já estão no topo e no contato.
-const Estrelas = ({ n = 5 }) => (
+// Google reviews strip on the home page. The rating and the total come from NOTA_GOOGLE; the cards only
+// appear for the reviews listed in AVALIACOES (real texts, copied from Google by Rafael).
+// With no list, the strip does not appear: the rating and the Google link are already at the top and in the contact section.
+const Stars = ({ n = 5 }) => (
   <span className="review-stars" role="img" aria-label={`${n} de 5 estrelas`}>
     {"★".repeat(n)}
     <span aria-hidden="true" className="review-stars-empty">
@@ -25,7 +25,7 @@ export default function Avaliacoes() {
             </h2>
           </div>
           <a className="review-note" href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
-            <Estrelas n={5} />
+            <Stars n={5} />
             <span>{NOTA_GOOGLE}</span>
             <small>Ver todas no Google →</small>
           </a>
@@ -33,7 +33,7 @@ export default function Avaliacoes() {
         <ul className="review-list">
           {AVALIACOES.map((a) => (
             <li key={`${a.nome}-${a.texto.slice(0, 20)}`} className="review-card reveal">
-              <Estrelas n={a.estrelas || 5} />
+              <Stars n={a.estrelas || 5} />
               <blockquote>
                 <p>“{a.texto}”</p>
               </blockquote>

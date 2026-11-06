@@ -1,19 +1,19 @@
 import * as React from "react";
 
 /**
- * TopoField — fundo animado com curvas de nível (linhas topográficas) e uma grade fina de 48 px,
- * desenhado por um shader WebGL a partir de ruído simplex 2D que deriva devagar.
+ * TopoField — animated background with contour lines (topographic lines) and a fine 48 px grid,
+ * drawn by a WebGL shader from slowly drifting 2D simplex noise.
  *
- * Origem: TopoField de MengTo/threeui (licença MIT), recebido via 21st.dev. O original carregava uma
- * página inteira (Tailwind por CDN, GSAP, Iconify e uma landing page de exemplo) dentro de um iframe;
- * aqui ficou só o shader, num <canvas> comum, sem dependências e sem baixar nada de fora.
+ * Origin: TopoField by MengTo/threeui (MIT license), received via 21st.dev. The original loaded a
+ * whole page (Tailwind via CDN, GSAP, Iconify and a sample landing page) inside an iframe;
+ * here only the shader remains, in a plain <canvas>, with no dependencies and nothing downloaded from outside.
  *
- * Adaptações ao site:
- * - A cor das linhas é a cor de texto (CSS `color`) do próprio canvas, então segue o tema claro e
- *   escuro pelo CSS do site. O fundo é transparente: aparece o fundo da seção.
- * - Só anima com o canvas à vista e a aba visível; com "reduzir movimento" desenha um quadro parado.
- * - Desenha em resolução 1x (as linhas são finas e suaves; 2x custava 4 vezes mais GPU) e a no máximo
- *   30 quadros por segundo, porque a deriva é lenta.
+ * Site adaptations:
+ * - The line color is the canvas's own text color (CSS `color`), so it follows the light and
+ *   dark theme through the site CSS. The background is transparent: the section background shows through.
+ * - Only animates while the canvas is in view and the tab is visible; with "reduced motion" it draws a still frame.
+ * - Draws at 1x resolution (the lines are thin and soft; 2x cost 4 times more GPU) and at most
+ *   30 frames per second, because the drift is slow.
  */
 
 const MAX_DPR = 1;
@@ -53,13 +53,13 @@ void main() {
   vec2 st = gl_FragCoord.xy / u_res.xy;
   st.x *= u_res.x / u_res.y;
 
-  // grade de 1 pixel físico a cada 48 px
+  // 1 physical pixel grid line every 48 px
   float gridSize = 48.0 * u_dpr;
   vec2 gf = fract(gl_FragCoord.xy / gridSize);
   float th = 1.0 / gridSize;
   float grid = clamp(step(1.0 - th, gf.x) + step(1.0 - th, gf.y), 0.0, 1.0) * u_grid;
 
-  // curvas de nível: faixas do ruído, só a crista de cada faixa vira linha
+  // contour lines: noise bands, only the crest of each band becomes a line
   vec2 np = st * u_scale + vec2(u_time * 0.015, u_time * 0.025);
   float n = snoise(np) * 0.5 + 0.5;
   float tri = abs(fract(n * u_bands) - 0.5) * 2.0;
@@ -70,21 +70,21 @@ void main() {
 }`;
 
 export type TopoFieldProps = Omit<React.ComponentProps<"canvas">, "children"> & {
-  /** Velocidade da deriva. 0 deixa parado. @default 1 */
+  /** Drift speed. 0 keeps it still. @default 1 */
   speed?: number;
-  /** Estica (maior) ou aperta (menor) o relevo. @default 1 */
+  /** Stretches (larger) or tightens (smaller) the relief. @default 1 */
   length?: number;
-  /** Multiplica o número de curvas de nível. @default 1 */
+  /** Multiplies the number of contour lines. @default 1 */
   density?: number;
-  /** Intensidade da grade, de 0 a 1. @default 0.12 */
+  /** Grid intensity, from 0 to 1. @default 0.12 */
   grid?: number;
-  /** Intensidade das curvas de nível, de 0 a 1. @default 0.45 */
+  /** Contour line intensity, from 0 to 1. @default 0.45 */
   lines?: number;
 };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
-// "rgb(31, 107, 42)", "rgba(...)" ou "color(srgb 0.12 0.42 0.16)" -> [r, g, b] entre 0 e 1.
+// "rgb(31, 107, 42)", "rgba(...)" or "color(srgb 0.12 0.42 0.16)" -> [r, g, b] between 0 and 1.
 function rgb(css: string): [number, number, number] {
   const n = (css.match(/[\d.]+/g) || []).map(Number);
   if (n.length < 3) return [0, 0, 0];
@@ -105,27 +105,27 @@ export function TopoField({
   knobs.current = { speed, length, density, grid, lines };
 
   React.useEffect(() => {
-    const alvo = ref.current;
-    if (!alvo) return undefined;
-    // Contexto WebGL e shader custam caro na thread principal: só nascem com o canvas perto da tela.
-    let limpar: (() => void) | undefined;
-    let iniciado = false;
-    const perto = new IntersectionObserver(
+    const target = ref.current;
+    if (!target) return undefined;
+    // The WebGL context and shader are expensive on the main thread: they are only created when the canvas is near the screen.
+    let cleanup: (() => void) | undefined;
+    let started = false;
+    const nearObserver = new IntersectionObserver(
       ([e]) => {
-        if (!e?.isIntersecting || iniciado) return;
-        iniciado = true;
-        perto.disconnect();
-        limpar = iniciar(alvo);
+        if (!e?.isIntersecting || started) return;
+        started = true;
+        nearObserver.disconnect();
+        cleanup = init(target);
       },
       { rootMargin: "300px" },
     );
-    perto.observe(alvo);
+    nearObserver.observe(target);
     return () => {
-      perto.disconnect();
-      limpar?.();
+      nearObserver.disconnect();
+      cleanup?.();
     };
 
-    function iniciar(canvas: HTMLCanvasElement): (() => void) | undefined {
+    function init(canvas: HTMLCanvasElement): (() => void) | undefined {
       const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false, depth: false });
       if (!gl) return undefined;
 
@@ -146,7 +146,7 @@ export function TopoField({
       if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return undefined;
       gl.useProgram(prog);
 
-      // um triângulo que cobre a tela toda
+      // one triangle that covers the whole screen
       gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
       const loc = gl.getAttribLocation(prog, "a");
@@ -221,7 +221,7 @@ export function TopoField({
         draw();
       };
 
-      // O tema troca as variáveis CSS; lê a cor no quadro seguinte, já com o estilo novo aplicado.
+      // The theme swaps the CSS variables; read the color on the next frame, with the new style already applied.
       const readColor = () =>
         requestAnimationFrame(() => {
           color = rgb(getComputedStyle(canvas).color);
@@ -272,7 +272,7 @@ export function TopoField({
     }
   }, []);
 
-  // Props novas valem a partir do próximo quadro (ou do próximo redimensionamento, se estiver parado).
+  // New props take effect from the next frame (or the next resize, if it is still).
   return (
     <canvas
       ref={ref}

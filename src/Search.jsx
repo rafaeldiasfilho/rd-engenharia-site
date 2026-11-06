@@ -1,14 +1,14 @@
 import { useEffect, useId, useRef, useState } from "react";
-import Icone from "./Icon";
+import Icon from "./Icon";
 import { AREAS, GUIAS, PAGINAS } from "./pagesData";
 import { zap } from "./contact";
 
-// Busca por documento ou serviço ("Qual documento você precisa?"), sem biblioteca.
-// - O índice sai do próprio conteúdo do site (áreas, serviços de cada área, guias e páginas úteis):
-//   nada a manter à parte. Ignora acentos e maiúsculas; todas as palavras digitadas precisam aparecer.
-// - Padrão de combobox acessível: setas sobem e descem, Enter abre, Esc limpa. A última opção é sempre
-//   perguntar no WhatsApp com o texto digitado, para nunca terminar sem saída.
-// - Nada de window/document na renderização: seguro para o prerender.
+// Search by document or service ("Qual documento você precisa?"), with no library.
+// - The index comes from the site's own content (areas, each area's services, guides and useful pages):
+//   nothing to maintain separately. Ignores accents and case; every typed word must appear.
+// - Accessible combobox pattern: arrows move up and down, Enter opens, Esc clears. The last option is always
+//   asking on WhatsApp with the typed text, so the search never ends in a dead end.
+// - No window/document during render: safe for prerendering.
 
 export const normaliza = (t) =>
   t
@@ -16,129 +16,129 @@ export const normaliza = (t) =>
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
 
-// Âncora de cada serviço na página da área (usada também em Paginas.jsx).
-export const ancora = (nome) =>
+// Anchor of each service on the area page (also used in Pages.jsx).
+export const ancora = (name) =>
   "servico-" +
-  normaliza(nome)
+  normaliza(name)
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 48);
 
-const PAGINAS_UTEIS = ["o-que-preciso", "lembrete-de-vencimento", "onde-atendemos"];
+const USEFUL_PAGES = ["o-que-preciso", "lembrete-de-vencimento", "onde-atendemos"];
 
-const INDICE = [
+const INDEX = [
   ...AREAS.flatMap((a) =>
     a.itens.map((it) => ({
-      tipo: "Serviço",
-      titulo: it.nome,
-      texto: a.nome,
+      type: "Serviço",
+      title: it.nome,
+      text: a.nome,
       href: `/${a.slug}#${ancora(it.nome)}`,
-      titulo_n: normaliza(it.nome),
-      busca: normaliza([it.nome, it.texto, it.quem, a.nome].join(" ")),
+      titleNorm: normaliza(it.nome),
+      haystack: normaliza([it.nome, it.texto, it.quem, a.nome].join(" ")),
     }))
   ),
   ...AREAS.map((a) => ({
-    tipo: "Área",
-    titulo: a.nome,
-    texto: a.curto,
+    type: "Área",
+    title: a.nome,
+    text: a.curto,
     href: `/${a.slug}`,
-    titulo_n: normaliza(a.nome),
-    busca: normaliza([a.nome, a.curto, a.intro, ...(a.situacoes || [])].join(" ")),
+    titleNorm: normaliza(a.nome),
+    haystack: normaliza([a.nome, a.curto, a.intro, ...(a.situacoes || [])].join(" ")),
   })),
   ...GUIAS.map((g) => ({
-    tipo: "Guia",
-    titulo: g.h1,
-    texto: "Guia em linguagem simples",
+    type: "Guia",
+    title: g.h1,
+    text: "Guia em linguagem simples",
     href: `/${g.slug}`,
-    titulo_n: normaliza(g.h1),
-    busca: normaliza([g.h1, g.description, g.servico].join(" ")),
+    titleNorm: normaliza(g.h1),
+    haystack: normaliza([g.h1, g.description, g.servico].join(" ")),
   })),
-  ...PAGINAS.filter((p) => PAGINAS_UTEIS.includes(p.slug)).map((p) => ({
-    tipo: "Página",
-    titulo: p.h1,
-    texto: p.description,
+  ...PAGINAS.filter((p) => USEFUL_PAGES.includes(p.slug)).map((p) => ({
+    type: "Página",
+    title: p.h1,
+    text: p.description,
     href: `/${p.slug}`,
-    titulo_n: normaliza(p.h1),
-    busca: normaliza([p.h1, p.description].join(" ")),
+    titleNorm: normaliza(p.h1),
+    haystack: normaliza([p.h1, p.description].join(" ")),
   })),
 ];
 
-const PESO_TIPO = { Serviço: 3, Área: 2, Guia: 1, Página: 0 };
+const TYPE_WEIGHT = { Serviço: 3, Área: 2, Guia: 1, Página: 0 };
 
-export function buscar(consulta, limite = 6) {
-  const termos = normaliza(consulta).split(/[^a-z0-9-]+/).filter((t) => t.length >= 2);
-  if (!termos.length) return [];
-  return INDICE.map((it) => {
-    let pontos = 0;
-    for (const t of termos) {
-      if (!it.busca.includes(t)) return null;
-      if (it.titulo_n.startsWith(t)) pontos += 6;
-      if (new RegExp(`(^|[^a-z0-9])${t}([^a-z0-9]|$)`).test(it.titulo_n)) pontos += 4;
-      else if (it.titulo_n.includes(t)) pontos += 2;
-      pontos += 1;
+export function buscar(query, limit = 6) {
+  const terms = normaliza(query).split(/[^a-z0-9-]+/).filter((t) => t.length >= 2);
+  if (!terms.length) return [];
+  return INDEX.map((it) => {
+    let score = 0;
+    for (const t of terms) {
+      if (!it.haystack.includes(t)) return null;
+      if (it.titleNorm.startsWith(t)) score += 6;
+      if (new RegExp(`(^|[^a-z0-9])${t}([^a-z0-9]|$)`).test(it.titleNorm)) score += 4;
+      else if (it.titleNorm.includes(t)) score += 2;
+      score += 1;
     }
-    return { ...it, pontos: pontos * 10 + PESO_TIPO[it.tipo] };
+    return { ...it, score: score * 10 + TYPE_WEIGHT[it.type] };
   })
     .filter(Boolean)
-    .sort((a, b) => b.pontos - a.pontos)
-    .slice(0, limite);
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
 }
 
-const SUGESTOES = ["AVCB", "PGR", "LTCAT", "CAR", "Habite-se", "Georreferenciamento"];
+const SUGGESTIONS = ["AVCB", "PGR", "LTCAT", "CAR", "Habite-se", "Georreferenciamento"];
 
 export default function BuscaDocumento({ autoFoco = false, aoSair, className = "" }) {
   const base = useId().replace(/:/g, "");
   const [q, setQ] = useState("");
-  const [ativo, setAtivo] = useState(-1);
-  const campo = useRef(null);
+  const [active, setActive] = useState(-1);
+  const field = useRef(null);
 
   useEffect(() => {
-    if (autoFoco && campo.current) campo.current.focus();
+    if (autoFoco && field.current) field.current.focus();
   }, [autoFoco]);
 
-  const resultados = buscar(q);
-  const texto = q.trim();
-  const opcoes = texto
+  const results = buscar(q);
+  const text = q.trim();
+  const options = text
     ? [
-        ...resultados,
+        ...results,
         {
-          tipo: "WhatsApp",
-          titulo: `Perguntar no WhatsApp: “${texto}”`,
-          texto: resultados.length ? "Ou fale direto com o responsável técnico." : "Não achamos no site, mas respondemos por lá.",
-          href: zap(`Olá! Procurei no site por "${texto}" e gostaria de saber se vocês fazem.`),
-          externo: true,
+          type: "WhatsApp",
+          title: `Perguntar no WhatsApp: “${text}”`,
+          text: results.length ? "Ou fale direto com o responsável técnico." : "Não achamos no site, mas respondemos por lá.",
+          href: zap(`Olá! Procurei no site por "${text}" e gostaria de saber se vocês fazem.`),
+          external: true,
         },
       ]
     : [];
-  const aberto = opcoes.length > 0;
+  const open = options.length > 0;
 
-  const abrir = (op) => {
+  const openOption = (op) => {
     if (!op) return;
-    if (op.externo) window.open(op.href, "_blank", "noopener,noreferrer");
+    if (op.external) window.open(op.href, "_blank", "noopener,noreferrer");
     else window.location.href = op.href;
     if (aoSair) aoSair();
   };
 
-  const teclas = (e) => {
-    if (e.key === "ArrowDown" && aberto) {
+  const handleKeys = (e) => {
+    if (e.key === "ArrowDown" && open) {
       e.preventDefault();
-      setAtivo((n) => (n + 1) % opcoes.length);
-    } else if (e.key === "ArrowUp" && aberto) {
+      setActive((n) => (n + 1) % options.length);
+    } else if (e.key === "ArrowUp" && open) {
       e.preventDefault();
-      setAtivo((n) => (n <= 0 ? opcoes.length - 1 : n - 1));
+      setActive((n) => (n <= 0 ? options.length - 1 : n - 1));
     } else if (e.key === "Enter") {
       e.preventDefault();
-      abrir(opcoes[ativo >= 0 ? ativo : 0]);
+      openOption(options[active >= 0 ? active : 0]);
     } else if (e.key === "Escape" && q) {
       e.preventDefault();
-      e.stopPropagation(); // primeiro Esc limpa; o segundo fecha a janela da busca
+      e.stopPropagation(); // first Esc clears; the second closes the search dialog
       setQ("");
-      setAtivo(-1);
+      setActive(-1);
     }
   };
 
-  const idLista = `${base}-lista`;
-  const idOpcao = (n) => `${base}-op-${n}`;
+  const listId = `${base}-lista`;
+  const optionId = (n) => `${base}-op-${n}`;
 
   return (
     <form className={`search ${className}`} role="search" onSubmit={(e) => e.preventDefault()}>
@@ -146,61 +146,61 @@ export default function BuscaDocumento({ autoFoco = false, aoSair, className = "
         Qual documento ou serviço você precisa?
       </label>
       <div className="search-box">
-        <Icone nome="fa-solid fa-magnifying-glass" />
+        <Icon nome="fa-solid fa-magnifying-glass" />
         <input
-          ref={campo}
+          ref={field}
           id={`${base}-campo`}
           type="search"
           role="combobox"
           aria-autocomplete="list"
-          aria-expanded={aberto}
-          aria-controls={idLista}
-          aria-activedescendant={aberto && ativo >= 0 ? idOpcao(ativo) : undefined}
+          aria-expanded={open}
+          aria-controls={listId}
+          aria-activedescendant={open && active >= 0 ? optionId(active) : undefined}
           autoComplete="off"
           enterKeyHint="search"
           placeholder="Ex.: AVCB, PGR, CAR, habite-se"
           value={q}
           onChange={(e) => {
             setQ(e.target.value);
-            setAtivo(-1);
+            setActive(-1);
           }}
-          onKeyDown={teclas}
+          onKeyDown={handleKeys}
         />
       </div>
-      <ul id={idLista} role="listbox" className="search-list" aria-label="Resultados da busca" hidden={!aberto}>
-        {opcoes.map((op, n) => (
+      <ul id={listId} role="listbox" className="search-list" aria-label="Resultados da busca" hidden={!open}>
+        {options.map((op, n) => (
           <li
             key={op.href}
-            id={idOpcao(n)}
+            id={optionId(n)}
             role="option"
-            aria-selected={n === ativo}
-            className={`search-option ${op.externo ? "search-option-whatsapp" : ""}`}
-            onMouseMove={() => setAtivo(n)}
+            aria-selected={n === active}
+            className={`search-option ${op.external ? "search-option-whatsapp" : ""}`}
+            onMouseMove={() => setActive(n)}
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => abrir(op)}
+            onClick={() => openOption(op)}
           >
-            <span className="search-type">{op.externo ? <Icone nome="fa-brands fa-whatsapp" /> : op.tipo}</span>
+            <span className="search-type">{op.external ? <Icon nome="fa-brands fa-whatsapp" /> : op.type}</span>
             <span className="search-txt">
-              <strong>{op.titulo}</strong>
-              <small>{op.texto}</small>
+              <strong>{op.title}</strong>
+              <small>{op.text}</small>
             </span>
           </li>
         ))}
       </ul>
       <p className="search-status" aria-live="polite">
-        {texto ? (resultados.length ? `${resultados.length} resultado${resultados.length > 1 ? "s" : ""}` : "Nenhum resultado no site") : ""}
+        {text ? (results.length ? `${results.length} resultado${results.length > 1 ? "s" : ""}` : "Nenhum resultado no site") : ""}
       </p>
-      {!texto && (
+      {!text && (
         <p className="search-suggestions">
           <span>Mais procurados:</span>
-          {SUGESTOES.map((s) => (
+          {SUGGESTIONS.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => {
                 setQ(s);
-                setAtivo(0);
-                campo.current?.focus();
+                setActive(0);
+                field.current?.focus();
               }}
             >
               {s}
@@ -212,60 +212,60 @@ export default function BuscaDocumento({ autoFoco = false, aoSair, className = "
   );
 }
 
-// Botão da busca no cabeçalho: abre a busca numa janela (dialog nativo, que já prende o foco e fecha com Esc).
-// Atalhos: Ctrl+K / Cmd+K e "/" (fora de campos de texto).
+// Search button in the header: opens the search in a dialog (native dialog, which already traps focus and closes with Esc).
+// Shortcuts: Ctrl+K / Cmd+K and "/" (outside text fields).
 export function BotaoBusca() {
-  const janela = useRef(null);
-  const [aberta, setAberta] = useState(false);
+  const dialogRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const abrir = () => {
-    const d = janela.current;
+  const openDialog = () => {
+    const d = dialogRef.current;
     if (!d || d.open) return;
     if (typeof d.showModal === "function") d.showModal();
     else d.setAttribute("open", "");
-    setAberta(true);
+    setIsOpen(true);
   };
-  const fechar = () => {
-    const d = janela.current;
+  const closeDialog = () => {
+    const d = dialogRef.current;
     if (d && d.open) d.close ? d.close() : d.removeAttribute("open");
-    setAberta(false);
+    setIsOpen(false);
   };
 
   useEffect(() => {
-    const atalho = (e) => {
-      const digitando = e.target.closest && e.target.closest("input, textarea, select, [contenteditable]");
+    const shortcut = (e) => {
+      const typing = e.target.closest && e.target.closest("input, textarea, select, [contenteditable]");
       if ((e.key === "k" || e.key === "K") && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-        abrir();
-      } else if (e.key === "/" && !digitando && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        openDialog();
+      } else if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
         e.preventDefault();
-        abrir();
+        openDialog();
       }
     };
-    document.addEventListener("keydown", atalho);
-    return () => document.removeEventListener("keydown", atalho);
+    document.addEventListener("keydown", shortcut);
+    return () => document.removeEventListener("keydown", shortcut);
   }, []);
 
   return (
     <>
-      <button type="button" className="search-button" aria-label="Buscar documento ou serviço" aria-haspopup="dialog" onClick={abrir}>
-        <Icone nome="fa-solid fa-magnifying-glass" />
+      <button type="button" className="search-button" aria-label="Buscar documento ou serviço" aria-haspopup="dialog" onClick={openDialog}>
+        <Icon nome="fa-solid fa-magnifying-glass" />
         <span className="search-button-txt">Buscar</span>
       </button>
       <dialog
-        ref={janela}
+        ref={dialogRef}
         className="search-dialog"
         aria-label="Buscar documento ou serviço"
-        onClose={() => setAberta(false)}
+        onClose={() => setIsOpen(false)}
         onClick={(e) => {
-          if (e.target === janela.current) fechar(); // clique fora da caixa
+          if (e.target === dialogRef.current) closeDialog(); // click outside the box
         }}
       >
         <div className="search-dialog-inner">
-          <button type="button" className="search-close" aria-label="Fechar a busca" onClick={fechar}>
-            <Icone nome="fa-solid fa-xmark" />
+          <button type="button" className="search-close" aria-label="Fechar a busca" onClick={closeDialog}>
+            <Icon nome="fa-solid fa-xmark" />
           </button>
-          {aberta && <BuscaDocumento autoFoco aoSair={fechar} />}
+          {isOpen && <BuscaDocumento autoFoco aoSair={closeDialog} />}
         </div>
       </dialog>
     </>

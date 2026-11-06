@@ -1,24 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { slidesDe, caminho, srcset, aviso } from "./photos";
-import Ampliar from "./PhotoViewer";
+import PhotoViewer from "./PhotoViewer";
 
-// Faixa de imagens no estilo "Fotos" da Apple, sem biblioteca. É o único carrossel do site.
-// - A faixa é CSS scroll-snap: funciona sem JavaScript, com deslizar no toque e roda do mouse, e a
-//   próxima imagem aparece "espiando" na borda.
-// - Arrastar com o mouse (ponteiro "mouse") move a faixa e, ao soltar, encaixa na imagem mais próxima.
-//   Um arrasto não dispara clique em link. Teclado: setas, Home e End com a faixa focada.
-// - Sem botões laterais e sem play/pause: o indicador é o contador "n / N" e os pontinhos (clicáveis).
-// - Troca automática a cada ~5 s, só depois de montar (não mexe no layout): pausa com o mouse em cima,
-//   foco dentro, toque/clique/arrasto, aba em segundo plano ou carrossel fora da tela, e volta ~8 s depois
-//   da última interação. Com "reduzir movimento" nunca troca sozinho.
-// - Nada de window/document na renderização: seguro para o prerender.
-// Fontes de slides: `chave` (fotos em CARROSSEIS, src/fotos.js) ou `itens` (lista própria, ver abaixo).
-// Item: { key, src, w, h, alt, legenda, nota, href (link da legenda), imgHref (link da imagem), contem, creditos }
-//   ou { key, node (qualquer elemento, ex.: uma folha SVG), legenda, nota }.
-// Clicar na imagem vizinha que aparece na borda leva até ela (botão invisível "Ir para a imagem n").
-// Foco por teclado dentro do carrossel (um clique do mouse também foca a faixa, mas não deve pausar para sempre).
-function focoDoTeclado(el) {
+// Image strip in the style of Apple "Photos", no library. It is the only carousel on the site.
+// - The strip is CSS scroll-snap: it works without JavaScript, with touch swipe and mouse wheel, and the
+//   next image "peeks" in at the edge.
+// - Dragging with the mouse (pointer type "mouse") moves the strip and, on release, snaps to the nearest image.
+//   A drag never triggers a link click. Keyboard: arrows, Home and End while the strip has focus.
+// - No side buttons and no play/pause: the indicator is the "n / N" counter plus the (clickable) dots.
+// - Autoplay every ~5 s, only after mount (does not affect layout): pauses on mouse hover,
+//   focus inside, touch/click/drag, background tab or carousel off screen, and resumes ~8 s after
+//   the last interaction. With "reduce motion" it never advances on its own.
+// - No window/document during render: safe for prerendering.
+// Slide sources: `chave` (photos in CARROSSEIS, src/fotos.js) or `itens` (own list, see below).
+// Item: { key, src, w, h, alt, legenda, nota, href (caption link), imgHref (image link), contem, creditos }
+//   or { key, node (any element, e.g. an SVG sheet), legenda, nota }.
+// Clicking the neighbouring image that peeks in at the edge goes to it (invisible button "Ir para a imagem n").
+// Keyboard focus inside the carousel (a mouse click also focuses the strip, but must not pause forever).
+function hasKeyboardFocus(el) {
   try {
     return el.matches(":has(:focus-visible)");
   } catch {
@@ -26,9 +26,9 @@ function focoDoTeclado(el) {
   }
 }
 
-const INTERVALO = 5000;
-const VOLTAS_MAX = 3; // depois de 3 voltas completas a troca automática para
-const RETOMADA = 8000;
+const INTERVAL = 5000;
+const MAX_LOOPS = 3; // after 3 full loops autoplay stops
+const RESUME_DELAY = 8000;
 
 export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", className = "", prioridade = false, auto = true, sizes = "(min-width: 900px) 50vw, 90vw" }) {
   const slides = itens
@@ -42,239 +42,239 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
         alt: s.f.alt,
         legenda: s.legenda,
         href: s.href,
-        imgHref: caminho(s.f), // toda foto de carrossel amplia na própria página
+        imgHref: caminho(s.f), // every carousel photo zooms in on the page itself
         nota: aviso(s.f),
         creditos: true,
         pos: s.pos,
       }));
   const total = slides.length;
-  // car-cheio: slide na largura toda. car-prateleira: vários cartões à vista, todos já clicáveis.
-  // Nos dois casos não há vizinha "espiando" para virar botão.
-  const cheio = className.includes("carousel-full") || className.includes("carousel-shelf");
-  const secao = useRef(null);
-  const faixa = useRef(null);
+  // carousel-full: full-width slide. carousel-shelf: several cards in view, all already clickable.
+  // In both cases there is no "peeking" neighbour to turn into a button.
+  const fullWidth = className.includes("carousel-full") || className.includes("carousel-shelf");
+  const sectionRef = useRef(null);
+  const bandRef = useRef(null);
   const [i, setI] = useState(0);
-  const [arrastando, setArrastando] = useState(false);
-  // Foto ampliada na própria página (antes abria em outra aba): { i, el } ou null
-  const [ampliada, setAmpliada] = useState(null);
-  const reduz = useRef(false);
-  const travaAte = useRef(0); // enquanto a rolagem programada anda, a rolagem não reescreve o contador
-  const ultimaAcao = useRef(0); // última interação da pessoa (pausa a troca automática)
-  const drag = useRef({ ativo: false, moveu: false, x0: 0, sl0: 0, id: null, bloqueia: false });
-  const ponteiros = useRef(new Set()); // ponteiros (mouse, toque, caneta) com o botão/dedo pressionado
-  const parou = useRef(false); // a pessoa mexeu ou já deu 3 voltas: não troca mais sozinho nesta visita
-  const voltas = useRef(0);
-  const temporizadores = useRef([]); // timeouts do arrasto, limpos ao desmontar
-  const agendar = (fn, ms) => {
-    temporizadores.current.push(setTimeout(fn, ms));
+  const [dragging, setDragging] = useState(false);
+  // Photo zoomed in on the page itself (it used to open in another tab): { i, el } or null
+  const [zoomed, setZoomed] = useState(null);
+  const reducedMotion = useRef(false);
+  const lockUntil = useRef(0); // while a programmatic scroll runs, scrolling does not rewrite the counter
+  const lastAction = useRef(0); // visitor's last interaction (pauses autoplay)
+  const drag = useRef({ active: false, moved: false, x0: 0, sl0: 0, id: null, blockClick: false });
+  const pointers = useRef(new Set()); // pointers (mouse, touch, pen) with the button/finger pressed
+  const stopped = useRef(false); // the visitor interacted or 3 loops are done: no more autoplay this visit
+  const loops = useRef(0);
+  const timers = useRef([]); // drag timeouts, cleared on unmount
+  const schedule = (fn, ms) => {
+    timers.current.push(setTimeout(fn, ms));
   };
   useEffect(() => {
-    const lista = temporizadores;
-    return () => lista.current.forEach(clearTimeout);
+    const list = timers;
+    return () => list.current.forEach(clearTimeout);
   }, []);
 
-  const passo = () => {
-    const f = faixa.current;
+  const step = () => {
+    const f = bandRef.current;
     if (!f || f.children.length < 2) return f ? f.clientWidth : 0;
     return f.children[1].offsetLeft - f.children[0].offsetLeft;
   };
 
-  const ir = useCallback(
+  const goTo = useCallback(
     (n) => {
-      const f = faixa.current;
+      const f = bandRef.current;
       if (!f) return;
-      const alvo = Math.max(0, Math.min(total - 1, n));
-      f.scrollTo({ left: alvo * passo(), behavior: reduz.current ? "auto" : "smooth" });
-      travaAte.current = Date.now() + 700;
-      setI(alvo);
+      const target = Math.max(0, Math.min(total - 1, n));
+      f.scrollTo({ left: target * step(), behavior: reducedMotion.current ? "auto" : "smooth" });
+      lockUntil.current = Date.now() + 700;
+      setI(target);
     },
     [total]
   );
 
-  // Contador acompanha a rolagem (toque, arrasto, teclado ou pontos).
+  // The counter follows scrolling (touch, drag, keyboard or dots).
   useEffect(() => {
-    const f = faixa.current;
+    const f = bandRef.current;
     if (!f) return undefined;
-    let adiado = 0;
-    const aoRolar = () => {
-      clearTimeout(adiado);
-      const resta = travaAte.current - Date.now();
-      if (resta > 0) {
-        adiado = setTimeout(aoRolar, resta + 30); // confere de novo quando a trava acabar
+    let deferred = 0;
+    const onScroll = () => {
+      clearTimeout(deferred);
+      const remaining = lockUntil.current - Date.now();
+      if (remaining > 0) {
+        deferred = setTimeout(onScroll, remaining + 30); // check again when the lock ends
         return;
       }
-      const p = passo();
-      // Com vários cartões à vista, a faixa acaba antes de o último chegar à esquerda: no fim, conta o último.
+      const p = step();
+      // With several cards in view, the strip ends before the last one reaches the left: at the end, count the last one.
       if (f.scrollLeft + f.clientWidth >= f.scrollWidth - 2) setI(total - 1);
       else if (p > 0) setI(Math.max(0, Math.min(total - 1, Math.round(f.scrollLeft / p))));
     };
-    f.addEventListener("scroll", aoRolar, { passive: true });
+    f.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      f.removeEventListener("scroll", aoRolar);
-      clearTimeout(adiado);
+      f.removeEventListener("scroll", onScroll);
+      clearTimeout(deferred);
     };
   }, [total]);
 
-  // Carrossel 3D (className "car-3d"): cada imagem gira e diminui conforme a distância do centro da faixa,
-  // como um coverflow. A faixa continua sendo scroll-snap (toque, arrasto e teclado iguais); o giro só
-  // acompanha a rolagem, um quadro por vez. Com "reduzir movimento" fica plano.
-  const tresD = className.includes("carousel-3d");
+  // 3D carousel (className "carousel-3d"): each image rotates and shrinks with its distance from the strip centre,
+  // like a coverflow. The strip is still scroll-snap (touch, drag and keyboard unchanged); the rotation only
+  // follows scrolling, one frame at a time. With "reduce motion" it stays flat.
+  const is3d = className.includes("carousel-3d");
   useEffect(() => {
-    const f = faixa.current;
-    if (!tresD || !f) return undefined;
-    let quadro = 0;
-    const pintar = () => {
-      quadro = 0;
-      const caixa = f.getBoundingClientRect();
-      const meio = caixa.left + caixa.width / 2;
-      const p = passo() || caixa.width;
+    const f = bandRef.current;
+    if (!is3d || !f) return undefined;
+    let frame = 0;
+    const paint = () => {
+      frame = 0;
+      const box = f.getBoundingClientRect();
+      const center = box.left + box.width / 2;
+      const p = step() || box.width;
       Array.from(f.children).forEach((sl) => {
         const img = sl.querySelector(".carousel-img");
         if (!img) return;
-        if (reduz.current) {
+        if (reducedMotion.current) {
           img.style.transform = "";
           img.style.opacity = "";
           return;
         }
         const r = sl.getBoundingClientRect();
-        const d = Math.max(-2, Math.min(2, (r.left + r.width / 2 - meio) / p));
+        const d = Math.max(-2, Math.min(2, (r.left + r.width / 2 - center) / p));
         const ad = Math.min(Math.abs(d), 1.5);
         img.style.transform = `rotateY(${(-d * 34).toFixed(2)}deg) scale(${(1 - ad * 0.16).toFixed(3)})`;
         img.style.opacity = (1 - ad * 0.38).toFixed(3);
         sl.style.zIndex = String(10 - Math.round(ad * 4));
       });
     };
-    const agendar3d = () => {
-      if (!quadro) quadro = requestAnimationFrame(pintar);
+    const schedule3d = () => {
+      if (!frame) frame = requestAnimationFrame(paint);
     };
-    pintar();
-    f.addEventListener("scroll", agendar3d, { passive: true });
-    window.addEventListener("resize", agendar3d);
+    paint();
+    f.addEventListener("scroll", schedule3d, { passive: true });
+    window.addEventListener("resize", schedule3d);
     return () => {
-      cancelAnimationFrame(quadro);
-      f.removeEventListener("scroll", agendar3d);
-      window.removeEventListener("resize", agendar3d);
+      cancelAnimationFrame(frame);
+      f.removeEventListener("scroll", schedule3d);
+      window.removeEventListener("resize", schedule3d);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tresD, total]);
+  }, [is3d, total]);
 
-  // Movimento reduzido + troca automática (tudo depois de montar, então nada muda na renderização do servidor).
+  // Reduced motion + autoplay (all after mount, so nothing changes in the server render).
   useEffect(() => {
     const mq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
-    reduz.current = !!(mq && mq.matches);
-    const aoMudarMq = () => {
-      reduz.current = !!(mq && mq.matches);
+    reducedMotion.current = !!(mq && mq.matches);
+    const onMqChange = () => {
+      reducedMotion.current = !!(mq && mq.matches);
     };
-    if (mq && mq.addEventListener) mq.addEventListener("change", aoMudarMq);
+    if (mq && mq.addEventListener) mq.addEventListener("change", onMqChange);
 
-    const el = secao.current;
-    let visivel = true;
-    const io = "IntersectionObserver" in window && el ? new IntersectionObserver(([en]) => (visivel = en.isIntersecting), { threshold: 0.4 }) : null;
+    const el = sectionRef.current;
+    let visible = true;
+    const io = "IntersectionObserver" in window && el ? new IntersectionObserver(([en]) => (visible = en.isIntersecting), { threshold: 0.4 }) : null;
     if (io && el) io.observe(el);
-    const marca = () => {
-      ultimaAcao.current = Date.now();
+    const mark = () => {
+      lastAction.current = Date.now();
     };
-    const eventos = ["pointerdown", "pointerup", "pointerleave", "touchstart", "wheel", "keydown", "focusin", "focusout"];
-    if (el) eventos.forEach((ev) => el.addEventListener(ev, marca, { passive: true }));
-    // Enquanto qualquer ponteiro estiver pressionado (mouse, dedo, caneta), a troca automática não anda.
-    const desce = (e) => {
-      ponteiros.current.add(e.pointerId);
-      if (e.pointerType !== "mouse") parou.current = true; // gesto de toque: a pessoa assumiu o controle
+    const events = ["pointerdown", "pointerup", "pointerleave", "touchstart", "wheel", "keydown", "focusin", "focusout"];
+    if (el) events.forEach((ev) => el.addEventListener(ev, mark, { passive: true }));
+    // While any pointer is pressed (mouse, finger, pen), autoplay does not advance.
+    const onDown = (e) => {
+      pointers.current.add(e.pointerId);
+      if (e.pointerType !== "mouse") stopped.current = true; // touch gesture: the visitor took control
     };
-    const sobe = (e) => {
-      ponteiros.current.delete(e.pointerId);
+    const onUp = (e) => {
+      pointers.current.delete(e.pointerId);
     };
-    if (el) el.addEventListener("pointerdown", desce, { passive: true });
-    window.addEventListener("pointerup", sobe, { passive: true });
-    window.addEventListener("pointercancel", sobe, { passive: true });
+    if (el) el.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerup", onUp, { passive: true });
+    window.addEventListener("pointercancel", onUp, { passive: true });
 
     const tick = () => {
-      if (!auto || total < 2 || parou.current || reduz.current || !visivel || document.hidden) return;
-      if (ponteiros.current.size > 0 || drag.current.ativo || drag.current.moveu) return;
-      if (el && (el.matches(":hover") || focoDoTeclado(el))) return;
-      if (Date.now() - ultimaAcao.current < RETOMADA) return;
-      const f = faixa.current;
-      const p = passo();
+      if (!auto || total < 2 || stopped.current || reducedMotion.current || !visible || document.hidden) return;
+      if (pointers.current.size > 0 || drag.current.active || drag.current.moved) return;
+      if (el && (el.matches(":hover") || hasKeyboardFocus(el))) return;
+      if (Date.now() - lastAction.current < RESUME_DELAY) return;
+      const f = bandRef.current;
+      const p = step();
       if (!f || p <= 0) return;
-      const atual = Math.round(f.scrollLeft / p);
-      if (atual >= total - 1) {
-        voltas.current += 1;
-        if (voltas.current >= VOLTAS_MAX) {
-          parou.current = true;
+      const currentIndex = Math.round(f.scrollLeft / p);
+      if (currentIndex >= total - 1) {
+        loops.current += 1;
+        if (loops.current >= MAX_LOOPS) {
+          stopped.current = true;
           return;
         }
-        ir(0);
+        goTo(0);
       } else {
-        ir(atual + 1);
+        goTo(currentIndex + 1);
       }
     };
-    const t = auto && total > 1 ? setInterval(tick, INTERVALO) : 0;
+    const t = auto && total > 1 ? setInterval(tick, INTERVAL) : 0;
 
     return () => {
       clearInterval(t);
       if (io) io.disconnect();
       if (el) {
-        eventos.forEach((ev) => el.removeEventListener(ev, marca));
-        el.removeEventListener("pointerdown", desce);
+        events.forEach((ev) => el.removeEventListener(ev, mark));
+        el.removeEventListener("pointerdown", onDown);
       }
-      window.removeEventListener("pointerup", sobe);
-      window.removeEventListener("pointercancel", sobe);
-      if (mq && mq.removeEventListener) mq.removeEventListener("change", aoMudarMq);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      if (mq && mq.removeEventListener) mq.removeEventListener("change", onMqChange);
     };
-  }, [auto, total, ir]);
+  }, [auto, total, goTo]);
 
   if (total === 0) return null;
 
-  const teclas = (e) => {
+  const onKeys = (e) => {
     if (total < 2) return;
-    const mapa = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: total - 1 };
-    if (e.key in mapa) {
+    const keyMap = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: total - 1 };
+    if (e.key in keyMap) {
       e.preventDefault();
-      parou.current = true;
-      ir(mapa[e.key]);
+      stopped.current = true;
+      goTo(keyMap[e.key]);
     }
   };
 
-  // Arrasto com o mouse. Toque e caneta usam a rolagem nativa da faixa.
-  const aoApertar = (e) => {
+  // Mouse drag. Touch and pen use the strip's native scrolling.
+  const handlePointerDown = (e) => {
     if (e.pointerType !== "mouse" || e.button !== 0 || total < 2) return;
-    drag.current = { ativo: true, moveu: false, x0: e.clientX, sl0: faixa.current.scrollLeft, id: e.pointerId, bloqueia: false };
+    drag.current = { active: true, moved: false, x0: e.clientX, sl0: bandRef.current.scrollLeft, id: e.pointerId, blockClick: false };
   };
-  const aoMover = (e) => {
+  const handlePointerMove = (e) => {
     const d = drag.current;
-    if (!d.ativo) return;
+    if (!d.active) return;
     const dx = e.clientX - d.x0;
-    if (!d.moveu && Math.abs(dx) > 4) {
-      d.moveu = true;
-      parou.current = true;
+    if (!d.moved && Math.abs(dx) > 4) {
+      d.moved = true;
+      stopped.current = true;
       try {
-        faixa.current.setPointerCapture(d.id);
+        bandRef.current.setPointerCapture(d.id);
       } catch {
-        /* ponteiro já liberado */
+        /* pointer already released */
       }
-      setArrastando(true);
+      setDragging(true);
     }
-    if (d.moveu) faixa.current.scrollLeft = d.sl0 - dx;
+    if (d.moved) bandRef.current.scrollLeft = d.sl0 - dx;
   };
-  const aoSoltar = () => {
+  const handlePointerUp = () => {
     const d = drag.current;
-    if (!d.ativo) return;
-    d.ativo = false;
-    if (!d.moveu) return;
-    const p = passo();
-    const alvo = p > 0 ? Math.round(faixa.current.scrollLeft / p) : 0;
-    d.bloqueia = true; // o clique que vem logo depois do arrasto não deve abrir link
-    agendar(() => {
-      d.bloqueia = false;
+    if (!d.active) return;
+    d.active = false;
+    if (!d.moved) return;
+    const p = step();
+    const target = p > 0 ? Math.round(bandRef.current.scrollLeft / p) : 0;
+    d.blockClick = true; // the click right after a drag must not open a link
+    schedule(() => {
+      d.blockClick = false;
     }, 50);
-    ir(alvo);
-    agendar(() => {
-      d.moveu = false;
-      setArrastando(false);
+    goTo(target);
+    schedule(() => {
+      d.moved = false;
+      setDragging(false);
     }, 500);
   };
-  const aoClicarCaptura = (e) => {
-    if (drag.current.bloqueia) {
+  const handleClickCapture = (e) => {
+    if (drag.current.blockClick) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -282,24 +282,24 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
 
   return (
     <section
-      ref={secao}
+      ref={sectionRef}
       className={`carousel ${total < 2 ? "carousel-one" : ""} ${className}`}
       role="region"
       aria-roledescription="carrossel"
       aria-label={rotulo}
       style={{ "--carousel-aspect": aspecto }}
-      onKeyDown={teclas}
+      onKeyDown={onKeys}
     >
       <div
-        className={`carousel-band ${arrastando ? "dragging" : ""}`}
-        ref={faixa}
+        className={`carousel-band ${dragging ? "dragging" : ""}`}
+        ref={bandRef}
         tabIndex={0}
         aria-label={`${rotulo}: use as setas do teclado, deslize ou arraste`}
-        onPointerDown={aoApertar}
-        onPointerMove={aoMover}
-        onPointerUp={aoSoltar}
-        onPointerCancel={aoSoltar}
-        onClickCapture={aoClicarCaptura}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClickCapture={handleClickCapture}
       >
         {slides.map((s, n) => {
           const img = s.node ? null : (
@@ -325,14 +325,14 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
               aria-roledescription="slide"
               aria-label={`${n + 1} de ${total}`}
             >
-              {!cheio && n !== i && total > 1 && (
+              {!fullWidth && n !== i && total > 1 && (
                 <button
                   type="button"
                   className="carousel-neighbor"
                   aria-label={`Ir para a imagem ${n + 1} de ${total}`}
                   onClick={() => {
-                    parou.current = true;
-                    ir(n);
+                    stopped.current = true;
+                    goTo(n);
                   }}
                 />
               )}
@@ -347,11 +347,11 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
                       aria-label={`Ampliar: ${s.legenda || s.alt}`}
                       aria-haspopup="dialog"
                       onClick={(e) => {
-                        // Sem JavaScript o link abre a imagem; com JavaScript ela amplia aqui mesmo.
+                        // Without JavaScript the link opens the image; with JavaScript it zooms in right here.
                         e.preventDefault();
-                        parou.current = true;
-                        const lista = slides.filter((x) => x.imgHref && !x.node);
-                        setAmpliada({ i: lista.indexOf(s), el: e.currentTarget.querySelector("img") });
+                        stopped.current = true;
+                        const list = slides.filter((x) => x.imgHref && !x.node);
+                        setZoomed({ i: list.indexOf(s), el: e.currentTarget.querySelector("img") });
                       }}
                     >
                       {img}
@@ -397,8 +397,8 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
                 aria-label={`Ir para a imagem ${n + 1} de ${total}`}
                 aria-current={n === i ? "true" : undefined}
                 onClick={() => {
-                  parou.current = true;
-                  ir(n);
+                  stopped.current = true;
+                  goTo(n);
                 }}
               >
                 <i aria-hidden="true" />
@@ -407,13 +407,13 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
           </div>
         </div>
       )}
-      {ampliada &&
+      {zoomed &&
         createPortal(
-          <Ampliar
+          <PhotoViewer
             itens={slides.filter((x) => x.imgHref && !x.node).map((x) => ({ src: x.imgHref, alt: x.alt, legenda: x.legenda }))}
-            indice={ampliada.i}
-            origem={ampliada.el}
-            aoFechar={() => setAmpliada(null)}
+            indice={zoomed.i}
+            origem={zoomed.el}
+            aoFechar={() => setZoomed(null)}
           />,
           document.body,
         )}

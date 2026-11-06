@@ -1,27 +1,27 @@
-// Ilustrações de documentos de exemplo, desenhadas como capas e pranchas de verdade. Nada é um documento
-// real: o cliente é fictício ("Exemplo"), não há assinatura nem número de ART; só os dados públicos da RD
-// e do responsável técnico (os mesmos do rodapé) aparecem. Toda folha leva o carimbo "EXEMPLO".
-// O papel é sempre claro, então funciona nos temas claro e escuro. Cada folha tem texto alternativo.
-//  - FolhaSvg: a folha (capa, prancha ou certificado), ou a página interna de uma capa.
-//  - FolhaLeitura: a folha ampliada, com abas "Capa / Página interna / Como ler" e zoom.
-//  - DocsIlustracao (padrão): duas folhas empilhadas na seção "Para agilizar, separe".
+// Illustrations of sample documents, drawn like real covers and drawing sheets. None of them is a real
+// document: the client is fictitious ("Exemplo"), there is no signature and no ART number; only RD's public
+// data and the technical lead's (the same as in the footer) appear. Every sheet carries the "EXEMPLO" stamp.
+// The paper is always light, so it works in both light and dark themes. Every sheet has alt text.
+//  - FolhaSvg: the sheet (cover, drawing sheet or certificate), or the inner page of a cover.
+//  - FolhaLeitura: the enlarged sheet, with "Capa / Página interna / Como ler" tabs and zoom.
+//  - DocsIlustracao (default): two stacked sheets in the "Para agilizar, separe" section.
 import { useId, useState } from "react";
 import { BORDA, CINZA, CREA, DATA, FUNDO, LEGENDA_EXEMPLO, Marca, PAPEL, RD_CNPJ, RESP, SeloExemplo, TINTA, VERDE, VERMELHO, clienteDe, quebra } from "./SheetBase";
 import { Desenho, Miolo, PINOS, TEM_MIOLO } from "./DocDrawings";
 
 export { LEGENDA_EXEMPLO };
 
-// ── Folhas com cara de documento de verdade ──────────────────────────────────────────────────
-// Três formatos, escolhidos por `m.layout` (campo `exemplo` em src/paginas.js):
-//  - "capa": capa de relatório (laudos, programas, análises), com sumário e uma página interna;
-//  - "prancha": desenho técnico com carimbo (plantas, mapas, cronograma);
-//  - "certificado": certificado de treinamento.
+// ── Sheets that look like real documents ──────────────────────────────────────────────────────
+// Three formats, chosen by `m.layout` (field `exemplo` in src/paginas.js):
+//  - "capa": report cover (technical reports, programmes, analyses), with a table of contents and an inner page;
+//  - "prancha": technical drawing with title block (plans, maps, schedule);
+//  - "certificado": training certificate.
 
-function Capa({ m, area }) {
+function Cover({ m, area }) {
   const doc = m.doc || m.sub;
-  const titulo = quebra(doc.toUpperCase(), 24).slice(0, 3);
-  const [cli, cliInfo] = clienteDe(m, area);
-  const ySum = 52 + titulo.length * 8 + 6;
+  const titleLines = quebra(doc.toUpperCase(), 24).slice(0, 3);
+  const [client, clientInfo] = clienteDe(m, area);
+  const summaryY = 52 + titleLines.length * 8 + 6;
   return (
     <g fontFamily="inherit">
       <Marca x={10} y={10} />
@@ -35,22 +35,22 @@ function Capa({ m, area }) {
       <text x="10" y="42" fontSize="3.6" fontWeight="700" fill={VERDE} letterSpacing="0.6">
         {(m.ref || m.titulo).toUpperCase()}
       </text>
-      {titulo.map((l, k) => (
+      {titleLines.map((l, k) => (
         <text key={l} x="10" y={52 + k * 8} fontSize="6.6" fontWeight="700" fill={TINTA} letterSpacing="0.1">
           {l}
         </text>
       ))}
       {m.sumario && (
         <g>
-          <text x="10" y={ySum} fontSize="3.2" fontWeight="700" fill={CINZA} letterSpacing="0.6">
+          <text x="10" y={summaryY} fontSize="3.2" fontWeight="700" fill={CINZA} letterSpacing="0.6">
             SUMÁRIO
           </text>
           {m.sumario.slice(0, 3).map((s, k) => (
             <g key={s}>
-              <text x="10" y={ySum + 7 + k * 6.4} fontSize="3.8" fill={TINTA}>
+              <text x="10" y={summaryY + 7 + k * 6.4} fontSize="3.8" fill={TINTA}>
                 {k + 1}. {s}
               </text>
-              <text x="140" y={ySum + 7 + k * 6.4} fontSize="3.8" fill={CINZA} textAnchor="end">
+              <text x="140" y={summaryY + 7 + k * 6.4} fontSize="3.8" fill={CINZA} textAnchor="end">
                 {[3, 4, 11][k]}
               </text>
             </g>
@@ -62,10 +62,10 @@ function Capa({ m, area }) {
         CONTRATANTE
       </text>
       <text x="15" y="125" fontSize="4.8" fontWeight="700" fill={TINTA}>
-        {cli}
+        {client}
       </text>
       <text x="15" y="130.4" fontSize="3.5" fill={CINZA}>
-        {cliInfo}
+        {clientInfo}
       </text>
       <text x="10" y="144" fontSize="3.1" fontWeight="700" fill={CINZA} letterSpacing="0.6">
         RESPONSÁVEL TÉCNICO
@@ -95,17 +95,17 @@ function Capa({ m, area }) {
   );
 }
 
-function Prancha({ m, area, uid }) {
+function DrawingSheet({ m, area, uid }) {
   const doc = m.doc || m.sub;
-  const [cli, cliInfo] = clienteDe(m, area);
-  const titulo = quebra(doc, 30).slice(0, 2);
-  const cel = (x, y, rotulo, valor, w) => (
+  const [client, clientInfo] = clienteDe(m, area);
+  const titleLines = quebra(doc, 30).slice(0, 2);
+  const cell = (x, y, label, value, w) => (
     <g>
       <text x={x + 2.4} y={y + 4.6} fontSize="2.7" fontWeight="700" fill={CINZA} letterSpacing="0.4">
-        {rotulo}
+        {label}
       </text>
       <text x={x + 2.4} y={y + 10} fontSize="3.4" fontWeight="600" fill={TINTA}>
-        {valor}
+        {value}
       </text>
       {w && <line x1={x + w} y1={y} x2={x + w} y2={y + 13} stroke={TINTA} strokeWidth="0.4" />}
     </g>
@@ -126,24 +126,24 @@ function Prancha({ m, area, uid }) {
       <text x="54.4" y="130.6" fontSize="2.7" fontWeight="700" fill={CINZA} letterSpacing="0.4">
         TÍTULO
       </text>
-      {titulo.map((l, k) => (
+      {titleLines.map((l, k) => (
         <text key={l} x="54.4" y={135.6 + k * 4} fontSize="3.6" fontWeight="700" fill={TINTA}>
           {l}
         </text>
       ))}
-      {cel(5, 141, "CLIENTE", `${cli} · ${cliInfo}`)}
-      {cel(5, 154, "CONTEÚDO", m.ref || m.sub)}
-      {cel(5, 167, "RESPONSÁVEL TÉCNICO", `${RESP} · ${CREA}`)}
-      {cel(5, 180, "ESCALA", m.escala || "Indicada", 35)}
-      {cel(40, 180, "DATA", "10/2026", 35)}
-      {cel(75, 180, "FOLHA", "01/03", 35)}
-      {cel(110, 180, "ART", m.art ? "Sim" : "—")}
+      {cell(5, 141, "CLIENTE", `${client} · ${clientInfo}`)}
+      {cell(5, 154, "CONTEÚDO", m.ref || m.sub)}
+      {cell(5, 167, "RESPONSÁVEL TÉCNICO", `${RESP} · ${CREA}`)}
+      {cell(5, 180, "ESCALA", m.escala || "Indicada", 35)}
+      {cell(40, 180, "DATA", "10/2026", 35)}
+      {cell(75, 180, "FOLHA", "01/03", 35)}
+      {cell(110, 180, "ART", m.art ? "Sim" : "—")}
     </g>
   );
 }
 
-function Certificado({ m, area }) {
-  const [cli] = clienteDe(m, area);
+function Certificate({ m, area }) {
+  const [client] = clienteDe(m, area);
   return (
     <g fontFamily="inherit" textAnchor="middle">
       <rect x="7" y="7" width="136" height="184" rx="2" fill="none" stroke={VERDE} strokeWidth="1.2" />
@@ -173,7 +173,7 @@ function Certificado({ m, area }) {
         Carga horária e conteúdo conforme a norma
       </text>
       <text x="75" y="126" fontSize="3.6" fill={TINTA}>
-        {cli} · Ibirá/SP, {DATA}
+        {client} · Ibirá/SP, {DATA}
       </text>
       <line x1="18" y1="158" x2="68" y2="158" stroke={BORDA} />
       <line x1="82" y1="158" x2="132" y2="158" stroke={BORDA} />
@@ -190,21 +190,21 @@ function Certificado({ m, area }) {
   );
 }
 
-function Folha({ x = 0, y = 0, rot = 0, m, area, pagina = "folha", uid }) {
-  const Layout = m.layout === "prancha" ? Prancha : m.layout === "certificado" ? Certificado : Capa;
+function Sheet({ x = 0, y = 0, rot = 0, m, area, page = "folha", uid }) {
+  const Layout = m.layout === "prancha" ? DrawingSheet : m.layout === "certificado" ? Certificate : Cover;
   return (
     <g transform={`translate(${x} ${y}) rotate(${rot})`}>
       <rect x="2" y="3" width="150" height="198" rx="3" fill="#000" opacity="0.1" />
       <rect width="150" height="198" rx="3" fill={PAPEL} stroke={BORDA} />
-      {pagina === "miolo" ? <Miolo m={m} area={area} /> : <Layout m={m} area={area} uid={uid} />}
+      {page === "miolo" ? <Miolo m={m} area={area} /> : <Layout m={m} area={area} uid={uid} />}
     </g>
   );
 }
 
-function Pinos({ lista }) {
+function Pins({ list }) {
   return (
     <g>
-      {lista.map((p, i) => (
+      {list.map((p, i) => (
         <g key={i}>
           <circle cx={p.x} cy={p.y} r="4.4" fill={VERMELHO} stroke="#fff" strokeWidth="0.9" />
           <text x={p.x} y={p.y + 1.6} fontSize="4.4" fontWeight="700" fill="#fff" textAnchor="middle">
@@ -216,41 +216,41 @@ function Pinos({ lista }) {
   );
 }
 
-const descricao = (m, nome, pagina) =>
-  pagina === "miolo"
-    ? `Página interna de exemplo de ${nome}: ${(m.doc || m.sub).toLowerCase()}`
-    : `Exemplo ilustrativo de ${nome}: ${(m.doc || m.sub).toLowerCase()}`;
+const describe = (m, name, page) =>
+  page === "miolo"
+    ? `Página interna de exemplo de ${name}: ${(m.doc || m.sub).toLowerCase()}`
+    : `Exemplo ilustrativo de ${name}: ${(m.doc || m.sub).toLowerCase()}`;
 
-// A folha (ou a página interna de uma capa), com o carimbo EXEMPLO e, se pedido, os pontos de "Como ler".
+// The sheet (or the inner page of a cover), with the EXEMPLO stamp and, if requested, the "Como ler" points.
 export function FolhaSvg({ m, nome, area, pagina = "folha", pinos = null }) {
   const uid = useId().replace(/:/g, "");
   return (
-    <svg className="sheet-svg" viewBox="0 -10 158 218" role="img" aria-label={descricao(m, nome, pagina)} focusable="false">
-      <Folha m={m} area={area} pagina={pagina} uid={uid} />
-      {pinos && <Pinos lista={pinos} />}
+    <svg className="sheet-svg" viewBox="0 -10 158 218" role="img" aria-label={describe(m, nome, pagina)} focusable="false">
+      <Sheet m={m} area={area} page={pagina} uid={uid} />
+      {pinos && <Pins list={pinos} />}
       <SeloExemplo x={60} y={-3} />
     </svg>
   );
 }
 
-// Folha ampliada: capa ou prancha, página interna (das capas), "Como ler" com pontos numerados e zoom.
+// Enlarged sheet: cover or drawing sheet, inner page (covers only), "Como ler" with numbered points, and zoom.
 export function FolhaLeitura({ m, nome, area }) {
-  const [vista, setVista] = useState("folha");
+  const [view, setView] = useState("folha");
   const [zoom, setZoom] = useState(false);
-  const temMiolo = m.layout === "capa" && TEM_MIOLO.has(m.corpo);
-  const pinos = vista === "ler" ? PINOS[m.layout] || PINOS.capa : null;
-  const abas = [
+  const hasInnerPage = m.layout === "capa" && TEM_MIOLO.has(m.corpo);
+  const pinos = view === "ler" ? PINOS[m.layout] || PINOS.capa : null;
+  const tabs = [
     ["folha", m.layout === "capa" ? "Capa" : m.layout === "certificado" ? "Certificado" : "Prancha"],
-    ...(temMiolo ? [["miolo", "Página interna"]] : []),
+    ...(hasInnerPage ? [["miolo", "Página interna"]] : []),
     ["ler", "Como ler"],
   ];
   return (
     <div className="sheet-reading" data-zoom={zoom ? "" : undefined}>
       <div className="sheet-reading-bar">
         <div className="sheet-tabs" role="group" aria-label="O que ver na folha">
-          {abas.map(([id, rotulo]) => (
-            <button key={id} type="button" aria-pressed={vista === id} onClick={() => setVista(id)}>
-              {rotulo}
+          {tabs.map(([id, label]) => (
+            <button key={id} type="button" aria-pressed={view === id} onClick={() => setView(id)}>
+              {label}
             </button>
           ))}
         </div>
@@ -259,7 +259,7 @@ export function FolhaLeitura({ m, nome, area }) {
         </button>
       </div>
       <div className="sheet-reading-area" tabIndex={zoom ? 0 : undefined} aria-label={zoom ? "Folha ampliada: role para ver as partes" : undefined}>
-        <FolhaSvg m={m} nome={nome} area={area} pagina={vista === "miolo" ? "miolo" : "folha"} pinos={pinos} />
+        <FolhaSvg m={m} nome={nome} area={area} pagina={view === "miolo" ? "miolo" : "folha"} pinos={pinos} />
       </div>
       {pinos && (
         <ol className="sheet-pins">
@@ -275,7 +275,7 @@ export function FolhaLeitura({ m, nome, area }) {
   );
 }
 
-// Uma folha para um serviço/documento. `m` vem do campo `exemplo` do item em src/paginas.js.
+// One sheet for a service/document. `m` comes from the item's `exemplo` field in src/paginas.js.
 export function FolhaExemplo({ m, nome, area }) {
   if (!m) return null;
   return (
@@ -286,38 +286,38 @@ export function FolhaExemplo({ m, nome, area }) {
   );
 }
 
-const PAR = {
+const PAIRS = {
   "seguranca-do-trabalho": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a capa de um Programa de Gerenciamento de Riscos (PGR) da RD para uma empresa fictícia; atrás, a capa de um LTCAT",
-    frente: { titulo: "PGR", sub: "Programa de Gerenciamento de Riscos", layout: "capa", doc: "Programa de Gerenciamento de Riscos", ref: "PGR · NR-01", sumario: ["Identificação da organização", "Inventário de riscos", "Plano de ação"], art: true },
-    tras: { titulo: "LTCAT", sub: "Laudo das condições do ambiente de trabalho", layout: "capa", doc: "Laudo Técnico das Condições do Ambiente de Trabalho", ref: "LTCAT" },
+    front: { titulo: "PGR", sub: "Programa de Gerenciamento de Riscos", layout: "capa", doc: "Programa de Gerenciamento de Riscos", ref: "PGR · NR-01", sumario: ["Identificação da organização", "Inventário de riscos", "Plano de ação"], art: true },
+    back: { titulo: "LTCAT", sub: "Laudo das condições do ambiente de trabalho", layout: "capa", doc: "Laudo Técnico das Condições do Ambiente de Trabalho", ref: "LTCAT" },
   },
   "corpo-de-bombeiros": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a prancha de um projeto de segurança contra incêndio com planta, extintores, iluminação de emergência, rota de fuga e carimbo; atrás, a capa da preparação para a vistoria do AVCB",
-    frente: { titulo: "PSCIP", sub: "Projeto de segurança contra incêndio", corpo: "incendio", layout: "prancha", doc: "Projeto de Segurança Contra Incêndio", ref: "Planta de medidas de segurança", escala: "1:100", art: true },
-    tras: { titulo: "AVCB", sub: "Preparação para a vistoria", layout: "capa", doc: "Preparação para Vistoria do AVCB", ref: "Lista de exigências" },
+    front: { titulo: "PSCIP", sub: "Projeto de segurança contra incêndio", corpo: "incendio", layout: "prancha", doc: "Projeto de Segurança Contra Incêndio", ref: "Planta de medidas de segurança", escala: "1:100", art: true },
+    back: { titulo: "AVCB", sub: "Preparação para a vistoria", layout: "capa", doc: "Preparação para Vistoria do AVCB", ref: "Lista de exigências" },
   },
   "engenharia-civil": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a prancha de um projeto arquitetônico com planta baixa cotada e carimbo; atrás, a capa de um laudo técnico de vistoria",
-    frente: { titulo: "PROJETO", sub: "Projeto arquitetônico", corpo: "planta", layout: "prancha", doc: "Projeto Arquitetônico", ref: "Planta baixa", escala: "1:50", art: true },
-    tras: { titulo: "LAUDO", sub: "Laudo técnico de vistoria", layout: "capa", doc: "Laudo Técnico de Vistoria", ref: "Imóvel residencial" },
+    front: { titulo: "PROJETO", sub: "Projeto arquitetônico", corpo: "planta", layout: "prancha", doc: "Projeto Arquitetônico", ref: "Planta baixa", escala: "1:50", art: true },
+    back: { titulo: "LAUDO", sub: "Laudo técnico de vistoria", layout: "capa", doc: "Laudo Técnico de Vistoria", ref: "Imóvel residencial" },
   },
   "meio-ambiente-topografia": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a planta de um imóvel rural georreferenciado com vértices, coordenadas e carimbo; atrás, a prancha do mapa do imóvel para o CAR",
-    frente: { titulo: "MEMORIAL", sub: "Georreferenciamento do imóvel", corpo: "terreno", layout: "prancha", doc: "Planta do Imóvel Georreferenciado", ref: "Vértices e confrontações", escala: "1:5.000", art: true },
-    tras: { titulo: "CAR", sub: "Cadastro ambiental rural", corpo: "car", layout: "prancha", doc: "Mapa do Imóvel para o CAR", ref: "APP e reserva legal", escala: "1:5.000" },
+    front: { titulo: "MEMORIAL", sub: "Georreferenciamento do imóvel", corpo: "terreno", layout: "prancha", doc: "Planta do Imóvel Georreferenciado", ref: "Vértices e confrontações", escala: "1:5.000", art: true },
+    back: { titulo: "CAR", sub: "Cadastro ambiental rural", corpo: "car", layout: "prancha", doc: "Mapa do Imóvel para o CAR", ref: "APP e reserva legal", escala: "1:5.000" },
   },
 };
 
 export default function DocsIlustracao({ slug }) {
   const uid = useId().replace(/:/g, "");
-  const m = PAR[slug];
+  const m = PAIRS[slug];
   if (!m) return null;
   return (
     <figure className="docs-illustration">
       <svg viewBox="0 0 335 250" role="img" aria-label={m.alt} focusable="false">
-        <Folha x={168} y={10} rot={5} m={m.tras} area={slug} uid={`${uid}t`} />
-        <Folha x={26} y={28} rot={-4} m={m.frente} area={slug} uid={`${uid}f`} />
+        <Sheet x={168} y={10} rot={5} m={m.back} area={slug} uid={`${uid}t`} />
+        <Sheet x={26} y={28} rot={-4} m={m.front} area={slug} uid={`${uid}f`} />
         <SeloExemplo x={40} y={10} rot={-10} s={1.3} />
       </svg>
       <figcaption>{LEGENDA_EXEMPLO}</figcaption>

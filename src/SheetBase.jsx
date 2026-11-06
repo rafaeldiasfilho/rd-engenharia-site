@@ -1,6 +1,6 @@
 import { CNPJ, CREA_NUMBER } from "./company";
-// Base comum dos exemplos ilustrativos (folhas, desenhos, painel): cores do papel, marca, dados públicos da
-// RD e clientes fictícios. Nada aqui é de cliente real; o papel é sempre claro (funciona nos dois temas).
+// Shared base for the illustrative examples (sheets, drawings, panel): paper colors, logo, RD public data
+// and fictional clients. Nothing here belongs to a real client; the paper is always light (works in both themes).
 
 export const PAPEL = "#fdfdfb";
 export const BORDA = "#c9d0c6";
@@ -23,32 +23,32 @@ export const DATA = "outubro de 2026";
 
 export const LEGENDA_EXEMPLO = "Exemplo ilustrativo de documento, não é um documento real.";
 
-const CLIENTES = {
+const CLIENTS = {
   empresa: ["Empresa Exemplo Ltda.", "CNPJ 00.000.000/0001-00 · Ibirá/SP"],
   obra: ["Proprietário Exemplo", "Rua Exemplo, 100 · Ibirá/SP"],
   rural: ["Sítio Exemplo", "Zona rural · Ibirá/SP"],
 };
-const CLIENTE_DA_AREA = {
+const CLIENT_BY_AREA = {
   "seguranca-do-trabalho": "empresa",
   "corpo-de-bombeiros": "empresa",
   "engenharia-civil": "obra",
   "meio-ambiente-topografia": "rural",
 };
-export const clienteDe = (m, area) => CLIENTES[m.cliente || CLIENTE_DA_AREA[area] || "empresa"];
+export const clienteDe = (m, area) => CLIENTS[m.cliente || CLIENT_BY_AREA[area] || "empresa"];
 
-// Quebra o texto em linhas de até `max` caracteres (SVG não quebra sozinho).
-export function quebra(texto, max) {
-  const linhas = [];
-  let atual = "";
-  for (const p of String(texto).split(" ")) {
-    const teste = atual ? `${atual} ${p}` : p;
-    if (teste.length > max && atual) {
-      linhas.push(atual);
-      atual = p;
-    } else atual = teste;
+// Wraps the text into lines of at most `max` characters (SVG does not wrap on its own).
+export function quebra(text, max) {
+  const lines = [];
+  let current = "";
+  for (const word of String(text).split(" ")) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length > max && current) {
+      lines.push(current);
+      current = word;
+    } else current = candidate;
   }
-  if (atual) linhas.push(atual);
-  return linhas;
+  if (current) lines.push(current);
+  return lines;
 }
 
 export function Marca({ x, y, s = 1 }) {
@@ -68,7 +68,7 @@ export function Marca({ x, y, s = 1 }) {
   );
 }
 
-// Carimbo vermelho "EXEMPLO" de todas as folhas.
+// Red "EXEMPLO" stamp shown on every sheet.
 export function SeloExemplo({ x, y, rot = -9, s = 1 }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>

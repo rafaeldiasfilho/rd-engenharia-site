@@ -1,47 +1,47 @@
 import { useEffect, useRef } from "react";
 
-// Moldura que "deita" em 3D e se endireita conforme a página rola (ideia do prompt "Container scroll
-// animation" da biblioteca, refeita sem framer-motion): o progresso vai de 0 (borda de baixo da tela)
-// a 1 (meio da tela) e vira a variável CSS --p; o CSS faz rotateX e scale a partir dela.
-// Com "reduzir movimento" não liga nada e a moldura fica reta.
+// Frame that "lies back" in 3D and straightens up as the page scrolls (idea from the library's "Container scroll
+// animation" prompt, rebuilt without framer-motion): progress goes from 0 (bottom edge of the screen)
+// to 1 (middle of the screen) and becomes the CSS variable --p; the CSS applies rotateX and scale from it.
+// With "reduce motion" nothing is turned on and the frame stays flat.
 export default function Inclinado3D({ children, className = "" }) {
   const ref = useRef(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-    let quadro = 0;
-    const calcular = () => {
-      quadro = 0;
+    let frame = 0;
+    const compute = () => {
+      frame = 0;
       const r = el.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.55)));
       el.style.setProperty("--p", p.toFixed(3));
     };
-    const pedir = () => {
-      if (!quadro) quadro = requestAnimationFrame(calcular);
+    const requestFrame = () => {
+      if (!frame) frame = requestAnimationFrame(compute);
     };
-    let ligado = false;
+    let listening = false;
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !ligado) {
-        ligado = true;
-        window.addEventListener("scroll", pedir, { passive: true });
-        window.addEventListener("resize", pedir);
-        pedir();
-      } else if (!e.isIntersecting && ligado) {
-        ligado = false;
-        window.removeEventListener("scroll", pedir);
-        window.removeEventListener("resize", pedir);
+      if (e.isIntersecting && !listening) {
+        listening = true;
+        window.addEventListener("scroll", requestFrame, { passive: true });
+        window.addEventListener("resize", requestFrame);
+        requestFrame();
+      } else if (!e.isIntersecting && listening) {
+        listening = false;
+        window.removeEventListener("scroll", requestFrame);
+        window.removeEventListener("resize", requestFrame);
       }
     });
     io.observe(el);
     el.classList.add("tilt-active");
-    calcular();
+    compute();
     return () => {
       io.disconnect();
-      cancelAnimationFrame(quadro);
-      window.removeEventListener("scroll", pedir);
-      window.removeEventListener("resize", pedir);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", requestFrame);
+      window.removeEventListener("resize", requestFrame);
     };
   }, []);
 

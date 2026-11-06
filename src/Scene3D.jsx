@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-// Cenas 3D das páginas de área (three.js; ideia do prompt "Spline scene" da biblioteca, sem a Spline).
-// Cada cena fica num arquivo próprio em src/cenas3d/ e só baixa quando o bloco está a ~600 px da tela.
-// A base comum (src/cenas3d/base.js) pausa fora da tela, inclina com o mouse e, com "reduzir movimento",
-// mostra uma imagem parada. Sem WebGL fica o desenho de curvas em CSS do fundo.
-const CENAS = {
+// 3D scenes for the area pages (three.js; idea from the library's "Spline scene" prompt, without Spline).
+// Each scene lives in its own file in src/scenes3d/ and only downloads when the block is ~600 px from the screen.
+// The shared base (src/scenes3d/base.js) pauses off screen, tilts with the mouse and, with "reduce motion",
+// shows a still image. Without WebGL the CSS contour drawing in the background remains.
+const SCENES = {
   terreno: () => import("./scenes3d/terrain"),
   casa: () => import("./scenes3d/house"),
   rota: () => import("./scenes3d/escapeRoute"),
@@ -12,40 +12,40 @@ const CENAS = {
 };
 
 export default function Cena3D({ cena, className = "", rotulo }) {
-  const caixa = useRef(null);
-  const [sem3d, setSem3d] = useState(false);
+  const boxRef = useRef(null);
+  const [no3d, setNo3d] = useState(false);
 
   useEffect(() => {
-    const el = caixa.current;
-    const carregar = CENAS[cena];
-    if (!el || !carregar) return undefined;
-    let parar = () => {};
-    let cancelado = false;
+    const el = boxRef.current;
+    const load = SCENES[cena];
+    if (!el || !load) return undefined;
+    let stop = () => {};
+    let cancelled = false;
 
-    const iniciar = async () => {
-      const { montar } = await carregar();
-      if (cancelado) return;
-      const desmontar = montar(el);
-      if (!desmontar) setSem3d(true);
-      else parar = desmontar;
+    const start = async () => {
+      const { montar } = await load();
+      if (cancelled) return;
+      const unmount = montar(el);
+      if (!unmount) setNo3d(true);
+      else stop = unmount;
     };
 
-    const perto = new IntersectionObserver(
+    const nearObserver = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
-        perto.disconnect();
-        iniciar().catch(() => setSem3d(true));
+        nearObserver.disconnect();
+        start().catch(() => setNo3d(true));
       },
       { rootMargin: "600px" },
     );
-    perto.observe(el);
+    nearObserver.observe(el);
 
     return () => {
-      cancelado = true;
-      perto.disconnect();
-      parar();
+      cancelled = true;
+      nearObserver.disconnect();
+      stop();
     };
   }, [cena]);
 
-  return <div ref={caixa} className={`scene3d ${sem3d ? "cena-sem3d" : ""} ${className}`} role="img" aria-label={rotulo} />;
+  return <div ref={boxRef} className={`scene3d ${no3d ? "cena-sem3d" : ""} ${className}`} role="img" aria-label={rotulo} />;
 }

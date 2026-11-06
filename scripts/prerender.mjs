@@ -1,13 +1,13 @@
-// Gera um arquivo HTML estático para cada página interna (para o Google ler o conteúdo)
-// e atualiza o sitemap. Roda depois do "vite build".
+// Generates a static HTML file for each inner page (so Google can read the content)
+// and updates the sitemap. Runs after "vite build".
 import fs from "node:fs";
 import path from "node:path";
 import { createServer } from "vite";
 
-const raiz = process.cwd();
-const dist = path.join(raiz, "dist");
+const root = process.cwd();
+const dist = path.join(root, "dist");
 const vite = await createServer({
-  root: raiz,
+  root: root,
   appType: "custom",
   logLevel: "error",
   server: { middlewareMode: true },
@@ -15,15 +15,15 @@ const vite = await createServer({
 
 try {
   const { render, render404, renderImpressao, renderHome, PAGINAS, AREAS, SITE_URL } = await vite.ssrLoadModule("/src/entry-server.jsx");
-  const modelo = fs.readFileSync(path.join(dist, "index.html"), "utf8");
+  const template = fs.readFileSync(path.join(dist, "index.html"), "utf8");
   const esc = (t) => t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   const jsonScript = (obj) =>
     `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, "\\u003c")}</script>`;
 
-  // Remove do modelo (home) tudo o que é específico da página inicial.
-  // Entidade do negócio (ProfessionalService, com hasMap e geo) do index.html: vai em todas as páginas.
-  const negocio = (modelo.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/) || [""])[0];
-  const base = modelo
+  // Strips from the template (home) everything specific to the home page.
+  // Business entity (ProfessionalService, with hasMap and geo) from index.html: goes on every page.
+  const business = (template.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/) || [""])[0];
+  const base = template
     .replace(/<title>[\s\S]*?<\/title>/, "")
     .replace(/<meta\s+name="description"[\s\S]*?\/>/, "")
     .replace(/<link rel="canonical"[^>]*\/>/, "")
@@ -31,87 +31,87 @@ try {
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/g, "")
     .replace(/<noscript>[\s\S]*?<\/noscript>/, "");
 
-  for (const pagina of PAGINAS) {
-    const url = `${SITE_URL}/${pagina.slug}`;
-    // Nível do meio da trilha: áreas ficam em "Serviços", guias em "Guias".
-    const nivelMeio =
-      pagina.tipo === "area"
-        ? { nome: "Serviços", url: `${SITE_URL}/#servicos` }
-        : pagina.tipo === "guia"
-          ? { nome: "Guias", url: `${SITE_URL}/guias` }
+  for (const page of PAGINAS) {
+    const url = `${SITE_URL}/${page.slug}`;
+    // Middle level of the breadcrumb: areas go under "Serviços", guides under "Guias".
+    const middleLevel =
+      page.tipo === "area"
+        ? { name: "Serviços", url: `${SITE_URL}/#servicos` }
+        : page.tipo === "guia"
+          ? { name: "Guias", url: `${SITE_URL}/guias` }
           : null;
-    const dados = [
+    const data = [
       {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Início", item: `${SITE_URL}/` },
-          ...(nivelMeio ? [{ "@type": "ListItem", position: 2, name: nivelMeio.nome, item: nivelMeio.url }] : []),
-          { "@type": "ListItem", position: nivelMeio ? 3 : 2, name: pagina.tipo === "area" ? pagina.nome : pagina.h1, item: url },
+          ...(middleLevel ? [{ "@type": "ListItem", position: 2, name: middleLevel.name, item: middleLevel.url }] : []),
+          { "@type": "ListItem", position: middleLevel ? 3 : 2, name: page.tipo === "area" ? page.nome : page.h1, item: url },
         ],
       },
     ];
-    if (pagina.tipo === "area") {
-      dados.push({
+    if (page.tipo === "area") {
+      data.push({
         "@context": "https://schema.org",
         "@type": "Service",
-        name: pagina.nome,
-        description: pagina.description,
+        name: page.nome,
+        description: page.description,
         url,
         provider: { "@type": "ProfessionalService", name: "RD Engenharia Segurança e Meio Ambiente", url: `${SITE_URL}/` },
         areaServed: { "@type": "City", name: "Ibirá" },
       });
-      dados.push({
+      data.push({
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: pagina.faq.map((f) => ({
+        mainEntity: page.faq.map((f) => ({
           "@type": "Question",
           name: f.q,
           acceptedAnswer: { "@type": "Answer", text: f.a },
         })),
       });
     }
-    if (pagina.tipo === "guia") {
-      dados.push({
+    if (page.tipo === "guia") {
+      data.push({
         "@context": "https://schema.org",
         "@type": "Article",
-        headline: pagina.h1,
-        description: pagina.description,
+        headline: page.h1,
+        description: page.description,
         mainEntityOfPage: url,
         author: { "@type": "Organization", name: "RD Engenharia Segurança e Meio Ambiente" },
         publisher: { "@type": "Organization", name: "RD Engenharia Segurança e Meio Ambiente" },
       });
     }
 
-    const cabeca = [
-      `<title>${esc(pagina.title)}</title>`,
-      `<meta name="description" content="${esc(pagina.description)}" />`,
+    const head = [
+      `<title>${esc(page.title)}</title>`,
+      `<meta name="description" content="${esc(page.description)}" />`,
       `<link rel="canonical" href="${url}" />`,
-      `<meta property="og:title" content="${esc(pagina.title)}" />`,
-      `<meta property="og:description" content="${esc(pagina.description)}" />`,
+      `<meta property="og:title" content="${esc(page.title)}" />`,
+      `<meta property="og:description" content="${esc(page.description)}" />`,
       `<meta property="og:url" content="${url}" />`,
-      `<meta property="og:image" content="${SITE_URL}/og/${pagina.slug.replace(/\//g, "-")}.png" />`,
-      ...dados.map(jsonScript),
-      negocio,
+      `<meta property="og:image" content="${SITE_URL}/og/${page.slug.replace(/\//g, "-")}.png" />`,
+      ...data.map(jsonScript),
+      business,
     ].join("\n    ");
 
     const html = base
-      .replace("</head>", `    ${cabeca}\n  </head>`)
-      .replace('<div id="root"></div>', `<div id="root">${render(pagina)}</div>`);
+      .replace("</head>", `    ${head}\n  </head>`)
+      .replace('<div id="root"></div>', `<div id="root">${render(page)}</div>`);
 
-    const destino = path.join(dist, pagina.slug, "index.html");
-    fs.mkdirSync(path.dirname(destino), { recursive: true });
-    fs.writeFileSync(destino, html);
+    const destination = path.join(dist, page.slug, "index.html");
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.writeFileSync(destination, html);
   }
 
-  // Páginas de impressão da lista de documentos: noindex, fora do sitemap, sem JSON-LD nem canonical.
+  // Print pages for the document checklist: noindex, outside the sitemap, no JSON-LD or canonical.
   for (const area of AREAS) {
-    const htmlImp = base
+    const htmlPrint = base
       .replace("</head>", `    <title>Lista de documentos | ${esc(area.nome)} | RD Engenharia</title>\n    <meta name="robots" content="noindex, nofollow" />\n  </head>`)
       .replace('<div id="root"></div>', `<div id="root">${renderImpressao(area)}</div>`);
     const dest = path.join(dist, "imprimir", area.slug, "index.html");
     fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.writeFileSync(dest, htmlImp);
+    fs.writeFileSync(dest, htmlPrint);
   }
 
   const html404 = base
@@ -124,24 +124,24 @@ try {
   fs.mkdirSync(path.join(dist, "admin"), { recursive: true });
   fs.writeFileSync(path.join(dist, "admin", "index.html"), htmlAdmin);
 
-  // Página inicial: o mesmo modelo (com title, description e JSON-LD da home), agora com o conteúdo pronto.
-  // Fica por último porque o modelo das outras páginas foi lido do index.html original acima.
-  fs.writeFileSync(path.join(dist, "index.html"), modelo.replace('<div id="root"></div>', `<div id="root">${renderHome()}</div>`));
+  // Home page: the same template (with the home title, description and JSON-LD), now with the rendered content.
+  // It comes last because the template for the other pages was read from the original index.html above.
+  fs.writeFileSync(path.join(dist, "index.html"), template.replace('<div id="root"></div>', `<div id="root">${renderHome()}</div>`));
 
-  const hoje = new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
   const urls = ["", ...PAGINAS.filter((p) => !["privacidade", "termos"].includes(p.tipo)).map((p) => p.slug)];
   const sitemap =
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls
-      .map((s) => `  <url>\n    <loc>${SITE_URL}/${s}</loc>\n    <lastmod>${hoje}</lastmod>\n  </url>`)
+      .map((s) => `  <url>\n    <loc>${SITE_URL}/${s}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`)
       .join("\n") +
     `\n</urlset>\n`;
   fs.writeFileSync(path.join(dist, "sitemap.xml"), sitemap);
 
-  // llms.txt: resumo do site para assistentes de IA (formato proposto em llmstxt.org; opcional, sem garantia
-  // de uso por nenhum produto). Gerado dos mesmos dados das páginas, então nunca fica desatualizado.
-  const linha = (p) => `- [${p.h1}](${SITE_URL}/${p.slug}): ${p.description}`;
-  const grupo = (tipos) => PAGINAS.filter((p) => tipos.includes(p.tipo)).map(linha).join(String.fromCharCode(10));
+  // llms.txt: site summary for AI assistants (format proposed at llmstxt.org; optional, no guarantee
+  // that any product uses it). Generated from the same page data, so it never goes stale.
+  const line = (p) => `- [${p.h1}](${SITE_URL}/${p.slug}): ${p.description}`;
+  const group = (types) => PAGINAS.filter((p) => types.includes(p.tipo)).map(line).join(String.fromCharCode(10));
   const llms = [
     "# RD Engenharia Segurança e Meio Ambiente",
     "",
@@ -152,16 +152,16 @@ try {
     "- O site não mostra preços nem prazos fixos: valor e prazo vêm no orçamento, por escrito e sem compromisso.",
     "",
     "## Serviços",
-    grupo(["area"]),
+    group(["area"]),
     "",
     "## Guias",
-    grupo(["guia"]),
+    group(["guia"]),
     "",
     "## Outras páginas",
-    grupo(["onde", "quiz", "lembrete", "guias-indice"]),
+    group(["onde", "quiz", "lembrete", "guias-indice"]),
     "",
     "## Opcional",
-    grupo(["privacidade", "termos", "creditos"]),
+    group(["privacidade", "termos", "creditos"]),
     "",
   ].join(String.fromCharCode(10));
   fs.writeFileSync(path.join(dist, "llms.txt"), llms);

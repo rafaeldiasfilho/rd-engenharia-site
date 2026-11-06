@@ -1,18 +1,18 @@
 import { useState } from "react";
-import Carrossel from "./Carousel";
-import IconeArea from "./AreaIcon";
+import Carousel from "./Carousel";
+import AreaIcon from "./AreaIcon";
 import { ComoLerPrancha, Ilustracao } from "./Illustrations";
 import { AREAS, slidesProjetos } from "./pagesData";
 
-const ABAS = ["engenharia-civil", "corpo-de-bombeiros", "seguranca-do-trabalho", "meio-ambiente-topografia"].map((slug) => ({
+const TABS = ["engenharia-civil", "corpo-de-bombeiros", "seguranca-do-trabalho", "meio-ambiente-topografia"].map((slug) => ({
   slug,
-  nome: AREAS.find((a) => a.slug === slug).rotulo,
+  name: AREAS.find((a) => a.slug === slug).rotulo,
 }));
 
 function Civil() {
   return (
     <div className="home-civil">
-      <Carrossel
+      <Carousel
         itens={slidesProjetos(true)}
         rotulo="Desenhos de projetos reais de engenharia civil"
         aspecto="4 / 3"
@@ -30,7 +30,7 @@ function Civil() {
 }
 
 export default function ExemplosHome() {
-  const [aba, setAba] = useState(ABAS[0].slug);
+  const [activeTab, setActiveTab] = useState(TABS[0].slug);
   return (
     <section className="sec sec-alt" id="na-pratica" aria-labelledby="pratica-t">
       <div className="container">
@@ -44,17 +44,17 @@ export default function ExemplosHome() {
           <p className="lead">Escolha uma área para ver um exemplo. Os projetos de engenharia civil são reais, com os dados dos clientes retirados.</p>
         </header>
         <div className="tabs reveal" role="group" aria-label="Áreas">
-          {ABAS.map((a) => (
-            <button key={a.slug} type="button" aria-pressed={aba === a.slug} onClick={() => setAba(a.slug)}>
-              <IconeArea slug={a.slug} tamanho={20} /> {a.nome}
+          {TABS.map((a) => (
+            <button key={a.slug} type="button" aria-pressed={activeTab === a.slug} onClick={() => setActiveTab(a.slug)}>
+              <AreaIcon slug={a.slug} tamanho={20} /> {a.name}
             </button>
           ))}
         </div>
         <div className="tab-content">
-          {aba === "engenharia-civil" ? <Civil /> : <Ilustracao slug={aba} />}
+          {activeTab === "engenharia-civil" ? <Civil /> : <Ilustracao slug={activeTab} />}
         </div>
         <p className="center">
-          <a className="link-arrow" href={`/${aba}`}>
+          <a className="link-arrow" href={`/${activeTab}`}>
             Ver todos os serviços desta área <span aria-hidden="true">→</span>
           </a>
         </p>

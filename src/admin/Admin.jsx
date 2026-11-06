@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { abrirBanco } from "./db";
 
-const TIPOS_SERVICO = [
+const SERVICE_TYPES = [
   "PGR (gerenciamento de riscos)",
   "PCMSO (integração com o programa médico)",
   "LTCAT e PPP",
@@ -28,7 +28,7 @@ const TIPOS_SERVICO = [
 
 const STATUS = { orcamento: "Orçamento", em_andamento: "Em andamento", concluido: "Concluído" };
 
-const clienteVazio = {
+const emptyClient = {
   nome: "",
   tipo: "pf",
   documento: "",
@@ -48,8 +48,8 @@ const clienteVazio = {
   aceite_lembretes_em: "",
 };
 
-const servicoVazio = {
-  tipo: TIPOS_SERVICO[0],
+const emptyService = {
+  tipo: SERVICE_TYPES[0],
   descricao: "",
   local_servico: "",
   status: "concluido",
@@ -61,160 +61,160 @@ const servicoVazio = {
   observacoes: "",
 };
 
-const hojeISO = () => {
+const todayISO = () => {
   const d = new Date();
-  const dois = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${dois(d.getMonth() + 1)}-${dois(d.getDate())}`;
+  const pad2 = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 };
 
-function somarMeses(iso, meses) {
-  if (!iso || !meses) return "";
-  const [a, m, d] = iso.split("-").map(Number);
-  const alvo = new Date(Date.UTC(a, m - 1 + Number(meses), 1));
-  const ultimo = new Date(Date.UTC(alvo.getUTCFullYear(), alvo.getUTCMonth() + 1, 0)).getUTCDate();
-  alvo.setUTCDate(Math.min(d, ultimo));
-  return alvo.toISOString().slice(0, 10);
+function addMonths(iso, months) {
+  if (!iso || !months) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  const target = new Date(Date.UTC(y, m - 1 + Number(months), 1));
+  const lastDay = new Date(Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)).getUTCDate();
+  target.setUTCDate(Math.min(d, lastDay));
+  return target.toISOString().slice(0, 10);
 }
 
-function diasAte(iso) {
+function daysUntil(iso) {
   if (!iso) return null;
-  const [a, m, d] = iso.split("-").map(Number);
-  const alvo = Date.UTC(a, m - 1, d);
-  const [ha, hm, hd] = hojeISO().split("-").map(Number);
-  return Math.round((alvo - Date.UTC(ha, hm - 1, hd)) / 86400000);
+  const [y, m, d] = iso.split("-").map(Number);
+  const target = Date.UTC(y, m - 1, d);
+  const [ty, tm, td] = todayISO().split("-").map(Number);
+  return Math.round((target - Date.UTC(ty, tm - 1, td)) / 86400000);
 }
 
-const dataBR = (iso) => (iso ? iso.split("-").reverse().join("/") : "—");
+const formatDateBR = (iso) => (iso ? iso.split("-").reverse().join("/") : "—");
 
-function linkZap(numero, texto) {
-  let n = String(numero || "").replace(/\D/g, "");
+function whatsappLink(number, text) {
+  let n = String(number || "").replace(/\D/g, "");
   if (!n) return "";
   if (n.length <= 11) n = "55" + n;
-  return `https://wa.me/${n}?text=${encodeURIComponent(texto)}`;
+  return `https://wa.me/${n}?text=${encodeURIComponent(text)}`;
 }
 
-function baixarCSV(nome, linhas) {
-  if (!linhas.length) return;
-  const colunas = Object.keys(linhas[0]);
+function downloadCSV(fileName, rows) {
+  if (!rows.length) return;
+  const columns = Object.keys(rows[0]);
   const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const csv = [colunas.join(";"), ...linhas.map((l) => colunas.map((c) => esc(l[c])).join(";"))].join("\n");
+  const csv = [columns.join(";"), ...rows.map((row) => columns.map((col) => esc(row[col])).join(";"))].join("\n");
   const url = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
   const a = document.createElement("a");
   a.href = url;
-  a.download = nome;
+  a.download = fileName;
   a.click();
   URL.revokeObjectURL(url);
 }
 
-function Campo({ rotulo, children }) {
+function Field({ label, children }) {
   return (
     <label className="admin-field">
-      <span>{rotulo}</span>
+      <span>{label}</span>
       {children}
     </label>
   );
 }
 
-function Login({ banco, aoEntrar }) {
+function Login({ db, onLogin }) {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-  const [enviando, setEnviando] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const enviar = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setErro("");
-    setEnviando(true);
+    setError("");
+    setSubmitting(true);
     try {
-      aoEntrar(await banco.auth.entrar(email.trim(), senha));
+      onLogin(await db.auth.signIn(email.trim(), password));
     } catch (err) {
-      setErro(err.message);
+      setError(err.message);
     } finally {
-      setEnviando(false);
+      setSubmitting(false);
     }
   };
 
   return (
     <div className="admin-login">
-      <form className="form" onSubmit={enviar}>
+      <form className="form" onSubmit={handleSubmit}>
         <h1>Área interna da RD</h1>
-        {banco.modo === "demo" && (
+        {db.mode === "demo" && (
           <p className="admin-notice">
             Modo demonstração: o banco de dados ainda não está ligado. Os dados ficam só neste navegador.
           </p>
         )}
-        <Campo rotulo="E-mail">
+        <Field label="E-mail">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
-        </Campo>
-        <Campo rotulo="Senha">
+        </Field>
+        <Field label="Senha">
           <input
             type="password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
             required
           />
-        </Campo>
-        {erro && (
+        </Field>
+        {error && (
           <p className="admin-error" role="alert">
-            {erro}
+            {error}
           </p>
         )}
-        <button className="btn btn-whatsapp btn-large" type="submit" disabled={enviando}>
-          {enviando ? "Entrando..." : "Entrar"}
+        <button className="btn btn-whatsapp btn-large" type="submit" disabled={submitting}>
+          {submitting ? "Entrando..." : "Entrar"}
         </button>
       </form>
     </div>
   );
 }
 
-function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
-  const [janela, setJanela] = useState(90);
-  const porId = useMemo(() => Object.fromEntries(clientes.map((c) => [c.id, c])), [clientes]);
+function Dashboard({ clients, services, openClient, markHandled }) {
+  const [windowDays, setWindowDays] = useState(90);
+  const byId = useMemo(() => Object.fromEntries(clients.map((c) => [c.id, c])), [clients]);
 
-  const pendentes = servicos
+  const pending = services
     .filter((s) => s.vencimento && !s.encerrado)
-    .map((s) => ({ ...s, dias: diasAte(s.vencimento) }))
-    .sort((a, b) => a.dias - b.dias);
-  const vencidos = pendentes.filter((s) => s.dias < 0);
-  const proximos = pendentes.filter((s) => s.dias >= 0 && s.dias <= janela);
+    .map((s) => ({ ...s, days: daysUntil(s.vencimento) }))
+    .sort((a, b) => a.days - b.days);
+  const overdue = pending.filter((s) => s.days < 0);
+  const upcoming = pending.filter((s) => s.days >= 0 && s.days <= windowDays);
 
-  const Linha = ({ s }) => {
-    const cli = porId[s.cliente_id];
-    if (!cli) return null;
-    const msg = cli.aceita_lembretes
-      ? `Olá, ${cli.nome}! Aqui é da RD Engenharia. ${
-          s.dias < 0
-            ? `Passando para avisar que o seu documento "${s.tipo}" venceu em ${dataBR(s.vencimento)}.`
-            : `Passando para avisar que o seu documento "${s.tipo}" vence em ${dataBR(s.vencimento)}${
-                s.dias <= 60 ? `, daqui a ${s.dias} dia(s)` : ""
+  const Row = ({ s }) => {
+    const client = byId[s.cliente_id];
+    if (!client) return null;
+    const msg = client.aceita_lembretes
+      ? `Olá, ${client.nome}! Aqui é da RD Engenharia. ${
+          s.days < 0
+            ? `Passando para avisar que o seu documento "${s.tipo}" venceu em ${formatDateBR(s.vencimento)}.`
+            : `Passando para avisar que o seu documento "${s.tipo}" vence em ${formatDateBR(s.vencimento)}${
+                s.days <= 60 ? `, daqui a ${s.days} dia(s)` : ""
               }.`
         } A renovação leva um tempo, então vale começar logo. Posso cuidar disso para você?`
-      : `Olá, ${cli.nome}! Aqui é da RD Engenharia. Podemos avisar você por WhatsApp quando seus serviços estiverem perto do vencimento, para você não perder o prazo? Se preferir não receber, é só nos dizer.`;
-    const zap = linkZap(cli.whatsapp || cli.telefone, msg);
+      : `Olá, ${client.nome}! Aqui é da RD Engenharia. Podemos avisar você por WhatsApp quando seus serviços estiverem perto do vencimento, para você não perder o prazo? Se preferir não receber, é só nos dizer.`;
+    const waLink = whatsappLink(client.whatsapp || client.telefone, msg);
     return (
       <li className="admin-line">
         <div>
-          <strong>{cli.nome}</strong>
+          <strong>{client.nome}</strong>
           <span>{s.tipo}</span>
-          {!cli.aceita_lembretes && <small>Sem aceite de lembretes registrado. O botão pede a autorização.</small>}
-          <small className={s.dias < 0 ? "admin-overdue" : ""}>
-            {s.dias < 0 ? `Venceu há ${-s.dias} dia(s)` : s.dias === 0 ? "Vence hoje" : `Vence em ${s.dias} dia(s)`} ·{" "}
-            {dataBR(s.vencimento)}
+          {!client.aceita_lembretes && <small>Sem aceite de lembretes registrado. O botão pede a autorização.</small>}
+          <small className={s.days < 0 ? "admin-overdue" : ""}>
+            {s.days < 0 ? `Venceu há ${-s.days} dia(s)` : s.days === 0 ? "Vence hoje" : `Vence em ${s.days} dia(s)`} ·{" "}
+            {formatDateBR(s.vencimento)}
           </small>
         </div>
         <div className="admin-actions">
-          {zap ? (
-            <a className="btn btn-whatsapp" href={zap} target="_blank" rel="noopener noreferrer">
-              {cli.aceita_lembretes ? "Chamar no WhatsApp" : "Pedir autorização"}
+          {waLink ? (
+            <a className="btn btn-whatsapp" href={waLink} target="_blank" rel="noopener noreferrer">
+              {client.aceita_lembretes ? "Chamar no WhatsApp" : "Pedir autorização"}
             </a>
           ) : (
             <span className="admin-none">Sem telefone</span>
           )}
-          <button className="btn btn-sec" type="button" onClick={() => abrirCliente(cli.id)}>
+          <button className="btn btn-sec" type="button" onClick={() => openClient(client.id)}>
             Abrir cliente
           </button>
-          <button className="btn btn-sec" type="button" onClick={() => marcarTratado(s)}>
+          <button className="btn btn-sec" type="button" onClick={() => markHandled(s)}>
             Marcar como tratado
           </button>
         </div>
@@ -226,28 +226,28 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
     <>
       <div className="admin-summary">
         <div>
-          <strong>{vencidos.length}</strong>
+          <strong>{overdue.length}</strong>
           <span>vencidos</span>
         </div>
         <div>
-          <strong>{proximos.length}</strong>
-          <span>vencem nos próximos {janela} dias</span>
+          <strong>{upcoming.length}</strong>
+          <span>vencem nos próximos {windowDays} dias</span>
         </div>
         <div>
-          <strong>{clientes.length}</strong>
+          <strong>{clients.length}</strong>
           <span>clientes</span>
         </div>
         <div>
-          <strong>{servicos.length}</strong>
+          <strong>{services.length}</strong>
           <span>serviços registrados</span>
         </div>
       </div>
 
       <h2 className="admin-title">Vencidos</h2>
-      {vencidos.length ? (
+      {overdue.length ? (
         <ul className="admin-list">
-          {vencidos.map((s) => (
-            <Linha key={s.id} s={s} />
+          {overdue.map((s) => (
+            <Row key={s.id} s={s} />
           ))}
         </ul>
       ) : (
@@ -258,7 +258,7 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
         <h2 className="admin-title">Próximos vencimentos</h2>
         <label>
           Janela
-          <select value={janela} onChange={(e) => setJanela(Number(e.target.value))}>
+          <select value={windowDays} onChange={(e) => setWindowDays(Number(e.target.value))}>
             {[30, 60, 90, 180, 365].map((d) => (
               <option key={d} value={d}>
                 {d} dias
@@ -267,10 +267,10 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
           </select>
         </label>
       </div>
-      {proximos.length ? (
+      {upcoming.length ? (
         <ul className="admin-list">
-          {proximos.map((s) => (
-            <Linha key={s.id} s={s} />
+          {upcoming.map((s) => (
+            <Row key={s.id} s={s} />
           ))}
         </ul>
       ) : (
@@ -283,60 +283,60 @@ function Painel({ clientes, servicos, abrirCliente, marcarTratado }) {
   );
 }
 
-function FormCliente({ inicial, aoSalvar, aoCancelar }) {
-  const [c, setC] = useState({ ...clienteVazio, ...inicial });
-  const mudar = (campo) => (e) => setC((x) => ({ ...x, [campo]: e.target.value }));
+function ClientForm({ initial, onSave, onCancel }) {
+  const [c, setC] = useState({ ...emptyClient, ...initial });
+  const update = (field) => (e) => setC((x) => ({ ...x, [field]: e.target.value }));
   return (
     <form
       className="admin-form"
       onSubmit={(e) => {
         e.preventDefault();
-        aoSalvar(c);
+        onSave(c);
       }}
     >
       <div className="admin-grid">
-        <Campo rotulo="Nome ou razão social">
-          <input value={c.nome} onChange={mudar("nome")} required />
-        </Campo>
-        <Campo rotulo="Tipo">
-          <select value={c.tipo} onChange={mudar("tipo")}>
+        <Field label="Nome ou razão social">
+          <input value={c.nome} onChange={update("nome")} required />
+        </Field>
+        <Field label="Tipo">
+          <select value={c.tipo} onChange={update("tipo")}>
             <option value="pf">Pessoa física</option>
             <option value="pj">Empresa</option>
           </select>
-        </Campo>
-        <Campo rotulo="CPF ou CNPJ">
-          <input value={c.documento || ""} onChange={mudar("documento")} />
-        </Campo>
-        <Campo rotulo="Pessoa de contato">
-          <input value={c.contato || ""} onChange={mudar("contato")} />
-        </Campo>
-        <Campo rotulo="WhatsApp">
-          <input value={c.whatsapp || ""} onChange={mudar("whatsapp")} inputMode="tel" placeholder="(17) 99999-9999" />
-        </Campo>
-        <Campo rotulo="Outro telefone">
-          <input value={c.telefone || ""} onChange={mudar("telefone")} inputMode="tel" />
-        </Campo>
-        <Campo rotulo="E-mail">
-          <input type="email" value={c.email || ""} onChange={mudar("email")} />
-        </Campo>
-        <Campo rotulo="CEP">
-          <input value={c.cep || ""} onChange={mudar("cep")} inputMode="numeric" />
-        </Campo>
-        <Campo rotulo="Rua">
-          <input value={c.logradouro || ""} onChange={mudar("logradouro")} />
-        </Campo>
-        <Campo rotulo="Número">
-          <input value={c.numero || ""} onChange={mudar("numero")} />
-        </Campo>
-        <Campo rotulo="Bairro">
-          <input value={c.bairro || ""} onChange={mudar("bairro")} />
-        </Campo>
-        <Campo rotulo="Cidade">
-          <input value={c.cidade || ""} onChange={mudar("cidade")} />
-        </Campo>
-        <Campo rotulo="Como chegou até nós">
-          <input value={c.origem || ""} onChange={mudar("origem")} placeholder="Indicação, Instagram, site..." />
-        </Campo>
+        </Field>
+        <Field label="CPF ou CNPJ">
+          <input value={c.documento || ""} onChange={update("documento")} />
+        </Field>
+        <Field label="Pessoa de contato">
+          <input value={c.contato || ""} onChange={update("contato")} />
+        </Field>
+        <Field label="WhatsApp">
+          <input value={c.whatsapp || ""} onChange={update("whatsapp")} inputMode="tel" placeholder="(17) 99999-9999" />
+        </Field>
+        <Field label="Outro telefone">
+          <input value={c.telefone || ""} onChange={update("telefone")} inputMode="tel" />
+        </Field>
+        <Field label="E-mail">
+          <input type="email" value={c.email || ""} onChange={update("email")} />
+        </Field>
+        <Field label="CEP">
+          <input value={c.cep || ""} onChange={update("cep")} inputMode="numeric" />
+        </Field>
+        <Field label="Rua">
+          <input value={c.logradouro || ""} onChange={update("logradouro")} />
+        </Field>
+        <Field label="Número">
+          <input value={c.numero || ""} onChange={update("numero")} />
+        </Field>
+        <Field label="Bairro">
+          <input value={c.bairro || ""} onChange={update("bairro")} />
+        </Field>
+        <Field label="Cidade">
+          <input value={c.cidade || ""} onChange={update("cidade")} />
+        </Field>
+        <Field label="Como chegou até nós">
+          <input value={c.origem || ""} onChange={update("origem")} placeholder="Indicação, Instagram, site..." />
+        </Field>
       </div>
       <label className="admin-consent">
         <input
@@ -346,23 +346,23 @@ function FormCliente({ inicial, aoSalvar, aoCancelar }) {
             setC((x) => ({
               ...x,
               aceita_lembretes: e.target.checked,
-              aceite_lembretes_em: e.target.checked ? x.aceite_lembretes_em || hojeISO() : "",
+              aceite_lembretes_em: e.target.checked ? x.aceite_lembretes_em || todayISO() : "",
             }))
           }
         />
         <span>
           O cliente aceitou receber lembretes de vencimento por WhatsApp
-          {c.aceita_lembretes && c.aceite_lembretes_em ? ` (aceite em ${dataBR(c.aceite_lembretes_em)})` : ""}
+          {c.aceita_lembretes && c.aceite_lembretes_em ? ` (aceite em ${formatDateBR(c.aceite_lembretes_em)})` : ""}
         </span>
       </label>
-      <Campo rotulo="Observações">
-        <textarea rows="3" value={c.observacoes || ""} onChange={mudar("observacoes")} />
-      </Campo>
+      <Field label="Observações">
+        <textarea rows="3" value={c.observacoes || ""} onChange={update("observacoes")} />
+      </Field>
       <div className="admin-actions">
         <button className="btn btn-whatsapp" type="submit">
           Salvar cliente
         </button>
-        <button className="btn btn-sec" type="button" onClick={aoCancelar}>
+        <button className="btn btn-sec" type="button" onClick={onCancel}>
           Cancelar
         </button>
       </div>
@@ -370,71 +370,71 @@ function FormCliente({ inicial, aoSalvar, aoCancelar }) {
   );
 }
 
-function FormServico({ inicial, aoSalvar, aoCancelar }) {
-  const [s, setS] = useState({ ...servicoVazio, ...inicial });
-  const mudar = (campo) => (e) => setS((x) => ({ ...x, [campo]: e.target.value }));
-  const sugestao = somarMeses(s.data_realizacao, s.repetir_meses);
+function ServiceForm({ initial, onSave, onCancel }) {
+  const [s, setS] = useState({ ...emptyService, ...initial });
+  const update = (field) => (e) => setS((x) => ({ ...x, [field]: e.target.value }));
+  const suggestion = addMonths(s.data_realizacao, s.repetir_meses);
   return (
     <form
       className="admin-form"
       onSubmit={(e) => {
         e.preventDefault();
-        aoSalvar({ ...s, vencimento: s.vencimento || sugestao || "" });
+        onSave({ ...s, vencimento: s.vencimento || suggestion || "" });
       }}
     >
       <div className="admin-grid">
-        <Campo rotulo="Serviço">
-          <select value={s.tipo} onChange={mudar("tipo")}>
-            {TIPOS_SERVICO.map((t) => (
+        <Field label="Serviço">
+          <select value={s.tipo} onChange={update("tipo")}>
+            {SERVICE_TYPES.map((t) => (
               <option key={t}>{t}</option>
             ))}
           </select>
-        </Campo>
-        <Campo rotulo="Situação">
-          <select value={s.status} onChange={mudar("status")}>
+        </Field>
+        <Field label="Situação">
+          <select value={s.status} onChange={update("status")}>
             {Object.entries(STATUS).map(([k, v]) => (
               <option key={k} value={k}>
                 {v}
               </option>
             ))}
           </select>
-        </Campo>
-        <Campo rotulo="Data de realização">
-          <input type="date" value={s.data_realizacao || ""} onChange={mudar("data_realizacao")} />
-        </Campo>
-        <Campo rotulo="Repetir a cada (meses)">
+        </Field>
+        <Field label="Data de realização">
+          <input type="date" value={s.data_realizacao || ""} onChange={update("data_realizacao")} />
+        </Field>
+        <Field label="Repetir a cada (meses)">
           <input
             type="number"
             min="1"
             value={s.repetir_meses || ""}
-            onChange={mudar("repetir_meses")}
+            onChange={update("repetir_meses")}
             placeholder="Ex.: 36"
           />
-        </Campo>
-        <Campo rotulo={`Vencimento${sugestao && !s.vencimento ? ` (será ${dataBR(sugestao)})` : ""}`}>
-          <input type="date" value={s.vencimento || ""} onChange={mudar("vencimento")} />
-        </Campo>
-        <Campo rotulo="Número da ART">
-          <input value={s.art_numero || ""} onChange={mudar("art_numero")} />
-        </Campo>
-        <Campo rotulo="Valor (R$)">
-          <input type="number" step="0.01" min="0" value={s.valor || ""} onChange={mudar("valor")} />
-        </Campo>
-        <Campo rotulo="Local do serviço">
-          <input value={s.local_servico || ""} onChange={mudar("local_servico")} placeholder="Endereço ou nome da propriedade" />
-        </Campo>
+        </Field>
+        <Field label={`Vencimento${suggestion && !s.vencimento ? ` (será ${formatDateBR(suggestion)})` : ""}`}>
+          <input type="date" value={s.vencimento || ""} onChange={update("vencimento")} />
+        </Field>
+        <Field label="Número da ART">
+          <input value={s.art_numero || ""} onChange={update("art_numero")} />
+        </Field>
+        <Field label="Valor (R$)">
+          <input type="number" step="0.01" min="0" value={s.valor || ""} onChange={update("valor")} />
+        </Field>
+        <Field label="Local do serviço">
+          <input value={s.local_servico || ""} onChange={update("local_servico")} placeholder="Endereço ou nome da propriedade" />
+        </Field>
       </div>
-      <Campo rotulo="Descrição">
-        <textarea rows="2" value={s.descricao || ""} onChange={mudar("descricao")} />
-      </Campo>
-      <Campo rotulo="Observações">
-        <textarea rows="2" value={s.observacoes || ""} onChange={mudar("observacoes")} />
-      </Campo>
+      <Field label="Descrição">
+        <textarea rows="2" value={s.descricao || ""} onChange={update("descricao")} />
+      </Field>
+      <Field label="Observações">
+        <textarea rows="2" value={s.observacoes || ""} onChange={update("observacoes")} />
+      </Field>
       <div className="admin-actions">
         <button className="btn btn-whatsapp" type="submit">
           Salvar serviço
         </button>
-        <button className="btn btn-sec" type="button" onClick={aoCancelar}>
+        <button className="btn btn-sec" type="button" onClick={onCancel}>
           Cancelar
         </button>
       </div>
@@ -442,13 +442,13 @@ function FormServico({ inicial, aoSalvar, aoCancelar }) {
   );
 }
 
-function Clientes({ clientes, servicos, abrirCliente, novoCliente }) {
-  const [busca, setBusca] = useState("");
-  const termo = busca.trim().toLowerCase();
-  const lista = clientes.filter((c) =>
-    [c.nome, c.documento, c.cidade, c.whatsapp, c.telefone, c.email].some((v) => String(v || "").toLowerCase().includes(termo))
+function ClientList({ clients, services, openClient, newClient }) {
+  const [search, setSearch] = useState("");
+  const term = search.trim().toLowerCase();
+  const filtered = clients.filter((c) =>
+    [c.nome, c.documento, c.cidade, c.whatsapp, c.telefone, c.email].some((v) => String(v || "").toLowerCase().includes(term))
   );
-  const contar = (id) => servicos.filter((s) => s.cliente_id === id).length;
+  const countServices = (id) => services.filter((s) => s.cliente_id === id).length;
 
   return (
     <>
@@ -456,25 +456,25 @@ function Clientes({ clientes, servicos, abrirCliente, novoCliente }) {
         <input
           type="search"
           placeholder="Buscar por nome, CPF/CNPJ, cidade ou telefone"
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           aria-label="Buscar clientes"
         />
-        <button className="btn btn-whatsapp" type="button" onClick={novoCliente}>
+        <button className="btn btn-whatsapp" type="button" onClick={newClient}>
           Novo cliente
         </button>
       </div>
-      {lista.length ? (
+      {filtered.length ? (
         <ul className="admin-list">
-          {lista.map((c) => (
+          {filtered.map((c) => (
             <li className="admin-line" key={c.id}>
               <div>
                 <strong>{c.nome}</strong>
                 <span>{[c.cidade, c.whatsapp || c.telefone].filter(Boolean).join(" · ") || "Sem dados de contato"}</span>
-                <small>{contar(c.id)} serviço(s)</small>
+                <small>{countServices(c.id)} serviço(s)</small>
               </div>
               <div className="admin-actions">
-                <button className="btn btn-sec" type="button" onClick={() => abrirCliente(c.id)}>
+                <button className="btn btn-sec" type="button" onClick={() => openClient(c.id)}>
                   Abrir
                 </button>
               </div>
@@ -482,102 +482,102 @@ function Clientes({ clientes, servicos, abrirCliente, novoCliente }) {
           ))}
         </ul>
       ) : (
-        <p className="admin-empty">{clientes.length ? "Nenhum cliente encontrado." : "Nenhum cliente cadastrado ainda."}</p>
+        <p className="admin-empty">{clients.length ? "Nenhum cliente encontrado." : "Nenhum cliente cadastrado ainda."}</p>
       )}
     </>
   );
 }
 
-function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salvarServico, excluirServico, voltar }) {
-  const [editando, setEditando] = useState(false);
-  const [servicoEmEdicao, setServicoEmEdicao] = useState(null);
-  const meus = servicos.filter((s) => s.cliente_id === cliente.id);
-  const endereco = [
-    [cliente.logradouro, cliente.numero].filter(Boolean).join(", "),
-    cliente.bairro,
-    [cliente.cidade, cliente.uf].filter(Boolean).join("/"),
-    cliente.cep,
+function ClientDetail({ client, services, saveClient, deleteClient, saveService, deleteService, goBack }) {
+  const [editing, setEditing] = useState(false);
+  const [editingService, setEditingService] = useState(null);
+  const ownServices = services.filter((s) => s.cliente_id === client.id);
+  const address = [
+    [client.logradouro, client.numero].filter(Boolean).join(", "),
+    client.bairro,
+    [client.cidade, client.uf].filter(Boolean).join("/"),
+    client.cep,
   ]
     .filter(Boolean)
     .join(" · ");
 
   return (
     <>
-      <button className="btn btn-sec" type="button" onClick={voltar}>
+      <button className="btn btn-sec" type="button" onClick={goBack}>
         Voltar
       </button>
 
-      {editando ? (
-        <FormCliente
-          inicial={cliente}
-          aoSalvar={async (c) => {
-            await salvarCliente(c);
-            setEditando(false);
+      {editing ? (
+        <ClientForm
+          initial={client}
+          onSave={async (c) => {
+            await saveClient(c);
+            setEditing(false);
           }}
-          aoCancelar={() => setEditando(false)}
+          onCancel={() => setEditing(false)}
         />
       ) : (
         <section className="admin-record">
-          <h2>{cliente.nome}</h2>
+          <h2>{client.nome}</h2>
           <dl>
             <div>
               <dt>Tipo</dt>
               <dd>
-                {cliente.tipo === "pj" ? "Empresa" : "Pessoa física"}
-                {cliente.documento ? ` · ${cliente.documento}` : ""}
+                {client.tipo === "pj" ? "Empresa" : "Pessoa física"}
+                {client.documento ? ` · ${client.documento}` : ""}
               </dd>
             </div>
             <div>
               <dt>Contato</dt>
               <dd>
-                {[cliente.contato, cliente.whatsapp, cliente.telefone, cliente.email].filter(Boolean).join(" · ") || "—"}
+                {[client.contato, client.whatsapp, client.telefone, client.email].filter(Boolean).join(" · ") || "—"}
               </dd>
             </div>
             <div>
               <dt>Endereço</dt>
-              <dd>{endereco || "—"}</dd>
+              <dd>{address || "—"}</dd>
             </div>
             <div>
               <dt>Lembretes por WhatsApp</dt>
               <dd>
-                {cliente.aceita_lembretes
-                  ? `Aceitou${cliente.aceite_lembretes_em ? ` em ${dataBR(cliente.aceite_lembretes_em)}` : ""}`
+                {client.aceita_lembretes
+                  ? `Aceitou${client.aceite_lembretes_em ? ` em ${formatDateBR(client.aceite_lembretes_em)}` : ""}`
                   : "Sem aceite registrado"}
               </dd>
             </div>
-            {cliente.origem && (
+            {client.origem && (
               <div>
                 <dt>Como chegou</dt>
-                <dd>{cliente.origem}</dd>
+                <dd>{client.origem}</dd>
               </div>
             )}
-            {cliente.observacoes && (
+            {client.observacoes && (
               <div>
                 <dt>Observações</dt>
-                <dd>{cliente.observacoes}</dd>
+                <dd>{client.observacoes}</dd>
               </div>
             )}
           </dl>
           <div className="admin-actions">
-            {linkZap(cliente.whatsapp || cliente.telefone, `Olá, ${cliente.nome}! Aqui é da RD Engenharia.`) && (
+            {whatsappLink(client.whatsapp || client.telefone, `Olá, ${client.nome}! Aqui é da RD Engenharia.`) && (
               <a
                 className="btn btn-whatsapp"
-                href={linkZap(cliente.whatsapp || cliente.telefone, `Olá, ${cliente.nome}! Aqui é da RD Engenharia.`)}
+                href={whatsappLink(client.whatsapp || client.telefone, `Olá, ${client.nome}! Aqui é da RD Engenharia.`)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 WhatsApp
               </a>
             )}
-            <button className="btn btn-sec" type="button" onClick={() => setEditando(true)}>
+            <button className="btn btn-sec" type="button" onClick={() => setEditing(true)}>
               Editar
             </button>
             <button
               className="btn btn-sec"
               type="button"
               onClick={() => {
-                if (window.confirm(`Excluir ${cliente.nome} e todos os serviços dele? Isso não pode ser desfeito.`))
-                  excluirCliente(cliente.id);
+                if (window.confirm(`Excluir ${client.nome} e todos os serviços dele? Isso não pode ser desfeito.`))
+                  deleteClient(client.id);
               }}
             >
               Excluir
@@ -588,55 +588,55 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
 
       <div className="admin-title-line">
         <h2 className="admin-title">Serviços</h2>
-        {!servicoEmEdicao && (
-          <button className="btn btn-whatsapp" type="button" onClick={() => setServicoEmEdicao({ data_realizacao: hojeISO() })}>
+        {!editingService && (
+          <button className="btn btn-whatsapp" type="button" onClick={() => setEditingService({ data_realizacao: todayISO() })}>
             Registrar serviço
           </button>
         )}
       </div>
 
-      {servicoEmEdicao && (
-        <FormServico
-          inicial={servicoEmEdicao}
-          aoSalvar={async (s) => {
-            await salvarServico({ ...s, cliente_id: cliente.id });
-            setServicoEmEdicao(null);
+      {editingService && (
+        <ServiceForm
+          initial={editingService}
+          onSave={async (s) => {
+            await saveService({ ...s, cliente_id: client.id });
+            setEditingService(null);
           }}
-          aoCancelar={() => setServicoEmEdicao(null)}
+          onCancel={() => setEditingService(null)}
         />
       )}
 
-      {meus.length ? (
+      {ownServices.length ? (
         <ul className="admin-list">
-          {meus.map((s) => {
-            const dias = diasAte(s.vencimento);
+          {ownServices.map((s) => {
+            const days = daysUntil(s.vencimento);
             return (
               <li className="admin-line" key={s.id}>
                 <div>
                   <strong>{s.tipo}</strong>
                   <span>
-                    {STATUS[s.status]} · {dataBR(s.data_realizacao)}
+                    {STATUS[s.status]} · {formatDateBR(s.data_realizacao)}
                     {s.art_numero ? ` · ART ${s.art_numero}` : ""}
                     {s.valor ? ` · R$ ${Number(s.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : ""}
                   </span>
                   {s.local_servico && <span>{s.local_servico}</span>}
                   {s.descricao && <span>{s.descricao}</span>}
                   {s.vencimento && (
-                    <small className={dias < 0 && !s.encerrado ? "admin-overdue" : ""}>
-                      Vencimento: {dataBR(s.vencimento)}
-                      {s.encerrado ? " · tratado" : dias < 0 ? " · vencido" : ` · em ${dias} dia(s)`}
+                    <small className={days < 0 && !s.encerrado ? "admin-overdue" : ""}>
+                      Vencimento: {formatDateBR(s.vencimento)}
+                      {s.encerrado ? " · tratado" : days < 0 ? " · vencido" : ` · em ${days} dia(s)`}
                     </small>
                   )}
                 </div>
                 <div className="admin-actions">
-                  <button className="btn btn-sec" type="button" onClick={() => setServicoEmEdicao(s)}>
+                  <button className="btn btn-sec" type="button" onClick={() => setEditingService(s)}>
                     Editar
                   </button>
                   <button
                     className="btn btn-sec"
                     type="button"
                     onClick={() => {
-                      if (window.confirm("Excluir este serviço?")) excluirServico(s.id);
+                      if (window.confirm("Excluir este serviço?")) deleteService(s.id);
                     }}
                   >
                     Excluir
@@ -653,38 +653,38 @@ function DetalheCliente({ cliente, servicos, salvarCliente, excluirCliente, salv
   );
 }
 
-const mesAno = (iso) => (iso ? iso.slice(0, 7).split("-").reverse().join("/") : "sem data");
+const monthYear = (iso) => (iso ? iso.slice(0, 7).split("-").reverse().join("/") : "sem data");
 
-function LembretesSite({ lista, tratar, converter, excluir }) {
-  const pendentes = lista.filter((l) => !l.tratado);
-  const tratados = lista.filter((l) => l.tratado);
-  const Linha = ({ l }) => {
-    const msg = `Olá, ${l.nome}! Aqui é da RD Engenharia. Recebemos o seu pedido de lembrete sobre: ${l.documento}. Vamos avisar você antes do vencimento. Pode nos confirmar a data exata do vencimento?`;
+function SiteReminders({ list, setHandled, convert, remove }) {
+  const pending = list.filter((r) => !r.tratado);
+  const handled = list.filter((r) => r.tratado);
+  const Row = ({ r }) => {
+    const msg = `Olá, ${r.nome}! Aqui é da RD Engenharia. Recebemos o seu pedido de lembrete sobre: ${r.documento}. Vamos avisar você antes do vencimento. Pode nos confirmar a data exata do vencimento?`;
     return (
       <li className="admin-line">
         <div>
-          <strong>{l.nome}</strong>
-          <span>{l.documento}</span>
+          <strong>{r.nome}</strong>
+          <span>{r.documento}</span>
           <small>
-            Vencimento: {mesAno(l.vencimento)} · Autorizou em {dataBR(String(l.consentimento_em).slice(0, 10))}
+            Vencimento: {monthYear(r.vencimento)} · Autorizou em {formatDateBR(String(r.consentimento_em).slice(0, 10))}
           </small>
         </div>
         <div className="admin-actions">
-          <a className="btn btn-whatsapp" href={linkZap(l.whatsapp, msg)} target="_blank" rel="noopener noreferrer">
+          <a className="btn btn-whatsapp" href={whatsappLink(r.whatsapp, msg)} target="_blank" rel="noopener noreferrer">
             Chamar no WhatsApp
           </a>
-          {!l.tratado && (
-            <button className="btn btn-sec" type="button" onClick={() => converter(l)}>
+          {!r.tratado && (
+            <button className="btn btn-sec" type="button" onClick={() => convert(r)}>
               Cadastrar como cliente
             </button>
           )}
-          <button className="btn btn-sec" type="button" onClick={() => tratar(l, !l.tratado)}>
-            {l.tratado ? "Reabrir" : "Marcar como tratado"}
+          <button className="btn btn-sec" type="button" onClick={() => setHandled(r, !r.tratado)}>
+            {r.tratado ? "Reabrir" : "Marcar como tratado"}
           </button>
           <button
             className="btn btn-sec"
             type="button"
-            onClick={() => window.confirm(`Excluir o pedido de ${l.nome}?`) && excluir(l.id)}
+            onClick={() => window.confirm(`Excluir o pedido de ${r.nome}?`) && remove(r.id)}
           >
             Excluir
           </button>
@@ -695,21 +695,21 @@ function LembretesSite({ lista, tratar, converter, excluir }) {
   return (
     <>
       <h2 className="admin-title">Pedidos de lembrete feitos no site</h2>
-      {pendentes.length ? (
+      {pending.length ? (
         <ul className="admin-list">
-          {pendentes.map((l) => (
-            <Linha key={l.id} l={l} />
+          {pending.map((r) => (
+            <Row key={r.id} r={r} />
           ))}
         </ul>
       ) : (
         <p className="admin-empty">Nenhum pedido novo.</p>
       )}
-      {tratados.length > 0 && (
+      {handled.length > 0 && (
         <>
           <h2 className="admin-title">Já tratados</h2>
           <ul className="admin-list">
-            {tratados.map((l) => (
-              <Linha key={l.id} l={l} />
+            {handled.map((r) => (
+              <Row key={r.id} r={r} />
             ))}
           </ul>
         </>
@@ -719,57 +719,57 @@ function LembretesSite({ lista, tratar, converter, excluir }) {
 }
 
 export default function Admin() {
-  const [banco, setBanco] = useState(null);
-  const [usuario, setUsuario] = useState(undefined);
-  const [clientes, setClientes] = useState([]);
-  const [servicos, setServicos] = useState([]);
-  const [lembretes, setLembretes] = useState([]);
-  const [aba, setAba] = useState("painel");
-  const [clienteId, setClienteId] = useState(null);
-  const [novo, setNovo] = useState(false);
-  const [erro, setErro] = useState("");
+  const [db, setDb] = useState(null);
+  const [user, setUser] = useState(undefined);
+  const [clients, setClients] = useState([]);
+  const [services, setServices] = useState([]);
+  const [reminders, setReminders] = useState([]);
+  const [tab, setTab] = useState("dashboard");
+  const [clientId, setClientId] = useState(null);
+  const [creatingNew, setCreatingNew] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     abrirBanco().then(async (b) => {
-      setBanco(b);
-      setUsuario(b.modo === "indisponivel" ? null : await b.auth.sessao());
+      setDb(b);
+      setUser(b.mode === "unavailable" ? null : await b.auth.session());
     });
   }, []);
 
-  const carregar = useCallback(async () => {
-    if (!banco) return;
+  const reload = useCallback(async () => {
+    if (!db) return;
     try {
-      const [c, s, l] = await Promise.all([
-        banco.clientes.listar(),
-        banco.servicos.listar(),
-        banco.lembretes.listar(),
+      const [c, s, r] = await Promise.all([
+        db.clients.list(),
+        db.services.list(),
+        db.reminders.list(),
       ]);
-      setClientes(c);
-      setServicos(s);
-      setLembretes(l);
-      setErro("");
+      setClients(c);
+      setServices(s);
+      setReminders(r);
+      setError("");
     } catch (e) {
-      setErro(e.message);
+      setError(e.message);
     }
-  }, [banco]);
+  }, [db]);
 
   useEffect(() => {
-    if (usuario) carregar();
-  }, [usuario, carregar]);
+    if (user) reload();
+  }, [user, reload]);
 
-  const executar = async (fn) => {
+  const run = async (fn) => {
     try {
       await fn();
-      await carregar();
+      await reload();
     } catch (e) {
-      setErro(e.message);
+      setError(e.message);
     }
   };
 
-  const cliente = clientes.find((c) => c.id === clienteId);
+  const client = clients.find((c) => c.id === clientId);
 
-  if (!banco || usuario === undefined) return <p className="admin-empty">Carregando...</p>;
-  if (banco.modo === "indisponivel")
+  if (!db || user === undefined) return <p className="admin-empty">Carregando...</p>;
+  if (db.mode === "unavailable")
     return (
       <div className="admin-login">
         <div className="form">
@@ -778,12 +778,12 @@ export default function Admin() {
         </div>
       </div>
     );
-  if (!usuario) return <Login banco={banco} aoEntrar={setUsuario} />;
+  if (!user) return <Login db={db} onLogin={setUser} />;
 
-  const irPara = (nome) => {
-    setAba(nome);
-    setClienteId(null);
-    setNovo(false);
+  const goTo = (name) => {
+    setTab(name);
+    setClientId(null);
+    setCreatingNew(false);
   };
 
   return (
@@ -792,23 +792,23 @@ export default function Admin() {
         <div className="admin-top-inner">
           <strong>RD Engenharia · Área interna</strong>
           <nav aria-label="Seções">
-            <button type="button" aria-pressed={aba === "painel"} onClick={() => irPara("painel")}>
+            <button type="button" aria-pressed={tab === "dashboard"} onClick={() => goTo("dashboard")}>
               Vencimentos
             </button>
-            <button type="button" aria-pressed={aba === "clientes"} onClick={() => irPara("clientes")}>
+            <button type="button" aria-pressed={tab === "clients"} onClick={() => goTo("clients")}>
               Clientes
             </button>
-            <button type="button" aria-pressed={aba === "lembretes"} onClick={() => irPara("lembretes")}>
-              Pedidos do site{lembretes.filter((l) => !l.tratado).length ? ` (${lembretes.filter((l) => !l.tratado).length})` : ""}
+            <button type="button" aria-pressed={tab === "reminders"} onClick={() => goTo("reminders")}>
+              Pedidos do site{reminders.filter((r) => !r.tratado).length ? ` (${reminders.filter((r) => !r.tratado).length})` : ""}
             </button>
           </nav>
           <div className="admin-user">
-            <span>{usuario.email}</span>
+            <span>{user.email}</span>
             <button
               type="button"
               onClick={async () => {
-                await banco.auth.sair();
-                setUsuario(null);
+                await db.auth.signOut();
+                setUser(null);
               }}
             >
               Sair
@@ -818,97 +818,97 @@ export default function Admin() {
       </header>
 
       <div className="admin-content">
-        {banco.modo === "demo" && (
+        {db.mode === "demo" && (
           <p className="admin-notice">Modo demonstração: dados só neste navegador. O banco de dados ainda não está ligado.</p>
         )}
-        {erro && (
+        {error && (
           <p className="admin-error" role="alert">
-            {erro}
+            {error}
           </p>
         )}
 
-        {novo ? (
+        {creatingNew ? (
           <>
             <h2 className="admin-title">Novo cliente</h2>
-            <FormCliente
-              inicial={{}}
-              aoSalvar={(c) =>
-                executar(async () => {
-                  const salvo = await banco.clientes.salvar(c);
-                  setNovo(false);
-                  setAba("clientes");
-                  setClienteId(salvo.id);
+            <ClientForm
+              initial={{}}
+              onSave={(c) =>
+                run(async () => {
+                  const saved = await db.clients.save(c);
+                  setCreatingNew(false);
+                  setTab("clients");
+                  setClientId(saved.id);
                 })
               }
-              aoCancelar={() => setNovo(false)}
+              onCancel={() => setCreatingNew(false)}
             />
           </>
-        ) : cliente ? (
-          <DetalheCliente
-            cliente={cliente}
-            servicos={servicos}
-            voltar={() => setClienteId(null)}
-            salvarCliente={(c) => executar(() => banco.clientes.salvar(c))}
-            excluirCliente={(id) =>
-              executar(async () => {
-                await banco.clientes.excluir(id);
-                setClienteId(null);
+        ) : client ? (
+          <ClientDetail
+            client={client}
+            services={services}
+            goBack={() => setClientId(null)}
+            saveClient={(c) => run(() => db.clients.save(c))}
+            deleteClient={(id) =>
+              run(async () => {
+                await db.clients.remove(id);
+                setClientId(null);
               })
             }
-            salvarServico={(s) => executar(() => banco.servicos.salvar(s))}
-            excluirServico={(id) => executar(() => banco.servicos.excluir(id))}
+            saveService={(s) => run(() => db.services.save(s))}
+            deleteService={(id) => run(() => db.services.remove(id))}
           />
-        ) : aba === "painel" ? (
-          <Painel
-            clientes={clientes}
-            servicos={servicos}
-            abrirCliente={(id) => {
-              setAba("clientes");
-              setClienteId(id);
+        ) : tab === "dashboard" ? (
+          <Dashboard
+            clients={clients}
+            services={services}
+            openClient={(id) => {
+              setTab("clients");
+              setClientId(id);
             }}
-            marcarTratado={(s) => executar(() => banco.servicos.salvar({ ...s, encerrado: true }))}
+            markHandled={(s) => run(() => db.services.save({ ...s, encerrado: true }))}
           />
-        ) : aba === "lembretes" ? (
-          <LembretesSite
-            lista={lembretes}
-            tratar={(l, v) => executar(() => banco.lembretes.salvar({ ...l, tratado: v }))}
-            excluir={(id) => executar(() => banco.lembretes.excluir(id))}
-            converter={(l) =>
-              executar(async () => {
-                const cli = await banco.clientes.salvar({
-                  ...clienteVazio,
-                  nome: l.nome,
-                  whatsapp: l.whatsapp,
+        ) : tab === "reminders" ? (
+          <SiteReminders
+            list={reminders}
+            setHandled={(r, v) => run(() => db.reminders.save({ ...r, tratado: v }))}
+            remove={(id) => run(() => db.reminders.remove(id))}
+            convert={(r) =>
+              run(async () => {
+                const created = await db.clients.save({
+                  ...emptyClient,
+                  nome: r.nome,
+                  whatsapp: r.whatsapp,
                   origem: "Site (lembrete de vencimento)",
                   aceita_lembretes: true,
-                  aceite_lembretes_em: String(l.consentimento_em).slice(0, 10),
+                  aceite_lembretes_em: String(r.consentimento_em).slice(0, 10),
                 });
-                if (l.vencimento) {
-                  await banco.servicos.salvar({
-                    ...servicoVazio,
-                    cliente_id: cli.id,
-                    tipo: l.documento,
-                    vencimento: l.vencimento,
+                if (r.vencimento) {
+                  await db.services.save({
+                    ...emptyService,
+                    cliente_id: created.id,
+                    tipo: r.documento,
+                    vencimento: r.vencimento,
                     descricao: "Criado a partir do pedido de lembrete feito no site.",
                   });
                 }
-                await banco.lembretes.salvar({ ...l, tratado: true });
+                await db.reminders.save({ ...r, tratado: true });
               })
             }
           />
         ) : (
           <>
-            <Clientes
-              clientes={clientes}
-              servicos={servicos}
-              abrirCliente={setClienteId}
-              novoCliente={() => setNovo(true)}
+            <ClientList
+              clients={clients}
+              services={services}
+              openClient={setClientId}
+              newClient={() => setCreatingNew(true)}
             />
             <div className="admin-actions admin-backup">
-              <button className="btn btn-sec" type="button" onClick={() => baixarCSV("clientes.csv", clientes)}>
+              <button className="btn btn-sec" type="button" onClick={() => downloadCSV("clientes.csv", clients)}>
                 Baixar clientes (CSV)
               </button>
-              <button className="btn btn-sec" type="button" onClick={() => baixarCSV("servicos.csv", servicos)}>
+              <button className="btn btn-sec" type="button" onClick={() => downloadCSV("servicos.csv", services)}>
                 Baixar serviços (CSV)
               </button>
             </div>

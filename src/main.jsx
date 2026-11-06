@@ -1,71 +1,71 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Pages.jsx";
+import PageView, { NaoEncontrada, PaginaImprimir } from "./Pages.jsx";
 import { achaPagina, achaArea } from "./pagesData";
 import "./styles.css";
 import { inject, track } from "@vercel/analytics";
 
 inject();
 
-// Conta cada clique para o WhatsApp (o único canal de contato) como evento "WhatsApp", com a página e
-// o trecho de onde veio (seção, botão flutuante, menu, rodapé). Um ouvinte só, no documento inteiro.
-// Eventos personalizados da Vercel Web Analytics podem exigir o plano Pro; sem ele, nada quebra.
+// Counts each click to WhatsApp (the only contact channel) as a "WhatsApp" event, with the page and
+// the part it came from (section, floating button, menu, footer). A single listener on the whole document.
+// Vercel Web Analytics custom events may require the Pro plan; without it, nothing breaks.
 document.addEventListener(
   "click",
   (e) => {
     const a = e.target instanceof Element ? e.target.closest('a[href*="wa.me/"]') : null;
     if (!a) return;
-    const secao = a.closest("section[id], header, footer, nav, [data-origem]");
-    const origem =
+    const section = a.closest("section[id], header, footer, nav, [data-origem]");
+    const origin =
       a.dataset.origem ||
       (a.classList.contains("whatsapp-float") ? "botao-flutuante" : "") ||
-      (secao && (secao.dataset?.origem || secao.id || secao.tagName.toLowerCase())) ||
+      (section && (section.dataset?.origem || section.id || section.tagName.toLowerCase())) ||
       "pagina";
     try {
-      track("WhatsApp", { pagina: window.location.pathname, origem, texto: (a.textContent || "").trim().slice(0, 60) });
+      track("WhatsApp", { pagina: window.location.pathname, origem: origin, texto: (a.textContent || "").trim().slice(0, 60) });
     } catch {
-      /* estatística é opcional */
+      /* analytics is optional */
     }
   },
   { capture: true },
 );
 
-const raiz = document.getElementById("root");
+const root = document.getElementById("root");
 const slug = window.location.pathname.replace(/^\/+|\/+$/g, "");
-const pagina = slug ? achaPagina(slug) : null;
+const page = slug ? achaPagina(slug) : null;
 
-const areaImpressao = slug.startsWith("imprimir/") ? achaArea(slug.slice(9)) : null;
+const printArea = slug.startsWith("imprimir/") ? achaArea(slug.slice(9)) : null;
 
 const Admin = lazy(() => import("./admin/Admin"));
 
 if (slug === "admin") {
-  ReactDOM.createRoot(raiz).render(
+  ReactDOM.createRoot(root).render(
     <Suspense fallback={<p style={{ padding: 24 }}>Carregando...</p>}>
       <Admin />
     </Suspense>
   );
-} else if (areaImpressao) {
-  ReactDOM.hydrateRoot(raiz, <PaginaImprimir area={areaImpressao} />);
-} else if (raiz.dataset.erro) {
-  ReactDOM.hydrateRoot(raiz, <NaoEncontrada />);
-} else if (pagina) {
+} else if (printArea) {
+  ReactDOM.hydrateRoot(root, <PaginaImprimir area={printArea} />);
+} else if (root.dataset.erro) {
+  ReactDOM.hydrateRoot(root, <NaoEncontrada />);
+} else if (page) {
   ReactDOM.hydrateRoot(
-    raiz,
+    root,
     <React.StrictMode>
-      <PaginaView pagina={pagina} />
+      <PageView pagina={page} />
     </React.StrictMode>
   );
-} else if (raiz.hasChildNodes()) {
-  // Página inicial pré-renderizada (dist/index.html já traz o conteúdo).
+} else if (root.hasChildNodes()) {
+  // Prerendered home page (dist/index.html already contains the content).
   ReactDOM.hydrateRoot(
-    raiz,
+    root,
     <React.StrictMode>
       <App />
     </React.StrictMode>
   );
 } else {
-  ReactDOM.createRoot(raiz).render(
+  ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <App />
     </React.StrictMode>

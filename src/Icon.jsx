@@ -18,9 +18,9 @@ import {
   X,
 } from "@phosphor-icons/react";
 
-// Ícones do site: Phosphor Icons (licença MIT), um só peso ("regular") em todo o site.
-// Os nomes antigos (estilo Font Awesome) continuam valendo, para não mexer em cada página.
-const ICONES = {
+// Site icons: Phosphor Icons (MIT license), a single weight ("regular") across the whole site.
+// The old names (Font Awesome style) still work, so every page does not need to change.
+const ICONS = {
   "fa-brands fa-whatsapp": WhatsappLogo,
   "fa-solid fa-bell": Bell,
   "fa-solid fa-building": Buildings,
@@ -41,9 +41,9 @@ const ICONES = {
 };
 
 export default function Icone({ nome }) {
-  const Componente = ICONES[nome];
-  if (!Componente) return null;
-  // O ponto de status ("Atendendo agora") é um círculo cheio, não um ícone de traço.
-  const peso = nome === "fa-solid fa-circle" ? "fill" : "regular";
-  return <Componente className="icon" size="1em" weight={peso} aria-hidden="true" focusable="false" />;
+  const Component = ICONS[nome];
+  if (!Component) return null;
+  // The status dot ("Atendendo agora") is a filled circle, not an outline icon.
+  const weight = nome === "fa-solid fa-circle" ? "fill" : "regular";
+  return <Component className="icon" size="1em" weight={weight} aria-hidden="true" focusable="false" />;
 }

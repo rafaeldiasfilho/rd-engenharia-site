@@ -1,7 +1,7 @@
 import { FireExtinguisher, HardHat, House, Mountains } from "@phosphor-icons/react";
 
-// Ícones das quatro áreas: Phosphor Icons (MIT), mesmo peso dos outros ícones do site.
-// São decorativos (aria-hidden): o nome da área sempre aparece em texto ao lado.
+// Icons for the four areas: Phosphor Icons (MIT), same weight as the site's other icons.
+// They are decorative (aria-hidden): the area name always appears as text next to them.
 const AREA = {
   "seguranca-do-trabalho": HardHat,
   "corpo-de-bombeiros": FireExtinguisher,
@@ -10,7 +10,7 @@ const AREA = {
 };
 
 export default function IconeArea({ slug, tamanho = 24, className = "" }) {
-  const Componente = AREA[slug];
-  if (!Componente) return null;
-  return <Componente className={`icon-area ${className}`} size={tamanho} weight="regular" aria-hidden="true" focusable="false" />;
+  const Component = AREA[slug];
+  if (!Component) return null;
+  return <Component className={`icon-area ${className}`} size={tamanho} weight="regular" aria-hidden="true" focusable="false" />;
 }

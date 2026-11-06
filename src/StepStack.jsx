@@ -1,81 +1,81 @@
 import { useEffect, useRef } from "react";
 
-// Passos em cartões que grudam no topo e se empilham ao rolar. O empilhamento é só CSS (position: sticky);
-// o script apenas encolhe um pouco cada cartão conforme o próximo o cobre (só transform). Fica parado com
-// "reduzir movimento" e escuta a rolagem só enquanto a lista está na tela.
-const ENCOLHE = 0.045;
+// Steps in cards that stick to the top and stack while scrolling. The stacking is CSS only (position: sticky);
+// the script only shrinks each card a little as the next one covers it (transform only). Stays still with
+// "reduce motion" and listens to scrolling only while the list is on screen.
+const SHRINK = 0.045;
 
 export default function PilhaEtapas({ etapas, acaoPrimeira }) {
-  const lista = useRef(null);
+  const listRef = useRef(null);
 
   useEffect(() => {
-    const ol = lista.current;
+    const ol = listRef.current;
     if (!ol || !window.matchMedia || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-    const itens = Array.from(ol.children);
-    const cartoes = itens.map((li) => li.firstElementChild);
-    let topos = [];
-    let fixo = false;
+    const items = Array.from(ol.children);
+    const cards = items.map((li) => li.firstElementChild);
+    let tops = [];
+    let sticky = false;
     let raf = 0;
 
-    // Em telas baixas os cartões não grudam (CSS): aí não há o que encolher.
-    const medirTopos = () => {
-      fixo = getComputedStyle(itens[0]).position === "sticky";
-      topos = itens.map((li) => parseFloat(getComputedStyle(li).top) || 0);
+    // On short screens the cards do not stick (CSS): then there is nothing to shrink.
+    const measureTops = () => {
+      sticky = getComputedStyle(items[0]).position === "sticky";
+      tops = items.map((li) => parseFloat(getComputedStyle(li).top) || 0);
     };
-    const pintar = () => {
+    const paint = () => {
       raf = 0;
-      if (!fixo) {
-        cartoes.forEach((c) => (c.style.transform = ""));
+      if (!sticky) {
+        cards.forEach((c) => (c.style.transform = ""));
         return;
       }
       const vh = window.innerHeight;
-      const cobre = itens.map((li, j) => {
-        const curso = vh - topos[j];
-        if (curso <= 0) return 0;
-        return Math.min(1, Math.max(0, (vh - li.getBoundingClientRect().top) / curso));
+      const coverage = items.map((li, j) => {
+        const travel = vh - tops[j];
+        if (travel <= 0) return 0;
+        return Math.min(1, Math.max(0, (vh - li.getBoundingClientRect().top) / travel));
       });
-      cartoes.forEach((c, i) => {
+      cards.forEach((c, i) => {
         let s = 0;
-        for (let j = i + 1; j < cobre.length; j++) s += cobre[j];
-        c.style.transform = s > 0 ? `scale(${1 - ENCOLHE * s})` : "";
+        for (let j = i + 1; j < coverage.length; j++) s += coverage[j];
+        c.style.transform = s > 0 ? `scale(${1 - SHRINK * s})` : "";
       });
     };
-    const pedir = () => {
-      if (!raf) raf = requestAnimationFrame(pintar);
+    const requestPaint = () => {
+      if (!raf) raf = requestAnimationFrame(paint);
     };
-    const redimensionar = () => {
-      medirTopos();
-      pedir();
+    const onResize = () => {
+      measureTops();
+      requestPaint();
     };
 
-    medirTopos();
-    let ouvindo = false;
+    measureTops();
+    let listening = false;
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !ouvindo) {
-        window.addEventListener("scroll", pedir, { passive: true });
-        window.addEventListener("resize", redimensionar, { passive: true });
-        ouvindo = true;
-        medirTopos();
-        pedir();
-      } else if (!e.isIntersecting && ouvindo) {
-        window.removeEventListener("scroll", pedir);
-        window.removeEventListener("resize", redimensionar);
-        ouvindo = false;
+      if (e.isIntersecting && !listening) {
+        window.addEventListener("scroll", requestPaint, { passive: true });
+        window.addEventListener("resize", onResize, { passive: true });
+        listening = true;
+        measureTops();
+        requestPaint();
+      } else if (!e.isIntersecting && listening) {
+        window.removeEventListener("scroll", requestPaint);
+        window.removeEventListener("resize", onResize);
+        listening = false;
       }
     });
     io.observe(ol);
 
     return () => {
       io.disconnect();
-      window.removeEventListener("scroll", pedir);
-      window.removeEventListener("resize", redimensionar);
+      window.removeEventListener("scroll", requestPaint);
+      window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
-      cartoes.forEach((c) => (c.style.transform = ""));
+      cards.forEach((c) => (c.style.transform = ""));
     };
   }, []);
 
   return (
-    <ol className="stack" ref={lista}>
+    <ol className="stack" ref={listRef}>
       {etapas.map((e, i) => (
         <li key={e.titulo} className="stack-item" style={{ "--i": i }}>
           <article className="stack-card">

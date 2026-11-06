@@ -1,111 +1,111 @@
 import { useEffect, useRef, useState } from "react";
-import Icone from "./Icon";
-import IconeArea from "./AreaIcon";
+import Icon from "./Icon";
+import AreaIcon from "./AreaIcon";
 import { AREAS, PERFIS, RESULTADOS, achaArea } from "./pagesData";
 import { BotaoZap } from "./Layout";
 
-// Passo a passo da página /o-que-preciso: uma pergunta por tela, escolhas grandes, barra de progresso,
-// botão de voltar e tela de resultado. Usa as mesmas regras de PERFIS/RESULTADOS (src/paginas.js).
-// Nada é guardado: as respostas ficam só na memória da página e viram a mensagem de WhatsApp.
+// Step-by-step guide for the /o-que-preciso page: one question per screen, large choices, progress bar,
+// back button and result screen. Uses the same PERFIS/RESULTADOS rules (src/pagesData.js).
+// Nothing is stored: the answers live only in the page's memory and become the WhatsApp message.
 export default function Assistente() {
-  const [perfilId, setPerfilId] = useState("");
-  const [respostas, setRespostas] = useState({}); // índice da situação -> true | false
-  const [etapa, setEtapa] = useState(0); // 0 = perfil; 1..n = situações; n+1 = resultado
-  const [cidade, setCidade] = useState("");
-  const titulo = useRef(null);
-  const montado = useRef(false);
+  const [profileId, setProfileId] = useState("");
+  const [answers, setAnswers] = useState({}); // situation index -> true | false
+  const [step, setStep] = useState(0); // 0 = profile; 1..n = situations; n+1 = result
+  const [city, setCity] = useState("");
+  const titleRef = useRef(null);
+  const mounted = useRef(false);
 
-  const perfil = PERFIS.find((p) => p.id === perfilId);
-  const n = perfil ? perfil.situacoes.length : 0;
-  const total = 1 + n; // perguntas (o resultado não conta)
-  const noResultado = perfil && etapa > n;
-  const situacao = perfil && etapa >= 1 && etapa <= n ? perfil.situacoes[etapa - 1] : null;
+  const profile = PERFIS.find((p) => p.id === profileId);
+  const n = profile ? profile.situacoes.length : 0;
+  const total = 1 + n; // questions (the result does not count)
+  const onResult = profile && step > n;
+  const situation = profile && step >= 1 && step <= n ? profile.situacoes[step - 1] : null;
 
-  // Foco no título da nova tela (teclado e leitor de tela), mas não na primeira exibição da página.
+  // Focus the new screen's heading (keyboard and screen reader), but not on the page's first render.
   useEffect(() => {
-    if (montado.current && titulo.current) titulo.current.focus({ preventScroll: false });
-    montado.current = true;
-  }, [etapa]);
+    if (mounted.current && titleRef.current) titleRef.current.focus({ preventScroll: false });
+    mounted.current = true;
+  }, [step]);
 
   const ids = [];
-  if (perfil) {
-    perfil.situacoes.forEach((s, i) => {
-      if (respostas[i]) s.itens.forEach((id) => !ids.includes(id) && ids.push(id));
+  if (profile) {
+    profile.situacoes.forEach((s, i) => {
+      if (answers[i]) s.itens.forEach((id) => !ids.includes(id) && ids.push(id));
     });
   }
-  const resultados = ids.map((id) => ({ id, ...RESULTADOS[id] }));
+  const results = ids.map((id) => ({ id, ...RESULTADOS[id] }));
 
-  const escolherPerfil = (id) => {
-    if (id !== perfilId) setRespostas({});
-    setPerfilId(id);
-    setEtapa(1);
+  const chooseProfile = (id) => {
+    if (id !== profileId) setAnswers({});
+    setProfileId(id);
+    setStep(1);
   };
-  const responder = (valor) => {
-    setRespostas((r) => ({ ...r, [etapa - 1]: valor }));
-    setEtapa((e) => e + 1);
+  const answer = (value) => {
+    setAnswers((r) => ({ ...r, [step - 1]: value }));
+    setStep((e) => e + 1);
   };
-  const voltar = () => setEtapa((e) => Math.max(0, e - 1));
-  const recomecar = () => {
-    setPerfilId("");
-    setRespostas({});
-    setCidade("");
-    setEtapa(0);
+  const goBack = () => setStep((e) => Math.max(0, e - 1));
+  const restart = () => {
+    setProfileId("");
+    setAnswers({});
+    setCity("");
+    setStep(0);
   };
 
-  // Atalhos: teclas 1, 2 e 3 escolhem a opção correspondente; Backspace/Esc não são usados para não
-  // atrapalhar quem digita a cidade.
-  const aoTeclar = useRef(null);
-  aoTeclar.current = (e) => {
-    const alvo = e.target && e.target.tagName;
-    if (alvo === "INPUT" || alvo === "TEXTAREA" || alvo === "SELECT" || e.altKey || e.ctrlKey || e.metaKey) return;
-    if (!noResultado && etapa === 0 && ["1", "2", "3"].includes(e.key)) {
+  // Shortcuts: keys 1, 2 and 3 pick the matching option; Backspace/Esc are not used so they do not
+  // get in the way of someone typing the city.
+  const keyHandler = useRef(null);
+  keyHandler.current = (e) => {
+    const tag = e.target && e.target.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (!onResult && step === 0 && ["1", "2", "3"].includes(e.key)) {
       const p = PERFIS[Number(e.key) - 1];
-      if (p) escolherPerfil(p.id);
-    } else if (situacao && (e.key === "1" || e.key === "2")) {
-      responder(e.key === "1");
+      if (p) chooseProfile(p.id);
+    } else if (situation && (e.key === "1" || e.key === "2")) {
+      answer(e.key === "1");
     }
   };
   useEffect(() => {
-    const f = (e) => aoTeclar.current(e);
+    const f = (e) => keyHandler.current(e);
     document.addEventListener("keydown", f);
     return () => document.removeEventListener("keydown", f);
   }, []);
 
-  const nomePerfil = perfil ? perfil.nome : "";
-  const mensagem = [
+  const profileName = profile ? profile.nome : "";
+  const message = [
     "Olá! Fiz o guia do site e acho que preciso de:",
-    ...resultados.map((r) => `- ${r.nome}`),
-    nomePerfil ? `Meu caso: ${nomePerfil.charAt(0).toLowerCase() + nomePerfil.slice(1)}` : "",
-    cidade.trim() ? `Cidade: ${cidade.trim()}` : "",
+    ...results.map((r) => `- ${r.nome}`),
+    profileName ? `Meu caso: ${profileName.charAt(0).toLowerCase() + profileName.slice(1)}` : "",
+    city.trim() ? `Cidade: ${city.trim()}` : "",
   ]
     .filter(Boolean)
     .join("\n");
-  const mensagemSemItens = [
+  const messageNoItems = [
     "Olá! Fiz o guia do site e nenhuma opção bateu com o meu caso. Gostaria de conversar.",
-    nomePerfil ? `Meu caso: ${nomePerfil.charAt(0).toLowerCase() + nomePerfil.slice(1)}` : "",
-    cidade.trim() ? `Cidade: ${cidade.trim()}` : "",
+    profileName ? `Meu caso: ${profileName.charAt(0).toLowerCase() + profileName.slice(1)}` : "",
+    city.trim() ? `Cidade: ${city.trim()}` : "",
   ]
     .filter(Boolean)
     .join("\n");
 
-  const atual = noResultado ? total : etapa + 1;
-  const pct = noResultado ? 100 : Math.round((etapa / total) * 100);
+  const current = onResult ? total : step + 1;
+  const pct = onResult ? 100 : Math.round((step / total) * 100);
 
   return (
     <div className="wizard">
       <div className="wizard-top">
-        {etapa > 0 ? (
-          <button type="button" className="wizard-back" onClick={voltar}>
+        {step > 0 ? (
+          <button type="button" className="wizard-back" onClick={goBack}>
             <span aria-hidden="true">←</span> Voltar
           </button>
         ) : (
           <span className="wizard-back-empty" />
         )}
         <p className="wizard-counter" aria-live="polite">
-          {noResultado ? "Resultado" : perfil ? `Pergunta ${atual} de ${total}` : "Pergunta 1"}
+          {onResult ? "Resultado" : profile ? `Pergunta ${current} de ${total}` : "Pergunta 1"}
         </p>
-        {etapa > 0 ? (
-          <button type="button" className="wizard-restart" onClick={recomecar}>
+        {step > 0 ? (
+          <button type="button" className="wizard-restart" onClick={restart}>
             <svg className="wizard-restart-arrow" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
               <path d="M13.2 8a5.2 5.2 0 1 1-1.6-3.75" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               <path d="M12.2 1.8v2.9H9.3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -127,10 +127,10 @@ export default function Assistente() {
         <i style={{ transform: `scaleX(${pct / 100})` }} />
       </div>
 
-      <div className="wizard-screen" key={`${perfilId}-${etapa}`}>
-        {etapa === 0 && (
+      <div className="wizard-screen" key={`${profileId}-${step}`}>
+        {step === 0 && (
           <>
-            <h2 className="wizard-question" tabIndex={-1} ref={titulo}>
+            <h2 className="wizard-question" tabIndex={-1} ref={titleRef}>
               Qual é a sua situação?
             </h2>
             <p className="wizard-support">Escolha a que mais se parece com o seu caso.</p>
@@ -139,11 +139,11 @@ export default function Assistente() {
                 <button
                   type="button"
                   key={p.id}
-                  className={`wizard-option ${perfilId === p.id ? "active" : ""}`}
-                  aria-pressed={perfilId === p.id}
-                  onClick={() => escolherPerfil(p.id)}
+                  className={`wizard-option ${profileId === p.id ? "active" : ""}`}
+                  aria-pressed={profileId === p.id}
+                  onClick={() => chooseProfile(p.id)}
                 >
-                  <Icone nome={p.icone} />
+                  <Icon nome={p.icone} />
                   <span>{p.nome}</span>
                   <kbd aria-hidden="true">{i + 1}</kbd>
                 </button>
@@ -152,27 +152,27 @@ export default function Assistente() {
           </>
         )}
 
-        {situacao && (
+        {situation && (
           <>
             <p className="wizard-label">Isso se aplica ao seu caso?</p>
-            <h2 className="wizard-question" tabIndex={-1} ref={titulo}>
-              {situacao.texto}
+            <h2 className="wizard-question" tabIndex={-1} ref={titleRef}>
+              {situation.texto}
             </h2>
-            <div className="wizard-options wizard-yesno" role="group" aria-label={`${situacao.texto}. Isso se aplica ao seu caso?`}>
+            <div className="wizard-options wizard-yesno" role="group" aria-label={`${situation.texto}. Isso se aplica ao seu caso?`}>
               <button
                 type="button"
-                className={`wizard-option ${respostas[etapa - 1] === true ? "active" : ""}`}
-                aria-pressed={respostas[etapa - 1] === true}
-                onClick={() => responder(true)}
+                className={`wizard-option ${answers[step - 1] === true ? "active" : ""}`}
+                aria-pressed={answers[step - 1] === true}
+                onClick={() => answer(true)}
               >
                 <span>Sim, se aplica</span>
                 <kbd aria-hidden="true">1</kbd>
               </button>
               <button
                 type="button"
-                className={`wizard-option ${respostas[etapa - 1] === false ? "active" : ""}`}
-                aria-pressed={respostas[etapa - 1] === false}
-                onClick={() => responder(false)}
+                className={`wizard-option ${answers[step - 1] === false ? "active" : ""}`}
+                aria-pressed={answers[step - 1] === false}
+                onClick={() => answer(false)}
               >
                 <span>Não, ou não sei</span>
                 <kbd aria-hidden="true">2</kbd>
@@ -181,21 +181,21 @@ export default function Assistente() {
           </>
         )}
 
-        {noResultado && (
+        {onResult && (
           <>
-            <h2 className="wizard-question" tabIndex={-1} ref={titulo}>
-              {resultados.length
+            <h2 className="wizard-question" tabIndex={-1} ref={titleRef}>
+              {results.length
                 ? "Pelo que você respondeu, costumam ser exigidos:"
                 : "Nenhum item específico apareceu para as suas respostas."}
             </h2>
-            {resultados.length > 0 ? (
+            {results.length > 0 ? (
               <ul className="wizard-results">
-                {resultados.map((r) => {
+                {results.map((r) => {
                   const area = achaArea(r.area);
                   return (
                     <li key={r.id}>
                       <small className="wizard-area">
-                        {area && <IconeArea slug={area.slug} tamanho={18} />} {area ? area.nome : ""}
+                        {area && <AreaIcon slug={area.slug} tamanho={18} />} {area ? area.nome : ""}
                       </small>
                       <h3>{r.nome}</h3>
                       <p>{r.texto}</p>
@@ -216,7 +216,7 @@ export default function Assistente() {
                   {AREAS.map((a) => (
                     <li key={a.slug}>
                       <a href={`/${a.slug}`}>
-                        <IconeArea slug={a.slug} tamanho={18} /> {a.nome}
+                        <AreaIcon slug={a.slug} tamanho={18} /> {a.nome}
                       </a>
                     </li>
                   ))}
@@ -231,8 +231,8 @@ export default function Assistente() {
               <label htmlFor="cidade-quiz">Sua cidade (opcional, vai só na mensagem)</label>
               <input
                 id="cidade-quiz"
-                value={cidade}
-                onChange={(e) => setCidade(e.target.value)}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
                 placeholder="Ex.: Ibirá"
                 autoComplete="off"
               />
@@ -240,17 +240,17 @@ export default function Assistente() {
             <div className="actions">
               <BotaoZap
                 className="btn-large"
-                texto={resultados.length ? mensagem : mensagemSemItens}
-                rotulo={resultados.length ? "Enviar para a RD pelo WhatsApp" : "Contar o meu caso no WhatsApp"}
+                texto={results.length ? message : messageNoItems}
+                rotulo={results.length ? "Enviar para a RD pelo WhatsApp" : "Contar o meu caso no WhatsApp"}
               />
-              <button type="button" className="btn btn-sec btn-large" onClick={recomecar}>
+              <button type="button" className="btn btn-sec btn-large" onClick={restart}>
                 Recomeçar
               </button>
             </div>
           </>
         )}
       </div>
-      {etapa < 2 && <p className="wizard-hint">Nada do que você responde é guardado. <span className="keyboard-only">Dica: as teclas 1, 2 e 3 escolhem as opções.</span></p>}
+      {step < 2 && <p className="wizard-hint">Nada do que você responde é guardado. <span className="keyboard-only">Dica: as teclas 1, 2 e 3 escolhem as opções.</span></p>}
       <noscript>
         <p className="wizard-support">
           Este passo a passo precisa de JavaScript. Sem ele, veja as áreas:{" "}

@@ -9,25 +9,25 @@
  * without WebGL it falls back to a CSS drop. No dependencies besides React.
  * by guglielmogiannattasio.it
  *
- * Adaptado para o site da RD Engenharia (recebido via 21st.dev):
- * - tom "auto": segue o tema do site (data-theme no <html> ou o sistema);
- * - água e sombras na família verde do site, em vez de azul; texto e foco com as cores do site;
- * - rótulo acessível e tipo de aria-current configuráveis (a barra "Nesta página" usa "location");
- * - useLayoutEffect trocado por um efeito que não avisa no prerender (renderToString);
- * - no tom "auto" as cores da pílula vêm só do CSS (o HTML prerenderizado já sai certo no tema escuro);
- *   o JS só informa o tom ao shader;
- * - `ambient={false}`: a água só anima quando algo muda (clique, troca de item, mouse em cima), em vez
- *   de ondular o tempo todo; `arrowKeys={false}` desliga as setas ← → (útil quando os itens são links);
- * - resolução do canvas limitada a 1,5x, arrays do desenho reaproveitados, animação pausa com a aba
- *   oculta OU a pílula fora da tela, e "reduzir movimento" é relido quando muda;
- * - vidro mais opaco (.9 em vez de .74): o texto grande que passa por trás não briga com os itens;
- *   `refraction={false}` desliga a distorção do fundo (no Chrome ela entortava títulos e botões);
- * - a pílula nunca passa da largura disponível: os itens rolam de lado DENTRO dela (pontas sempre à
- *   vista, bordas esmaecidas indicando que há mais), a gota acompanha a rolagem e o item ativo é
- *   centralizado sozinho;
- * - o rótulo reserva a largura do negrito (o item ativo não muda de largura): antes a pílula variava
- *   1 px a cada troca, o ResizeObserver tratava isso como redimensionamento e a gota saltava direto
- *   para o destino, sem o efeito; agora só uma mudança real de largura (> 2 px) reposiciona sem animar.
+ * Adapted for the RD Engenharia site (received via 21st.dev):
+ * - "auto" tone: follows the site theme (data-theme on <html> or the system);
+ * - water and shadows in the site's green family instead of blue; text and focus in the site colors;
+ * - configurable accessible label and aria-current type (the "Nesta página" bar uses "location");
+ * - useLayoutEffect replaced by an effect that does not warn during prerender (renderToString);
+ * - in "auto" tone the pill colors come only from CSS (the prerendered HTML is already right in the dark theme);
+ *   JS only tells the shader the tone;
+ * - `ambient={false}`: the water only animates when something changes (click, item change, mouse hover), instead
+ *   of rippling all the time; `arrowKeys={false}` turns off the ← → arrows (useful when the items are links);
+ * - canvas resolution capped at 1.5x, drawing arrays reused, animation pauses when the tab is
+ *   hidden OR the pill is off screen, and "reduced motion" is re-read when it changes;
+ * - more opaque glass (.9 instead of .74): the large text passing behind does not clash with the items;
+ *   `refraction={false}` turns off the background distortion (in Chrome it warped headings and buttons);
+ * - the pill never exceeds the available width: the items scroll sideways INSIDE it (ends always
+ *   visible, faded edges showing there is more), the drop follows the scroll and the active item is
+ *   centered automatically;
+ * - the label reserves the bold width (the active item does not change width): before, the pill changed
+ *   by 1 px on every switch, the ResizeObserver treated that as a resize and the drop jumped straight
+ *   to the target without the effect; now only a real width change (> 2 px) repositions without animating.
  */
 
 import * as React from "react"
@@ -87,10 +87,10 @@ const DEFAULT_ITEMS: LiquidNavItem[] = [
   { label: "Perfil", icon: NimbusIcons.user, fx: "wave" },
 ]
 
-// useLayoutEffect no navegador; no prerender (sem window) vira useEffect e não gera aviso.
+// useLayoutEffect in the browser; in the prerender (no window) it becomes useEffect and emits no warning.
 const useIsoLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect
 
-// Tema do site: data-theme="dark|light" no <html>; sem escolha, o do sistema.
+// Site theme: data-theme="dark|light" on <html>; with no choice, the system one.
 function readSiteTone(): "light" | "dark" {
   if (typeof document === "undefined") return "light"
   const t = document.documentElement.dataset.theme
@@ -263,7 +263,7 @@ function makeState() {
 }
 
 function initGL(canvas: HTMLCanvasElement) {
-  // Sem GPU (renderização por software) o shader leva cerca de 1 s para compilar: fica a gota em CSS.
+  // Without a GPU (software rendering) the shader takes about 1 s to compile: keep the CSS drop.
   const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false, failIfMajorPerformanceCaveat: true }) as WebGLRenderingContext | null
   if (!gl) return null
   const info = gl.getExtension("WEBGL_debug_renderer_info")
@@ -329,7 +329,7 @@ export function LiquidNavbar({
   const iconRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const audio = React.useRef<AudioContext | null>(null)
   const st = React.useRef(makeState())
-  // "wait": ainda sem shader (prerender e começo da página); a gota em CSS faz o papel da água.
+  // "wait": no shader yet (prerender and page start); the CSS drop stands in for the water.
   const [gl, setGl] = React.useState<"wait" | "on" | "off">("wait")
   const [refract, setRefract] = React.useState(false)
   const [fx, setFx] = React.useState({ i: -1, n: 0 })
@@ -386,7 +386,7 @@ export function LiquidNavbar({
     s.q += (T.q - s.q) * Math.min(1, dt * 12)
     const bodies = [s.a, s.b]
     let still = true
-    // alvo preso à parte visível da pílula (o item ativo pode estar fora, com a faixa rolada)
+    // target clamped to the visible part of the pill (the active item may be outside, with the track scrolled)
     const lo = PAD + 6 + s.q + T.r - 3, hi = PAD + s.w - 6 - s.q - T.r + 3
     const tx = Math.max(lo, Math.min(hi, T.x))
     if (s.reduce) {
@@ -468,7 +468,7 @@ export function LiquidNavbar({
   }, [draw, step])
 
   /* ---- layout ---- */
-  // esmaece a borda da faixa do lado em que ainda há itens
+  // fades the track edge on the side that still has items
   const fades = React.useCallback(() => {
     const nav = navRef.current, tr = trackRef.current
     if (!nav || !tr) return
@@ -516,7 +516,7 @@ export function LiquidNavbar({
     loop()
   }, [current, loop, fades])
 
-  // a faixa rolou: tudo o que está desenhado anda junto com os itens
+  // the track scrolled: everything drawn moves along with the items
   const onTrackScroll = () => {
     const tr = trackRef.current
     if (!tr) return
@@ -534,7 +534,7 @@ export function LiquidNavbar({
     loop()
   }
 
-  // item ativo fora da parte visível: centraliza (sem animação na primeira vez)
+  // active item outside the visible part: center it (no animation the first time)
   const centered = React.useRef(false)
   React.useEffect(() => {
     const tr = trackRef.current
@@ -554,49 +554,49 @@ export function LiquidNavbar({
     const onReduce = () => { s.reduce = !!mqReduce?.matches; loop() }
     mqReduce?.addEventListener?.("change", onReduce)
     const cv = canvasRef.current
-    // Contexto WebGL + shader da água custam caro na thread principal. Só depois da primeira interação
-    // (mouse, toque, rolagem, tecla), com a pílula à vista e o navegador ocioso: o carregamento fica
-    // livre, e até lá a gota em CSS faz o papel da água.
+    // The WebGL context + water shader are expensive on the main thread. Only after the first interaction
+    // (mouse, touch, scroll, key), with the pill in view and the browser idle: page load stays
+    // free, and until then the CSS drop stands in for the water.
     const win = window as Window & {
       requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number
       cancelIdleCallback?: (id: number) => void
     }
-    let vivo = true
-    let ocioso = 0
-    let interagiu = false
-    const ligar = () => {
-      if (!vivo || s.glc) return
+    let alive = true
+    let idleHandle = 0
+    let interacted = false
+    const enable = () => {
+      if (!alive || s.glc) return
       s.glc = cv ? initGL(cv) : null
       setGl(s.glc ? "on" : "off")
       loop()
     }
-    const agendar = () => {
-      if (!interagiu || !s.visible || s.glc || ocioso) return
-      ocioso = win.requestIdleCallback ? win.requestIdleCallback(ligar, { timeout: 1500 }) : window.setTimeout(ligar, 300)
+    const schedule = () => {
+      if (!interacted || !s.visible || s.glc || idleHandle) return
+      idleHandle = win.requestIdleCallback ? win.requestIdleCallback(enable, { timeout: 1500 }) : window.setTimeout(enable, 300)
     }
-    const GESTOS = ["pointermove", "pointerdown", "keydown", "wheel", "touchstart", "scroll"] as const
-    const marcar = () => {
-      interagiu = true
-      GESTOS.forEach((t) => window.removeEventListener(t, marcar))
-      agendar()
+    const GESTURES = ["pointermove", "pointerdown", "keydown", "wheel", "touchstart", "scroll"] as const
+    const markInteracted = () => {
+      interacted = true
+      GESTURES.forEach((t) => window.removeEventListener(t, markInteracted))
+      schedule()
     }
-    GESTOS.forEach((t) => window.addEventListener(t, marcar, { passive: true }))
+    GESTURES.forEach((t) => window.addEventListener(t, markInteracted, { passive: true }))
     const lost = (e: Event) => { e.preventDefault(); s.glc = null; setGl("off") }
     cv?.addEventListener("webglcontextlost", lost)
     const io = new IntersectionObserver(([e]) => {
       s.visible = e.isIntersecting
       if (!s.visible) return
       loop()
-      agendar()
+      schedule()
     })
     if (navRef.current) io.observe(navRef.current)
     const vis = () => { s.page = document.visibilityState === "visible"; if (s.page && s.visible) loop() }
     document.addEventListener("visibilitychange", vis)
     return () => {
-      vivo = false
-      GESTOS.forEach((t) => window.removeEventListener(t, marcar))
-      if (win.cancelIdleCallback) win.cancelIdleCallback(ocioso)
-      else window.clearTimeout(ocioso)
+      alive = false
+      GESTURES.forEach((t) => window.removeEventListener(t, markInteracted))
+      if (win.cancelIdleCallback) win.cancelIdleCallback(idleHandle)
+      else window.clearTimeout(idleHandle)
       cv?.removeEventListener("webglcontextlost", lost)
       io.disconnect()
       document.removeEventListener("visibilitychange", vis)

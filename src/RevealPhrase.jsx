@@ -1,38 +1,38 @@
 import { useEffect, useRef } from "react";
 
-// Frase de destaque que "acende" palavra por palavra conforme a rolagem (seção pedida pela skill
-// landing-page-design): as palavras começam apagadas (~30%) e acendem em ordem de leitura ao passar
-// por uma linha a 65% da altura da tela. Sem JavaScript ou com "reduzir movimento": frase inteira acesa.
-// A rolagem só é ouvida enquanto a frase está na tela, e o cálculo vai num requestAnimationFrame.
+// Highlight phrase that "lights up" word by word as the page scrolls (section requested by the
+// landing-page-design skill): words start dimmed (~30%) and light up in reading order as they cross
+// a line at 65% of the screen height. Without JavaScript or with "reduce motion": the whole phrase is lit.
+// Scrolling is only listened to while the phrase is on screen, and the calculation runs in a requestAnimationFrame.
 export default function FraseRevela({ texto, className = "" }) {
   const ref = useRef(null);
-  const palavras = texto.split(/\s+/);
+  const words = texto.split(/\s+/);
 
   useEffect(() => {
     const el = ref.current;
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
     el.classList.add("phrase-active");
     const spans = [...el.querySelectorAll("span")];
-    let quadro = 0;
-    const calcular = () => {
-      quadro = 0;
-      const linha = window.innerHeight * 0.65;
-      spans.forEach((s) => s.classList.toggle("aceso", s.getBoundingClientRect().top < linha));
+    let frame = 0;
+    const compute = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.65;
+      spans.forEach((s) => s.classList.toggle("aceso", s.getBoundingClientRect().top < line));
     };
-    const pedir = () => {
-      if (!quadro) quadro = requestAnimationFrame(calcular);
+    const requestFrame = () => {
+      if (!frame) frame = requestAnimationFrame(compute);
     };
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) {
-        window.addEventListener("scroll", pedir, { passive: true });
-        pedir();
-      } else window.removeEventListener("scroll", pedir);
+        window.addEventListener("scroll", requestFrame, { passive: true });
+        requestFrame();
+      } else window.removeEventListener("scroll", requestFrame);
     });
     io.observe(el);
     return () => {
       io.disconnect();
-      cancelAnimationFrame(quadro);
-      window.removeEventListener("scroll", pedir);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", requestFrame);
     };
   }, []);
 
@@ -40,7 +40,7 @@ export default function FraseRevela({ texto, className = "" }) {
     <section className={`phrase-reveal-sec ${className}`} aria-label="Nosso compromisso">
       <div className="container">
         <p ref={ref} className="phrase-reveal">
-          {palavras.map((p, n) => (
+          {words.map((p, n) => (
             <span key={n}>{p} </span>
           ))}
         </p>

@@ -1,5 +1,5 @@
-import Icone from "./Icon";
-import IconeArea from "./AreaIcon";
+import Icon from "./Icon";
+import AreaIcon from "./AreaIcon";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
@@ -14,58 +14,58 @@ export { WHATSAPP, zap } from "./contact";
 export function BotaoZap({ texto, rotulo, className = "" }) {
   return (
     <a className={`btn btn-whatsapp ${className}`} href={zap(texto)} target="_blank" rel="noopener noreferrer">
-      <Icone nome="fa-brands fa-whatsapp" /> {rotulo}
+      <Icon nome="fa-brands fa-whatsapp" /> {rotulo}
     </a>
   );
 }
 
-const TEMAS = [
-  { id: "auto", rotulo: "Automático" },
-  { id: "light", rotulo: "Claro" },
-  { id: "dark", rotulo: "Escuro" },
+const THEMES = [
+  { id: "auto", label: "Automático" },
+  { id: "light", label: "Claro" },
+  { id: "dark", label: "Escuro" },
 ];
 
-function SeletorTema() {
-  const [tema, setTema] = useState("auto");
+function ThemeSelector() {
+  const [theme, setTheme] = useState("auto");
 
   useEffect(() => {
     try {
-      const salvo = localStorage.getItem("tema");
-      if (salvo === "light" || salvo === "dark") setTema(salvo);
+      const saved = localStorage.getItem("tema");
+      if (saved === "light" || saved === "dark") setTheme(saved);
     } catch {
-      // sem armazenamento: segue o sistema
+      // no storage: follow the system
     }
   }, []);
 
-  const aplicar = (id) => {
-    flushSync(() => setTema(id));
+  const applyTheme = (id) => {
+    flushSync(() => setTheme(id));
     if (id === "auto") document.documentElement.removeAttribute("data-theme");
     else document.documentElement.setAttribute("data-theme", id);
     try {
       if (id === "auto") localStorage.removeItem("tema");
       else localStorage.setItem("tema", id);
     } catch {
-      // o tema vale só nesta visita
+      // the theme applies to this visit only
     }
   };
 
-  // A nova aparência se abre num círculo a partir do botão (View Transitions). Sem suporte ou com
-  // "reduzir movimento", troca direto.
-  const escolher = (id, e) => {
-    const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!document.startViewTransition || reduz) {
-      aplicar(id);
+  // The new appearance opens as a circle from the button (View Transitions). Without support or with
+  // "reduce motion", it switches directly.
+  const chooseTheme = (id, e) => {
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || reduceMotion) {
+      applyTheme(id);
       return;
     }
     const r = e.currentTarget.getBoundingClientRect();
     const x = e.detail > 0 ? e.clientX : r.left + r.width / 2;
     const y = e.detail > 0 ? e.clientY : r.top + r.height / 2;
-    const raio = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-    const transicao = document.startViewTransition(() => aplicar(id));
-    transicao.ready
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    const transition = document.startViewTransition(() => applyTheme(id));
+    transition.ready
       .then(() => {
         document.documentElement.animate(
-          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${raio}px at ${x}px ${y}px)`] },
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
           { duration: 520, easing: "cubic-bezier(0.23, 1, 0.32, 1)", pseudoElement: "::view-transition-new(root)" }
         );
       })
@@ -75,100 +75,100 @@ function SeletorTema() {
   return (
     <div className="theme" role="group" aria-label="Aparência do site">
       <span>Aparência</span>
-      {TEMAS.map((t) => (
-        <button key={t.id} type="button" aria-pressed={tema === t.id} onClick={(e) => escolher(t.id, e)}>
-          {t.rotulo}
+      {THEMES.map((t) => (
+        <button key={t.id} type="button" aria-pressed={theme === t.id} onClick={(e) => chooseTheme(t.id, e)}>
+          {t.label}
         </button>
       ))}
     </div>
   );
 }
 
-// "atual" é o slug da página ("" na página inicial). Marca o item do menu com aria-current.
+// "atual" is the page slug ("" on the home page). Marks the menu item with aria-current.
 export function Cabecalho({ atual = "" }) {
-  const [aberto, setAberto] = useState(false);
-  const [servicos, setServicos] = useState(false);
-  const caixa = useRef(null);
-  const botaoServicos = useRef(null);
-  const botaoMenu = useRef(null);
-  const teclado = useRef(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const servicesBox = useRef(null);
+  const servicesButton = useRef(null);
+  const menuButton = useRef(null);
+  const openedByKeyboard = useRef(false);
   const menu = useRef(null);
-  // Aberto só pelo mouse passando: fecha quando ele sai. Um clique "fixa" o painel aberto.
-  const porHover = useRef(false);
-  const espera = useRef(0);
-  const [pilula, setPilula] = useState({ x: 0, w: 0, on: false, salto: true });
+  // Opened by mouse hover only: closes when the mouse leaves. A click "pins" the panel open.
+  const openedByHover = useRef(false);
+  const hoverTimer = useRef(0);
+  const [pill, setPill] = useState({ x: 0, w: 0, on: false, jump: true });
 
-  const emServicos = AREAS.some((a) => a.slug === atual);
-  const emGuias = atual === "guias" || atual.startsWith("guias/");
-  const emOnde = atual === "onde-atendemos";
+  const inServices = AREAS.some((a) => a.slug === atual);
+  const inGuides = atual === "guias" || atual.startsWith("guias/");
+  const inCoverage = atual === "onde-atendemos";
   const cur = (v) => (v ? "page" : undefined);
 
   useEffect(() => {
-    if (!servicos) return undefined;
-    const fora = (e) => {
-      if (caixa.current && !caixa.current.contains(e.target)) {
-        porHover.current = false;
-        setServicos(false);
+    if (!servicesOpen) return undefined;
+    const onPointerOutside = (e) => {
+      if (servicesBox.current && !servicesBox.current.contains(e.target)) {
+        openedByHover.current = false;
+        setServicesOpen(false);
       }
     };
-    const tecla = (e) => {
+    const onKeyDown = (e) => {
       if (e.key === "Escape") {
-        porHover.current = false;
-        setServicos(false);
-        botaoServicos.current?.focus();
+        openedByHover.current = false;
+        setServicesOpen(false);
+        servicesButton.current?.focus();
       }
     };
-    document.addEventListener("pointerdown", fora);
-    document.addEventListener("keydown", tecla);
+    document.addEventListener("pointerdown", onPointerOutside);
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("pointerdown", fora);
-      document.removeEventListener("keydown", tecla);
+      document.removeEventListener("pointerdown", onPointerOutside);
+      document.removeEventListener("keydown", onKeyDown);
     };
-  }, [servicos]);
+  }, [servicesOpen]);
 
-  useEffect(() => () => clearTimeout(espera.current), []);
+  useEffect(() => () => clearTimeout(hoverTimer.current), []);
 
-  const moverPilula = (e) => {
+  const movePill = (e) => {
     if (e.pointerType !== "mouse" || !menu.current) return;
     const m = menu.current.getBoundingClientRect();
     const r = e.currentTarget.getBoundingClientRect();
     const x = r.left - m.left - menu.current.clientLeft;
-    setPilula((p) => ({ x, w: r.width, on: true, salto: !p.on }));
+    setPill((p) => ({ x, w: r.width, on: true, jump: !p.on }));
   };
 
-  const entrarServicos = (e) => {
+  const enterServices = (e) => {
     if (e.pointerType !== "mouse") return;
-    clearTimeout(espera.current);
-    if (servicos) return;
-    espera.current = setTimeout(() => {
-      porHover.current = true;
-      teclado.current = false;
-      setServicos(true);
+    clearTimeout(hoverTimer.current);
+    if (servicesOpen) return;
+    hoverTimer.current = setTimeout(() => {
+      openedByHover.current = true;
+      openedByKeyboard.current = false;
+      setServicesOpen(true);
     }, 70);
   };
 
-  const sairServicos = (e) => {
+  const leaveServices = (e) => {
     if (e.pointerType !== "mouse") return;
-    clearTimeout(espera.current);
-    if (!porHover.current) return;
-    espera.current = setTimeout(() => {
-      porHover.current = false;
-      setServicos(false);
+    clearTimeout(hoverTimer.current);
+    if (!openedByHover.current) return;
+    hoverTimer.current = setTimeout(() => {
+      openedByHover.current = false;
+      setServicesOpen(false);
     }, 200);
   };
 
-  // Esc fecha o menu do celular e devolve o foco ao botão que o abriu.
+  // Esc closes the mobile menu and returns focus to the button that opened it.
   useEffect(() => {
-    if (!aberto) return undefined;
-    const tecla = (e) => {
+    if (!mobileOpen) return undefined;
+    const onKeyDown = (e) => {
       if (e.key === "Escape") {
-        setAberto(false);
-        botaoMenu.current?.focus();
+        setMobileOpen(false);
+        menuButton.current?.focus();
       }
     };
-    document.addEventListener("keydown", tecla);
-    return () => document.removeEventListener("keydown", tecla);
-  }, [aberto]);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
 
   return (
     <header className="top">
@@ -188,44 +188,44 @@ export function Cabecalho({ atual = "" }) {
           className="menu"
           aria-label="Principal"
           ref={menu}
-          onPointerLeave={() => setPilula((p) => ({ ...p, on: false }))}
+          onPointerLeave={() => setPill((p) => ({ ...p, on: false }))}
         >
           <span
             className="menu-pill"
             aria-hidden="true"
-            data-on={pilula.on || undefined}
-            data-salto={pilula.salto || undefined}
-            style={{ "--x": `${pilula.x}px`, "--w": `${pilula.w}px` }}
+            data-on={pill.on || undefined}
+            data-salto={pill.jump || undefined}
+            style={{ "--x": `${pill.x}px`, "--w": `${pill.w}px` }}
           />
           <div
             className="menu-services"
-            ref={caixa}
-            onPointerEnter={entrarServicos}
-            onPointerLeave={sairServicos}
+            ref={servicesBox}
+            onPointerEnter={enterServices}
+            onPointerLeave={leaveServices}
             onBlur={(e) => {
               if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget)) {
-                porHover.current = false;
-                setServicos(false);
+                openedByHover.current = false;
+                setServicesOpen(false);
               }
             }}
           >
             <button
               type="button"
-              ref={botaoServicos}
-              className={emServicos ? "current" : ""}
-              aria-expanded={servicos}
+              ref={servicesButton}
+              className={inServices ? "current" : ""}
+              aria-expanded={servicesOpen}
               aria-controls="menu-servicos-painel"
-              onPointerEnter={moverPilula}
+              onPointerEnter={movePill}
               onClick={(e) => {
-                teclado.current = e.detail === 0; // aberto pelo teclado: sem animação
-                clearTimeout(espera.current);
-                if (e.detail > 0 && porHover.current) {
-                  porHover.current = false;
-                  setServicos(true);
+                openedByKeyboard.current = e.detail === 0; // opened by keyboard: no animation
+                clearTimeout(hoverTimer.current);
+                if (e.detail > 0 && openedByHover.current) {
+                  openedByHover.current = false;
+                  setServicesOpen(true);
                   return;
                 }
-                porHover.current = false;
-                setServicos((v) => !v);
+                openedByHover.current = false;
+                setServicesOpen((v) => !v);
               }}
             >
               Serviços
@@ -235,8 +235,8 @@ export function Cabecalho({ atual = "" }) {
             </button>
             <div
               id="menu-servicos-painel"
-              className={`menu-panel ${servicos ? "open" : ""} ${teclado.current ? "keyboard" : ""}`}
-              hidden={!servicos}
+              className={`menu-panel ${servicesOpen ? "open" : ""} ${openedByKeyboard.current ? "keyboard" : ""}`}
+              hidden={!servicesOpen}
             >
               <div className="menu-panel-top">
                 <p className="menu-panel-title">Serviços</p>
@@ -247,7 +247,7 @@ export function Cabecalho({ atual = "" }) {
                   <li key={a.slug}>
                     <a href={`/${a.slug}`} aria-current={cur(atual === a.slug)} className="menu-item-area">
                       <span className="icon-tile">
-                        <IconeArea slug={a.slug} tamanho={22} />
+                        <AreaIcon slug={a.slug} tamanho={22} />
                       </span>
                       <span>
                         <strong>{a.nome}</strong>
@@ -266,10 +266,10 @@ export function Cabecalho({ atual = "" }) {
               </a>
             </div>
           </div>
-          <a href="/guias" className={emGuias ? "current" : ""} aria-current={cur(atual === "guias")} onPointerEnter={moverPilula}>
+          <a href="/guias" className={inGuides ? "current" : ""} aria-current={cur(atual === "guias")} onPointerEnter={movePill}>
             Guias
           </a>
-          <a href="/onde-atendemos" className={emOnde ? "current" : ""} aria-current={cur(emOnde)} onPointerEnter={moverPilula}>
+          <a href="/onde-atendemos" className={inCoverage ? "current" : ""} aria-current={cur(inCoverage)} onPointerEnter={movePill}>
             Onde atendemos
           </a>
         </nav>
@@ -282,16 +282,16 @@ export function Cabecalho({ atual = "" }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Icone nome="fa-brands fa-whatsapp" /> WhatsApp
+          <Icon nome="fa-brands fa-whatsapp" /> WhatsApp
         </a>
 
         <button
-          ref={botaoMenu}
+          ref={menuButton}
           className="menu-button"
-          aria-label={aberto ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={aberto}
+          aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={mobileOpen}
           aria-controls="menu-mobile"
-          onClick={() => setAberto((v) => !v)}
+          onClick={() => setMobileOpen((v) => !v)}
         >
           <span className="menu-icon" aria-hidden="true">
             <i />
@@ -301,32 +301,32 @@ export function Cabecalho({ atual = "" }) {
         </button>
       </div>
 
-      <nav id="menu-mobile" className={`menu-mobile ${aberto ? "open" : ""}`} aria-label="Menu" hidden={!aberto}>
+      <nav id="menu-mobile" className={`menu-mobile ${mobileOpen ? "open" : ""}`} aria-label="Menu" hidden={!mobileOpen}>
         <p className="menu-mobile-title">Serviços</p>
         {AREAS.map((a) => (
-          <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(atual === a.slug)} onClick={() => setAberto(false)}>
-            <IconeArea slug={a.slug} tamanho={22} /> {a.nome}
+          <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(atual === a.slug)} onClick={() => setMobileOpen(false)}>
+            <AreaIcon slug={a.slug} tamanho={22} /> {a.nome}
           </a>
         ))}
         <p className="menu-mobile-title">Mais</p>
-        <a href="/guias" aria-current={cur(atual === "guias")} onClick={() => setAberto(false)}>
+        <a href="/guias" aria-current={cur(atual === "guias")} onClick={() => setMobileOpen(false)}>
           Guias
         </a>
-        <a href="/onde-atendemos" aria-current={cur(emOnde)} onClick={() => setAberto(false)}>
+        <a href="/onde-atendemos" aria-current={cur(inCoverage)} onClick={() => setMobileOpen(false)}>
           Onde atendemos
         </a>
-        <a href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")} onClick={() => setAberto(false)}>
+        <a href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")} onClick={() => setMobileOpen(false)}>
           Descobrir o que o meu caso precisa
         </a>
         <a className="btn btn-whatsapp" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-          <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
+          <Icon nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
         </a>
       </nav>
     </header>
   );
 }
 
-// Trilha "Início › Serviços › Segurança do trabalho". O último item é a página atual.
+// Trail "Início › Serviços › Segurança do trabalho". The last item is the current page.
 export function Migalha({ itens }) {
   return (
     <nav className="breadcrumb" aria-label="Você está aqui">
@@ -348,74 +348,74 @@ export function Migalha({ itens }) {
   );
 }
 
-// Índice da página: fica visível ao rolar e marca a seção em que o leitor está.
-// Desenho: pílula de vidro líquido (components/ui/liquid-glass-navbar). A gota segue a seção à vista;
-// depois de um clique, o observador espera a rolagem terminar (scrollend, com limite de 3 s) para a gota
-// não passear pelas seções do meio. Setas do teclado e ondulação contínua ficam desligadas: os itens são
-// links (Tab + Enter) e a barra fica sempre à vista, então a água só anima quando algo muda.
-// No celular a pílula ocupa a largura da tela e os itens rolam de lado dentro dela (o componente
-// centraliza o item ativo e a gota acompanha).
+// Page index: stays visible while scrolling and marks the section the reader is in.
+// Design: liquid-glass pill (components/ui/liquid-glass-navbar). The drop follows the visible section;
+// after a click, the observer waits for scrolling to finish (scrollend, with a 3 s limit) so the drop
+// does not wander through the sections in between. Arrow keys and continuous ripple are turned off: the items
+// are links (Tab + Enter) and the bar is always in view, so the water only animates when something changes.
+// On mobile the pill takes the screen width and the items scroll sideways inside it (the component
+// centers the active item and the drop follows).
 export function SecoesNav({ itens, rotulo = "Nesta página" }) {
-  const [ativo, setAtivo] = useState(0);
-  const travado = useRef(false);
-  const atualizar = useRef(() => {});
-  const chave = itens.map((i) => i.id).join("|");
+  const [active, setActive] = useState(0);
+  const locked = useRef(false);
+  const refresh = useRef(() => {});
+  const itemsKey = itens.map((i) => i.id).join("|");
 
   useEffect(() => {
     const els = itens.map((i) => document.getElementById(i.id)).filter(Boolean);
     if (!els.length || !("IntersectionObserver" in window)) return undefined;
-    const visiveis = new Map();
-    atualizar.current = () => {
-      if (travado.current) return;
-      const primeiro = els.find((el) => visiveis.get(el.id));
-      if (primeiro) setAtivo(itens.findIndex((i) => i.id === primeiro.id));
+    const visible = new Map();
+    refresh.current = () => {
+      if (locked.current) return;
+      const first = els.find((el) => visible.get(el.id));
+      if (first) setActive(itens.findIndex((i) => i.id === first.id));
     };
     const io = new IntersectionObserver(
-      (entradas) => {
-        entradas.forEach((e) => visiveis.set(e.target.id, e.isIntersecting));
-        atualizar.current();
+      (entries) => {
+        entries.forEach((e) => visible.set(e.target.id, e.isIntersecting));
+        refresh.current();
       },
       { rootMargin: "-25% 0px -60% 0px" }
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chave]);
+  }, [itemsKey]);
 
-  // um clique novo durante a rolagem do anterior troca a trava (senão a primeira soltava cedo demais)
-  const soltarAnterior = useRef(null);
-  const travar = () => {
-    soltarAnterior.current?.(false);
-    travado.current = true;
-    let limite = 0;
-    const soltar = (atualizarAgora = true) => {
-      window.removeEventListener("scrollend", soltar);
-      clearTimeout(limite);
-      soltarAnterior.current = null;
-      if (!atualizarAgora) return;
-      travado.current = false;
-      atualizar.current();
+  // a new click while the previous one is still scrolling replaces the lock (otherwise the first one would release too early)
+  const releasePrevious = useRef(null);
+  const lock = () => {
+    releasePrevious.current?.(false);
+    locked.current = true;
+    let timeoutId = 0;
+    const release = (updateNow = true) => {
+      window.removeEventListener("scrollend", release);
+      clearTimeout(timeoutId);
+      releasePrevious.current = null;
+      if (!updateNow) return;
+      locked.current = false;
+      refresh.current();
     };
-    soltarAnterior.current = soltar;
-    window.addEventListener("scrollend", soltar);
-    limite = setTimeout(soltar, 3000);
+    releasePrevious.current = release;
+    window.addEventListener("scrollend", release);
+    timeoutId = setTimeout(release, 3000);
   };
 
-  const itensBarra = useMemo(
+  const barItems = useMemo(
     () => itens.map((i) => ({ label: i.rotulo, href: `#${i.id}`, fx: "none" })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [chave]
+    [itemsKey]
   );
 
   return (
     <div className="secoes">
       <div className="secoes-inner">
         <LiquidNavbar
-          items={itensBarra}
-          active={ativo}
+          items={barItems}
+          active={active}
           onChange={(n) => {
-            travar();
-            setAtivo(n);
+            lock();
+            setActive(n);
           }}
           ambient={false}
           arrowKeys={false}
@@ -430,7 +430,7 @@ export function SecoesNav({ itens, rotulo = "Nesta página" }) {
   );
 }
 
-// Fecho de toda página interna, sempre na mesma ordem: próximo passo, páginas relacionadas, rodapé.
+// Closing block of every inner page, always in the same order: next step, related pages, footer.
 export function Final({ titulo = "Fale com o responsável técnico.", texto, zapTexto, zapRotulo = "Falar no WhatsApp", relacionadas = [] }) {
   return (
     <>
@@ -467,7 +467,7 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
                   <a href={r.href}>
                     {r.area && (
                       <span className="icon-tile related-icon">
-                        <IconeArea slug={r.area} tamanho={24} />
+                        <AreaIcon slug={r.area} tamanho={24} />
                       </span>
                     )}
                     <small>{r.tag}</small>
@@ -488,7 +488,7 @@ export function Final({ titulo = "Fale com o responsável técnico.", texto, zap
 export function Rodape() {
   return (
     <footer className="footer">
-      {/* Sem convite de WhatsApp aqui: o "Próximo passo" (ou o Contato, na home) e o botão flutuante já fazem isso */}
+      {/* No WhatsApp invitation here: the "Próximo passo" section (or Contact, on the home page) and the floating button already do that */}
       <div className="wrap footer-grid">
         <div>
           <a className="footer-logo" href="/" aria-label="RD Engenharia, página inicial">
@@ -515,7 +515,7 @@ export function Rodape() {
             {AREAS.map((a) => (
               <li key={a.slug}>
                 <a href={`/${a.slug}`} className="footer-area">
-                  <IconeArea slug={a.slug} tamanho={18} /> {a.nome}
+                  <AreaIcon slug={a.slug} tamanho={18} /> {a.nome}
                 </a>
               </li>
             ))}
@@ -562,25 +562,25 @@ export function Rodape() {
       </div>
       <div className="footer-end">
         <p>© RD Engenharia Segurança e Meio Ambiente</p>
-        <SeletorTema />
+        <ThemeSelector />
       </div>
-      {/* Marca gigante no fim da página, decorativa, em pontos de meio-tom que reagem ao ponteiro */}
+      {/* Giant wordmark at the end of the page, decorative, in halftone dots that react to the pointer */}
       <HalftoneWordmark palavra="RD Engenharia" className="footer-halftone" />
     </footer>
   );
 }
 
-// Entrada suave das seções: só opacidade e deslocamento curto, e só quando o movimento é permitido.
-function useRevelar() {
+// Smooth entrance of sections: only opacity and a short offset, and only when motion is allowed.
+function useReveal() {
   useEffect(() => {
-    const reduz = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const els = Array.from(document.querySelectorAll(".reveal"));
-    if (reduz || !("IntersectionObserver" in window)) return undefined;
+    if (reduceMotion || !("IntersectionObserver" in window)) return undefined;
     const vh = window.innerHeight;
     document.documentElement.classList.add("reveal-on");
     const io = new IntersectionObserver(
-      (entradas) => {
-        entradas.forEach((e) => {
+      (entries) => {
+        entries.forEach((e) => {
           if (e.isIntersecting) {
             e.target.classList.add("vis");
             io.unobserve(e.target);
@@ -601,53 +601,53 @@ function useRevelar() {
   }, []);
 }
 
-// Barra fina no topo que mostra quanto da página já foi lido (verde para lima). Só transform, um
-// quadro por rolagem; decorativa (aria-hidden). Com "reduzir movimento" o CSS a esconde.
-function ProgressoLeitura() {
+// Thin bar at the top showing how much of the page has been read (green to lime). Transform only, one
+// frame per scroll; decorative (aria-hidden). With "reduce motion" the CSS hides it.
+function ReadingProgress() {
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return undefined;
-    let quadro = 0;
-    const pintar = () => {
-      quadro = 0;
+    let frame = 0;
+    const paint = () => {
+      frame = 0;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       el.style.setProperty("--p", max > 0 ? Math.min(1, window.scrollY / max).toFixed(4) : "0");
     };
-    const agendar = () => {
-      if (!quadro) quadro = requestAnimationFrame(pintar);
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(paint);
     };
-    pintar();
-    window.addEventListener("scroll", agendar, { passive: true });
-    window.addEventListener("resize", agendar);
+    paint();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
     return () => {
-      cancelAnimationFrame(quadro);
-      window.removeEventListener("scroll", agendar);
-      window.removeEventListener("resize", agendar);
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
     };
   }, []);
   return <div ref={ref} className="progress-reading" aria-hidden="true" />;
 }
 
-// Área da página atual: a própria área ou a área do guia. Muda o botão flutuante do WhatsApp.
-function areaDaPagina(atual) {
-  const guia = GUIAS.find((g) => g.slug === atual);
-  return AREAS.find((a) => a.slug === (guia ? guia.area : atual)) || null;
+// Area of the current page: the area itself or the guide's area. Changes the floating WhatsApp button.
+function areaForPage(currentSlug) {
+  const guide = GUIAS.find((g) => g.slug === currentSlug);
+  return AREAS.find((a) => a.slug === (guide ? guide.area : currentSlug)) || null;
 }
 
-// Botão flutuante do WhatsApp. Nas páginas de área e de guia vira uma pílula com o assunto
-// ("Falar sobre AVCB e CLCB") e a mensagem já sai com a área. A pílula só aparece depois que o
-// topo (que já tem o botão de orçamento) sai da tela; sem JavaScript ela fica sempre visível.
-function ZapFlutuante({ atual }) {
-  const area = areaDaPagina(atual);
-  const [longe, setLonge] = useState(true);
+// Floating WhatsApp button. On area and guide pages it becomes a pill with the subject
+// ("Falar sobre AVCB e CLCB") and the message already includes the area. The pill appears only after the
+// header (which already has the quote button) leaves the screen; without JavaScript it is always visible.
+function FloatingWhatsapp({ atual }) {
+  const area = areaForPage(atual);
+  const [scrolledAway, setScrolledAway] = useState(true);
 
   useEffect(() => {
     if (!area) return undefined;
-    const ver = () => setLonge(window.scrollY > window.innerHeight * 0.7);
-    ver();
-    window.addEventListener("scroll", ver, { passive: true });
-    return () => window.removeEventListener("scroll", ver);
+    const check = () => setScrolledAway(window.scrollY > window.innerHeight * 0.7);
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    return () => window.removeEventListener("scroll", check);
   }, [area]);
 
   if (!area) {
@@ -659,29 +659,29 @@ function ZapFlutuante({ atual }) {
         rel="noopener noreferrer"
         aria-label="Falar pelo WhatsApp"
       >
-        <Icone nome="fa-brands fa-whatsapp" />
+        <Icon nome="fa-brands fa-whatsapp" />
       </a>
     );
   }
   return (
     <a
-      className={`whatsapp-float whatsapp-pill ${longe ? "" : "hidden"}`}
+      className={`whatsapp-float whatsapp-pill ${scrolledAway ? "" : "hidden"}`}
       href={zap(`Olá! Gostaria de um orçamento na área de ${area.nome}.`)}
       target="_blank"
       rel="noopener noreferrer"
-      tabIndex={longe ? undefined : -1}
-      aria-hidden={longe ? undefined : "true"}
+      tabIndex={scrolledAway ? undefined : -1}
+      aria-hidden={scrolledAway ? undefined : "true"}
       aria-label={`Falar sobre ${area.assunto} pelo WhatsApp`}
     >
-      <Icone nome="fa-brands fa-whatsapp" />
+      <Icon nome="fa-brands fa-whatsapp" />
       <span>Falar sobre {area.assunto}</span>
     </a>
   );
 }
 
-// Links com âncora (ex.: um serviço aberto pela busca): garante a rolagem até o item depois que a
-// página monta, porque o navegador pode tentar rolar antes de o conteúdo estar pronto.
-function useAncora() {
+// Links with an anchor (e.g. a service opened from search): ensures scrolling to the item after the
+// page mounts, because the browser may try to scroll before the content is ready.
+function useAnchor() {
   useEffect(() => {
     const id = decodeURIComponent(window.location.hash.slice(1));
     if (!id) return;
@@ -691,18 +691,18 @@ function useAncora() {
 }
 
 export function Casca({ children, atual = "" }) {
-  useRevelar();
-  useAncora();
+  useReveal();
+  useAnchor();
   return (
     <>
       <a className="skip" href="#conteudo">
         Pular para o conteúdo
       </a>
-      <ProgressoLeitura />
+      <ReadingProgress />
       <Cabecalho atual={atual} />
       <main id="conteudo">{children}</main>
       <Rodape />
-      <ZapFlutuante atual={atual} />
+      <FloatingWhatsapp atual={atual} />
     </>
   );
 }
