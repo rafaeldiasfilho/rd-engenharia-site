@@ -16,14 +16,14 @@ export function GuidesPage({ page }) {
   const [preview, setPreview] = useState(null);
   const previewGuide = GUIDES.find((g) => g.slug === preview);
   const groups = [
-    { id: "guias-todas", title: "Todas as áreas", shortText: "Todas as áreas", lista: GUIDES.filter((g) => GENERAL_GUIDES.has(g.slug)) },
+    { id: "guias-todas", title: "Todas as áreas", shortText: "Todas as áreas", guides: GUIDES.filter((g) => GENERAL_GUIDES.has(g.slug)) },
     ...AREAS.map((a) => ({
       id: `guias-${a.slug}`,
       title: a.name,
       shortText: a.label,
-      lista: GUIDES.filter((g) => g.area === a.slug && !GENERAL_GUIDES.has(g.slug)),
+      guides: GUIDES.filter((g) => g.area === a.slug && !GENERAL_GUIDES.has(g.slug)),
     })),
-  ].filter((g) => g.lista.length);
+  ].filter((g) => g.guides.length);
   return (
     <>
       <PageTop
@@ -50,7 +50,7 @@ export function GuidesPage({ page }) {
       {groups.map((group, n) => (
         <PageSection key={group.id} id={group.id} n={twoDigitNumber(n)} label="Área" title={group.title} className={n % 2 ? "sec-alt" : ""}>
           <ul className="guide-cards">
-            {group.lista.map((g, i) => (
+            {group.guides.map((g, i) => (
               <li className="reveal guide-card" key={g.slug}>
                 <a href={`/${g.slug}`}>
                   <small>{twoDigitNumber(i)}</small>
@@ -71,7 +71,7 @@ export function GuidesPage({ page }) {
         {previewGuide && (
           <>
             <p className="label-mini">Em resumo</p>
-            <ul className="janela-lista">
+            <ul>
               {GUIDE_SUMMARIES[previewGuide.slug].map((r) => (
                 <li key={r}>{r}</li>
               ))}

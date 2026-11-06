@@ -64,7 +64,7 @@ export function AreaPage({ page }) {
   const guides = GUIDES.filter((g) => g.area === page.slug);
   const otherAreas = AREAS.filter((a) => a.slug !== page.slug);
   const related = [...guides.slice(0, 2).map(guideLink), ...otherAreas.map(areaLink)].slice(0, 3);
-  const areaZapText = `Olá! Gostaria de um orçamento na área de ${page.name}.`;
+  const areaWhatsappText = `Olá! Gostaria de um orçamento na área de ${page.name}.`;
   const isCivil = page.slug === "engenharia-civil";
   const equipment = EQUIPMENT[page.slug];
   const hasEquipmentPhotos = slidesFor(`equip-${page.slug}`).length > 0;
@@ -84,7 +84,7 @@ export function AreaPage({ page }) {
         <h1 className="display">{page.h1}</h1>
         <p className="lead">{page.intro}</p>
         <div className="actions">
-          <WhatsappButton className="btn-large" text={areaZapText} label="Pedir orçamento pelo WhatsApp" />
+          <WhatsappButton className="btn-large" text={areaWhatsappText} label="Pedir orçamento pelo WhatsApp" />
           <small>Orçamento por escrito e sem compromisso. Prazo e valor são informados depois de conhecermos o seu caso.</small>
         </div>
       </HeroBackground>
@@ -162,7 +162,7 @@ export function AreaPage({ page }) {
           </ul>
           <p className="situations-help reveal">
             Não tem certeza de qual é o seu caso? <a href="/o-que-preciso">Responda ao passo a passo</a> ou{" "}
-            <a href={whatsappLink(areaZapText)} target="_blank" rel="noopener noreferrer">
+            <a href={whatsappLink(areaWhatsappText)} target="_blank" rel="noopener noreferrer">
               conte pelo WhatsApp
             </a>
             .
@@ -286,7 +286,7 @@ export function AreaPage({ page }) {
                 <h3>{e.t}</h3>
                 <p>{e.d}</p>
                 {n === 0 && (
-                  <a className="btn btn-whatsapp btn-small" href={whatsappLink(areaZapText)} target="_blank" rel="noopener noreferrer">
+                  <a className="btn btn-whatsapp btn-small" href={whatsappLink(areaWhatsappText)} target="_blank" rel="noopener noreferrer">
                     <Icon name="fa-brands fa-whatsapp" /> Começar agora
                   </a>
                 )}
@@ -327,7 +327,7 @@ export function AreaPage({ page }) {
         <Faq items={page.faq} />
       </PageSection>
 
-      <PageClosing whatsappText={areaZapText} related={related} />
+      <PageClosing whatsappText={areaWhatsappText} related={related} />
     </>
   );
 }

@@ -258,7 +258,7 @@ export function codificar(text) {
   }
   applyMask(best);
   drawFormat(best);
-  return { version: v, mask: best, modulos: mod, dados: data, palavras: codewords };
+  return { version: v, mask: best, modules: mod, data, codewords };
 }
 
 export function svg(modules, border = 4) {
@@ -277,6 +277,6 @@ export function svg(modules, border = 4) {
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const link = whatsappLink("Olá! Gostaria de solicitar um orçamento.");
   const qr = codificar(link);
-  writeFileSync(new URL("../public/marca/qr-whatsapp.svg", import.meta.url), svg(qr.modulos));
+  writeFileSync(new URL("../public/marca/qr-whatsapp.svg", import.meta.url), svg(qr.modules));
   console.log(`QR version ${qr.version}, mask ${qr.mask}, ${link.length} characters: ${link}`);
 }

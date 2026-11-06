@@ -9,7 +9,7 @@ import { WhatsappButton } from "../layout/WhatsappButton";
 import { GENERAL_LINKS, PageSection, areaLink } from "./pageParts.jsx";
 
 export function LocationPage({ page }) {
-  const locationZapText = "Olá! Gostaria de saber se vocês atendem o meu endereço.";
+  const locationWhatsappText = "Olá! Gostaria de saber se vocês atendem o meu endereço.";
   return (
     <>
       <header className="hero-inner hero-area">
@@ -21,7 +21,7 @@ export function LocationPage({ page }) {
             Isso vale para todos os serviços. Conte a sua situação pelo WhatsApp e combinamos a melhor forma de atender você.
           </p>
           <div className="actions">
-            <WhatsappButton className="btn-large" text={locationZapText} label="Perguntar pelo WhatsApp" />
+            <WhatsappButton className="btn-large" text={locationWhatsappText} label="Perguntar pelo WhatsApp" />
           </div>
         </div>
       </header>
@@ -43,7 +43,7 @@ export function LocationPage({ page }) {
             <p className="label-mini">Seu endereço</p>
             <h3>Não sabe se está na região?</h3>
             <p>Conte onde fica o imóvel ou a empresa e confirmamos o atendimento.</p>
-            <WhatsappButton text={locationZapText} label="Perguntar" />
+            <WhatsappButton text={locationWhatsappText} label="Perguntar" />
           </li>
         </ul>
       </PageSection>
@@ -84,7 +84,7 @@ export function LocationPage({ page }) {
       </section>
 
       <PageClosing
-        whatsappText={locationZapText}
+        whatsappText={locationWhatsappText}
         related={[areaLink(AREAS[0]), areaLink(AREAS[2]), GENERAL_LINKS.quiz]}
       />
     </>
