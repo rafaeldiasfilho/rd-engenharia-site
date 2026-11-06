@@ -138,7 +138,7 @@ const NIMBUS_CSS = `
 .nimbus-nav[data-fl="1"][data-fr="1"] .nimbus-track{-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
 .nimbus-water{position:absolute;left:${-PAD}px;top:${-PAD}px;z-index:-1;pointer-events:none}
 .nimbus-nav:not([data-gl="on"]) .nimbus-water{display:none}
-.nimbus-drop{display:none;position:absolute;top:6px;bottom:6px;left:0;border-radius:999px;z-index:-1;pointer-events:none;will-change:transform,width;
+.nimbus-drop{display:none;position:absolute;top:6px;bottom:6px;left:0;border-radius:999px;z-index:-1;pointer-events:none;will-change:transform;
   background:var(--n-drop,radial-gradient(120% 140% at 30% 0%,rgba(255,255,255,.75),rgba(255,255,255,0) 55%),rgba(255,255,255,.38));
   box-shadow:var(--n-drop-sh,inset 0 1px 1px rgba(255,255,255,.95),inset 0 -2px 6px rgba(31,107,42,.22),inset 0 0 0 1px rgba(255,255,255,.55),0 6px 16px -6px rgba(18,63,25,.45))}
 .nimbus-nav:not([data-gl="on"]) .nimbus-drop{display:block}
