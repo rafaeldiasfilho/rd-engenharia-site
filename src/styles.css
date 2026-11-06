@@ -710,7 +710,7 @@ img {
 }
 
 .menu-botao:active {
-  transform: scale(0.94);
+  transform: scale(0.96);
 }
 
 /* Três traços que viram um X quando o menu abre (só transform e opacidade). */
@@ -1753,7 +1753,7 @@ img {
 
 .tema button {
   font: inherit;
-  min-height: 36px;
+  min-height: 44px;
   padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -1813,7 +1813,7 @@ img {
 }
 
 .zap-flutuante:active {
-  transform: scale(0.94);
+  transform: scale(0.96);
 }
 
 .pular {
@@ -2295,7 +2295,7 @@ img {
 }
 
 .seta:active {
-  transform: scale(0.94);
+  transform: scale(0.96);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -2519,7 +2519,7 @@ img {
   align-items: center;
   gap: 5px;
   width: 100%;
-  min-height: 36px;
+  min-height: 44px;
   padding: 6px;
   border: 0;
   background: transparent;
@@ -5601,7 +5601,7 @@ img {
 }
 
 .busca-sugestoes button {
-  min-height: 36px;
+  min-height: 44px;
   padding: 4px 14px;
   border: 1px solid var(--linha);
   border-radius: 999px;
@@ -7185,7 +7185,7 @@ img {
 
 .folha-abas button,
 .folha-zoom {
-  min-height: 34px;
+  min-height: 44px;
   padding: 0 12px;
   border: 0;
   border-radius: 999px;
@@ -7951,7 +7951,7 @@ img {
   position: absolute;
   left: 22px;
   bottom: 12px;
-  min-height: 36px;
+  min-height: 44px;
   padding: 4px 12px;
   border: 1px solid var(--linha);
   border-radius: 999px;
