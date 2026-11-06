@@ -1,6 +1,7 @@
 import { renderToString } from "react-dom/server";
 import App from "./App";
-import PageView, { NotFound, PrintPage } from "./Pages.jsx";
+import PageView, { NotFound } from "./pages/PageView.jsx";
+import { PrintPage } from "./pages/PrintPage.jsx";
 import { PAGES, SITE_URL, AREAS } from "./pagesData";
 
 export { PAGES, SITE_URL, AREAS };

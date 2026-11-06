@@ -1,7 +1,8 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import PageView, { NotFound, PrintPage } from "./Pages.jsx";
+import PageView, { NotFound } from "./pages/PageView.jsx";
+import { PrintPage } from "./pages/PrintPage.jsx";
 import { findPage, findArea } from "./pagesData";
 import "./styles.css";
 import { inject, track } from "@vercel/analytics";

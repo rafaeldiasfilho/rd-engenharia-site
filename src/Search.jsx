@@ -16,7 +16,7 @@ export const normalize = (t) =>
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
 
-// Anchor of each service on the area page (also used in Pages.jsx).
+// Anchor of each service on the area page (also used in pages/AreaPage.jsx).
 export const anchorId = (name) =>
   "servico-" +
   normalize(name)
