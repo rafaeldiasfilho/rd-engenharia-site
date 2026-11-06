@@ -4,9 +4,32 @@ import App from "./App";
 import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Paginas.jsx";
 import { achaPagina, achaArea } from "./paginas";
 import "./index.css";
-import { inject } from "@vercel/analytics";
+import { inject, track } from "@vercel/analytics";
 
 inject();
+
+// Conta cada clique para o WhatsApp (o único canal de contato) como evento "WhatsApp", com a página e
+// o trecho de onde veio (seção, botão flutuante, menu, rodapé). Um ouvinte só, no documento inteiro.
+// Eventos personalizados da Vercel Web Analytics podem exigir o plano Pro; sem ele, nada quebra.
+document.addEventListener(
+  "click",
+  (e) => {
+    const a = e.target instanceof Element ? e.target.closest('a[href*="wa.me/"]') : null;
+    if (!a) return;
+    const secao = a.closest("section[id], header, footer, nav, [data-origem]");
+    const origem =
+      a.dataset.origem ||
+      (a.classList.contains("zap-flutuante") ? "botao-flutuante" : "") ||
+      (secao && (secao.dataset?.origem || secao.id || secao.tagName.toLowerCase())) ||
+      "pagina";
+    try {
+      track("WhatsApp", { pagina: window.location.pathname, origem, texto: (a.textContent || "").trim().slice(0, 60) });
+    } catch {
+      /* estatística é opcional */
+    }
+  },
+  { capture: true },
+);
 
 const raiz = document.getElementById("root");
 const slug = window.location.pathname.replace(/^\/+|\/+$/g, "");

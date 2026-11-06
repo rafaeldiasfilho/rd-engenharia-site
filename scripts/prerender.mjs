@@ -27,7 +27,7 @@ try {
     .replace(/<title>[\s\S]*?<\/title>/, "")
     .replace(/<meta\s+name="description"[\s\S]*?\/>/, "")
     .replace(/<link rel="canonical"[^>]*\/>/, "")
-    .replace(/<meta\s+property="og:(title|description|url)"[\s\S]*?\/>/g, "")
+    .replace(/<meta\s+property="og:(title|description|url|image)"[\s\S]*?\/>/g, "")
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/g, "")
     .replace(/<noscript>[\s\S]*?<\/noscript>/, "");
 
@@ -90,6 +90,7 @@ try {
       `<meta property="og:title" content="${esc(pagina.title)}" />`,
       `<meta property="og:description" content="${esc(pagina.description)}" />`,
       `<meta property="og:url" content="${url}" />`,
+      `<meta property="og:image" content="${SITE_URL}/og/${pagina.slug.replace(/\//g, "-")}.png" />`,
       ...dados.map(jsonScript),
       negocio,
     ].join("\n    ");
@@ -136,6 +137,34 @@ try {
       .join("\n") +
     `\n</urlset>\n`;
   fs.writeFileSync(path.join(dist, "sitemap.xml"), sitemap);
+
+  // llms.txt: resumo do site para assistentes de IA (formato proposto em llmstxt.org; opcional, sem garantia
+  // de uso por nenhum produto). Gerado dos mesmos dados das páginas, então nunca fica desatualizado.
+  const linha = (p) => `- [${p.h1}](${SITE_URL}/${p.slug}): ${p.description}`;
+  const grupo = (tipos) => PAGINAS.filter((p) => tipos.includes(p.tipo)).map(linha).join(String.fromCharCode(10));
+  const llms = [
+    "# RD Engenharia Segurança e Meio Ambiente",
+    "",
+    "> Empresa de engenharia de Ibirá/SP que atende Ibirá e região, presencialmente e online: engenharia civil, segurança do trabalho, prevenção de incêndio (AVCB e CLCB), meio ambiente, topografia e imóvel rural. Trabalhos que exigem são assinados por profissional habilitado no CREA-SP, com ART.",
+    "",
+    "- Contato: somente pelo WhatsApp (+55 17 99721-1208), de segunda a sexta, das 7h às 17h.",
+    "- Endereço: Rua José Alves de Mello, 770, Centro, Ibirá/SP.",
+    "- O site não mostra preços nem prazos fixos: valor e prazo vêm no orçamento, por escrito e sem compromisso.",
+    "",
+    "## Serviços",
+    grupo(["area"]),
+    "",
+    "## Guias",
+    grupo(["guia"]),
+    "",
+    "## Outras páginas",
+    grupo(["onde", "quiz", "lembrete", "guias-indice"]),
+    "",
+    "## Opcional",
+    grupo(["privacidade", "termos", "creditos"]),
+    "",
+  ].join(String.fromCharCode(10));
+  fs.writeFileSync(path.join(dist, "llms.txt"), llms);
   console.log(`Pré-renderizadas ${PAGINAS.length} páginas (mais ${AREAS.length} de impressão, fora do sitemap).`);
 } finally {
   await vite.close();
