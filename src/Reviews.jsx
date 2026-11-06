@@ -1,4 +1,4 @@
-import { AVALIACOES, NOTA_GOOGLE, URL_AVALIACOES_GOOGLE } from "./paginas";
+import { AVALIACOES, NOTA_GOOGLE, URL_AVALIACOES_GOOGLE } from "./pagesData";
 
 // Faixa de avaliações do Google na página inicial. A nota e o total vêm de NOTA_GOOGLE; os cartões só
 // aparecem para as avaliações listadas em AVALIACOES (textos reais, copiados do Google pelo Rafael).

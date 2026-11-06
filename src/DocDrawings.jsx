@@ -1,7 +1,7 @@
 // Conteúdo técnico das folhas de exemplo: os desenhos das pranchas e a "página interna" de cada capa.
 // Tudo é fictício (cliente "Exemplo", números inventados), mas segue as convenções reais de cada documento,
 // para o visitante reconhecer o que vai receber. Coordenadas na folha de 150 × 198.
-import { AMBAR, AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERDE_CL, VERMELHO, Marca, clienteDe, quebra } from "./FolhaBase";
+import { AMBAR, AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERDE_CL, VERMELHO, Marca, clienteDe, quebra } from "./SheetBase";
 
 /* ── peças comuns ─────────────────────────────────────────────────────────────────────────────── */
 

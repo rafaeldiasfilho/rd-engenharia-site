@@ -1,24 +1,24 @@
-import Icone from "./Icone";
+import Icone from "./Icon";
 import { useEffect, useState } from "react";
-import { FAQ } from "./faq";
-import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE, ENDERECO } from "./paginas";
+import { FAQ } from "./faqItems";
+import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE, ENDERECO } from "./pagesData";
 import { Casca, SecoesNav, zap } from "./Layout";
-import ExemplosHome from "./ExemplosHome";
-import HeroFundo from "./HeroFundo";
-import { FaixaDocumentos, PainelExemplo, NumerosLinha } from "./Vitrine";
-import Janela from "./Janela";
-import { TopoField } from "@/components/ui/topo-field";
-import { FOTOS, caminho, srcset } from "./fotos";
-import IconeArea from "./Icones";
-import Perguntas from "./Perguntas";
-import Avaliacoes from "./Avaliacoes";
-import BuscaDocumento from "./Busca";
-import QrWhatsapp from "./QrWhatsapp";
-import { WHATSAPP_PROJETOS } from "./contato";
+import ExemplosHome from "./HomeExamples";
+import HeroFundo from "./HeroBackground";
+import { FaixaDocumentos, PainelExemplo, NumerosLinha } from "./Showcase";
+import Janela from "./Dialog";
+import { TopoField } from "@/components/ui/contour-field";
+import { FOTOS, caminho, srcset } from "./photos";
+import IconeArea from "./AreaIcon";
+import Perguntas from "./Faq";
+import Avaliacoes from "./Reviews";
+import BuscaDocumento from "./Search";
+import QrWhatsapp from "./WhatsappQr";
+import { WHATSAPP_PROJETOS } from "./contact";
 import { CREA_NUMBER, PHONE_DISPLAY } from "./company";
-import PilhaEtapas from "./PilhaEtapas";
-import Inclinado3D from "./Inclinado3D";
-import FraseRevela from "./FraseRevela";
+import PilhaEtapas from "./StepStack";
+import Inclinado3D from "./Tilt3D";
+import FraseRevela from "./RevealPhrase";
 
 // O título de cada cartão vem de AREAS (rotulo), para o nome da área ser o mesmo no site todo.
 const NECESSIDADES = [

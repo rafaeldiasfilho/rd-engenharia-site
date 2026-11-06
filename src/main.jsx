@@ -1,8 +1,8 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Paginas.jsx";
-import { achaPagina, achaArea } from "./paginas";
+import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Pages.jsx";
+import { achaPagina, achaArea } from "./pagesData";
 import "./styles.css";
 import { inject, track } from "@vercel/analytics";
 

@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from "react";
 // A base comum (src/cenas3d/base.js) pausa fora da tela, inclina com o mouse e, com "reduzir movimento",
 // mostra uma imagem parada. Sem WebGL fica o desenho de curvas em CSS do fundo.
 const CENAS = {
-  terreno: () => import("./cenas3d/terreno"),
-  casa: () => import("./cenas3d/casa"),
-  rota: () => import("./cenas3d/rota"),
-  capacete: () => import("./cenas3d/capacete"),
+  terreno: () => import("./scenes3d/terrain"),
+  casa: () => import("./scenes3d/house"),
+  rota: () => import("./scenes3d/escapeRoute"),
+  capacete: () => import("./scenes3d/hardHat"),
 };
 
 export default function Cena3D({ cena, className = "", rotulo }) {

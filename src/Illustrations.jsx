@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERMELHO, SeloExemplo } from "./FolhaBase";
+import { AZUL, BORDA, CINZA, FUNDO, LINHA, MARROM, PAPEL, TINTA, VERDE, VERMELHO, SeloExemplo } from "./SheetBase";
 
 // Desenhos e modelo ilustrativos, no mesmo papel e carimbo das folhas de exemplo. Nada aqui vem de um
 // cliente real. Cada desenho é interativo: tocar num item da legenda (ou no desenho) destaca o elemento e

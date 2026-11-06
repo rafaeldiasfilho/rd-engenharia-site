@@ -1,15 +1,15 @@
-import Icone from "./Icone";
-import IconeArea from "./Icones";
+import Icone from "./Icon";
+import IconeArea from "./AreaIcon";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import { HalftoneWordmark } from "@/components/ui/halftone-wordmark";
-import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
-import { zap } from "./contato";
+import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./pagesData";
+import { zap } from "./contact";
 import { LEGAL_NAME, CNPJ, OPEN_SINCE, TECHNICAL_LEAD, CREA_NUMBER } from "./company";
-import { BotaoBusca } from "./Busca";
+import { BotaoBusca } from "./Search";
 
-export { WHATSAPP, zap } from "./contato";
+export { WHATSAPP, zap } from "./contact";
 
 export function BotaoZap({ texto, rotulo, className = "" }) {
   return (

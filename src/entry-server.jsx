@@ -1,7 +1,7 @@
 import { renderToString } from "react-dom/server";
 import App from "./App";
-import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Paginas.jsx";
-import { PAGINAS, SITE_URL, AREAS } from "./paginas";
+import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Pages.jsx";
+import { PAGINAS, SITE_URL, AREAS } from "./pagesData";
 
 export { PAGINAS, SITE_URL, AREAS };
 

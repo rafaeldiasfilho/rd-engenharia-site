@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { normaliza } from "./Busca";
-import { zap } from "./contato";
+import { normaliza } from "./Search";
+import { zap } from "./contact";
 
 // Lista de perguntas frequentes. Com 6 perguntas ou mais, ganha um campo para filtrar (pergunta e
 // resposta, sem acentos). Sem JavaScript, o campo não atrapalha: todas as perguntas aparecem.

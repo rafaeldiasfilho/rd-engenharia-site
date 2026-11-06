@@ -1,22 +1,22 @@
-import Icone from "./Icone";
+import Icone from "./Icon";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, GUIAS, slidesProjetos, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, COMPARATIVO_BOMBEIROS, RESUMOS_GUIAS, achaArea } from "./paginas";
+import { AREAS, GUIAS, slidesProjetos, EQUIPAMENTOS, NOTA_EQUIPAMENTOS, VISUAL, FOTO_RESPONSAVEL, DOCUMENTOS_LEMBRETE, DICAS_LEMBRETE, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, ENDERECO, COMPARATIVO_BOMBEIROS, RESUMOS_GUIAS, achaArea } from "./pagesData";
 import { Casca, Migalha, SecoesNav, Final, BotaoZap, zap } from "./Layout";
-import { ComoLerPrancha, Ilustracao } from "./Ilustracoes";
-import { enviarLembrete } from "./publico/api";
-import Carrossel from "./Carrossel";
-import Assistente from "./Assistente";
-import DocsIlustracao, { FolhaLeitura, FolhaSvg, LEGENDA_EXEMPLO } from "./DocsIlustracao";
-import HeroFundo from "./HeroFundo";
-import IconeArea from "./Icones";
-import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./fotos";
-import { ancora } from "./Busca";
-import Perguntas from "./Perguntas";
-import Janela from "./Janela";
-import MontarPedido from "./MontarPedido";
+import { ComoLerPrancha, Ilustracao } from "./Illustrations";
+import { enviarLembrete } from "./publicApi/api";
+import Carrossel from "./Carousel";
+import Assistente from "./Wizard";
+import DocsIlustracao, { FolhaLeitura, FolhaSvg, LEGENDA_EXEMPLO } from "./DocIllustration";
+import HeroFundo from "./HeroBackground";
+import IconeArea from "./AreaIcon";
+import { slidesDe, FOTOS_EM_USO, caminho, srcset } from "./photos";
+import { ancora } from "./Search";
+import Perguntas from "./Faq";
+import Janela from "./Dialog";
+import MontarPedido from "./RequestBuilder";
 import { AnimatedFolder } from "@/components/ui/3d-folder";
 import { LEGAL_NAME, TRADE_NAME, CNPJ, CREA_NUMBER, PHONE_DISPLAY } from "./company";
-import Cena3D from "./Cena3D";
+import Cena3D from "./Scene3D";
 
 // Bloco 3D de cada página de área: rótulo, título e texto descrevem a ilustração (não é obra nem cliente real).
 const CENA_AREA = {

@@ -2,7 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { FAQ } from "./src/faq.js";
+import { FAQ } from "./src/faqItems.js";
 
 const raiz = path.dirname(fileURLToPath(import.meta.url));
 

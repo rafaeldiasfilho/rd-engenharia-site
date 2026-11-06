@@ -1,16 +1,16 @@
 // Gera as imagens de compartilhamento (og:image, 1200 x 630) de cada página em public/og/<slug>.png.
 // É o que aparece quando alguém manda o link no WhatsApp, Instagram, LinkedIn ou e-mail.
 // Rodar à mão quando um título mudar:  node scripts/og.mjs
-// Usa @resvg/resvg-js (SVG -> PNG, sem navegador) e a fonte Manrope (OFL, arquivos estáticos 500 a 800 do Google Fonts) em scripts/og-fonte/.
+// Usa @resvg/resvg-js (SVG -> PNG, sem navegador) e a fonte Manrope (OFL, arquivos estáticos 500 a 800 do Google Fonts) em scripts/og-fonts/.
 // O resultado fica versionado em public/og/, então a publicação na Vercel não precisa gerar nada.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
-import { PAGINAS } from "../src/paginas.js";
+import { PAGINAS } from "../src/pagesData.js";
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const FONTES = ["500", "600", "700", "800"].map((w) => path.join(raiz, `scripts/og-fonte/Manrope-${w}.ttf`));
+const FONTES = ["500", "600", "700", "800"].map((w) => path.join(raiz, `scripts/og-fonts/Manrope-${w}.ttf`));
 const SAIDA = path.join(raiz, "public/og");
 
 const ROTULO = {

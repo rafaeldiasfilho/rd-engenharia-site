@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
-import Icone from "./Icone";
-import { AREAS, GUIAS, PAGINAS } from "./paginas";
-import { zap } from "./contato";
+import Icone from "./Icon";
+import { AREAS, GUIAS, PAGINAS } from "./pagesData";
+import { zap } from "./contact";
 
 // Busca por documento ou serviço ("Qual documento você precisa?"), sem biblioteca.
 // - O índice sai do próprio conteúdo do site (áreas, serviços de cada área, guias e páginas úteis):

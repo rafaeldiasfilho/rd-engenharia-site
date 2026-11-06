@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { slidesDe, caminho, srcset, aviso } from "./fotos";
-import Ampliar from "./Ampliar";
+import { slidesDe, caminho, srcset, aviso } from "./photos";
+import Ampliar from "./PhotoViewer";
 
 // Faixa de imagens no estilo "Fotos" da Apple, sem biblioteca. É o único carrossel do site.
 // - A faixa é CSS scroll-snap: funciona sem JavaScript, com deslizar no toque e roda do mouse, e a

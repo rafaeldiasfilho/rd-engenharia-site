@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import Icone from "./Icone";
-import IconeArea from "./Icones";
-import { AREAS, PERFIS, RESULTADOS, achaArea } from "./paginas";
+import Icone from "./Icon";
+import IconeArea from "./AreaIcon";
+import { AREAS, PERFIS, RESULTADOS, achaArea } from "./pagesData";
 import { BotaoZap } from "./Layout";
 
 // Passo a passo da página /o-que-preciso: uma pergunta por tela, escolhas grandes, barra de progresso,

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { zap } from "./contato";
+import { zap } from "./contact";
 
 // Para quem está no computador: QR code que abre a conversa no celular. O SVG é estático
 // (scripts/gerar-qr-whatsapp.mjs). Só aparece em telas com mouse (CSS); no celular o botão do WhatsApp já basta.

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Carrossel from "./Carrossel";
-import IconeArea from "./Icones";
-import { ComoLerPrancha, Ilustracao } from "./Ilustracoes";
-import { AREAS, slidesProjetos } from "./paginas";
+import Carrossel from "./Carousel";
+import IconeArea from "./AreaIcon";
+import { ComoLerPrancha, Ilustracao } from "./Illustrations";
+import { AREAS, slidesProjetos } from "./pagesData";
 
 const ABAS = ["engenharia-civil", "corpo-de-bombeiros", "seguranca-do-trabalho", "meio-ambiente-topografia"].map((slug) => ({
   slug,

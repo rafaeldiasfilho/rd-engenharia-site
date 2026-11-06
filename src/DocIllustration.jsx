@@ -6,8 +6,8 @@
 //  - FolhaLeitura: a folha ampliada, com abas "Capa / Página interna / Como ler" e zoom.
 //  - DocsIlustracao (padrão): duas folhas empilhadas na seção "Para agilizar, separe".
 import { useId, useState } from "react";
-import { BORDA, CINZA, CREA, DATA, FUNDO, LEGENDA_EXEMPLO, Marca, PAPEL, RD_CNPJ, RESP, SeloExemplo, TINTA, VERDE, VERMELHO, clienteDe, quebra } from "./FolhaBase";
-import { Desenho, Miolo, PINOS, TEM_MIOLO } from "./DocsDesenhos";
+import { BORDA, CINZA, CREA, DATA, FUNDO, LEGENDA_EXEMPLO, Marca, PAPEL, RD_CNPJ, RESP, SeloExemplo, TINTA, VERDE, VERMELHO, clienteDe, quebra } from "./SheetBase";
+import { Desenho, Miolo, PINOS, TEM_MIOLO } from "./DocDrawings";
 
 export { LEGENDA_EXEMPLO };
 
