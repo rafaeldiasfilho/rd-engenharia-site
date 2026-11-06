@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Icon from "./Icon";
 import AreaIcon from "./AreaIcon";
-import { AREAS, PROFILES, RESULTS, findArea } from "./pagesData";
-import { WhatsappButton } from "./Layout";
+import { AREAS, findArea } from "./content/areas";
+import { PROFILES, RESULTS } from "./content/wizard";
+import { WhatsappButton } from "./layout/WhatsappButton";
 
 // Step-by-step guide for the /o-que-preciso page: one question per screen, large choices, progress bar,
-// back button and result screen. Uses the same PERFIS/RESULTADOS rules (src/pagesData.js).
+// back button and result screen. Uses the PROFILES/RESULTS rules (src/content/wizard.js).
 // Nothing is stored: the answers live only in the page's memory and become the WhatsApp message.
 export default function Wizard() {
   const [profileId, setProfileId] = useState("");

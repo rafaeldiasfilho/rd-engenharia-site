@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { slidesFor, photoPath, srcset, photoNotice } from "./photos";
+import { photoPath, srcset, photoNotice } from "./photos";
+import { slidesFor } from "./content/photoCarousels";
 import PhotoViewer from "./PhotoViewer";
 
 // Image strip in the style of Apple "Photos", no library. It is the only carousel on the site.

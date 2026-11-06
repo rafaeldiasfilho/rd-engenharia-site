@@ -1,9 +1,11 @@
 // Building blocks shared by the inner page templates: page top, sections, collapsible, comparison table, examples and common links.
 
 import { useEffect, useRef } from "react";
-import { projectSlides, FIRE_LICENSE_COMPARISON } from "../pagesData";
-import { Breadcrumb, WhatsappButton } from "../Layout";
-import { HowToReadSheet } from "../Illustrations";
+import { projectSlides } from "../content/projects";
+import { FIRE_LICENSE_COMPARISON } from "../content/fireLicenseComparison";
+import { Breadcrumb } from "../layout/Breadcrumb";
+import { WhatsappButton } from "../layout/WhatsappButton";
+import { HowToReadSheet } from "../illustrations/HowToReadSheet";
 import Carousel from "../Carousel";
 
 // Block that starts collapsed on mobile (with a button to open it) and is always open on desktop.

@@ -1,7 +1,8 @@
 // Template of one guide article (/guias/<slug>).
 
-import { GUIDES, GUIDE_SUMMARIES, findArea } from "../pagesData";
-import { PageClosing } from "../Layout";
+import { GUIDES, GUIDE_SUMMARIES } from "../content/guides";
+import { findArea } from "../content/areas";
+import { PageClosing } from "../layout/PageClosing";
 import { Comparison, GENERAL_LINKS, PageTop, areaLink, guideLink } from "./pageParts.jsx";
 
 export function GuidePage({ page }) {

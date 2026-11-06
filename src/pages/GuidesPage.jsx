@@ -1,8 +1,10 @@
 // Guide index page (/guias).
 
 import { useState } from "react";
-import { AREAS, GUIDES, GUIDE_SUMMARIES } from "../pagesData";
-import { SectionNav, PageClosing } from "../Layout";
+import { AREAS } from "../content/areas";
+import { GUIDES, GUIDE_SUMMARIES } from "../content/guides";
+import { SectionNav } from "../layout/SectionNav";
+import { PageClosing } from "../layout/PageClosing";
 import Dialog from "../Dialog";
 import { GENERAL_LINKS, PageTop, Section, areaLink, pad } from "./pageParts.jsx";
 

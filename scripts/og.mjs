@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
-import { PAGES } from "../src/pagesData.js";
+import { PAGES } from "../src/content/pages.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const FONTS = ["500", "600", "700", "800"].map((w) => path.join(root, `scripts/og-fonts/Manrope-${w}.ttf`));

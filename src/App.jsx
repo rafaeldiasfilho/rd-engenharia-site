@@ -1,90 +1,29 @@
 import Icon from "./Icon";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faqItems";
-import { AREAS, GOOGLE_REVIEWS_URL, DIRECTIONS_URL, MAP_EMBED_URL, GOOGLE_RATING, ADDRESS } from "./pagesData";
-import { Shell, SectionNav, whatsappLink } from "./Layout";
+import { GOOGLE_REVIEWS_URL, DIRECTIONS_URL, MAP_EMBED_URL, GOOGLE_RATING } from "./content/googleAndMaps";
+import { Shell } from "./layout/Shell.jsx";
+import { SectionNav } from "./layout/SectionNav";
+import { whatsappLink } from "./contact";
 import HomeExamples from "./HomeExamples";
 import HeroBackground from "./HeroBackground";
 import { DocumentsMarquee, ExamplePanel, NumbersLine } from "./Showcase";
 import Dialog from "./Dialog";
-import { TopoField } from "@/components/ui/contour-field";
-import { PHOTOS, photoPath, srcset } from "./photos";
+import { TopoField } from "./components/ui/contour-field";
+import { photoPath, srcset } from "./photos";
+import { PHOTOS } from "./content/photoList";
 import AreaIcon from "./AreaIcon";
 import FaqList from "./Faq";
 import Reviews from "./Reviews";
 import DocumentSearch from "./Search";
 import WhatsappQr from "./WhatsappQr";
 import { WHATSAPP_PROJECTS } from "./contact";
-import { CREA_NUMBER, PHONE_DISPLAY } from "./company";
+import { CREA_NUMBER, PHONE_DISPLAY, ADDRESS } from "./company";
 import StepStack from "./StepStack";
 import Tilt3D from "./Tilt3D";
 import RevealPhrase from "./RevealPhrase";
-
-// Each card's title comes from AREAS (rotulo), so the area name is the same across the whole site.
-const NEEDS = [
-  {
-    slug: "seguranca-do-trabalho",
-    photo: "capacete-vermelho-epi",
-    phrase: "Tenho funcionários e preciso de PGR, laudos ou treinamentos.",
-  },
-  {
-    slug: "corpo-de-bombeiros",
-    photo: "extintor-parede-concreto-pictograma",
-    phrase: "Preciso de AVCB ou CLCB para o meu imóvel ou comércio.",
-  },
-  {
-    slug: "engenharia-civil",
-    photo: "edificio-estrutura-concreto-pavimentos",
-    phrase: "Vou construir, reformar ou regularizar um imóvel.",
-  },
-  {
-    slug: "meio-ambiente-topografia",
-    photo: "rio-mata-vista-aerea",
-    phrase: "Tenho imóvel rural e preciso de CAR, georreferenciamento ou topografia.",
-  },
-].map((n) => ({ ...n, title: AREAS.find((a) => a.slug === n.slug).label }));
-
-const STEPS = [
-  { title: "Você chama no WhatsApp", text: "Conte o que precisa. Respondemos no horário de atendimento." },
-  { title: "Entendemos o seu caso", text: "Analisamos a situação e os documentos que você já tem." },
-  { title: "Você recebe o orçamento", text: "Valor e condições claros, por escrito e sem compromisso." },
-  { title: "Executamos e entregamos", text: "Trabalho feito por responsável técnico habilitado, com ART." },
-];
-
-const EDUCATION = [
-  "Engenharia Civil e Engenharia Ambiental (bacharelados)",
-  "Pós-graduação em Engenharia de Segurança do Trabalho",
-  "Pós-graduação em Georreferenciamento de Imóveis Rurais",
-  "Pós-graduação em Topografia e Sensoriamento Remoto",
-  "Pós-graduação em Gestão Ambiental e em Higiene Ocupacional",
-  "Técnico em Segurança do Trabalho",
-];
-
-const FORM_SERVICES = AREAS.map((a) => a.name);
-
-const HOME_SECTIONS = [
-  { id: "organizamos", label: "O que organizamos" },
-  { id: "na-pratica", label: "Na prática" },
-  { id: "como-funciona", label: "Como funciona" },
-  { id: "duvidas", label: "Dúvidas" },
-  { id: "contato", label: "Contato" },
-];
-
-const isWithinOfficeHours = () => {
-  try {
-    const parts = new Intl.DateTimeFormat("en-US", {
-      timeZone: "America/Sao_Paulo",
-      weekday: "short",
-      hour: "numeric",
-      hour12: false,
-    }).formatToParts(new Date());
-    const day = parts.find((p) => p.type === "weekday").value;
-    const hour = Number(parts.find((p) => p.type === "hour").value) % 24;
-    return !["Sat", "Sun"].includes(day) && hour >= 7 && hour < 17;
-  } catch {
-    return false;
-  }
-};
+import { isWithinOfficeHours } from "./officeHours.js";
+import { EDUCATION, FORM_SERVICES, HOME_SECTIONS, NEEDS, STEPS } from "./content/home.js";
 
 export default function App() {
   // null until mount: the prerendered HTML (Google and first paint) shows only the hours, without "fora do horário"

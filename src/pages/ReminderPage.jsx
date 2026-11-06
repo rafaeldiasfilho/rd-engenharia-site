@@ -1,8 +1,9 @@
 // Expiry reminder form (/lembrete-de-vencimento): validates the form and saves the request with sendReminder.
 
 import { useEffect, useState } from "react";
-import { AREAS, REMINDER_DOCUMENTS, REMINDER_TIPS } from "../pagesData";
-import { PageClosing } from "../Layout";
+import { AREAS } from "../content/areas";
+import { REMINDER_DOCUMENTS, REMINDER_TIPS } from "../content/reminder";
+import { PageClosing } from "../layout/PageClosing";
 import { sendReminder } from "../publicApi/api";
 import { GENERAL_LINKS, PageTop, areaLink } from "./pageParts.jsx";
 

@@ -1,15 +1,25 @@
 // Template of the four area pages (/seguranca-do-trabalho, /corpo-de-bombeiros, /engenharia-civil, /meio-ambiente-topografia).
 
 import Icon from "../Icon";
-import { AREAS, GUIDES, EQUIPMENT, EQUIPMENT_NOTE, AREA_OVERVIEW, TECHNICAL_LEAD_PHOTO } from "../pagesData";
-import { Breadcrumb, SectionNav, PageClosing, WhatsappButton, whatsappLink } from "../Layout";
+import { AREAS, AREA_OVERVIEW } from "../content/areas";
+import { GUIDES } from "../content/guides";
+import { EQUIPMENT, EQUIPMENT_NOTE } from "../content/equipment";
+import { TECHNICAL_LEAD_PHOTO } from "../content/technicalLead";
+import { Breadcrumb } from "../layout/Breadcrumb";
+import { SectionNav } from "../layout/SectionNav";
+import { PageClosing } from "../layout/PageClosing";
+import { WhatsappButton } from "../layout/WhatsappButton";
+import { whatsappLink } from "../contact";
 import { Illustration } from "../Illustrations";
 import Carousel from "../Carousel";
-import DocIllustration, { SheetReader, SheetSvg, SAMPLE_CAPTION } from "../DocIllustration";
+import DocIllustration from "../DocIllustration";
+import { SheetReader } from "../sheets/SheetReader";
+import { SheetSvg } from "../sheets/SheetSvg";
+import { SAMPLE_CAPTION } from "../SheetBase";
 import HeroBackground from "../HeroBackground";
 import AreaIcon from "../AreaIcon";
-import { slidesFor } from "../photos";
-import { anchorId } from "../Search";
+import { slidesFor } from "../content/photoCarousels";
+import { anchorId } from "../searchIndex";
 import Faq from "../Faq";
 import RequestBuilder from "../RequestBuilder";
 import { AnimatedFolder } from "../components/ui/3d-folder";

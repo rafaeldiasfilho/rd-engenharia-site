@@ -1,7 +1,7 @@
 // Wizard page (/o-que-preciso): wraps the Wizard component.
 
-import { AREAS } from "../pagesData";
-import { PageClosing } from "../Layout";
+import { AREAS } from "../content/areas";
+import { PageClosing } from "../layout/PageClosing";
 import Wizard from "../Wizard";
 import { GENERAL_LINKS, PageTop, areaLink } from "./pageParts.jsx";
 

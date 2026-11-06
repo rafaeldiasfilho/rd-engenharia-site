@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { normalize } from "./Search";
+import { normalize } from "./searchIndex";
 import { whatsappLink } from "./contact";
 
 // FAQ list. With 6 or more questions it gets a filter field (question and answer, accent-insensitive).

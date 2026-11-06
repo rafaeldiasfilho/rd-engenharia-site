@@ -1,8 +1,9 @@
 // Photo credits and licences (/creditos).
 
-import { AREAS } from "../pagesData";
-import { PageClosing } from "../Layout";
-import { PHOTOS_IN_USE, photoPath, srcset } from "../photos";
+import { AREAS } from "../content/areas";
+import { PageClosing } from "../layout/PageClosing";
+import { photoPath, srcset } from "../photos";
+import { PHOTOS_IN_USE } from "../content/photoCarousels";
 import { GENERAL_LINKS, PageTop, areaLink } from "./pageParts.jsx";
 
 export function CreditsPage() {

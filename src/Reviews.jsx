@@ -1,4 +1,4 @@
-import { REVIEWS, GOOGLE_RATING, GOOGLE_REVIEWS_URL } from "./pagesData";
+import { REVIEWS, GOOGLE_RATING, GOOGLE_REVIEWS_URL } from "./content/googleAndMaps";
 
 // Google reviews strip on the home page. The rating and the total come from NOTA_GOOGLE; the cards only
 // appear for the reviews listed in AVALIACOES (real texts, copied from Google by Rafael).

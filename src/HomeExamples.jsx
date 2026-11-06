@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Carousel from "./Carousel";
 import AreaIcon from "./AreaIcon";
-import { HowToReadSheet, Illustration } from "./Illustrations";
-import { AREAS, projectSlides } from "./pagesData";
+import { Illustration } from "./Illustrations";
+import { HowToReadSheet } from "./illustrations/HowToReadSheet";
+import { AREAS } from "./content/areas";
+import { projectSlides } from "./content/projects";
 
 const TABS = ["engenharia-civil", "corpo-de-bombeiros", "seguranca-do-trabalho", "meio-ambiente-topografia"].map((slug) => ({
   slug,

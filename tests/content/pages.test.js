@@ -1,7 +1,10 @@
 // Integrity of the site content. A broken key here blanks whole pages (it happened during the English
 // rename on 2026-11-06), so the shape every page and the wizard rely on is checked.
 import { describe, expect, it } from "vitest";
-import { AREAS, GUIDES, PAGES, PROFILES, RESULTS, findArea, findPage } from "../src/pagesData.js";
+import { PAGES, findPage } from "../../src/content/pages.js";
+import { AREAS, findArea } from "../../src/content/areas.js";
+import { GUIDES } from "../../src/content/guides.js";
+import { PROFILES, RESULTS } from "../../src/content/wizard.js";
 
 const PAGE_TYPES = ["area", "guide", "location", "quiz", "guide-index", "reminder", "privacy", "terms", "credits"];
 

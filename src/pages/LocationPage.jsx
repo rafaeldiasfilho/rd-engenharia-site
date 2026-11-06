@@ -1,7 +1,11 @@
 // Where we work (/onde-atendemos): address, map and city list.
 
-import { AREAS, GOOGLE_REVIEWS_URL, DIRECTIONS_URL, MAP_EMBED_URL, ADDRESS } from "../pagesData";
-import { Breadcrumb, PageClosing, WhatsappButton } from "../Layout";
+import { AREAS } from "../content/areas";
+import { GOOGLE_REVIEWS_URL, DIRECTIONS_URL, MAP_EMBED_URL } from "../content/googleAndMaps";
+import { ADDRESS } from "../company";
+import { Breadcrumb } from "../layout/Breadcrumb";
+import { PageClosing } from "../layout/PageClosing";
+import { WhatsappButton } from "../layout/WhatsappButton";
 import { GENERAL_LINKS, Section, areaLink } from "./pageParts.jsx";
 
 export function LocationPage({ page }) {

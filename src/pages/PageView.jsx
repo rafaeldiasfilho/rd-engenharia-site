@@ -1,4 +1,5 @@
-import { Shell, whatsappLink } from "../Layout";
+import { Shell } from "../layout/Shell.jsx";
+import { whatsappLink } from "../contact";
 import { AreaPage } from "./AreaPage.jsx";
 import { LocationPage } from "./LocationPage.jsx";
 import { GuidePage } from "./GuidePage.jsx";

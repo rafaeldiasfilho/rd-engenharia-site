@@ -1,8 +1,7 @@
 // Privacy notice (/privacidade).
 
-import { ADDRESS } from "../pagesData";
-import { PageClosing } from "../Layout";
-import { TRADE_NAME, PHONE_DISPLAY } from "../company";
+import { PageClosing } from "../layout/PageClosing";
+import { TRADE_NAME, PHONE_DISPLAY, ADDRESS } from "../company";
 import { GENERAL_LINKS, PageTop } from "./pageParts.jsx";
 
 export function PrivacyPage() {

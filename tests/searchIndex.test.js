@@ -1,8 +1,8 @@
 // Document search on the home page ("Qual documento você precisa?"). Pure functions only:
 // the index is built from the site's own data, so these tests also catch data keys that went missing.
 import { describe, expect, it } from "vitest";
-import { anchorId, normalize, runSearch } from "../src/Search.jsx";
-import { AREAS } from "../src/pagesData.js";
+import { anchorId, normalize, runSearch } from "../src/searchIndex.js";
+import { AREAS } from "../src/content/areas.js";
 
 describe("normalize", () => {
   it("removes accents and lowercases", () => {

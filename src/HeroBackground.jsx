@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { slidesFor, photoPath, srcset, photoNotice } from "./photos";
+import { photoPath, srcset, photoNotice } from "./photos";
+import { slidesFor } from "./content/photoCarousels";
 
 // Opening (hero) with full-screen background photos, switched by an opacity transition.
 // Same motion rules as the Carousel: auto-advance only starts after mount, pauses on mouse hover,

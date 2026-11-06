@@ -1,8 +1,7 @@
 // Printable area summary (/imprimir/<area>).
 
 import { useEffect, useState } from "react";
-import { ADDRESS } from "../pagesData";
-import { LEGAL_NAME, CNPJ, PHONE_DISPLAY } from "../company";
+import { LEGAL_NAME, CNPJ, PHONE_DISPLAY, ADDRESS } from "../company";
 
 // Dedicated page to print or save as PDF an area's document list (/imprimir/<area>).
 // No site header or footer, no state: the button calls window.print() directly. noindex.

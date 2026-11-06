@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { WhatsappButton } from "./Layout";
+import { WhatsappButton } from "./layout/WhatsappButton";
 
 // During prerender (Node) there is no layout: use useEffect there to avoid a warning.
 const useSafeLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
