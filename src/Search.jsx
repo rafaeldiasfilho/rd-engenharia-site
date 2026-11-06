@@ -56,19 +56,19 @@ export default function DocumentSearch({ autoFocus = false, onExit, className = 
     }
   };
 
-  const listId = `${base}-lista`;
+  const listId = `${base}-list`;
   const optionId = (n) => `${base}-op-${n}`;
 
   return (
     <form className={`search ${className}`} role="search" onSubmit={(e) => e.preventDefault()}>
-      <label htmlFor={`${base}-campo`} className="search-label">
+      <label htmlFor={`${base}-field`} className="search-label">
         Qual documento ou serviço você precisa?
       </label>
       <div className="search-box">
         <Icon name="fa-solid fa-magnifying-glass" />
         <input
           ref={field}
-          id={`${base}-campo`}
+          id={`${base}-field`}
           type="search"
           role="combobox"
           aria-autocomplete="list"

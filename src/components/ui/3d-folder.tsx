@@ -89,7 +89,7 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
         type="button"
         className="folder-button"
         aria-expanded={isOpen}
-        aria-controls={`${id}-cartoes`}
+        aria-controls={`${id}-cards`}
         aria-label={`${isOpen ? "Fechar" : "Abrir"} a pasta ${title}: ${countLabel(items.length)}`}
         onClick={() => setPinned((v) => !v)}
       />
@@ -98,7 +98,7 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
         <span className="folder-tab" />
         <span className="folder-front" />
       </div>
-      <ul className="folder-cards" id={`${id}-cartoes`}>
+      <ul className="folder-cards" id={`${id}-cards`}>
         {fan.map((it, i) => (
           <li key={it.id} className="folder-card" data-i={i} data-hidden={openIndex === i ? "true" : undefined}>
             <button
