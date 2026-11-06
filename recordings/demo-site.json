@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/gmpetrov/agent-screenplay/main/schema/scenario.schema.json",
+  "url": "http://127.0.0.1:4174/",
+  "style": { "background": "meadow", "frame": "browser", "accent": "#18692f", "captions": true, "maxZoom": 1.7 },
+  "output": { "width": 1920, "height": 1080, "fps": 30 },
+  "steps": [
+    { "wait": 1.5, "say": "Laudos, projetos e licenças em dia, em Ibirá e região." },
+    { "click": "placeholder=Ex.: AVCB, PGR, CAR, habite-se", "say": "Procure pelo documento que você precisa." },
+    { "type": "AVCB", "into": "placeholder=Ex.: AVCB, PGR, CAR, habite-se", "hold": 1.2 },
+    { "press": "Escape", "zoom": false },
+    { "scroll": "text=Segurança do Trabalho", "say": "Quatro áreas: segurança, bombeiros, obras e meio ambiente.", "zoom": false, "hold": 1.5 },
+    { "goto": "http://127.0.0.1:4174/engenharia-civil", "zoom": false },
+    { "scroll": "css=.cena3d", "zoom": false },
+    { "zoomTo": "css=.faixa-cena-grade", "say": "Cada área tem uma cena em 3D: aqui, a casa sai do projeto etapa por etapa.", "hold": 3 },
+    { "scroll": "css=.car-img a[aria-haspopup]", "zoom": false },
+    { "click": "css=.car-img a[aria-haspopup]", "say": "As fotos ampliam na própria página, com zoom e deslize.", "zoom": false, "hold": 1 },
+    { "click": "role=button[name='Próxima foto']", "zoom": false, "hold": 1 },
+    { "click": "role=button[name='Fechar']", "zoom": false },
+    { "scroll": "top", "zoom": false },
+    { "highlight": "text=Pedir orçamento pelo WhatsApp", "text": "Orçamento por escrito e sem compromisso", "say": "E o orçamento é pelo WhatsApp, direto com o responsável técnico.", "hold": 2 }
+  ]
+}
