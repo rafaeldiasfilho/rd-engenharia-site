@@ -1,6 +1,6 @@
 // WhatsApp link to a client's number (adds the Brazil code 55 when missing).
 
-export function whatsappLink(number, text) {
+export function buildClientWhatsappLink(number, text) {
   let n = String(number || "").replace(/\D/g, "");
   if (!n) return "";
   if (n.length <= 11) n = "55" + n;

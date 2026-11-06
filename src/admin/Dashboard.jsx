@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { daysUntil, formatDateBR } from "./dates.js";
-import { whatsappLink } from "./clientWhatsapp.js";
+import { buildClientWhatsappLink } from "./clientWhatsapp.js";
 
 export function Dashboard({ clients, services, openClient, markHandled }) {
   const [windowDays, setWindowDays] = useState(90);
@@ -15,7 +15,7 @@ export function Dashboard({ clients, services, openClient, markHandled }) {
   const overdue = pending.filter((s) => s.days < 0);
   const upcoming = pending.filter((s) => s.days >= 0 && s.days <= windowDays);
 
-  const Row = ({ s }) => {
+  const ExpiryRow = ({ s }) => {
     const client = byId[s.cliente_id];
     if (!client) return null;
     const msg = client.aceita_lembretes
@@ -27,7 +27,7 @@ export function Dashboard({ clients, services, openClient, markHandled }) {
               }.`
         } A renovação leva um tempo, então vale começar logo. Posso cuidar disso para você?`
       : `Olá, ${client.nome}! Aqui é da RD Engenharia. Podemos avisar você por WhatsApp quando seus serviços estiverem perto do vencimento, para você não perder o prazo? Se preferir não receber, é só nos dizer.`;
-    const waLink = whatsappLink(client.whatsapp || client.telefone, msg);
+    const waLink = buildClientWhatsappLink(client.whatsapp || client.telefone, msg);
     return (
       <li className="admin-line">
         <div>
@@ -83,7 +83,7 @@ export function Dashboard({ clients, services, openClient, markHandled }) {
       {overdue.length ? (
         <ul className="admin-list">
           {overdue.map((s) => (
-            <Row key={s.id} s={s} />
+            <ExpiryRow key={s.id} s={s} />
           ))}
         </ul>
       ) : (
@@ -106,7 +106,7 @@ export function Dashboard({ clients, services, openClient, markHandled }) {
       {upcoming.length ? (
         <ul className="admin-list">
           {upcoming.map((s) => (
-            <Row key={s.id} s={s} />
+            <ExpiryRow key={s.id} s={s} />
           ))}
         </ul>
       ) : (

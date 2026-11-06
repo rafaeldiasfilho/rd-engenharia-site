@@ -1,8 +1,8 @@
 // Example inner pages built from tables, lists and checklists.
 
-import { AMBER, BORDER, GRAY, BACKGROUND, LINE, GREEN, RED } from "../SheetBase";
-import { Checklist, Chip, Paragraph, Table } from "./innerPageParts.jsx";
-import { Tx } from "./drawingParts.jsx";
+import { SHEET_AMBER, SHEET_BORDER, SHEET_GRAY, SHEET_BACKGROUND, SHEET_LINE, SHEET_GREEN, SHEET_RED } from "../SheetBase";
+import { InnerPageChecklist, StatusChip, InnerPageParagraph, InnerPageTable } from "./innerPageParts.jsx";
+import { SheetText } from "./drawingParts.jsx";
 
 const CHECKLISTS = {
   "PGR × PCMSO": [
@@ -34,7 +34,7 @@ export const INNER_PAGES_TABLES = {
     intro: "Para cada setor: os perigos, as possíveis lesões, o nível de risco (probabilidade × severidade) e as medidas de prevenção.",
     body: () => (
       <g>
-        <Table
+        <InnerPageTable
           y={52}
           rowHeight={10.4}
           cols={[
@@ -52,31 +52,31 @@ export const INNER_PAGES_TABLES = {
             ["Pátio", "Circulação de veículos", "Atropelamento", { chip: "Alto" }, "Faixa de pedestres; sinalização"],
           ]}
         />
-        <Tx x={10} y={122} s={2.6} b>
+        <SheetText x={10} y={122} s={2.6} b>
           Matriz de risco
-        </Tx>
+        </SheetText>
         {[0, 1, 2].map((r) =>
           [0, 1, 2].map((c) => {
             const n = r + c;
-            return <rect key={`${r}${c}`} x={10 + c * 8} y={126 + (2 - r) * 8} width="7.4" height="7.4" rx="1" fill={n < 2 ? GREEN : n < 3 ? AMBER : RED} opacity="0.75" />;
+            return <rect key={`${r}${c}`} x={10 + c * 8} y={126 + (2 - r) * 8} width="7.4" height="7.4" rx="1" fill={n < 2 ? SHEET_GREEN : n < 3 ? SHEET_AMBER : SHEET_RED} opacity="0.75" />;
           })
         )}
-        <Tx x={22} y={153} s={2} c={GRAY} a="middle">
+        <SheetText x={22} y={153} s={2} c={SHEET_GRAY} a="middle">
           Severidade →
-        </Tx>
-        <Tx x={7.6} y={138} s={2} c={GRAY} a="middle" r={-90}>
+        </SheetText>
+        <SheetText x={7.6} y={138} s={2} c={SHEET_GRAY} a="middle" r={-90}>
           Probabilidade →
-        </Tx>
+        </SheetText>
         {[
           ["Baixo", "manter os controles existentes"],
           ["Moderado", "incluir no plano de ação, com prazo"],
           ["Alto", "ação imediata antes de seguir a atividade"],
         ].map(([n, t], k) => (
           <g key={n}>
-            <Chip x={42} y={131 + k * 7.4} t={n} />
-            <Tx x={66} y={131 + k * 7.4} s={2.5}>
+            <StatusChip x={42} y={131 + k * 7.4} t={n} />
+            <SheetText x={66} y={131 + k * 7.4} s={2.5}>
               {t}
-            </Tx>
+            </SheetText>
           </g>
         ))}
       </g>
@@ -86,7 +86,7 @@ export const INNER_PAGES_TABLES = {
     intro: "Resíduos gerados na empresa, classificados conforme a ABNT NBR 10004, com a forma de guardar e o destino de cada um.",
     body: () => (
       <g>
-        <Table
+        <InnerPageTable
           y={52}
           rowHeight={10.4}
           cols={[
@@ -103,8 +103,8 @@ export const INNER_PAGES_TABLES = {
             ["Entulho de reforma", "II B", "Caçamba identificada", "Aterro de inertes licenciado"],
           ]}
         />
-        <Paragraph y={124} text="Registros: manifestos de transporte de resíduos (MTR) e certificados de destinação ficam arquivados por resíduo e por saída." />
-        <Paragraph y={140} s={2.4} c={GRAY} text="Classe I: perigoso. Classe II A: não perigoso e não inerte. Classe II B: não perigoso e inerte." />
+        <InnerPageParagraph y={124} text="Registros: manifestos de transporte de resíduos (MTR) e certificados de destinação ficam arquivados por resíduo e por saída." />
+        <InnerPageParagraph y={140} s={2.4} c={SHEET_GRAY} text="Classe I: perigoso. Classe II A: não perigoso e não inerte. Classe II B: não perigoso e inerte." />
       </g>
     ),
   },
@@ -112,7 +112,7 @@ export const INNER_PAGES_TABLES = {
     intro: "Atividade: troca de telhas do galpão (trabalho em altura). Antes de começar, a equipe confere cada etapa e as medidas de controle.",
     body: () => (
       <g>
-        <Table
+        <InnerPageTable
           y={52}
           rowHeight={10.4}
           cols={[
@@ -129,22 +129,22 @@ export const INNER_PAGES_TABLES = {
             ["Condições do tempo", "Chuva e vento", { chip: "Médio" }, "Suspender a atividade com chuva ou vento forte", "Encarregado"],
           ]}
         />
-        <Tx x={10} y={115} s={2.7} b>
+        <SheetText x={10} y={115} s={2.7} b>
           Liberação da atividade
-        </Tx>
-        <Tx x={10} y={122} s={2.6}>
+        </SheetText>
+        <SheetText x={10} y={122} s={2.6}>
           ( ) Liberada ( ) Não liberada
-        </Tx>
-        <g stroke={BORDER} strokeWidth="0.5">
+        </SheetText>
+        <g stroke={SHEET_BORDER} strokeWidth="0.5">
           <line x1="10" y1="146" x2="68" y2="146" />
           <line x1="82" y1="146" x2="140" y2="146" />
         </g>
-        <Tx x={39} y={150.4} s={2.3} c={GRAY} a="middle">
+        <SheetText x={39} y={150.4} s={2.3} c={SHEET_GRAY} a="middle">
           Elaborado por
-        </Tx>
-        <Tx x={111} y={150.4} s={2.3} c={GRAY} a="middle">
+        </SheetText>
+        <SheetText x={111} y={150.4} s={2.3} c={SHEET_GRAY} a="middle">
           Liberado por
-        </Tx>
+        </SheetText>
       </g>
     ),
   },
@@ -165,26 +165,26 @@ export const INNER_PAGES_TABLES = {
             ["Pavimentos", "1 (térreo)"],
           ].map(([k, v], i) => (
             <g key={k}>
-              <Tx x={10} y={56 + i * 7} s={2.6} c={GRAY}>
+              <SheetText x={10} y={56 + i * 7} s={2.6} c={SHEET_GRAY}>
                 {k}
-              </Tx>
-              <Tx x={140} y={56 + i * 7} s={2.6} b a="end">
+              </SheetText>
+              <SheetText x={140} y={56 + i * 7} s={2.6} b a="end">
                 {v}
-              </Tx>
-              <line x1="10" y1={58.4 + i * 7} x2="140" y2={58.4 + i * 7} stroke={LINE} strokeWidth="0.35" />
+              </SheetText>
+              <line x1="10" y1={58.4 + i * 7} x2="140" y2={58.4 + i * 7} stroke={SHEET_LINE} strokeWidth="0.35" />
             </g>
           ))}
-          <rect x="10" y="88" width="130" height="11" rx="2" fill={BACKGROUND} />
-          <Tx x={14} y={95.2} s={2.8} b>
+          <rect x="10" y="88" width="130" height="11" rx="2" fill={SHEET_BACKGROUND} />
+          <SheetText x={14} y={95.2} s={2.8} b>
             Resultado: a edificação atende às condições do CLCB.
-          </Tx>
-          <Tx x={10} y={110} s={2.8} b>
+          </SheetText>
+          <SheetText x={10} y={110} s={2.8} b>
             Medidas de segurança exigidas
-          </Tx>
-          <Checklist y={120} items={CHECKLISTS.CLCB} />
+          </SheetText>
+          <InnerPageChecklist y={120} items={CHECKLISTS.CLCB} />
         </g>
       ) : (
-        <Checklist y={56} items={CHECKLISTS[m.title] || CHECKLISTS.AVCB} />
+        <InnerPageChecklist y={56} items={CHECKLISTS[m.title] || CHECKLISTS.AVCB} />
       ),
   },
 };

@@ -25,7 +25,7 @@ export const SERVICE_TYPES = [
   "Outro",
 ];
 
-export const STATUS = { orcamento: "Orçamento", em_andamento: "Em andamento", concluido: "Concluído" };
+export const SERVICE_STATUS_LABELS = { orcamento: "Orçamento", em_andamento: "Em andamento", concluido: "Concluído" };
 
 export const emptyClient = {
   nome: "",

@@ -1,7 +1,7 @@
 // Example drawing: shop floor plan (fire safety layout).
 
-import { GRAY, INK, RED } from "../SheetBase";
-import { DimensionH, DimensionV, Door, DrawingTitle, NorthArrow, Room, Tx, WindowOpening } from "./drawingParts.jsx";
+import { SHEET_GRAY, SHEET_INK, SHEET_RED } from "../SheetBase";
+import { DimensionH, DimensionV, Door, DrawingTitle, NorthArrow, Room, SheetText, WindowOpening } from "./drawingParts.jsx";
 
 // Commercial hall (fire safety design and escape route). 1 unit = 20 cm.
 export function ShopPlan({ route }) {
@@ -11,7 +11,7 @@ export function ShopPlan({ route }) {
     <g>
       <DimensionH x1={18} x2={132} y={13} v="22,80" />
       <DimensionV x={11} y1={20} y2={96} v="15,20" />
-      <g stroke={INK} fill="none" strokeLinecap="square">
+      <g stroke={SHEET_INK} fill="none" strokeLinecap="square">
         <rect x="18" y="20" width="114" height="76" strokeWidth="1.6" />
         <path d="M92 20V96M92 62H132M110 62V96" strokeWidth="0.9" />
       </g>
@@ -35,25 +35,25 @@ export function ShopPlan({ route }) {
       {/* exit signage */}
       <g>
         <rect x="42.5" y="90" width="9" height="3.4" rx="0.6" fill="#2f8f46" />
-        <Tx x={47} y={92.5} s={1.8} b c="#fff" a="middle">
+        <SheetText x={47} y={92.5} s={1.8} b c="#fff" a="middle">
           SAÍDA
-        </Tx>
+        </SheetText>
         {route && (
           <g>
             <rect x="20.5" y="43" width="9" height="3.4" rx="0.6" fill="#2f8f46" />
-            <Tx x={25} y={45.5} s={1.8} b c="#fff" a="middle">
+            <SheetText x={25} y={45.5} s={1.8} b c="#fff" a="middle">
               SAÍDA
-            </Tx>
+            </SheetText>
           </g>
         )}
       </g>
       {!route &&
         extinguishers.map(([x, y]) => (
           <g key={`${x}-${y}`}>
-            <circle cx={x} cy={y} r="2.3" fill={RED} />
-            <Tx x={x} y={y + 0.9} s={2.2} b c="#fff" a="middle">
+            <circle cx={x} cy={y} r="2.3" fill={SHEET_RED} />
+            <SheetText x={x} y={y + 0.9} s={2.2} b c="#fff" a="middle">
               E
-            </Tx>
+            </SheetText>
           </g>
         ))}
       {!route &&
@@ -62,21 +62,21 @@ export function ShopPlan({ route }) {
         <g>
           {[[24, 62], [96, 26]].map(([x, y]) => (
             <g key={`${x}-${y}`}>
-              <rect x={x - 2.6} y={y - 2} width="5.2" height="4" fill={RED} />
-              <Tx x={x} y={y + 1} s={2.4} b c="#fff" a="middle">
+              <rect x={x - 2.6} y={y - 2} width="5.2" height="4" fill={SHEET_RED} />
+              <SheetText x={x} y={y + 1} s={2.4} b c="#fff" a="middle">
                 H
-              </Tx>
+              </SheetText>
             </g>
           ))}
           {[[52, 92], [88, 30]].map(([x, y]) => (
             <g key={`${x}-${y}`}>
-              <circle cx={x} cy={y} r="1.9" fill="#fff" stroke={RED} strokeWidth="0.8" />
-              <circle cx={x} cy={y} r="0.7" fill={RED} />
+              <circle cx={x} cy={y} r="1.9" fill="#fff" stroke={SHEET_RED} strokeWidth="0.8" />
+              <circle cx={x} cy={y} r="0.7" fill={SHEET_RED} />
             </g>
           ))}
-          <Tx x={12} y={103} s={2.1} c={GRAY}>
+          <SheetText x={12} y={103} s={2.1} c={SHEET_GRAY}>
             Caminhamento máximo: 26 m
-          </Tx>
+          </SheetText>
         </g>
       )}
       <DrawingTitle title={route ? "ROTA DE FUGA, HIDRANTES E ALARME" : "PLANTA DE MEDIDAS DE SEGURANÇA"} scale="ESCALA 1:100 · ÁREA 346,56 m²" />
@@ -96,13 +96,13 @@ export function ShopPlan({ route }) {
             ]
         ).map(([k, label], i) => (
           <g key={k} transform={`translate(${(i % 2) * 62} ${Math.floor(i / 2) * 4.6})`}>
-            {k === "e" && <circle cx="1.6" cy="-0.8" r="1.6" fill={RED} />}
+            {k === "e" && <circle cx="1.6" cy="-0.8" r="1.6" fill={SHEET_RED} />}
             {k === "l" && <rect x="0" y="-1.8" width="3.4" height="1.8" fill="#f2c230" stroke="#7a5b00" strokeWidth="0.3" />}
-            {k === "h" && <rect x="0" y="-2" width="3.4" height="2.6" fill={RED} />}
-            {k === "a" && <circle cx="1.6" cy="-0.8" r="1.4" fill="#fff" stroke={RED} strokeWidth="0.7" />}
+            {k === "h" && <rect x="0" y="-2" width="3.4" height="2.6" fill={SHEET_RED} />}
+            {k === "a" && <circle cx="1.6" cy="-0.8" r="1.4" fill="#fff" stroke={SHEET_RED} strokeWidth="0.7" />}
             {k === "s" && <rect x="0" y="-1.8" width="3.4" height="1.8" fill="#2f8f46" />}
             {k === "r" && <path d="M0 -0.8h3.4" stroke="#2f8f46" strokeWidth="0.8" strokeDasharray="1.2 0.8" />}
-            <text x="5" y="0" fill={INK}>
+            <text x="5" y="0" fill={SHEET_INK}>
               {label}
             </text>
           </g>

@@ -10,7 +10,7 @@ import Carousel from "../Carousel";
 
 // Block that starts collapsed on mobile (with a button to open it) and is always open on desktop.
 // It ships open in the HTML (good for Google and for visitors without JavaScript); it closes after mount if the screen is narrow.
-export function Collapsible({ label, children }) {
+export function CollapsibleSection({ label, children }) {
   const ref = useRef(null);
   useEffect(() => {
     if (ref.current && window.matchMedia && window.matchMedia("(max-width: 700px)").matches) ref.current.open = false;
@@ -26,7 +26,7 @@ export function Collapsible({ label, children }) {
 }
 
 // AVCB vs CLCB side by side. On mobile, each row becomes a block with the two columns side by side.
-export function Comparison() {
+export function FireLicenseComparisonTable() {
   const c = FIRE_LICENSE_COMPARISON;
   return (
     <div className="comparison reveal" id="avcb-ou-clcb">
@@ -67,10 +67,10 @@ export function Comparison() {
   );
 }
 
-export const pad = (n) => String(n + 1).padStart(2, "0");
+export const twoDigitNumber = (n) => String(n + 1).padStart(2, "0");
 
 // Section header: number, label, large title and supporting sentence.
-export function Section({ id, n, label, title, lead, className = "", children }) {
+export function PageSection({ id, n, label, title, lead, className = "", children }) {
   return (
     <section className={`sec ${className}`} id={id} aria-labelledby={`${id}-t`}>
       <div className="container">
@@ -114,7 +114,7 @@ export const areaLink = (a) => ({ href: `/${a.slug}`, tag: "Serviço", title: a.
 
 export const guideLink = (g) => ({ href: `/${g.slug}`, tag: "Guia", title: g.h1 });
 
-export function Examples() {
+export function ProjectExamples() {
   return (
     <div>
       <Carousel

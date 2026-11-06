@@ -6,7 +6,7 @@ import { ADDRESS } from "../company";
 import { Breadcrumb } from "../layout/Breadcrumb";
 import { PageClosing } from "../layout/PageClosing";
 import { WhatsappButton } from "../layout/WhatsappButton";
-import { GENERAL_LINKS, Section, areaLink } from "./pageParts.jsx";
+import { GENERAL_LINKS, PageSection, areaLink } from "./pageParts.jsx";
 
 export function LocationPage({ page }) {
   const locationZapText = "Olá! Gostaria de saber se vocês atendem o meu endereço.";
@@ -27,7 +27,7 @@ export function LocationPage({ page }) {
       </header>
 
       {/* This section used to just repeat the page title; now it explains the two service modes. */}
-      <Section id="atendimento-regiao" n="01" label="Formas de atendimento" title="Como funciona o atendimento.">
+      <PageSection id="atendimento-regiao" n="01" label="Formas de atendimento" title="Como funciona o atendimento.">
         <ul className="modes-grid">
           <li className="modes-card reveal">
             <p className="label-mini">Presencial</p>
@@ -46,7 +46,7 @@ export function LocationPage({ page }) {
             <WhatsappButton text={locationZapText} label="Perguntar" />
           </li>
         </ul>
-      </Section>
+      </PageSection>
 
       <section className="sec sec-alt" id="mapa" aria-labelledby="mapa-t">
         <div className="container map-grid">

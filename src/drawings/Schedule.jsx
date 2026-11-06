@@ -1,10 +1,10 @@
 // Example drawing: work schedule (Gantt-style stages).
 
-import { GRAY, BACKGROUND, LINE, GREEN } from "../SheetBase";
-import { DrawingTitle, Tx } from "./drawingParts.jsx";
+import { SHEET_GRAY, SHEET_BACKGROUND, SHEET_LINE, SHEET_GREEN } from "../SheetBase";
+import { DrawingTitle, SheetText } from "./drawingParts.jsx";
 
 // Physical-financial schedule: stages per week and spending per month.
-const STAGES = [
+const SCHEDULE_STAGES = [
   ["Serviços preliminares", 0, 1, 4],
   ["Fundação", 1, 2, 12],
   ["Estrutura", 2, 4, 22],
@@ -22,68 +22,68 @@ export function Schedule() {
   const rowHeight = 8.6;
   return (
     <g>
-      <rect x="10" y="12" width="130" height="14" fill={BACKGROUND} />
-      <Tx x={12} y={21} s={2.4} b c={GRAY}>
+      <rect x="10" y="12" width="130" height="14" fill={SHEET_BACKGROUND} />
+      <SheetText x={12} y={21} s={2.4} b c={SHEET_GRAY}>
         ETAPA
-      </Tx>
+      </SheetText>
       {["MÊS 1", "MÊS 2", "MÊS 3"].map((m, i) => (
-        <Tx key={m} x={x0 + i * 24 + 12} y={17.4} s={2.3} b c={GRAY} a="middle">
+        <SheetText key={m} x={x0 + i * 24 + 12} y={17.4} s={2.3} b c={SHEET_GRAY} a="middle">
           {m}
-        </Tx>
+        </SheetText>
       ))}
       {Array.from({ length: 12 }, (_, i) => (
-        <Tx key={i} x={x0 + i * week + 3} y={23.6} s={1.9} c={GRAY} a="middle">
+        <SheetText key={i} x={x0 + i * week + 3} y={23.6} s={1.9} c={SHEET_GRAY} a="middle">
           {i + 1}
-        </Tx>
+        </SheetText>
       ))}
-      <Tx x={135} y={21} s={2.4} b c={GRAY} a="middle">
+      <SheetText x={135} y={21} s={2.4} b c={SHEET_GRAY} a="middle">
         %
-      </Tx>
-      <g stroke={LINE} strokeWidth="0.3">
+      </SheetText>
+      <g stroke={SHEET_LINE} strokeWidth="0.3">
         {Array.from({ length: 13 }, (_, i) => (
-          <line key={i} x1={x0 + i * week} y1={19.6} x2={x0 + i * week} y2={y0 + STAGES.length * rowHeight} strokeWidth={i % 4 === 0 ? 0.6 : 0.3} />
+          <line key={i} x1={x0 + i * week} y1={19.6} x2={x0 + i * week} y2={y0 + SCHEDULE_STAGES.length * rowHeight} strokeWidth={i % 4 === 0 ? 0.6 : 0.3} />
         ))}
-        {STAGES.map((_, r) => (
+        {SCHEDULE_STAGES.map((_, r) => (
           <line key={r} x1="10" y1={y0 + (r + 1) * rowHeight} x2="140" y2={y0 + (r + 1) * rowHeight} />
         ))}
       </g>
-      {STAGES.map(([name, start, dur, pct], r) => {
+      {SCHEDULE_STAGES.map(([name, start, dur, pct], r) => {
         const y = y0 + r * rowHeight;
         return (
           <g key={name}>
-            <Tx x={12} y={y + 5.6} s={2.4}>
+            <SheetText x={12} y={y + 5.6} s={2.4}>
               {name}
-            </Tx>
-            <rect x={x0 + start * week + 0.6} y={y + 2.6} width={dur * week - 1.2} height="3.6" rx="1.2" fill={r % 2 ? "#4f9a5b" : GREEN} />
-            <Tx x={135} y={y + 5.6} s={2.4} a="middle">
+            </SheetText>
+            <rect x={x0 + start * week + 0.6} y={y + 2.6} width={dur * week - 1.2} height="3.6" rx="1.2" fill={r % 2 ? "#4f9a5b" : SHEET_GREEN} />
+            <SheetText x={135} y={y + 5.6} s={2.4} a="middle">
               {pct}
-            </Tx>
+            </SheetText>
           </g>
         );
       })}
       {(() => {
-        const y = y0 + STAGES.length * rowHeight;
+        const y = y0 + SCHEDULE_STAGES.length * rowHeight;
         return (
           <g>
-            <rect x="10" y={y} width="130" height="15" fill={BACKGROUND} />
-            <Tx x={12} y={y + 5.4} s={2.3} b>
+            <rect x="10" y={y} width="130" height="15" fill={SHEET_BACKGROUND} />
+            <SheetText x={12} y={y + 5.4} s={2.3} b>
               Desembolso no mês
-            </Tx>
-            <Tx x={12} y={y + 11.6} s={2.3} b>
+            </SheetText>
+            <SheetText x={12} y={y + 11.6} s={2.3} b>
               Acumulado
-            </Tx>
+            </SheetText>
             {[
               ["27%", "27%"],
               ["43%", "70%"],
               ["30%", "100%"],
             ].map(([m, a], i) => (
               <g key={i}>
-                <Tx x={x0 + i * 24 + 12} y={y + 5.4} s={2.4} b c={GREEN} a="middle">
+                <SheetText x={x0 + i * 24 + 12} y={y + 5.4} s={2.4} b c={SHEET_GREEN} a="middle">
                   {m}
-                </Tx>
-                <Tx x={x0 + i * 24 + 12} y={y + 11.6} s={2.4} a="middle">
+                </SheetText>
+                <SheetText x={x0 + i * 24 + 12} y={y + 11.6} s={2.4} a="middle">
                   {a}
-                </Tx>
+                </SheetText>
               </g>
             ))}
           </g>

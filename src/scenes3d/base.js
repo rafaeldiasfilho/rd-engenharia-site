@@ -6,7 +6,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { WebGLRenderer, Scene, PerspectiveCamera, Clock, Group, ACESFilmicToneMapping, PCFSoftShadowMap } from "three";
 
 // Real material colors (concrete, plaster, roof tile, wood, glass, signage)
-export const REAL_COLORS = {
+export const SCENE_MATERIAL_COLORS = {
   concrete: "#b8b4aa",
   plaster: "#efe7d6",
   roofTile: "#b4532a",
@@ -19,15 +19,6 @@ export const REAL_COLORS = {
   exit: "#14a04a",
   extinguisher: "#c8102e",
   ppeYellow: "#f2c200",
-};
-
-export const COLORS = {
-  background: "#0c2e1c",
-  green: "#2f8a45",
-  lightGreen: "#3a9a52",
-  lime: "#9be15d",
-  lightLime: "#d9ffb0",
-  alert: "#ff6b4a",
 };
 
 export function supportsWebGL() {

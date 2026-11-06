@@ -3,7 +3,7 @@
 import { PHOTOS } from "./photoList.js";
 
 // Slot (place on the site) -> single photo. A null value = no photo.
-export const SLOTS = {};
+export const PHOTO_SLOTS = {};
 
 // Carousels: key = place on the site; each slide points to a photo in FOTOS, with a short caption and,
 // optionally, a link to the area page. A carousel with no photos does not appear on the page.
@@ -71,13 +71,13 @@ export const slidesFor = (key) =>
   (CAROUSELS[key] || []).filter((s) => PHOTOS[s.photo]).map((s) => ({ ...s, f: PHOTOS[s.photo] }));
 
 export const getPhoto = (slot) => {
-  const id = SLOTS[slot];
+  const id = PHOTO_SLOTS[slot];
   return id ? PHOTOS[id] || null : null;
 };
 
 // List for the credits page: only the photos in use (slots and carousels), without repeats.
 const idsInUse = new Set([
-  ...Object.values(SLOTS).filter(Boolean),
+  ...Object.values(PHOTO_SLOTS).filter(Boolean),
   ...Object.values(CAROUSELS).flatMap((list) => list.map((s) => s.photo)),
 ]);
 

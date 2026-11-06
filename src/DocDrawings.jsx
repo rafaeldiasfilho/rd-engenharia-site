@@ -2,7 +2,7 @@
 // Everything is fictional ("Exemplo" client, made-up numbers), but follows the real conventions of each document,
 // so the visitor recognizes what they will receive. Coordinates on the 150 × 198 sheet.
 
-import { BORDER, GRAY, GREEN, Logo, clientFor, wrapText } from "./SheetBase";
+import { SHEET_BORDER, SHEET_GRAY, SHEET_GREEN, Logo, clientFor, wrapText } from "./SheetBase";
 import { ShopPlan } from "./drawings/ShopPlan.jsx";
 import { HousePlan } from "./drawings/HousePlan.jsx";
 import { Schedule } from "./drawings/Schedule.jsx";
@@ -11,8 +11,8 @@ import { GeorefPlan } from "./drawings/GeorefPlan.jsx";
 import { ContourPlan } from "./drawings/ContourPlan.jsx";
 import { INNER_PAGES_TABLES } from "./drawings/innerPagesTables.jsx";
 import { INNER_PAGES_CHARTS } from "./drawings/innerPagesCharts.jsx";
-import { Tx } from "./drawings/drawingParts.jsx";
-import { Paragraph } from "./drawings/innerPageParts.jsx";
+import { SheetText } from "./drawings/drawingParts.jsx";
+import { InnerPageParagraph } from "./drawings/innerPageParts.jsx";
 
 // The drawing on the sheet (area from x 9 to 141 and y 9 to 122; the title block starts at y 126).
 export function Drawing({ type, uid }) {
@@ -53,29 +53,29 @@ export function InnerPage({ m, area }) {
   return (
     <g fontFamily="inherit">
       <Logo x={10} y={7} s={0.62} />
-      <Tx x={140} y={11} s={2.6} c={GRAY} a="end">
+      <SheetText x={140} y={11} s={2.6} c={SHEET_GRAY} a="end">
         {m.ref || m.title}
-      </Tx>
-      <Tx x={140} y={15.2} s={2.6} c={GRAY} a="end">
+      </SheetText>
+      <SheetText x={140} y={15.2} s={2.6} c={SHEET_GRAY} a="end">
         Página 4 de 18
-      </Tx>
-      <line x1="10" y1="19.5" x2="140" y2="19.5" stroke={GREEN} strokeWidth="0.5" />
+      </SheetText>
+      <line x1="10" y1="19.5" x2="140" y2="19.5" stroke={SHEET_GREEN} strokeWidth="0.5" />
       {wrapText(section, 34)
         .slice(0, 2)
         .map((l, k) => (
-          <Tx key={l} x={10} y={30 + k * 5.6} s={4.4} b>
+          <SheetText key={l} x={10} y={30 + k * 5.6} s={4.4} b>
             {l}
-          </Tx>
+          </SheetText>
         ))}
-      {intro && <Paragraph y={wrapText(section, 34).length > 1 ? 43 : 38} s={2.6} c={GRAY} max={88} text={intro} />}
+      {intro && <InnerPageParagraph y={wrapText(section, 34).length > 1 ? 43 : 38} s={2.6} c={SHEET_GRAY} max={88} text={intro} />}
       {page.body(m)}
-      <line x1="10" y1="182" x2="140" y2="182" stroke={BORDER} strokeWidth="0.5" />
-      <Tx x={10} y={187.4} s={2.4} c={GRAY}>
+      <line x1="10" y1="182" x2="140" y2="182" stroke={SHEET_BORDER} strokeWidth="0.5" />
+      <SheetText x={10} y={187.4} s={2.4} c={SHEET_GRAY}>
         {client} · {m.title}
-      </Tx>
-      <Tx x={140} y={187.4} s={2.4} c={GRAY} a="end">
+      </SheetText>
+      <SheetText x={140} y={187.4} s={2.4} c={SHEET_GRAY} a="end">
         Revisão 00 · RD Engenharia
-      </Tx>
+      </SheetText>
     </g>
   );
 }

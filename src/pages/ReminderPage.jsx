@@ -6,12 +6,7 @@ import { REMINDER_DOCUMENTS, REMINDER_TIPS } from "../content/reminder";
 import { PageClosing } from "../layout/PageClosing";
 import { sendReminder } from "../publicApi/api";
 import { GENERAL_LINKS, PageTop, areaLink } from "./pageParts.jsx";
-
-function lastDayOfMonth(yearMonth) {
-  const [year, month] = yearMonth.split("-").map(Number);
-  const day = new Date(Date.UTC(year, month, 0)).getUTCDate();
-  return `${yearMonth}-${String(day).padStart(2, "0")}`;
-}
+import { REMINDER_FORM_ERROR_MESSAGES, buildReminderRequest } from "./reminderForm.js";
 
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
@@ -26,36 +21,19 @@ export function ReminderPage({ page }) {
     setYears(Array.from({ length: 6 }, (_, i) => String(currentYear + i)));
   }, []);
   const handleChange = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
-  // "Mês do vencimento" (expiry month) as two lists (month and year): the type="month" field does not work in desktop Safari.
-  const expiryMonth = form.monthNum && form.year ? `${form.year}-${form.monthNum}` : "";
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
-    if (form.site) return; // honeypot field for bots
-    let phoneNumber = form.whatsapp.replace(/\D/g, "");
-    if (phoneNumber.length === 10 || phoneNumber.length === 11) phoneNumber = "55" + phoneNumber;
-    if (phoneNumber.length < 12 || phoneNumber.length > 13) {
-      setError("Confira o número do WhatsApp. Informe o DDD e o número, por exemplo (17) 99999-9999.");
-      return;
-    }
-    if (form.name.trim().length < 2) {
-      setError("Informe o seu nome.");
-      return;
-    }
-    if (!form.consent) {
-      setError("Marque a autorização para receber os lembretes.");
+    const request = buildReminderRequest(form);
+    if (request.code === "IGNORED_HONEYPOT_FILLED") return; // honeypot field for bots
+    if (request.code !== "SUCCESS_REMINDER_READY") {
+      setError(REMINDER_FORM_ERROR_MESSAGES[request.code]);
       return;
     }
     setStatus("sending");
     try {
-      await sendReminder({
-        name: form.name.trim(),
-        whatsapp: phoneNumber,
-        document: form.document,
-        expiry: expiryMonth ? lastDayOfMonth(expiryMonth) : null,
-        consent: true,
-      });
+      await sendReminder(request.reminder);
       setStatus("ok");
     } catch {
       setStatus("idle");

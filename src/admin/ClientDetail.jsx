@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { ClientForm } from "./ClientForm.jsx";
 import { daysUntil, formatDateBR, todayISO } from "./dates.js";
-import { whatsappLink } from "./clientWhatsapp.js";
+import { buildClientWhatsappLink } from "./clientWhatsapp.js";
 import { ServiceForm } from "./ServiceForm.jsx";
-import { STATUS } from "./adminRecords.js";
+import { SERVICE_STATUS_LABELS } from "./adminRecords.js";
 
 export function ClientDetail({ client, services, saveClient, deleteClient, saveService, deleteService, goBack }) {
   const [editing, setEditing] = useState(false);
@@ -78,10 +78,10 @@ export function ClientDetail({ client, services, saveClient, deleteClient, saveS
             )}
           </dl>
           <div className="admin-actions">
-            {whatsappLink(client.whatsapp || client.telefone, `Olá, ${client.nome}! Aqui é da RD Engenharia.`) && (
+            {buildClientWhatsappLink(client.whatsapp || client.telefone, `Olá, ${client.nome}! Aqui é da RD Engenharia.`) && (
               <a
                 className="btn btn-whatsapp"
-                href={whatsappLink(client.whatsapp || client.telefone, `Olá, ${client.nome}! Aqui é da RD Engenharia.`)}
+                href={buildClientWhatsappLink(client.whatsapp || client.telefone, `Olá, ${client.nome}! Aqui é da RD Engenharia.`)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -134,7 +134,7 @@ export function ClientDetail({ client, services, saveClient, deleteClient, saveS
                 <div>
                   <strong>{s.tipo}</strong>
                   <span>
-                    {STATUS[s.status]} · {formatDateBR(s.data_realizacao)}
+                    {SERVICE_STATUS_LABELS[s.status]} · {formatDateBR(s.data_realizacao)}
                     {s.art_numero ? ` · ART ${s.art_numero}` : ""}
                     {s.valor ? ` · R$ ${Number(s.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : ""}
                   </span>

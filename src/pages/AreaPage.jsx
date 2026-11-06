@@ -19,13 +19,13 @@ import { SAMPLE_CAPTION } from "../SheetBase";
 import HeroBackground from "../HeroBackground";
 import AreaIcon from "../AreaIcon";
 import { slidesFor } from "../content/photoCarousels";
-import { anchorId } from "../searchIndex";
+import { serviceAnchorId } from "../searchIndex";
 import Faq from "../Faq";
 import RequestBuilder from "../RequestBuilder";
 import { AnimatedFolder } from "../components/ui/3d-folder";
 import { CREA_NUMBER } from "../company";
 import Scene3D from "../Scene3D";
-import { Collapsible, Comparison, Examples, Section, areaLink, guideLink, pad } from "./pageParts.jsx";
+import { CollapsibleSection, FireLicenseComparisonTable, ProjectExamples, PageSection, areaLink, guideLink, twoDigitNumber } from "./pageParts.jsx";
 
 // 3D block on each area page: label, title and text describe the illustration (not a real job or client).
 const AREA_SCENES = {
@@ -70,7 +70,7 @@ export function AreaPage({ page }) {
   const hasEquipmentPhotos = slidesFor(`equip-${page.slug}`).length > 0;
   // Section numbering in the order they appear (01, 02, ...), with no fixed numbers.
   let sectionCount = 0;
-  const nextNumber = () => pad(sectionCount++);
+  const nextNumber = () => twoDigitNumber(sectionCount++);
 
   return (
     <>
@@ -151,7 +151,7 @@ export function AreaPage({ page }) {
       )}
 
       {page.situations && (
-        <Section id="situacoes" n={nextNumber()} label="Situações comuns" title="Você se reconhece em alguma destas?">
+        <PageSection id="situacoes" n={nextNumber()} label="Situações comuns" title="Você se reconhece em alguma destas?">
           <ul className="situations-list">
             {page.situations.map((t) => (
               <li key={t} className="reveal">
@@ -167,12 +167,12 @@ export function AreaPage({ page }) {
             </a>
             .
           </p>
-        </Section>
+        </PageSection>
       )}
 
       {/* Services and documents together: each card shows the sample sheet of what the client receives.
           These used to be two sections that repeated the same list of services. */}
-      <Section
+      <PageSection
         id="o-que-fazemos"
         n={nextNumber()}
         label="Serviços"
@@ -187,7 +187,7 @@ export function AreaPage({ page }) {
             items={page.items
               .filter((item) => item.example)
               .map((item) => ({
-                id: anchorId(item.name),
+                id: serviceAnchorId(item.name),
                 title: item.name,
                 short: item.name.split(/ — | \(/)[0],
                 media: <SheetSvg m={item.example} name={item.name} area={page.slug} />,
@@ -207,14 +207,14 @@ export function AreaPage({ page }) {
         </div>
         <ol className="services-grid">
           {page.items.map((item, n) => (
-            <li className="service-card reveal" key={item.name} id={anchorId(item.name)}>
+            <li className="service-card reveal" key={item.name} id={serviceAnchorId(item.name)}>
               {item.example && (
                 <div className="service-sheet" aria-hidden="true">
                   <SheetSvg m={item.example} name={item.name} area={page.slug} />
                 </div>
               )}
               <div className="service-body">
-                <span className="service-n">{pad(n)}</span>
+                <span className="service-n">{twoDigitNumber(n)}</span>
                 <h3>{item.name}</h3>
                 <p>{item.text}</p>
                 <p className="item-who">
@@ -234,12 +234,12 @@ export function AreaPage({ page }) {
         </ol>
         <p className="fine-print">As folhas são exemplos ilustrativos, não são documentos reais.</p>
         {page.items.length > 1 && <RequestBuilder area={page.name} items={page.items} />}
-        {page.slug === "corpo-de-bombeiros" && <Comparison />}
-      </Section>
+        {page.slug === "corpo-de-bombeiros" && <FireLicenseComparisonTable />}
+      </PageSection>
 
       {equipment && (
-        <Section id="equipamentos" n={nextNumber()} label="Equipamentos" title="Equipamentos que podem ser usados." className="sec-alt">
-          <Collapsible label="Ver os equipamentos">
+        <PageSection id="equipamentos" n={nextNumber()} label="Equipamentos" title="Equipamentos que podem ser usados." className="sec-alt">
+          <CollapsibleSection label="Ver os equipamentos">
           <div className="equipment">
             <p className="lead equipment-lead reveal">{equipment.text}</p>
             {hasEquipmentPhotos && (
@@ -261,21 +261,21 @@ export function AreaPage({ page }) {
             </ul>
           </div>
           <p className="fine-print equipment-note">{EQUIPMENT_NOTE}</p>
-          </Collapsible>
-        </Section>
+          </CollapsibleSection>
+        </PageSection>
       )}
 
-      <Section
+      <PageSection
         id="na-pratica"
         n={nextNumber()}
         label="Na prática"
         title={isCivil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
         lead={isCivil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
       >
-        <Collapsible label={isCivil ? "Ver os projetos" : "Ver os exemplos"}>{isCivil ? <Examples /> : <Illustration slug={page.slug} />}</Collapsible>
-      </Section>
+        <CollapsibleSection label={isCivil ? "Ver os projetos" : "Ver os exemplos"}>{isCivil ? <ProjectExamples /> : <Illustration slug={page.slug} />}</CollapsibleSection>
+      </PageSection>
 
-      <Section id="atendimento" n={nextNumber()} label="Atendimento" title="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
+      <PageSection id="atendimento" n={nextNumber()} label="Atendimento" title="Do primeiro contato à entrega." lead="Veja o caminho e o que ter em mãos para agilizar o orçamento." className="sec-alt">
         {visual && (
           <ol className="steps-editorial timeline reveal">
             {visual.steps.map((e, n) => (
@@ -321,11 +321,11 @@ export function AreaPage({ page }) {
             <DocIllustration slug={page.slug} />
           </div>
         </div>
-      </Section>
+      </PageSection>
 
-      <Section id="duvidas" n={nextNumber()} label="Dúvidas" title="Perguntas frequentes.">
+      <PageSection id="duvidas" n={nextNumber()} label="Dúvidas" title="Perguntas frequentes.">
         <Faq items={page.faq} />
-      </Section>
+      </PageSection>
 
       <PageClosing whatsappText={areaZapText} related={related} />
     </>

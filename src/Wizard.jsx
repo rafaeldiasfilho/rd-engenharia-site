@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import Icon from "./Icon";
 import AreaIcon from "./AreaIcon";
 import { AREAS, findArea } from "./content/areas";
-import { PROFILES, RESULTS } from "./content/wizard";
+import { PROFILES } from "./content/wizard";
+import { buildWizardWhatsappMessage, collectWizardResults } from "./wizardResult.js";
 import { WhatsappButton } from "./layout/WhatsappButton";
 
 // Step-by-step guide for the /o-que-preciso page: one question per screen, large choices, progress bar,
@@ -28,13 +29,7 @@ export default function Wizard() {
     mounted.current = true;
   }, [step]);
 
-  const ids = [];
-  if (profile) {
-    profile.situations.forEach((s, i) => {
-      if (answers[i]) s.items.forEach((id) => !ids.includes(id) && ids.push(id));
-    });
-  }
-  const results = ids.map((id) => ({ id, ...RESULTS[id] }));
+  const results = collectWizardResults(profile, answers);
 
   const chooseProfile = (id) => {
     if (id !== profileId) setAnswers({});
@@ -72,22 +67,7 @@ export default function Wizard() {
     return () => document.removeEventListener("keydown", f);
   }, []);
 
-  const profileName = profile ? profile.name : "";
-  const message = [
-    "Olá! Fiz o guia do site e acho que preciso de:",
-    ...results.map((r) => `- ${r.name}`),
-    profileName ? `Meu caso: ${profileName.charAt(0).toLowerCase() + profileName.slice(1)}` : "",
-    city.trim() ? `Cidade: ${city.trim()}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-  const messageNoItems = [
-    "Olá! Fiz o guia do site e nenhuma opção bateu com o meu caso. Gostaria de conversar.",
-    profileName ? `Meu caso: ${profileName.charAt(0).toLowerCase() + profileName.slice(1)}` : "",
-    city.trim() ? `Cidade: ${city.trim()}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const whatsappMessage = buildWizardWhatsappMessage({ results, profileName: profile ? profile.name : "", city });
 
   const current = onResult ? total : step + 1;
   const pct = onResult ? 100 : Math.round((step / total) * 100);
@@ -241,7 +221,7 @@ export default function Wizard() {
             <div className="actions">
               <WhatsappButton
                 className="btn-large"
-                text={results.length ? message : messageNoItems}
+                text={whatsappMessage}
                 label={results.length ? "Enviar para a RD pelo WhatsApp" : "Contar o meu caso no WhatsApp"}
               />
               <button type="button" className="btn btn-sec btn-large" onClick={restart}>

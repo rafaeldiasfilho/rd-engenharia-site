@@ -1,12 +1,12 @@
 // Reminder requests sent from the public site (lembretes_site).
 
 import { formatDateBR, monthYear } from "./dates.js";
-import { whatsappLink } from "./clientWhatsapp.js";
+import { buildClientWhatsappLink } from "./clientWhatsapp.js";
 
 export function SiteReminders({ list, setHandled, convert, remove }) {
   const pending = list.filter((r) => !r.tratado);
   const handled = list.filter((r) => r.tratado);
-  const Row = ({ r }) => {
+  const SiteReminderRow = ({ r }) => {
     const msg = `Olá, ${r.nome}! Aqui é da RD Engenharia. Recebemos o seu pedido de lembrete sobre: ${r.documento}. Vamos avisar você antes do vencimento. Pode nos confirmar a data exata do vencimento?`;
     return (
       <li className="admin-line">
@@ -18,7 +18,7 @@ export function SiteReminders({ list, setHandled, convert, remove }) {
           </small>
         </div>
         <div className="admin-actions">
-          <a className="btn btn-whatsapp" href={whatsappLink(r.whatsapp, msg)} target="_blank" rel="noopener noreferrer">
+          <a className="btn btn-whatsapp" href={buildClientWhatsappLink(r.whatsapp, msg)} target="_blank" rel="noopener noreferrer">
             Chamar no WhatsApp
           </a>
           {!r.tratado && (
@@ -46,7 +46,7 @@ export function SiteReminders({ list, setHandled, convert, remove }) {
       {pending.length ? (
         <ul className="admin-list">
           {pending.map((r) => (
-            <Row key={r.id} r={r} />
+            <SiteReminderRow key={r.id} r={r} />
           ))}
         </ul>
       ) : (
@@ -57,7 +57,7 @@ export function SiteReminders({ list, setHandled, convert, remove }) {
           <h2 className="admin-title">Já tratados</h2>
           <ul className="admin-list">
             {handled.map((r) => (
-              <Row key={r.id} r={r} />
+              <SiteReminderRow key={r.id} r={r} />
             ))}
           </ul>
         </>

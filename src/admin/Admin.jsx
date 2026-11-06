@@ -27,7 +27,7 @@ export default function Admin() {
     });
   }, []);
 
-  const reload = useCallback(async () => {
+  const reloadAdminData = useCallback(async () => {
     if (!db) return;
     try {
       const [c, s, r] = await Promise.all([
@@ -45,13 +45,13 @@ export default function Admin() {
   }, [db]);
 
   useEffect(() => {
-    if (user) reload();
-  }, [user, reload]);
+    if (user) reloadAdminData();
+  }, [user, reloadAdminData]);
 
-  const run = async (fn) => {
+  const runActionAndReload = async (fn) => {
     try {
       await fn();
-      await reload();
+      await reloadAdminData();
     } catch (e) {
       setError(e.message);
     }
@@ -124,7 +124,7 @@ export default function Admin() {
             <ClientForm
               initial={{}}
               onSave={(c) =>
-                run(async () => {
+                runActionAndReload(async () => {
                   const saved = await db.clients.save(c);
                   setCreatingNew(false);
                   setTab("clients");
@@ -139,15 +139,15 @@ export default function Admin() {
             client={client}
             services={services}
             goBack={() => setClientId(null)}
-            saveClient={(c) => run(() => db.clients.save(c))}
+            saveClient={(c) => runActionAndReload(() => db.clients.save(c))}
             deleteClient={(id) =>
-              run(async () => {
+              runActionAndReload(async () => {
                 await db.clients.remove(id);
                 setClientId(null);
               })
             }
-            saveService={(s) => run(() => db.services.save(s))}
-            deleteService={(id) => run(() => db.services.remove(id))}
+            saveService={(s) => runActionAndReload(() => db.services.save(s))}
+            deleteService={(id) => runActionAndReload(() => db.services.remove(id))}
           />
         ) : tab === "dashboard" ? (
           <Dashboard
@@ -157,15 +157,15 @@ export default function Admin() {
               setTab("clients");
               setClientId(id);
             }}
-            markHandled={(s) => run(() => db.services.save({ ...s, encerrado: true }))}
+            markHandled={(s) => runActionAndReload(() => db.services.save({ ...s, encerrado: true }))}
           />
         ) : tab === "reminders" ? (
           <SiteReminders
             list={reminders}
-            setHandled={(r, v) => run(() => db.reminders.save({ ...r, tratado: v }))}
-            remove={(id) => run(() => db.reminders.remove(id))}
+            setHandled={(r, v) => runActionAndReload(() => db.reminders.save({ ...r, tratado: v }))}
+            remove={(id) => runActionAndReload(() => db.reminders.remove(id))}
             convert={(r) =>
-              run(async () => {
+              runActionAndReload(async () => {
                 const created = await db.clients.save({
                   ...emptyClient,
                   nome: r.nome,

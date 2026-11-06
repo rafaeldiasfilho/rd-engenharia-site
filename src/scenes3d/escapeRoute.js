@@ -5,7 +5,7 @@ import {
   BoxGeometry, BufferAttribute, BufferGeometry, Color, CylinderGeometry, DirectionalLight, Group, HemisphereLight,
   Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry, Points, PointsMaterial,
 } from "three";
-import { REAL_COLORS, mountScene } from "./base";
+import { SCENE_MATERIAL_COLORS, mountScene } from "./base";
 
 const HEIGHT = 0.32;
 const THICK = 0.045;
@@ -57,14 +57,14 @@ export function mount(el) {
       sun.shadow.bias = -0.0005;
       scene.add(sun);
 
-      const floor = new Mesh(new PlaneGeometry(3.3, 2.3), new MeshStandardMaterial({ color: REAL_COLORS.floor, roughness: 0.95 }));
+      const floor = new Mesh(new PlaneGeometry(3.3, 2.3), new MeshStandardMaterial({ color: SCENE_MATERIAL_COLORS.floor, roughness: 0.95 }));
       floor.receiveShadow = true;
       group.add(floor);
-      const sidewalk = new Mesh(new PlaneGeometry(0.6, 1.0), new MeshStandardMaterial({ color: REAL_COLORS.concrete, roughness: 1 }));
+      const sidewalk = new Mesh(new PlaneGeometry(0.6, 1.0), new MeshStandardMaterial({ color: SCENE_MATERIAL_COLORS.concrete, roughness: 1 }));
       sidewalk.position.set(1.95, 0, -0.002);
       group.add(sidewalk);
 
-      const wall = new MeshStandardMaterial({ color: REAL_COLORS.wall, roughness: 0.9 });
+      const wall = new MeshStandardMaterial({ color: SCENE_MATERIAL_COLORS.wall, roughness: 0.9 });
       WALLS.forEach(([x1, y1, x2, y2]) => {
         const len = Math.hypot(x2 - x1, y2 - y1);
         const m = new Mesh(new BoxGeometry(len + THICK, THICK, HEIGHT), wall);
@@ -86,7 +86,7 @@ export function mount(el) {
       group.add(new Points(geoP, new PointsMaterial({ size: 0.11, vertexColors: true, toneMapped: false })));
 
       const sign = new Group();
-      sign.add(new Mesh(new BoxGeometry(0.04, 0.34, 0.11), new MeshBasicMaterial({ color: REAL_COLORS.exit, toneMapped: false })));
+      sign.add(new Mesh(new BoxGeometry(0.04, 0.34, 0.11), new MeshBasicMaterial({ color: SCENE_MATERIAL_COLORS.exit, toneMapped: false })));
       sign.add(new Mesh(new BoxGeometry(0.045, 0.22, 0.025), new MeshBasicMaterial({ color: "#ffffff", toneMapped: false })));
       sign.position.set(1.6, 0, HEIGHT + 0.07);
       group.add(sign);
@@ -98,7 +98,7 @@ export function mount(el) {
         group.add(l);
       });
 
-      const red = new MeshStandardMaterial({ color: REAL_COLORS.extinguisher, roughness: 0.35 });
+      const red = new MeshStandardMaterial({ color: SCENE_MATERIAL_COLORS.extinguisher, roughness: 0.35 });
       const black = new MeshStandardMaterial({ color: "#1d1d1d", roughness: 0.5 });
       [[-0.45, 0.2], [0.55, -0.2], [1.5, 0.3]].forEach(([x, y]) => {
         const g = new Group();

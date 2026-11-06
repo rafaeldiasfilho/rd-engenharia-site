@@ -8,7 +8,7 @@
 
 import { useId } from "react";
 import { SAMPLE_CAPTION, ExampleStamp } from "./SheetBase";
-import { Sheet } from "./sheets/SheetSvg.jsx";
+import { SheetByLayout } from "./sheets/SheetSvg.jsx";
 
 const PAIRS = {
   "seguranca-do-trabalho": {
@@ -40,8 +40,8 @@ export default function DocIllustration({ slug }) {
   return (
     <figure className="docs-illustration">
       <svg viewBox="0 0 335 250" role="img" aria-label={m.alt} focusable="false">
-        <Sheet x={168} y={10} rot={5} m={m.back} area={slug} uid={`${uid}t`} />
-        <Sheet x={26} y={28} rot={-4} m={m.front} area={slug} uid={`${uid}f`} />
+        <SheetByLayout x={168} y={10} rot={5} m={m.back} area={slug} uid={`${uid}t`} />
+        <SheetByLayout x={26} y={28} rot={-4} m={m.front} area={slug} uid={`${uid}f`} />
         <ExampleStamp x={40} y={10} rot={-10} s={1.3} />
       </svg>
       <figcaption>{SAMPLE_CAPTION}</figcaption>

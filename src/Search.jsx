@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Icon from "./Icon";
 import { whatsappLink } from "./contact";
-import { runSearch } from "./searchIndex.js";
+import { searchSiteContent } from "./searchIndex.js";
 
 const SUGGESTIONS = ["AVCB", "PGR", "LTCAT", "CAR", "Habite-se", "Georreferenciamento"];
 
@@ -15,7 +15,7 @@ export default function DocumentSearch({ autoFocus = false, onExit, className = 
     if (autoFocus && field.current) field.current.focus();
   }, [autoFocus]);
 
-  const results = runSearch(q);
+  const results = searchSiteContent(q);
   const text = q.trim();
   const options = text
     ? [

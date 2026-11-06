@@ -13,7 +13,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const FONTS = ["500", "600", "700", "800"].map((w) => path.join(root, `scripts/og-fonts/Manrope-${w}.ttf`));
 const OUTPUT_DIR = path.join(root, "public/og");
 
-const LABEL = {
+const PAGE_TYPE_LABELS = {
   area: "Serviço",
   guide: "Guia",
   location: "Atendimento",
@@ -82,6 +82,6 @@ function generate(name, data) {
 }
 
 const list = [{ name: "inicio", label: "Ibirá/SP e região", title: "Laudos, projetos e licenças em dia para empresas, obras e imóveis rurais." }];
-for (const p of PAGES) list.push({ name: p.slug.replace(/\//g, "-"), label: LABEL[p.type] || "RD Engenharia", title: p.h1 });
+for (const p of PAGES) list.push({ name: p.slug.replace(/\//g, "-"), label: PAGE_TYPE_LABELS[p.type] || "RD Engenharia", title: p.h1 });
 for (const item of list) generate(item.name, item);
 console.log(`Geradas ${list.length} imagens em public/og/`);

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 
-const THEMES = [
+const THEME_OPTIONS = [
   { id: "auto", label: "Automático" },
   { id: "light", label: "Claro" },
   { id: "dark", label: "Escuro" },
@@ -59,7 +59,7 @@ export function ThemeSelector() {
   return (
     <div className="theme" role="group" aria-label="Aparência do site">
       <span>Aparência</span>
-      {THEMES.map((t) => (
+      {THEME_OPTIONS.map((t) => (
         <button key={t.id} type="button" aria-pressed={theme === t.id} onClick={(e) => chooseTheme(t.id, e)}>
           {t.label}
         </button>

@@ -1,7 +1,7 @@
 // Sign-in screen of the internal area.
 
 import { useState } from "react";
-import { Field } from "./AdminFormField.jsx";
+import { AdminFormField } from "./AdminFormField.jsx";
 
 export function Login({ db, onLogin }) {
   const [email, setEmail] = useState("");
@@ -31,10 +31,10 @@ export function Login({ db, onLogin }) {
             Modo demonstração: o banco de dados ainda não está ligado. Os dados ficam só neste navegador.
           </p>
         )}
-        <Field label="E-mail">
+        <AdminFormField label="E-mail">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
-        </Field>
-        <Field label="Senha">
+        </AdminFormField>
+        <AdminFormField label="Senha">
           <input
             type="password"
             value={password}
@@ -42,7 +42,7 @@ export function Login({ db, onLogin }) {
             autoComplete="current-password"
             required
           />
-        </Field>
+        </AdminFormField>
         {error && (
           <p className="admin-error" role="alert">
             {error}

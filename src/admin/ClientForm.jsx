@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { emptyClient } from "./adminRecords.js";
-import { Field } from "./AdminFormField.jsx";
+import { AdminFormField } from "./AdminFormField.jsx";
 import { formatDateBR, todayISO } from "./dates.js";
 
 export function ClientForm({ initial, onSave, onCancel }) {
   const [c, setC] = useState({ ...emptyClient, ...initial });
-  const update = (field) => (e) => setC((x) => ({ ...x, [field]: e.target.value }));
+  const updateClientField = (field) => (e) => setC((x) => ({ ...x, [field]: e.target.value }));
   return (
     <form
       className="admin-form"
@@ -17,48 +17,48 @@ export function ClientForm({ initial, onSave, onCancel }) {
       }}
     >
       <div className="admin-grid">
-        <Field label="Nome ou razão social">
-          <input value={c.nome} onChange={update("nome")} required />
-        </Field>
-        <Field label="Tipo">
-          <select value={c.tipo} onChange={update("tipo")}>
+        <AdminFormField label="Nome ou razão social">
+          <input value={c.nome} onChange={updateClientField("nome")} required />
+        </AdminFormField>
+        <AdminFormField label="Tipo">
+          <select value={c.tipo} onChange={updateClientField("tipo")}>
             <option value="pf">Pessoa física</option>
             <option value="pj">Empresa</option>
           </select>
-        </Field>
-        <Field label="CPF ou CNPJ">
-          <input value={c.documento || ""} onChange={update("documento")} />
-        </Field>
-        <Field label="Pessoa de contato">
-          <input value={c.contato || ""} onChange={update("contato")} />
-        </Field>
-        <Field label="WhatsApp">
-          <input value={c.whatsapp || ""} onChange={update("whatsapp")} inputMode="tel" placeholder="(17) 99999-9999" />
-        </Field>
-        <Field label="Outro telefone">
-          <input value={c.telefone || ""} onChange={update("telefone")} inputMode="tel" />
-        </Field>
-        <Field label="E-mail">
-          <input type="email" value={c.email || ""} onChange={update("email")} />
-        </Field>
-        <Field label="CEP">
-          <input value={c.cep || ""} onChange={update("cep")} inputMode="numeric" />
-        </Field>
-        <Field label="Rua">
-          <input value={c.logradouro || ""} onChange={update("logradouro")} />
-        </Field>
-        <Field label="Número">
-          <input value={c.numero || ""} onChange={update("numero")} />
-        </Field>
-        <Field label="Bairro">
-          <input value={c.bairro || ""} onChange={update("bairro")} />
-        </Field>
-        <Field label="Cidade">
-          <input value={c.cidade || ""} onChange={update("cidade")} />
-        </Field>
-        <Field label="Como chegou até nós">
-          <input value={c.origem || ""} onChange={update("origem")} placeholder="Indicação, Instagram, site..." />
-        </Field>
+        </AdminFormField>
+        <AdminFormField label="CPF ou CNPJ">
+          <input value={c.documento || ""} onChange={updateClientField("documento")} />
+        </AdminFormField>
+        <AdminFormField label="Pessoa de contato">
+          <input value={c.contato || ""} onChange={updateClientField("contato")} />
+        </AdminFormField>
+        <AdminFormField label="WhatsApp">
+          <input value={c.whatsapp || ""} onChange={updateClientField("whatsapp")} inputMode="tel" placeholder="(17) 99999-9999" />
+        </AdminFormField>
+        <AdminFormField label="Outro telefone">
+          <input value={c.telefone || ""} onChange={updateClientField("telefone")} inputMode="tel" />
+        </AdminFormField>
+        <AdminFormField label="E-mail">
+          <input type="email" value={c.email || ""} onChange={updateClientField("email")} />
+        </AdminFormField>
+        <AdminFormField label="CEP">
+          <input value={c.cep || ""} onChange={updateClientField("cep")} inputMode="numeric" />
+        </AdminFormField>
+        <AdminFormField label="Rua">
+          <input value={c.logradouro || ""} onChange={updateClientField("logradouro")} />
+        </AdminFormField>
+        <AdminFormField label="Número">
+          <input value={c.numero || ""} onChange={updateClientField("numero")} />
+        </AdminFormField>
+        <AdminFormField label="Bairro">
+          <input value={c.bairro || ""} onChange={updateClientField("bairro")} />
+        </AdminFormField>
+        <AdminFormField label="Cidade">
+          <input value={c.cidade || ""} onChange={updateClientField("cidade")} />
+        </AdminFormField>
+        <AdminFormField label="Como chegou até nós">
+          <input value={c.origem || ""} onChange={updateClientField("origem")} placeholder="Indicação, Instagram, site..." />
+        </AdminFormField>
       </div>
       <label className="admin-consent">
         <input
@@ -77,9 +77,9 @@ export function ClientForm({ initial, onSave, onCancel }) {
           {c.aceita_lembretes && c.aceite_lembretes_em ? ` (aceite em ${formatDateBR(c.aceite_lembretes_em)})` : ""}
         </span>
       </label>
-      <Field label="Observações">
-        <textarea rows="3" value={c.observacoes || ""} onChange={update("observacoes")} />
-      </Field>
+      <AdminFormField label="Observações">
+        <textarea rows="3" value={c.observacoes || ""} onChange={updateClientField("observacoes")} />
+      </AdminFormField>
       <div className="admin-actions">
         <button className="btn btn-whatsapp" type="submit">
           Salvar cliente

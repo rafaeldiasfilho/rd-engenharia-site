@@ -38,8 +38,8 @@ const PANEL_ITEMS = [
   { name: "Treinamento NR-35", status: "ok", date: "Reciclagem: 08/2027", text: "Trabalho em altura. A reciclagem fica no calendário para nenhum trabalhador ficar com o treinamento vencido." },
   { name: "Laudo de insalubridade", status: "pendente", date: "Aguardando a medição", text: "A avaliação do posto ainda não foi feita. O painel mostra o que falta para a empresa ficar em dia." },
 ];
-const LABEL = { ok: "Em dia", vence: "Vence em 30 dias", pendente: "Pendente" };
-const SYMBOL = { ok: "✓", vence: "◔", pendente: "○" };
+const SHOWCASE_STATUS_LABEL = { ok: "Em dia", vence: "Vence em 30 dias", pendente: "Pendente" };
+const SHOWCASE_STATUS_SYMBOL = { ok: "✓", vence: "◔", pendente: "○" };
 
 // Dashboard-style card, only to explain how documents are organized. Made-up data.
 export function ExamplePanel() {
@@ -74,7 +74,7 @@ export function ExamplePanel() {
                 <small>{x.date}</small>
               </span>
               <span className={`chip chip-${x.status}`}>
-                <span aria-hidden="true">{SYMBOL[x.status]}</span> {LABEL[x.status]}
+                <span aria-hidden="true">{SHOWCASE_STATUS_SYMBOL[x.status]}</span> {SHOWCASE_STATUS_LABEL[x.status]}
               </span>
             </button>
           </li>

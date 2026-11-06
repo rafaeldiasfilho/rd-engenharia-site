@@ -1,37 +1,37 @@
 // Shared pieces of the interactive area illustrations: label styles, example stamp and the clickable legend wrapper.
 
 import { useState } from "react";
-import { BORDER, GRAY, BACKGROUND, PAPER, INK, GREEN, ExampleStamp } from "../SheetBase";
+import { SHEET_BORDER, SHEET_GRAY, SHEET_BACKGROUND, SHEET_PAPER, SHEET_INK, SHEET_GREEN, ExampleStamp } from "../SheetBase";
 
 // Illustrative drawings and template, on the same paper and stamp as the sample sheets. Nothing here comes
 // from a real client. Each drawing is interactive: tapping a legend item (or the drawing) highlights the element
 // and explains what it is.
 
-export const LABEL = { fontSize: 11, fill: GRAY, fontFamily: "inherit" };
+export const ILLUSTRATION_LABEL = { fontSize: 11, fill: SHEET_GRAY, fontFamily: "inherit" };
 
-export const LABEL_BOLD = { ...LABEL, fill: INK, fontWeight: 700 };
+export const ILLUSTRATION_LABEL_BOLD = { ...ILLUSTRATION_LABEL, fill: SHEET_INK, fontWeight: 700 };
 
 // Title-block style footer, the same in every drawing.
-function Stamp({ title, client }) {
+function IllustrationStamp({ title, client }) {
   return (
     <g fontFamily="inherit">
-      <rect x="0" y="300" width="420" height="34" fill={BACKGROUND} />
-      <line x1="0" y1="300" x2="420" y2="300" stroke={BORDER} />
-      <rect x="14" y="309" width="16" height="16" rx="3.4" fill={GREEN} />
+      <rect x="0" y="300" width="420" height="34" fill={SHEET_BACKGROUND} />
+      <line x1="0" y1="300" x2="420" y2="300" stroke={SHEET_BORDER} />
+      <rect x="14" y="309" width="16" height="16" rx="3.4" fill={SHEET_GREEN} />
       <text x="22" y="320.4" fontSize="7.4" fontWeight="700" fill="#fff" textAnchor="middle">
         RD
       </text>
-      <text x="38" y="315" fontSize="9.6" fontWeight="700" fill={INK}>
+      <text x="38" y="315" fontSize="9.6" fontWeight="700" fill={SHEET_INK}>
         {title}
       </text>
-      <text x="38" y="327" fontSize="8.6" fill={GRAY}>
+      <text x="38" y="327" fontSize="8.6" fill={SHEET_GRAY}>
         {client} · RD Engenharia
       </text>
     </g>
   );
 }
 
-export function Interactive({ items, label, title, titleId, finalCaption, drawing, help, stamp }) {
+export function InteractiveIllustration({ items, label, title, titleId, finalCaption, drawing, help, stamp }) {
   const [active, setActive] = useState("");
   const choose = (id) => setActive((a) => (a === id ? "" : id));
   const opacityFor = (id) => ({
@@ -44,9 +44,9 @@ export function Interactive({ items, label, title, titleId, finalCaption, drawin
     <figure className="illustration">
       <svg viewBox="0 0 420 334" role="img" aria-labelledby={titleId}>
         <title id={titleId}>{title}</title>
-        <rect x="0" y="0" width="420" height="334" fill={PAPER} />
+        <rect x="0" y="0" width="420" height="334" fill={SHEET_PAPER} />
         {drawing({ opacityFor, choose })}
-        <Stamp {...stamp} />
+        <IllustrationStamp {...stamp} />
         <ExampleStamp x={318} y={10} rot={-6} s={1.7} />
       </svg>
       <ul className="caption" aria-label={label}>

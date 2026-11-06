@@ -6,7 +6,7 @@ import { GUIDES, GUIDE_SUMMARIES } from "../content/guides";
 import { SectionNav } from "../layout/SectionNav";
 import { PageClosing } from "../layout/PageClosing";
 import Dialog from "../Dialog";
-import { GENERAL_LINKS, PageTop, Section, areaLink, pad } from "./pageParts.jsx";
+import { GENERAL_LINKS, PageTop, PageSection, areaLink, twoDigitNumber } from "./pageParts.jsx";
 
 // Guides that apply to all areas (the ART is required for services in all four). In the index they get their own
 // group; the guide's `area` field still applies to the guide page (breadcrumb and WhatsApp button).
@@ -48,12 +48,12 @@ export function GuidesPage({ page }) {
         items={[...groups.map((g) => ({ id: g.id, label: g.shortText })), { id: "proximo-passo", label: "Próximo passo" }]}
       />
       {groups.map((group, n) => (
-        <Section key={group.id} id={group.id} n={pad(n)} label="Área" title={group.title} className={n % 2 ? "sec-alt" : ""}>
+        <PageSection key={group.id} id={group.id} n={twoDigitNumber(n)} label="Área" title={group.title} className={n % 2 ? "sec-alt" : ""}>
           <ul className="guide-cards">
             {group.lista.map((g, i) => (
               <li className="reveal guide-card" key={g.slug}>
                 <a href={`/${g.slug}`}>
-                  <small>{pad(i)}</small>
+                  <small>{twoDigitNumber(i)}</small>
                   <strong>{g.h1}</strong>
                   <i aria-hidden="true">→</i>
                 </a>
@@ -65,7 +65,7 @@ export function GuidesPage({ page }) {
               </li>
             ))}
           </ul>
-        </Section>
+        </PageSection>
       ))}
       <Dialog open={!!previewGuide} onClose={() => setPreview(null)} title={previewGuide ? previewGuide.h1 : ""}>
         {previewGuide && (

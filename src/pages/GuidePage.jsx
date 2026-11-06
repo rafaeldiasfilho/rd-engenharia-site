@@ -3,7 +3,7 @@
 import { GUIDES, GUIDE_SUMMARIES } from "../content/guides";
 import { findArea } from "../content/areas";
 import { PageClosing } from "../layout/PageClosing";
-import { Comparison, GENERAL_LINKS, PageTop, areaLink, guideLink } from "./pageParts.jsx";
+import { FireLicenseComparisonTable, GENERAL_LINKS, PageTop, areaLink, guideLink } from "./pageParts.jsx";
 
 export function GuidePage({ page }) {
   const area = findArea(page.area);
@@ -29,7 +29,7 @@ export function GuidePage({ page }) {
               {p}
             </p>
           ))}
-          {page.slug === "guias/avcb-ou-clcb-qual-a-diferenca" && <Comparison />}
+          {page.slug === "guias/avcb-ou-clcb-qual-a-diferenca" && <FireLicenseComparisonTable />}
         </div>
       </section>
       <section className="sec-fine" id="aviso" aria-label="Aviso">

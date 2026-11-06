@@ -12,31 +12,31 @@ import { GUIDES } from "./content/guides";
 //   asking on WhatsApp with the typed text, so the search never ends in a dead end.
 // - No window/document during render: safe for prerendering.
 
-export const normalize = (t) =>
+export const normalizeSearchText = (t) =>
   t
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
 
 // Anchor of each service on the area page (also used in pages/AreaPage.jsx).
-export const anchorId = (name) =>
+export const serviceAnchorId = (name) =>
   "servico-" +
-  normalize(name)
+  normalizeSearchText(name)
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 48);
 
 const USEFUL_PAGES = ["o-que-preciso", "lembrete-de-vencimento", "onde-atendemos"];
 
-const INDEX = [
+const SEARCH_INDEX = [
   ...AREAS.flatMap((a) =>
     a.items.map((it) => ({
       type: "Serviço",
       title: it.name,
       text: a.name,
-      href: `/${a.slug}#${anchorId(it.name)}`,
-      titleNorm: normalize(it.name),
-      haystack: normalize([it.name, it.text, it.who, a.name].join(" ")),
+      href: `/${a.slug}#${serviceAnchorId(it.name)}`,
+      titleNorm: normalizeSearchText(it.name),
+      haystack: normalizeSearchText([it.name, it.text, it.who, a.name].join(" ")),
     }))
   ),
   ...AREAS.map((a) => ({
@@ -44,33 +44,33 @@ const INDEX = [
     title: a.name,
     text: a.shortText,
     href: `/${a.slug}`,
-    titleNorm: normalize(a.name),
-    haystack: normalize([a.name, a.shortText, a.intro, ...(a.situations || [])].join(" ")),
+    titleNorm: normalizeSearchText(a.name),
+    haystack: normalizeSearchText([a.name, a.shortText, a.intro, ...(a.situations || [])].join(" ")),
   })),
   ...GUIDES.map((g) => ({
     type: "Guia",
     title: g.h1,
     text: "Guia em linguagem simples",
     href: `/${g.slug}`,
-    titleNorm: normalize(g.h1),
-    haystack: normalize([g.h1, g.description, g.service].join(" ")),
+    titleNorm: normalizeSearchText(g.h1),
+    haystack: normalizeSearchText([g.h1, g.description, g.service].join(" ")),
   })),
   ...PAGES.filter((p) => USEFUL_PAGES.includes(p.slug)).map((p) => ({
     type: "Página",
     title: p.h1,
     text: p.description,
     href: `/${p.slug}`,
-    titleNorm: normalize(p.h1),
-    haystack: normalize([p.h1, p.description].join(" ")),
+    titleNorm: normalizeSearchText(p.h1),
+    haystack: normalizeSearchText([p.h1, p.description].join(" ")),
   })),
 ];
 
-const TYPE_WEIGHT = { Serviço: 3, Área: 2, Guia: 1, Página: 0 };
+const SEARCH_TYPE_WEIGHT = { Serviço: 3, Área: 2, Guia: 1, Página: 0 };
 
-export function runSearch(query, limit = 6) {
-  const terms = normalize(query).split(/[^a-z0-9-]+/).filter((t) => t.length >= 2);
+export function searchSiteContent(query, limit = 6) {
+  const terms = normalizeSearchText(query).split(/[^a-z0-9-]+/).filter((t) => t.length >= 2);
   if (!terms.length) return [];
-  return INDEX.map((it) => {
+  return SEARCH_INDEX.map((it) => {
     let score = 0;
     for (const t of terms) {
       if (!it.haystack.includes(t)) return null;
@@ -79,7 +79,7 @@ export function runSearch(query, limit = 6) {
       else if (it.titleNorm.includes(t)) score += 2;
       score += 1;
     }
-    return { ...it, score: score * 10 + TYPE_WEIGHT[it.type] };
+    return { ...it, score: score * 10 + SEARCH_TYPE_WEIGHT[it.type] };
   })
     .filter(Boolean)
     .sort((a, b) => b.score - a.score)

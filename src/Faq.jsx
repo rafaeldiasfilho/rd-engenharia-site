@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { normalize } from "./searchIndex";
+import { normalizeSearchText } from "./searchIndex";
 import { whatsappLink } from "./contact";
 
 // FAQ list. With 6 or more questions it gets a filter field (question and answer, accent-insensitive).
@@ -20,8 +20,8 @@ export default function Faq({ items, minFilter = 6, limit = 0 }) {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
-  const terms = normalize(q).split(/\s+/).filter((t) => t.length >= 2);
-  const visible = terms.length ? items.filter((f) => terms.every((t) => normalize(`${f.q} ${f.a}`).includes(t))) : items;
+  const terms = normalizeSearchText(q).split(/\s+/).filter((t) => t.length >= 2);
+  const visible = terms.length ? items.filter((f) => terms.every((t) => normalizeSearchText(`${f.q} ${f.a}`).includes(t))) : items;
   const hasFilter = items.length >= minFilter;
 
   return (
