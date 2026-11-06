@@ -156,7 +156,7 @@ export function ReminderPage({ page }) {
         title="Prefere falar com a gente?"
         text="Conte pelo WhatsApp qual documento você quer acompanhar. O lembrete é gratuito e respondemos no horário de atendimento."
         whatsappText="Olá! Tenho uma dúvida sobre o lembrete de vencimento."
-        related={[GENERAL_LINKS.guias, GENERAL_LINKS.quiz, areaLink(AREAS[1])]}
+        related={[GENERAL_LINKS.guides, GENERAL_LINKS.quiz, areaLink(AREAS[1])]}
       />
     </>
   );

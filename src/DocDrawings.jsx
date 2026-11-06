@@ -17,11 +17,11 @@ import { InnerPageParagraph } from "./drawings/innerPageParts.jsx";
 // The drawing on the sheet (area from x 9 to 141 and y 9 to 122; the title block starts at y 126).
 export function Drawing({ type, uid }) {
   switch (type) {
-    case "incendio":
+    case "fireSafetyPlan":
       return <ShopPlan />;
-    case "rota":
+    case "escapeRoutePlan":
       return <ShopPlan route />;
-    case "planta":
+    case "floorPlan":
       return <HousePlan />;
     case "asbuilt":
       return <HousePlan asbuilt />;
@@ -29,9 +29,9 @@ export function Drawing({ type, uid }) {
       return <Schedule />;
     case "car":
       return <CarMap uid={uid} />;
-    case "terreno":
+    case "georeferencingPlan":
       return <GeorefPlan />;
-    case "curvas":
+    case "contourPlan":
       return <ContourPlan uid={uid} />;
     default:
       return null;
@@ -83,21 +83,21 @@ export function InnerPage({ m, area }) {
 /* ── "Como ler" (how to read): numbered pins on the sheet ───────────────────────────────────────────────── */
 
 export const PINS = {
-  capa: [
+  cover: [
     { x: 4.6, y: 47, t: "Nome do documento e a norma que ele atende." },
     { x: 4.6, y: 118, t: "Contratante: a sua empresa ou você." },
     { x: 4.6, y: 150, t: "Responsável técnico, com o registro no CREA." },
     { x: 145.4, y: 147, t: "ART: registro, no CREA, de quem responde tecnicamente pelo serviço." },
     { x: 4.6, y: 186, t: "Data e revisão: mostram se o documento está atualizado." },
   ],
-  prancha: [
+  drawingSheet: [
     { x: 75, y: 62, t: "O desenho: planta, mapa ou cronograma, com escala e orientação." },
     { x: 54, y: 133, t: "Carimbo: o título da prancha." },
     { x: 145.4, y: 148, t: "Cliente e local do imóvel ou da empresa." },
     { x: 145.4, y: 174, t: "Responsável técnico, com o registro no CREA." },
     { x: 4.6, y: 187, t: "Escala, data, número da folha e se há ART." },
   ],
-  certificado: [
+  certificate: [
     { x: 75, y: 57, t: "Tipo de certificado e treinamento." },
     { x: 75, y: 104, t: "Treinamento concluído e a norma a que ele se refere." },
     { x: 107, y: 167, t: "Assinaturas do instrutor e do responsável técnico (em branco no exemplo)." },

@@ -8,11 +8,11 @@ import { InteractiveIllustration, ILLUSTRATION_LABEL, ILLUSTRATION_LABEL_BOLD } 
 // Risk map convention: one colour per group; the circle size shows the intensity
 // (small, medium, large) and the number shows how many workers are exposed.
 const RISK_ITEMS = [
-  { id: "fisico", color: "#2e9e4d", name: "Físico", text: "Ruído, calor, vibração. Aqui: a serra do corte (risco grande). Na prática: protetor auricular, manutenção e pausas." },
-  { id: "quimico", color: SHEET_RED, name: "Químico", text: "Tintas, solventes, poeiras e vapores. Aqui: a cabine de pintura. Na prática: exaustão, máscara adequada e produtos identificados." },
-  { id: "biologico", color: SHEET_BROWN, name: "Biológico", text: "Fungos, bactérias e vírus. Aqui: a limpeza dos banheiros. Na prática: luvas, produtos de limpeza e higiene das mãos." },
-  { id: "ergo", color: "#e3b007", name: "Ergonômico", text: "Postura, esforço e repetição. Aqui: a bancada de montagem e o escritório. Na prática: altura certa, cadeiras ajustáveis e pausas." },
-  { id: "acidente", color: SHEET_BLUE, name: "Acidente", text: "Cortes, quedas e choques. Aqui: a serra e o empilhamento no depósito. Na prática: proteção nas máquinas, piso organizado e sinalização." },
+  { id: "physical", color: "#2e9e4d", name: "Físico", text: "Ruído, calor, vibração. Aqui: a serra do corte (risco grande). Na prática: protetor auricular, manutenção e pausas." },
+  { id: "chemical", color: SHEET_RED, name: "Químico", text: "Tintas, solventes, poeiras e vapores. Aqui: a cabine de pintura. Na prática: exaustão, máscara adequada e produtos identificados." },
+  { id: "biological", color: SHEET_BROWN, name: "Biológico", text: "Fungos, bactérias e vírus. Aqui: a limpeza dos banheiros. Na prática: luvas, produtos de limpeza e higiene das mãos." },
+  { id: "ergonomic", color: "#e3b007", name: "Ergonômico", text: "Postura, esforço e repetição. Aqui: a bancada de montagem e o escritório. Na prática: altura certa, cadeiras ajustáveis e pausas." },
+  { id: "accident", color: SHEET_BLUE, name: "Acidente", text: "Cortes, quedas e choques. Aqui: a serra e o empilhamento no depósito. Na prática: proteção nas máquinas, piso organizado e sinalização." },
 ];
 
 const RISK_CIRCLE_RADIUS = { P: 13, M: 20, G: 28 };
@@ -67,13 +67,13 @@ export function RiskMap() {
             <rect x="60" y="88" width="56" height="30" fill={SHEET_LINE} stroke={SHEET_BORDER} />
             <rect x="250" y="80" width="90" height="46" fill={SHEET_LINE} stroke={SHEET_BORDER} />
             <rect x="80" y="180" width="120" height="26" fill={SHEET_LINE} stroke={SHEET_BORDER} />
-            <RiskCircle x={96} y={104} size="G" color={color.fisico} n="3" {...r("fisico")} />
-            <RiskCircle x={150} y={112} size="M" color={color.acidente} n="3" {...r("acidente")} />
-            <RiskCircle x={300} y={104} size="G" color={color.quimico} n="2" {...r("quimico")} />
-            <RiskCircle x={140} y={196} size="M" color={color.ergo} n="4" {...r("ergo")} />
-            <RiskCircle x={240} y={206} size="P" color={color.acidente} n="1" {...r("acidente")} />
-            <RiskCircle x={315} y={196} size="P" color={color.biologico} n="1" {...r("biologico")} />
-            <RiskCircle x={370} y={196} size="P" color={color.ergo} n="2" {...r("ergo")} />
+            <RiskCircle x={96} y={104} size="G" color={color.physical} n="3" {...r("physical")} />
+            <RiskCircle x={150} y={112} size="M" color={color.accident} n="3" {...r("accident")} />
+            <RiskCircle x={300} y={104} size="G" color={color.chemical} n="2" {...r("chemical")} />
+            <RiskCircle x={140} y={196} size="M" color={color.ergonomic} n="4" {...r("ergonomic")} />
+            <RiskCircle x={240} y={206} size="P" color={color.accident} n="1" {...r("accident")} />
+            <RiskCircle x={315} y={196} size="P" color={color.biological} n="1" {...r("biological")} />
+            <RiskCircle x={370} y={196} size="P" color={color.ergonomic} n="2" {...r("ergonomic")} />
             <text x="240" y="236" style={ILLUSTRATION_LABEL} textAnchor="middle">
               depósito
             </text>

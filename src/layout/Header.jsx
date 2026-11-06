@@ -117,7 +117,7 @@ export function Header({ current = "" }) {
             className="menu-pill"
             aria-hidden="true"
             data-on={pill.on || undefined}
-            data-salto={pill.jump || undefined}
+            data-jump={pill.jump || undefined}
             style={{ "--x": `${pill.x}px`, "--w": `${pill.w}px` }}
           />
           <div
@@ -137,7 +137,7 @@ export function Header({ current = "" }) {
               ref={servicesButton}
               className={inServices ? "current" : ""}
               aria-expanded={servicesOpen}
-              aria-controls="menu-servicos-painel"
+              aria-controls="services-menu-panel"
               onPointerEnter={movePill}
               onClick={(e) => {
                 openedByKeyboard.current = e.detail === 0; // opened by keyboard: no animation
@@ -157,7 +157,7 @@ export function Header({ current = "" }) {
               </svg>
             </button>
             <div
-              id="menu-servicos-painel"
+              id="services-menu-panel"
               className={`menu-panel ${servicesOpen ? "open" : ""} ${openedByKeyboard.current ? "keyboard" : ""}`}
               hidden={!servicesOpen}
             >
@@ -213,7 +213,7 @@ export function Header({ current = "" }) {
           className="menu-button"
           aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={mobileOpen}
-          aria-controls="menu-mobile"
+          aria-controls="mobile-menu"
           onClick={() => setMobileOpen((v) => !v)}
         >
           <span className="menu-icon" aria-hidden="true">
@@ -224,7 +224,7 @@ export function Header({ current = "" }) {
         </button>
       </div>
 
-      <nav id="menu-mobile" className={`menu-mobile ${mobileOpen ? "open" : ""}`} aria-label="Menu" hidden={!mobileOpen}>
+      <nav id="mobile-menu" className={`menu-mobile ${mobileOpen ? "open" : ""}`} aria-label="Menu" hidden={!mobileOpen}>
         <p className="menu-mobile-title">Serviços</p>
         {AREAS.map((a) => (
           <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(current === a.slug)} onClick={() => setMobileOpen(false)}>

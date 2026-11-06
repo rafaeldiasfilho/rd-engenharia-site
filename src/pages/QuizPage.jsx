@@ -22,7 +22,7 @@ export function QuizPage({ page }) {
       <PageClosing
         title="Prefere conversar direto?"
         whatsappText="Olá! Tenho uma dúvida sobre o que o meu caso precisa."
-        related={[GENERAL_LINKS.guias, GENERAL_LINKS.lembrete, areaLink(AREAS[1])]}
+        related={[GENERAL_LINKS.guides, GENERAL_LINKS.reminder, areaLink(AREAS[1])]}
       />
     </>
   );

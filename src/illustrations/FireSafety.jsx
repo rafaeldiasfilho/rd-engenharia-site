@@ -10,10 +10,10 @@ const EXIT_GREEN = "#2f8f46";
 const LIGHT_YELLOW = "#f2c230";
 
 const FIRE_ITEMS = [
-  { id: "extintor", color: SHEET_RED, name: "Extintor", text: "Primeiro combate ao fogo. O projeto define o tipo (aqui, pó químico ABC), quantos são e onde ficam, sempre sinalizados e fáceis de alcançar." },
-  { id: "luz", color: LIGHT_YELLOW, name: "Iluminação de emergência", text: "Acende sozinha quando falta energia, para que as pessoas enxerguem o caminho até a saída." },
-  { id: "rota", color: EXIT_GREEN, name: "Rota de fuga", text: "Caminho até a saída, que precisa ficar sempre livre de mercadorias e obstáculos." },
-  { id: "placa", color: "#1f6b36", name: "Placa de saída", text: "Placa fotoluminescente que indica a saída mesmo no escuro. Fica sobre a porta e nas mudanças de direção." },
+  { id: "extinguisher", color: SHEET_RED, name: "Extintor", text: "Primeiro combate ao fogo. O projeto define o tipo (aqui, pó químico ABC), quantos são e onde ficam, sempre sinalizados e fáceis de alcançar." },
+  { id: "emergencyLight", color: LIGHT_YELLOW, name: "Iluminação de emergência", text: "Acende sozinha quando falta energia, para que as pessoas enxerguem o caminho até a saída." },
+  { id: "escapeRoute", color: EXIT_GREEN, name: "Rota de fuga", text: "Caminho até a saída, que precisa ficar sempre livre de mercadorias e obstáculos." },
+  { id: "exitSign", color: "#1f6b36", name: "Placa de saída", text: "Placa fotoluminescente que indica a saída mesmo no escuro. Fica sobre a porta e nas mudanças de direção." },
 ];
 
 export function FireSafety() {
@@ -62,11 +62,11 @@ export function FireSafety() {
           <text x="364" y="226" style={ILLUSTRATION_LABEL_BOLD} textAnchor="middle">
             ESCRIT.
           </text>
-          <g style={opacityFor("rota")} onClick={() => choose("rota")}>
+          <g style={opacityFor("escapeRoute")} onClick={() => choose("escapeRoute")}>
             <path d="M360 236L352 172L320 140L262 102L180 170L136 252" fill="none" stroke={EXIT_GREEN} strokeWidth="3" strokeDasharray="9 6" strokeLinecap="round" />
             <path d="M136 262l-8 -12h16z" fill={EXIT_GREEN} />
           </g>
-          <g style={opacityFor("placa")} onClick={() => choose("placa")}>
+          <g style={opacityFor("exitSign")} onClick={() => choose("exitSign")}>
             <rect x="112" y="244" width="44" height="16" rx="2" fill="#1f6b36" />
             <text x="134" y="256" fontSize="10" fontWeight="700" fill="#fff" textAnchor="middle" fontFamily="inherit">
               SAÍDA
@@ -74,7 +74,7 @@ export function FireSafety() {
             <rect x="230" y="96" width="26" height="12" rx="2" fill="#1f6b36" />
             <path d="M236 102h12m-4 -4 4 4-4 4" stroke="#fff" strokeWidth="1.6" fill="none" />
           </g>
-          <g style={opacityFor("extintor")} onClick={() => choose("extintor")}>
+          <g style={opacityFor("extinguisher")} onClick={() => choose("extinguisher")}>
             {[
               [50, 250],
               [210, 62],
@@ -89,7 +89,7 @@ export function FireSafety() {
               </g>
             ))}
           </g>
-          <g style={opacityFor("luz")} onClick={() => choose("luz")} fill={LIGHT_YELLOW} stroke="#7a5b00" strokeWidth="1.2">
+          <g style={opacityFor("emergencyLight")} onClick={() => choose("emergencyLight")} fill={LIGHT_YELLOW} stroke="#7a5b00" strokeWidth="1.2">
             {[
               [80, 90],
               [200, 90],

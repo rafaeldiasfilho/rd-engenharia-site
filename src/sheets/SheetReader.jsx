@@ -6,14 +6,14 @@ import { SheetSvg } from "./SheetSvg.jsx";
 
 // Enlarged sheet: cover or drawing sheet, inner page (covers only), "Como ler" with numbered points, and zoom.
 export function SheetReader({ m, name, area }) {
-  const [view, setView] = useState("folha");
+  const [view, setView] = useState("sheet");
   const [zoom, setZoom] = useState(false);
-  const hasInnerPage = m.layout === "capa" && HAS_INNER_PAGE.has(m.body);
-  const pins = view === "ler" ? PINS[m.layout] || PINS.capa : null;
+  const hasInnerPage = m.layout === "cover" && HAS_INNER_PAGE.has(m.body);
+  const pins = view === "howToRead" ? PINS[m.layout] || PINS.cover : null;
   const tabs = [
-    ["folha", m.layout === "capa" ? "Capa" : m.layout === "certificado" ? "Certificado" : "Prancha"],
-    ...(hasInnerPage ? [["miolo", "Página interna"]] : []),
-    ["ler", "Como ler"],
+    ["sheet", m.layout === "cover" ? "Capa" : m.layout === "certificate" ? "Certificado" : "Prancha"],
+    ...(hasInnerPage ? [["innerPage", "Página interna"]] : []),
+    ["howToRead", "Como ler"],
   ];
   return (
     <div className="sheet-reading" data-zoom={zoom ? "" : undefined}>
@@ -30,7 +30,7 @@ export function SheetReader({ m, name, area }) {
         </button>
       </div>
       <div className="sheet-reading-area" tabIndex={zoom ? 0 : undefined} aria-label={zoom ? "Folha ampliada: role para ver as partes" : undefined}>
-        <SheetSvg m={m} name={name} area={area} page={view === "miolo" ? "miolo" : "folha"} pins={pins} />
+        <SheetSvg m={m} name={name} area={area} page={view === "innerPage" ? "innerPage" : "sheet"} pins={pins} />
       </div>
       {pins && (
         <ol className="sheet-pins">

@@ -34,13 +34,13 @@ function Civil() {
 export default function HomeExamples() {
   const [activeTab, setActiveTab] = useState(TABS[0].slug);
   return (
-    <section className="sec sec-alt" id="na-pratica" aria-labelledby="pratica-t">
+    <section className="sec sec-alt" id="na-pratica" aria-labelledby="practice-title">
       <div className="container">
         <header className="sec-head reveal">
           <p className="sec-n">
             <span>02</span> Na prática
           </p>
-          <h2 id="pratica-t" className="sec-title">
+          <h2 id="practice-title" className="sec-title">
             Veja o que entregamos.
           </h2>
           <p className="lead">Escolha uma área para ver um exemplo. Os projetos de engenharia civil são reais, com os dados dos clientes retirados.</p>

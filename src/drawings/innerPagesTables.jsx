@@ -30,7 +30,7 @@ const CHECKLISTS = {
 
 // Inner pages with tables, lists and checklists.
 export const INNER_PAGES_TABLES = {
-  tabela: {
+  riskInventory: {
     intro: "Para cada setor: os perigos, as possíveis lesões, o nível de risco (probabilidade × severidade) e as medidas de prevenção.",
     body: () => (
       <g>
@@ -82,7 +82,7 @@ export const INNER_PAGES_TABLES = {
       </g>
     ),
   },
-  residuos: {
+  wasteInventory: {
     intro: "Resíduos gerados na empresa, classificados conforme a ABNT NBR 10004, com a forma de guardar e o destino de cada um.",
     body: () => (
       <g>

@@ -278,5 +278,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   const link = whatsappLink("Olá! Gostaria de solicitar um orçamento.");
   const qr = codificar(link);
   writeFileSync(new URL("../public/marca/qr-whatsapp.svg", import.meta.url), svg(qr.modulos));
-  console.log(`QR versão ${qr.version}, máscara ${qr.mask}, ${link.length} caracteres: ${link}`);
+  console.log(`QR version ${qr.version}, mask ${qr.mask}, ${link.length} characters: ${link}`);
 }

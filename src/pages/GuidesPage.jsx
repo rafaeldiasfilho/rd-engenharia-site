@@ -85,7 +85,7 @@ export function GuidesPage({ page }) {
       <PageClosing
         title="Não achou o seu caso?"
         whatsappText="Olá! Li os guias do site e tenho uma dúvida."
-        related={[GENERAL_LINKS.quiz, GENERAL_LINKS.lembrete, areaLink(AREAS[0])]}
+        related={[GENERAL_LINKS.quiz, GENERAL_LINKS.reminder, areaLink(AREAS[0])]}
       />
     </>
   );

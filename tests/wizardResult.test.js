@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { buildWizardWhatsappMessage, collectWizardResults } from "../src/wizardResult.js";
 import { PROFILES, RESULTS } from "../src/content/wizard.js";
 
-const company = PROFILES.find((p) => p.id === "empresa");
+const company = PROFILES.find((p) => p.id === "business");
 
 describe("collectWizardResults", () => {
   it("returns nothing before a profile is chosen", () => {

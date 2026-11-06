@@ -97,7 +97,7 @@ export function CreditsPage() {
         title="Quer ver o trabalho real?"
         text="Os desenhos de projeto da página de engenharia civil são da RD. Para outros serviços, conte o seu caso pelo WhatsApp."
         whatsappText="Olá! Gostaria de conhecer melhor o trabalho da RD Engenharia."
-        related={[areaLink(AREAS[2]), GENERAL_LINKS.guias, GENERAL_LINKS.quiz]}
+        related={[areaLink(AREAS[2]), GENERAL_LINKS.guides, GENERAL_LINKS.quiz]}
       />
     </>
   );

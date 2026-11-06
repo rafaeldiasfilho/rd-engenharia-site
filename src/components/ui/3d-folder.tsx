@@ -80,7 +80,7 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
   return (
     <div
       className={["folder", className].filter(Boolean).join(" ")}
-      data-aberta={isOpen ? "true" : "false"}
+      data-open={isOpen ? "true" : "false"}
       onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
       onPointerLeave={(e) => e.pointerType === "mouse" && setHover(false)}
     >
@@ -100,7 +100,7 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
       </div>
       <ul className="folder-cards" id={`${id}-cartoes`}>
         {fan.map((it, i) => (
-          <li key={it.id} className="folder-card" data-i={i} data-oculto={openIndex === i ? "true" : undefined}>
+          <li key={it.id} className="folder-card" data-i={i} data-hidden={openIndex === i ? "true" : undefined}>
             <button
               ref={(el) => {
                 cardRefs.current[i] = el
@@ -155,8 +155,8 @@ type ViewerProps = {
 }
 
 function Viewer({ items, index, origin, folderTitle, onNavigate, onClose }: ViewerProps) {
-  const [phase, setPhase] = React.useState<"inicio" | "aberta" | "saindo">("inicio")
-  const [direction, setDirection] = React.useState<"esq" | "dir">("dir")
+  const [phase, setPhase] = React.useState<"start" | "open" | "leaving">("start")
+  const [direction, setDirection] = React.useState<"left" | "right">("right")
   const panel = React.useRef<HTMLDivElement>(null)
   const closeRef = React.useRef<HTMLButtonElement>(null)
   const item = items[index]
@@ -178,13 +178,13 @@ function Viewer({ items, index, origin, folderTitle, onNavigate, onClose }: View
       const grow = () => {
         clearTimeout(fallback)
         setInitialStyle(undefined)
-        setPhase("aberta")
+        setPhase("open")
       }
       requestAnimationFrame(() => requestAnimationFrame(grow))
       // if the browser delays frames (background tab, slow device), open anyway
       fallback = window.setTimeout(grow, 150)
     } else {
-      setPhase("aberta")
+      setPhase("open")
     }
     closeRef.current?.focus()
     const bodyOverflow = document.body.style.overflow
@@ -199,14 +199,14 @@ function Viewer({ items, index, origin, folderTitle, onNavigate, onClose }: View
 
   const exit = React.useCallback(() => {
     if (prefersReducedMotion()) return onClose()
-    setPhase("saindo")
+    setPhase("leaving")
     setTimeout(onClose, 260)
   }, [onClose])
 
   const go = React.useCallback(
     (i: number) => {
       if (i < 0 || i >= items.length || i === index) return
-      setDirection(i > index ? "dir" : "esq")
+      setDirection(i > index ? "right" : "left")
       onNavigate(i)
     },
     [items.length, index, onNavigate]
@@ -241,7 +241,7 @@ function Viewer({ items, index, origin, folderTitle, onNavigate, onClose }: View
   if (!item) return null
 
   return createPortal(
-    <div className="folder-viewer" data-fase={phase} role="dialog" aria-modal="true" aria-labelledby={titleId}>
+    <div className="folder-viewer" data-phase={phase} role="dialog" aria-modal="true" aria-labelledby={titleId}>
       <div className="folder-viewer-bg" onClick={exit} />
       <button ref={closeRef} type="button" className="folder-viewer-close" onClick={exit} aria-label="Fechar">
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">

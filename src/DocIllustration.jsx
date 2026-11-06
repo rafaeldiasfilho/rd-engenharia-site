@@ -13,23 +13,23 @@ import { SheetByLayout } from "./sheets/SheetSvg.jsx";
 const PAIRS = {
   "seguranca-do-trabalho": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a capa de um Programa de Gerenciamento de Riscos (PGR) da RD para uma empresa fictícia; atrás, a capa de um LTCAT",
-    front: { title: "PGR", subtitle: "Programa de Gerenciamento de Riscos", layout: "capa", doc: "Programa de Gerenciamento de Riscos", ref: "PGR · NR-01", contents: ["Identificação da organização", "Inventário de riscos", "Plano de ação"], art: true },
-    back: { title: "LTCAT", subtitle: "Laudo das condições do ambiente de trabalho", layout: "capa", doc: "Laudo Técnico das Condições do Ambiente de Trabalho", ref: "LTCAT" },
+    front: { title: "PGR", subtitle: "Programa de Gerenciamento de Riscos", layout: "cover", doc: "Programa de Gerenciamento de Riscos", ref: "PGR · NR-01", contents: ["Identificação da organização", "Inventário de riscos", "Plano de ação"], art: true },
+    back: { title: "LTCAT", subtitle: "Laudo das condições do ambiente de trabalho", layout: "cover", doc: "Laudo Técnico das Condições do Ambiente de Trabalho", ref: "LTCAT" },
   },
   "corpo-de-bombeiros": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a prancha de um projeto de segurança contra incêndio com planta, extintores, iluminação de emergência, rota de fuga e carimbo; atrás, a capa da preparação para a vistoria do AVCB",
-    front: { title: "PSCIP", subtitle: "Projeto de segurança contra incêndio", body: "incendio", layout: "prancha", doc: "Projeto de Segurança Contra Incêndio", ref: "Planta de medidas de segurança", scale: "1:100", art: true },
-    back: { title: "AVCB", subtitle: "Preparação para a vistoria", layout: "capa", doc: "Preparação para Vistoria do AVCB", ref: "Lista de exigências" },
+    front: { title: "PSCIP", subtitle: "Projeto de segurança contra incêndio", body: "fireSafetyPlan", layout: "drawingSheet", doc: "Projeto de Segurança Contra Incêndio", ref: "Planta de medidas de segurança", scale: "1:100", art: true },
+    back: { title: "AVCB", subtitle: "Preparação para a vistoria", layout: "cover", doc: "Preparação para Vistoria do AVCB", ref: "Lista de exigências" },
   },
   "engenharia-civil": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a prancha de um projeto arquitetônico com planta baixa cotada e carimbo; atrás, a capa de um laudo técnico de vistoria",
-    front: { title: "PROJETO", subtitle: "Projeto arquitetônico", body: "planta", layout: "prancha", doc: "Projeto Arquitetônico", ref: "Planta baixa", scale: "1:50", art: true },
-    back: { title: "LAUDO", subtitle: "Laudo técnico de vistoria", layout: "capa", doc: "Laudo Técnico de Vistoria", ref: "Imóvel residencial" },
+    front: { title: "PROJETO", subtitle: "Projeto arquitetônico", body: "floorPlan", layout: "drawingSheet", doc: "Projeto Arquitetônico", ref: "Planta baixa", scale: "1:50", art: true },
+    back: { title: "LAUDO", subtitle: "Laudo técnico de vistoria", layout: "cover", doc: "Laudo Técnico de Vistoria", ref: "Imóvel residencial" },
   },
   "meio-ambiente-topografia": {
     alt: "Duas folhas de exemplo empilhadas: na frente, a planta de um imóvel rural georreferenciado com vértices, coordenadas e carimbo; atrás, a prancha do mapa do imóvel para o CAR",
-    front: { title: "MEMORIAL", subtitle: "Georreferenciamento do imóvel", body: "terreno", layout: "prancha", doc: "Planta do Imóvel Georreferenciado", ref: "Vértices e confrontações", scale: "1:5.000", art: true },
-    back: { title: "CAR", subtitle: "Cadastro ambiental rural", body: "car", layout: "prancha", doc: "Mapa do Imóvel para o CAR", ref: "APP e reserva legal", scale: "1:5.000" },
+    front: { title: "MEMORIAL", subtitle: "Georreferenciamento do imóvel", body: "georeferencingPlan", layout: "drawingSheet", doc: "Planta do Imóvel Georreferenciado", ref: "Vértices e confrontações", scale: "1:5.000", art: true },
+    back: { title: "CAR", subtitle: "Cadastro ambiental rural", body: "car", layout: "drawingSheet", doc: "Mapa do Imóvel para o CAR", ref: "APP e reserva legal", scale: "1:5.000" },
   },
 };
 

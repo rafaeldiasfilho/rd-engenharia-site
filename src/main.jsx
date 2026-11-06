@@ -18,11 +18,11 @@ document.addEventListener(
   (e) => {
     const a = e.target instanceof Element ? e.target.closest('a[href*="wa.me/"]') : null;
     if (!a) return;
-    const section = a.closest("section[id], header, footer, nav, [data-origem]");
+    const section = a.closest("section[id], header, footer, nav, [data-origin]");
     const origin =
-      a.dataset.origem ||
+      a.dataset.origin ||
       (a.classList.contains("whatsapp-float") ? "botao-flutuante" : "") ||
-      (section && (section.dataset?.origem || section.id || section.tagName.toLowerCase())) ||
+      (section && (section.dataset?.origin || section.id || section.tagName.toLowerCase())) ||
       "pagina";
     try {
       track("WhatsApp", { pagina: window.location.pathname, origem: origin, texto: (a.textContent || "").trim().slice(0, 60) });
@@ -49,7 +49,7 @@ if (slug === "admin") {
   );
 } else if (printArea) {
   ReactDOM.hydrateRoot(root, <PrintPage area={printArea} />);
-} else if (root.dataset.erro) {
+} else if (root.dataset.error) {
   ReactDOM.hydrateRoot(root, <NotFound />);
 } else if (page) {
   ReactDOM.hydrateRoot(

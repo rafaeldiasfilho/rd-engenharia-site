@@ -12,6 +12,9 @@ const PGR_COLUMNS = [
   ["Medida de prevenção", "O que a empresa faz para eliminar ou reduzir o risco, com responsável e prazo no plano de ação."],
 ];
 
+// CSS class of each risk level shown in the table.
+const RISK_LEVEL_CLASS = { Baixo: "level-low", Moderado: "level-moderate", Alto: "level-high" };
+
 const PGR_ROWS = [
   ["Produção", "Ruído de máquinas", "Perda auditiva", "Moderado", "Protetor auricular e manutenção"],
   ["Produção", "Partes móveis da serra", "Cortes e esmagamento", "Alto", "Proteção fixa e bloqueio na manutenção"],
@@ -55,8 +58,8 @@ export function PgrTemplate() {
               {PGR_ROWS.map((l, r) => (
                 <tr key={r}>
                   {l.map((c, i) => (
-                    <td key={i} data-ativa={col === i ? "" : undefined}>
-                      {i === 3 ? <span className={`level nivel-${c.toLowerCase()}`}>{c}</span> : c}
+                    <td key={i} data-active={col === i ? "" : undefined}>
+                      {i === 3 ? <span className={`level ${RISK_LEVEL_CLASS[c]}`}>{c}</span> : c}
                     </td>
                   ))}
                 </tr>

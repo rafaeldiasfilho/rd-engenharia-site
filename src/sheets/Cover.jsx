@@ -4,9 +4,9 @@ import { SHEET_BORDER, SHEET_GRAY, CREA, ISSUE_DATE, SHEET_BACKGROUND, Logo, RD_
 
 // ── Sheets that look like real documents ──────────────────────────────────────────────────────
 // Three formats, chosen by `m.layout` (field `exemplo` in src/paginas.js):
-//  - "capa": report cover (technical reports, programmes, analyses), with a table of contents and an inner page;
-//  - "prancha": technical drawing with title block (plans, maps, schedule);
-//  - "certificado": training certificate.
+//  - "cover": report cover (technical reports, programmes, analyses), with a table of contents and an inner page;
+//  - "drawingSheet": technical drawing with title block (plans, maps, schedule);
+//  - "certificate": training certificate.
 
 export function Cover({ m, area }) {
   const doc = m.doc || m.subtitle;

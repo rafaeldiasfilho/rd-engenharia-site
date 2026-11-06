@@ -149,14 +149,14 @@ export default function App() {
 
       <SectionNav items={HOME_SECTIONS} label="Nesta página" />
 
-      <section className="sec band-section organize" id="organizamos" aria-labelledby="org-t">
+      <section className="sec band-section organize" id="organizamos" aria-labelledby="organize-title">
         <div className="container organize-grid">
           <div>
             <header className="sec-head reveal">
               <p className="sec-n">
                 <span>01</span> O que organizamos
               </p>
-              <h2 id="org-t" className="sec-title">
+              <h2 id="organize-title" className="sec-title">
                 Seus documentos e vencimentos, em um só lugar.
               </h2>
             </header>
@@ -183,13 +183,13 @@ export default function App() {
 
       <HomeExamples />
 
-      <section className="sec band-section" id="como-funciona" aria-labelledby="como-t">
+      <section className="sec band-section" id="como-funciona" aria-labelledby="how-title">
         <div className="container">
           <header className="sec-head reveal">
             <p className="sec-n">
               <span>03</span> Como funciona
             </p>
-            <h2 id="como-t" className="sec-title">
+            <h2 id="how-title" className="sec-title">
               Quatro passos, sem surpresa.
             </h2>
           </header>
@@ -206,13 +206,13 @@ export default function App() {
 
       <Reviews />
 
-      <section className="sec sec-alt" id="duvidas" aria-labelledby="duvidas-t">
+      <section className="sec sec-alt" id="duvidas" aria-labelledby="faq-title">
         <div className="container">
           <header className="sec-head reveal">
             <p className="sec-n">
               <span>04</span> Dúvidas
             </p>
-            <h2 id="duvidas-t" className="sec-title">
+            <h2 id="faq-title" className="sec-title">
               Dúvidas frequentes.
             </h2>
           </header>
@@ -222,14 +222,14 @@ export default function App() {
 
       {/* Contact and "onde atendemos" in a single block: address, hours and region appear here once
           (the top badge and the footer are the other fixed places). The contour-line background came along. */}
-      <section className="contact-block sec-top" id="contato" aria-labelledby="contato-t">
+      <section className="contact-block sec-top" id="contato" aria-labelledby="contact-title">
         <TopoField className="sec-top-field contact-top" grid={0} lines={0.4} />
         <div className="container contact-grid">
           <div>
             <p className="sec-n">
               <span>05</span> Contato
             </p>
-            <h2 id="contato-t" className="sec-title">
+            <h2 id="contact-title" className="sec-title">
               Peça seu orçamento.
             </h2>
             <p className="contact-text">
@@ -248,7 +248,7 @@ export default function App() {
                       type="button"
                       className="contact-map-button"
                       aria-expanded={showMap}
-                      aria-controls={showMap ? "contato-mapa" : undefined}
+                      aria-controls={showMap ? "contact-map" : undefined}
                       onClick={() => {
                         setShowMap((v) => !v);
                         setMapReady(false);
@@ -258,7 +258,7 @@ export default function App() {
                     </button>
                   </span>
                   {showMap && (
-                    <figure id="contato-mapa" className="where-map">
+                    <figure id="contact-map" className="where-map">
                       <div className="map-box">
                         {!mapReady && <p className="where-map-loading">Carregando o mapa…</p>}
                         <iframe

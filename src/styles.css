@@ -508,7 +508,7 @@ img {
   opacity: 1;
 }
 
-.menu-pill[data-salto] {
+.menu-pill[data-jump] {
   transition: opacity 300ms var(--ease);
 }
 
@@ -582,7 +582,7 @@ img {
   border: 1px solid var(--line);
   border-radius: 22px;
   box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.05);
-  animation: gota 0.2s var(--ease);
+  animation: drop 0.2s var(--ease);
   transform-origin: top center;
 }
 
@@ -678,7 +678,7 @@ img {
   }
 }
 
-@keyframes gota {
+@keyframes drop {
   from {
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
@@ -2300,7 +2300,7 @@ img {
   color: #18692f;
 }
 
-.template-sheet td[data-ativa] {
+.template-sheet td[data-active] {
   background: #f3f8f1;
 }
 
@@ -2314,17 +2314,17 @@ img {
   white-space: nowrap;
 }
 
-.nivel-baixo {
+.level-low {
   color: #18692f;
   background: rgba(24, 105, 47, 0.1);
 }
 
-.nivel-moderado {
+.level-moderate {
   color: #8a5f0c;
   background: rgba(201, 143, 28, 0.14);
 }
 
-.nivel-alto {
+.level-high {
   color: #a3301f;
   background: rgba(192, 57, 43, 0.1);
 }
@@ -2421,7 +2421,7 @@ img {
 }
 
 /* Troca de projeto por arrasto */
-@keyframes exemplos-lado {
+@keyframes examples-slide {
   from {
     opacity: 0;
     transform: translateX(calc(var(--direction, 1) * 40%));
@@ -2441,7 +2441,7 @@ img {
 }
 
 .examples.swap {
-  animation: exemplos-lado 0.28s var(--ease) both;
+  animation: examples-slide 0.28s var(--ease) both;
 }
 
 /* Fonte própria: Manrope variável (subconjunto latin, OFL), sem depender do Google Fonts.
@@ -3439,11 +3439,11 @@ img {
 
 @media (prefers-reduced-motion: no-preference) {
   .wizard-screen {
-    animation: ass-entra 260ms var(--ease) both;
+    animation: wizard-enter 260ms var(--ease) both;
   }
 }
 
-@keyframes ass-entra {
+@keyframes wizard-enter {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -4599,13 +4599,13 @@ img {
   color: #fff;
 }
 
-.chip-vence {
+.chip-expiring {
   background: var(--green-light);
   color: var(--ink);
   box-shadow: inset 0 0 0 1.5px var(--accent);
 }
 
-.chip-pendente {
+.chip-pending {
   background: transparent;
   color: var(--muted);
   box-shadow: inset 0 0 0 1.5px var(--muted);
@@ -6142,7 +6142,7 @@ img {
   transition: box-shadow 0.5s var(--ease), border-color 0.5s var(--ease);
 }
 
-.folder[data-aberta="true"] {
+.folder[data-open="true"] {
   border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
   box-shadow: 0 24px 48px -28px rgba(10, 45, 20, 0.45);
 }
@@ -6220,15 +6220,15 @@ img {
 }
 
 
-.folder[data-aberta="true"] .folder-bg {
+.folder[data-open="true"] .folder-bg {
   transform: perspective(600px) rotateX(-15deg);
 }
 
-.folder[data-aberta="true"] .folder-tab {
+.folder[data-open="true"] .folder-tab {
   transform: perspective(600px) rotateX(-25deg) translateY(-2px);
 }
 
-.folder[data-aberta="true"] .folder-front {
+.folder[data-open="true"] .folder-front {
   transform: perspective(600px) rotateX(25deg) translateY(8px);
 }
 
@@ -6262,11 +6262,11 @@ img {
   transition-delay: 200ms;
 }
 
-.folder[data-aberta="true"] .folder-card {
+.folder[data-open="true"] .folder-card {
   transform: translateY(-90px) translateX(var(--x)) rotate(var(--r));
 }
 
-.folder-card[data-oculto] {
+.folder-card[data-hidden] {
   opacity: 0;
 }
 
@@ -6284,7 +6284,7 @@ img {
   cursor: pointer;
 }
 
-.folder[data-aberta="true"] .folder-card button {
+.folder[data-open="true"] .folder-card button {
   pointer-events: auto;
 }
 
@@ -6336,7 +6336,7 @@ img {
   transition: transform 0.3s var(--ease);
 }
 
-.folder[data-aberta="true"] .folder-title {
+.folder[data-open="true"] .folder-title {
   transform: translateY(4px);
 }
 
@@ -6386,7 +6386,7 @@ img {
   transition: opacity 0.35s var(--ease);
 }
 
-.folder-viewer[data-fase="aberta"] .folder-viewer-bg {
+.folder-viewer[data-phase="open"] .folder-viewer-bg {
   opacity: 1;
 }
 
@@ -6406,12 +6406,12 @@ img {
   transition: transform 0.45s var(--ease), opacity 300ms var(--ease);
 }
 
-.folder-viewer[data-fase="saindo"] .folder-viewer-panel {
+.folder-viewer[data-phase="leaving"] .folder-viewer-panel {
   transform: scale(0.96);
   opacity: 0;
 }
 
-.folder-viewer[data-fase="saindo"] .folder-viewer-bg {
+.folder-viewer[data-phase="leaving"] .folder-viewer-bg {
   opacity: 0;
 }
 
@@ -6424,11 +6424,11 @@ img {
     linear-gradient(var(--grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
   background-size: 22px 22px;
-  animation: pastaEntra 0.35s var(--ease) both;
+  animation: folder-enter 0.35s var(--ease) both;
 }
 
-.folder-viewer-media[data-dir="esq"] {
-  animation-name: pastaEntraEsq;
+.folder-viewer-media[data-dir="left"] {
+  animation-name: folder-enter-left;
 }
 
 .folder-viewer-media svg {
@@ -6554,14 +6554,14 @@ img {
   font-weight: 700;
 }
 
-@keyframes pastaEntra {
+@keyframes folder-enter {
   from {
     opacity: 0;
     transform: translateX(24px);
   }
 }
 
-@keyframes pastaEntraEsq {
+@keyframes folder-enter-left {
   from {
     opacity: 0;
     transform: translateX(-24px);
@@ -6668,8 +6668,8 @@ img {
   transition: opacity 0.3s var(--ease) 200ms, transform 0.2s var(--ease);
 }
 
-.folder-viewer[data-fase="aberta"] .folder-viewer-close,
-.folder-viewer[data-fase="aberta"] .folder-viewer-nav:not(:disabled) {
+.folder-viewer[data-phase="open"] .folder-viewer-close,
+.folder-viewer[data-phase="open"] .folder-viewer-nav:not(:disabled) {
   opacity: 1;
 }
 
@@ -6930,7 +6930,7 @@ img {
   background: #fff;
   color: #17211b;
   transform-origin: 0 0;
-  animation: qr-abre 280ms var(--ease) both;
+  animation: qr-open 280ms var(--ease) both;
 }
 
 .qr-whatsapp-panel img {
@@ -6961,17 +6961,17 @@ img {
 
 .qr-whatsapp-swap {
   display: inline-block;
-  animation: qr-troca 240ms var(--ease) both;
+  animation: qr-swap 240ms var(--ease) both;
 }
 
-@keyframes qr-abre {
+@keyframes qr-open {
   from {
     opacity: 0;
     transform: translateY(-6px) scale(0.97);
   }
 }
 
-@keyframes qr-troca {
+@keyframes qr-swap {
   from {
     opacity: 0;
     transform: translateY(4px);
@@ -7000,7 +7000,7 @@ img {
 /* Ver o mapa (endereço na seção Contato da página inicial): o mapa só carrega depois do clique. */
 .where-map {
   margin: 18px 0 0;
-  animation: qr-abre 320ms var(--ease) both;
+  animation: qr-open 320ms var(--ease) both;
 }
 
 .where-map .map-box {
@@ -7121,7 +7121,7 @@ img {
 }
 
 .dialog[open] {
-  animation: janela-abre 260ms var(--ease) both;
+  animation: dialog-open 260ms var(--ease) both;
 }
 
 .dialog::backdrop {
@@ -7185,7 +7185,7 @@ img {
   background: var(--accent);
 }
 
-@keyframes janela-abre {
+@keyframes dialog-open {
   from {
     opacity: 0;
     transform: translateY(8px) scale(0.97);
@@ -7470,10 +7470,10 @@ img {
 
 .doc-option .hint-doc {
   grid-column: 2;
-  animation: dica-entra 260ms var(--ease);
+  animation: tip-enter 260ms var(--ease);
 }
 
-@keyframes dica-entra {
+@keyframes tip-enter {
   from {
     opacity: 0;
     transform: translateY(-4px);
@@ -8189,7 +8189,7 @@ html.viewer-open { overflow: hidden; }
     padding: 8px 20px calc(32px + env(safe-area-inset-bottom));
   }
   .menu-mobile.open > * {
-    animation: menuEntra 500ms var(--ease) both;
+    animation: menu-enter 500ms var(--ease) both;
   }
   .menu-mobile.open > :nth-child(2) { animation-delay: 60ms; }
   .menu-mobile.open > :nth-child(3) { animation-delay: 120ms; }
@@ -8200,7 +8200,7 @@ html.viewer-open { overflow: hidden; }
   .menu-mobile.open > :nth-child(n + 8) { animation-delay: 400ms; }
   .menu-mobile.open .btn { margin-top: 24px; min-height: 52px; justify-content: center; }
 }
-@keyframes menuEntra {
+@keyframes menu-enter {
   from { opacity: 0; transform: translateY(24px); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -8217,7 +8217,7 @@ html.viewer-open { overflow: hidden; }
   :root:not([data-theme="light"]) .error-form { color: var(--error); }
 }
 /* "Vence em 30 dias" é um aviso: anel na cor de aviso */
-.chip-vence { box-shadow: inset 0 0 0 1.5px var(--warn); }
+.chip-expiring { box-shadow: inset 0 0 0 1.5px var(--warn); }
 
 /* Áreas de toque de pelo menos 44 px (WCAG 2.5.5) nos botões que estavam com 34–36 px */
 .theme button,

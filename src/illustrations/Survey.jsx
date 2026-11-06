@@ -6,11 +6,11 @@ import { InteractiveIllustration } from "./illustrationParts.jsx";
 /* ── Surveying and georeferencing ───────────────────────────────────────────────────────────── */
 
 const SURVEY_ITEMS = [
-  { id: "marco", color: SHEET_INK, name: "Marcos nos vértices", text: "Peças fixadas em cada canto do terreno, com código próprio (M-0001, M-0002...). São elas que dão base oficial aos limites." },
-  { id: "limite", color: SHEET_GREEN, name: "Limite do imóvel", text: "Linha que separa o imóvel dos vizinhos. Cada lado tem azimute (direção) e distância medidos em campo." },
-  { id: "curvas", color: SHEET_BROWN, name: "Curvas de nível", text: "Mostram o relevo: cada linha une pontos de mesma altitude. Ajudam a planejar obras, estradas e a drenagem da água." },
-  { id: "coord", color: SHEET_BLUE, name: "Coordenadas", text: "Cada marco tem coordenadas E e N no sistema SIRGAS 2000, que localizam o ponto no mapa oficial usado pelo INCRA." },
-  { id: "conf", color: SHEET_GRAY, name: "Confrontantes", text: "Os vizinhos que fazem divisa com o imóvel, identificados no levantamento e no memorial descritivo." },
+  { id: "marker", color: SHEET_INK, name: "Marcos nos vértices", text: "Peças fixadas em cada canto do terreno, com código próprio (M-0001, M-0002...). São elas que dão base oficial aos limites." },
+  { id: "boundary", color: SHEET_GREEN, name: "Limite do imóvel", text: "Linha que separa o imóvel dos vizinhos. Cada lado tem azimute (direção) e distância medidos em campo." },
+  { id: "contours", color: SHEET_BROWN, name: "Curvas de nível", text: "Mostram o relevo: cada linha une pontos de mesma altitude. Ajudam a planejar obras, estradas e a drenagem da água." },
+  { id: "coordinates", color: SHEET_BLUE, name: "Coordenadas", text: "Cada marco tem coordenadas E e N no sistema SIRGAS 2000, que localizam o ponto no mapa oficial usado pelo INCRA." },
+  { id: "neighbors", color: SHEET_GRAY, name: "Confrontantes", text: "Os vizinhos que fazem divisa com o imóvel, identificados no levantamento e no memorial descritivo." },
 ];
 
 const SURVEY_MARKERS = [
@@ -37,12 +37,12 @@ export function Survey() {
       finalCaption="Desenho ilustrativo de um levantamento. Não representa nenhuma propriedade real."
       drawing={({ opacityFor, choose }) => (
         <>
-          <clipPath id="recorte-terreno">
+          <clipPath id="survey-plot-clip">
             <polygon points={polygonPoints} />
           </clipPath>
           <polygon points={polygonPoints} fill="#eef4ec" stroke="none" />
-          <g style={opacityFor("curvas")} onClick={() => choose("curvas")}>
-            <g clipPath="url(#recorte-terreno)" fill="none">
+          <g style={opacityFor("contours")} onClick={() => choose("contours")}>
+            <g clipPath="url(#survey-plot-clip)" fill="none">
               {contours.map((c) => (
                 <path key={c.elevation} d={c.d} stroke={SHEET_BROWN} strokeWidth={c.elevation % 10 === 0 ? 2 : 1} opacity="0.75" />
               ))}
@@ -53,7 +53,7 @@ export function Survey() {
               </text>
             ))}
           </g>
-          <g style={opacityFor("limite")} onClick={() => choose("limite")}>
+          <g style={opacityFor("boundary")} onClick={() => choose("boundary")}>
             <polygon points={polygonPoints} fill="none" stroke={SHEET_GREEN} strokeWidth="3" />
             <text x="186" y="52" fontSize="10" fill={SHEET_GREEN} fontWeight="700" textAnchor="middle" transform="rotate(-4.3 186 52)" fontFamily="inherit">
               Az 85°42' · 461,20 m
@@ -62,7 +62,7 @@ export function Survey() {
               Az 160°08' · 306,85 m
             </text>
           </g>
-          <g style={opacityFor("marco")} onClick={() => choose("marco")}>
+          <g style={opacityFor("marker")} onClick={() => choose("marker")}>
             {SURVEY_MARKERS.map(([id, x, y]) => (
               <g key={id}>
                 <rect x={x - 6} y={y - 6} width="12" height="12" fill={SHEET_INK} />
@@ -72,7 +72,7 @@ export function Survey() {
               </g>
             ))}
           </g>
-          <g style={opacityFor("coord")} onClick={() => choose("coord")}>
+          <g style={opacityFor("coordinates")} onClick={() => choose("coordinates")}>
             <rect x="262" y="236" width="146" height="54" rx="6" fill="#fff" stroke={SHEET_BLUE} strokeWidth="1.4" />
             <text x="272" y="253" fontSize="10" fontWeight="700" fill={SHEET_BLUE} fontFamily="inherit">
               M-0003 (SIRGAS 2000)
@@ -85,7 +85,7 @@ export function Survey() {
             </text>
             <path d="M352 196L340 236" stroke={SHEET_BLUE} strokeWidth="1.2" strokeDasharray="3 2" />
           </g>
-          <g style={opacityFor("conf")} onClick={() => choose("conf")} fontFamily="inherit">
+          <g style={opacityFor("neighbors")} onClick={() => choose("neighbors")} fontFamily="inherit">
             <text x="160" y="30" fontSize="11" fill={SHEET_GRAY}>
               Confrontante: Sítio Vizinho A
             </text>

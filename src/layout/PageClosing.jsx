@@ -7,13 +7,13 @@ import { WhatsappButton } from "./WhatsappButton.jsx";
 export function PageClosing({ title = "Fale com o responsável técnico.", text, whatsappText, whatsappLabel = "Falar no WhatsApp", related = [] }) {
   return (
     <>
-      <section className="sec next" id="proximo-passo" aria-labelledby="proximo-titulo">
+      <section className="sec next" id="proximo-passo" aria-labelledby="next-step-title">
         <div className="container">
           <p className="sec-n">
             <span>→</span> Próximo passo
           </p>
           <div className="next-grid reveal">
-            <h2 id="proximo-titulo" className="sec-title">
+            <h2 id="next-step-title" className="sec-title">
               {title}
             </h2>
             <div>
@@ -26,12 +26,12 @@ export function PageClosing({ title = "Fale com o responsável técnico.", text,
         </div>
       </section>
       {related.length > 0 && (
-        <section className="sec related" aria-labelledby="rel-titulo">
+        <section className="sec related" aria-labelledby="related-title">
           <div className="container">
             <p className="sec-n">
               <span>↗</span> Continue por aqui
             </p>
-            <h2 id="rel-titulo" className="sr-only">
+            <h2 id="related-title" className="sr-only">
               Páginas relacionadas
             </h2>
             <ul className="related-list">

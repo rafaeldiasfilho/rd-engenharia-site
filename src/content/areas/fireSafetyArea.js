@@ -18,28 +18,28 @@ export const FIRE_SAFETY_AREA = {
   items: [
     {
       name: "PSCIP — Projeto de Segurança Contra Incêndio e Pânico",
-      example: {"title":"PSCIP","subtitle":"Projeto de segurança contra incêndio","body":"incendio","art":true,"layout":"prancha","doc":"Projeto de Segurança Contra Incêndio","ref":"Planta de medidas de segurança","scale":"1:100"},
+      example: {"title":"PSCIP","subtitle":"Projeto de segurança contra incêndio","body":"fireSafetyPlan","art":true,"layout":"drawingSheet","doc":"Projeto de Segurança Contra Incêndio","ref":"Planta de medidas de segurança","scale":"1:100"},
       text:
         "Projeto técnico que define as medidas de proteção exigidas para o seu imóvel, como extintores, sinalização, iluminação de emergência, alarme e hidrantes, conforme as Instruções Técnicas do Corpo de Bombeiros.",
       who: "Edificações e áreas de risco que não se enquadram em processo simplificado.",
     },
     {
       name: "AVCB — Auto de Vistoria do Corpo de Bombeiros",
-      example: {"title":"AVCB","subtitle":"Preparação para a vistoria","body":"checklist","layout":"capa","doc":"Preparação para Vistoria do AVCB","ref":"Lista de exigências","contents":["Medidas de segurança exigidas","Situação de cada medida","Pendências antes da vistoria"]},
+      example: {"title":"AVCB","subtitle":"Preparação para a vistoria","body":"checklist","layout":"cover","doc":"Preparação para Vistoria do AVCB","ref":"Lista de exigências","contents":["Medidas de segurança exigidas","Situação de cada medida","Pendências antes da vistoria"]},
       text:
         "Documento que comprova que a edificação cumpre as medidas de segurança contra incêndio, emitido após vistoria do Corpo de Bombeiros.",
       who: "Comércios, indústrias, escolas, clínicas, condomínios e outros imóveis cuja ocupação exija o documento.",
     },
     {
       name: "CLCB — Certificado de Licença do Corpo de Bombeiros",
-      example: {"title":"CLCB","subtitle":"Análise de enquadramento","body":"checklist","layout":"capa","doc":"Análise de Enquadramento para CLCB","ref":"Área, altura e ocupação","contents":["Dados da edificação","Enquadramento","Medidas exigidas"]},
+      example: {"title":"CLCB","subtitle":"Análise de enquadramento","body":"checklist","layout":"cover","doc":"Análise de Enquadramento para CLCB","ref":"Área, altura e ocupação","contents":["Dados da edificação","Enquadramento","Medidas exigidas"]},
       text:
         "Licença com processo mais simples, para edificações menores e de baixo risco. O enquadramento depende de área, altura e tipo de ocupação, e fazemos essa análise para você.",
       who: "Estabelecimentos de pequeno porte e baixo risco, conforme a legislação paulista.",
     },
     {
       name: "Projetos específicos",
-      example: {"title":"PROJETO","subtitle":"Rota de fuga, hidrantes e alarme","body":"rota","art":true,"layout":"prancha","doc":"Rota de Fuga e Hidrantes","ref":"Projeto específico","scale":"1:100"},
+      example: {"title":"PROJETO","subtitle":"Rota de fuga, hidrantes e alarme","body":"escapeRoutePlan","art":true,"layout":"drawingSheet","doc":"Rota de Fuga e Hidrantes","ref":"Projeto específico","scale":"1:100"},
       text:
         "Rota de fuga, hidrantes, sprinklers (chuveiros automáticos), detecção e alarme de incêndio, com ART do responsável técnico.",
       who: "Imóveis em que o projeto exige sistemas fixos de proteção.",

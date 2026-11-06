@@ -18,5 +18,5 @@ export async function sendReminder({ name, whatsapp, document, expiry, consent }
     headers: { ...baseHeaders, Prefer: "return=minimal" },
     body: JSON.stringify(row),
   });
-  if (!r.ok) throw new Error("falha");
+  if (!r.ok) throw new Error(`Reminder request failed: HTTP ${r.status}`);
 }

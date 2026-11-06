@@ -48,13 +48,13 @@ export function LocationPage({ page }) {
         </ul>
       </PageSection>
 
-      <section className="sec sec-alt" id="mapa" aria-labelledby="mapa-t">
+      <section className="sec sec-alt" id="mapa" aria-labelledby="map-title">
         <div className="container map-grid">
           <div className="reveal">
             <p className="sec-n">
               <span>02</span> Onde fica
             </p>
-            <h2 id="mapa-t" className="sec-title">
+            <h2 id="map-title" className="sec-title">
               Nosso endereço.
             </h2>
             <p className="lead">{ADDRESS}</p>

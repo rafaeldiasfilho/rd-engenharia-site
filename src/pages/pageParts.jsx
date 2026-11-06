@@ -106,8 +106,8 @@ export function PageTop({ breadcrumb, eyebrow, title, text, children }) {
 
 export const GENERAL_LINKS = {
   quiz: { href: "/o-que-preciso", tag: "Passo a passo", title: "Descubra o que o seu caso precisa", text: "Responda uma pergunta por vez e veja o que costuma ser exigido no seu caso." },
-  guias: { href: "/guias", tag: "Guias", title: "Guias em linguagem simples", text: "Explicações curtas sobre PGR, AVCB, CAR, habite-se e outros documentos." },
-  lembrete: { href: "/lembrete-de-vencimento", tag: "Lembrete", title: "Lembrete de vencimento", text: "Receba um aviso no WhatsApp antes de o documento vencer." },
+  guides: { href: "/guias", tag: "Guias", title: "Guias em linguagem simples", text: "Explicações curtas sobre PGR, AVCB, CAR, habite-se e outros documentos." },
+  reminder: { href: "/lembrete-de-vencimento", tag: "Lembrete", title: "Lembrete de vencimento", text: "Receba um aviso no WhatsApp antes de o documento vencer." },
 };
 
 export const areaLink = (a) => ({ href: `/${a.slug}`, tag: "Serviço", title: a.name, text: a.shortText, area: a.slug });

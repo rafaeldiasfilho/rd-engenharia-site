@@ -18,42 +18,42 @@ export const WORK_SAFETY_AREA = {
   items: [
     {
       name: "PGR — Programa de Gerenciamento de Riscos",
-      example: {"title":"PGR","subtitle":"Programa de Gerenciamento de Riscos","body":"tabela","art":true,"layout":"capa","doc":"Programa de Gerenciamento de Riscos","ref":"PGR · NR-01","contents":["Identificação da organização","Inventário de riscos","Plano de ação"]},
+      example: {"title":"PGR","subtitle":"Programa de Gerenciamento de Riscos","body":"riskInventory","art":true,"layout":"cover","doc":"Programa de Gerenciamento de Riscos","ref":"PGR · NR-01","contents":["Identificação da organização","Inventário de riscos","Plano de ação"]},
       text:
         "Documento da NR-1 que identifica os perigos do ambiente de trabalho, avalia os riscos e define as medidas de prevenção. É a base dos demais programas de segurança.",
       who: "Empresas que contratam empregados, em geral. Microempresas e empresas de pequeno porte de menor risco podem ter tratamento simplificado.",
     },
     {
       name: "PCMSO — integração com o programa médico",
-      example: {"title":"PGR × PCMSO","subtitle":"Informações do PGR para o programa médico","body":"checklist","layout":"capa","doc":"Integração entre PGR e PCMSO","ref":"Informações para o médico do trabalho","contents":["Riscos por função","Exposições identificadas no PGR","Pontos para o programa médico"]},
+      example: {"title":"PGR × PCMSO","subtitle":"Informações do PGR para o programa médico","body":"checklist","layout":"cover","doc":"Integração entre PGR e PCMSO","ref":"Informações para o médico do trabalho","contents":["Riscos por função","Exposições identificadas no PGR","Pontos para o programa médico"]},
       text:
         "O PCMSO (NR-7) é coordenado por médico do trabalho. Orientamos a empresa e integramos as informações do PGR com o programa médico, para que os documentos conversem entre si.",
       who: "Empresas com empregados.",
     },
     {
       name: "LTCAT e PPP",
-      example: {"title":"LTCAT","subtitle":"Condições do ambiente de trabalho","body":"grafico","art":true,"layout":"capa","doc":"Laudo Técnico das Condições do Ambiente de Trabalho","ref":"LTCAT","contents":["Descrição dos ambientes","Agentes nocivos avaliados","Conclusão por função"]},
+      example: {"title":"LTCAT","subtitle":"Condições do ambiente de trabalho","body":"noiseChart","art":true,"layout":"cover","doc":"Laudo Técnico das Condições do Ambiente de Trabalho","ref":"LTCAT","contents":["Descrição dos ambientes","Agentes nocivos avaliados","Conclusão por função"]},
       text:
         "O LTCAT documenta os agentes nocivos presentes no trabalho e serve de base para o PPP, usado pela Previdência no reconhecimento de atividade especial para aposentadoria.",
       who: "Empresas com trabalhadores expostos a agentes nocivos, como ruído, calor, poeira e produtos químicos.",
     },
     {
       name: "Laudo de insalubridade (NR-15) e de periculosidade (NR-16)",
-      example: {"title":"LAUDO","subtitle":"Insalubridade e periculosidade","body":"medicao","art":true,"layout":"capa","doc":"Laudo de Insalubridade e Periculosidade","ref":"NR-15 e NR-16","contents":["Atividades avaliadas","Avaliações e critérios","Conclusão por função"]},
+      example: {"title":"LAUDO","subtitle":"Insalubridade e periculosidade","body":"exposureAssessment","art":true,"layout":"cover","doc":"Laudo de Insalubridade e Periculosidade","ref":"NR-15 e NR-16","contents":["Atividades avaliadas","Avaliações e critérios","Conclusão por função"]},
       text:
         "Avaliação técnica no local de trabalho para definir se há direito a adicional de insalubridade ou de periculosidade. Também é usado em defesa da empresa em ações trabalhistas.",
       who: "Empresas que lidam com agentes nocivos, inflamáveis, explosivos ou eletricidade, e empresas que respondem a ações trabalhistas.",
     },
     {
       name: "APR, Mapa de Risco e AET",
-      example: {"title":"APR","subtitle":"Análise preliminar de riscos","body":"apr","layout":"capa","doc":"Análise Preliminar de Riscos","ref":"Atividade não rotineira","contents":["Descrição da atividade","Etapas, perigos e controles","Liberação da atividade"]},
+      example: {"title":"APR","subtitle":"Análise preliminar de riscos","body":"apr","layout":"cover","doc":"Análise Preliminar de Riscos","ref":"Atividade não rotineira","contents":["Descrição da atividade","Etapas, perigos e controles","Liberação da atividade"]},
       text:
         "Análise Preliminar de Riscos para tarefas específicas, mapa de riscos do ambiente e Análise Ergonômica do Trabalho, conforme a atividade.",
       who: "Empresas com tarefas de risco, obras e postos de trabalho com exigência ergonômica.",
     },
     {
       name: "Treinamentos de NRs",
-      example: {"title":"CERTIFICADO","subtitle":"Treinamento de Norma Regulamentadora","body":"certificado","layout":"certificado","doc":"NR-35 · Trabalho em altura"},
+      example: {"title":"CERTIFICADO","subtitle":"Treinamento de Norma Regulamentadora","body":"certificate","layout":"certificate","doc":"NR-35 · Trabalho em altura"},
       text:
         "Capacitações como NR-5 (CIPA), NR-6 (EPI), NR-10 (eletricidade), NR-12 (máquinas), NR-18 (construção), NR-33 (espaço confinado) e NR-35 (trabalho em altura), além de primeiros socorros e combate a incêndio.",
       who: "Colaboradores e gestores de empresas cuja atividade exige a capacitação.",

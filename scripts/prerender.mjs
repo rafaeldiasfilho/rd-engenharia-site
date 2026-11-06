@@ -116,7 +116,7 @@ try {
 
   const html404 = base
     .replace("</head>", `    <title>Página não encontrada | RD Engenharia</title>\n    <meta name="robots" content="noindex" />\n  </head>`)
-    .replace('<div id="root"></div>', `<div id="root" data-erro="404">${render404()}</div>`);
+    .replace('<div id="root"></div>', `<div id="root" data-error="404">${render404()}</div>`);
   fs.writeFileSync(path.join(dist, "404.html"), html404);
 
   const htmlAdmin = base
@@ -165,7 +165,7 @@ try {
     "",
   ].join(String.fromCharCode(10));
   fs.writeFileSync(path.join(dist, "llms.txt"), llms);
-  console.log(`Pré-renderizadas ${PAGES.length} páginas (mais ${AREAS.length} de impressão, fora do sitemap).`);
+  console.log(`Prerendered ${PAGES.length} pages (plus ${AREAS.length} print pages, not in the sitemap).`);
 } finally {
   await vite.close();
 }

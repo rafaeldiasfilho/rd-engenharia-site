@@ -34,12 +34,12 @@ export function DocumentsMarquee() {
 const PANEL_ITEMS = [
   { name: "PGR", status: "ok", date: "Próxima revisão: 03/2027", text: "Programa de Gerenciamento de Riscos. Revisado quando o trabalho muda e na data prevista no próprio programa." },
   { name: "LTCAT", status: "ok", date: "Atualizar se o ambiente mudar", text: "Laudo das condições do ambiente de trabalho, base do PPP. Precisa ser refeito quando mudam máquinas, processos ou setores." },
-  { name: "AVCB", status: "vence", date: "Vence em 28/11/2026", text: "Auto de Vistoria do Corpo de Bombeiros. Perto do vencimento, a RD avisa pelo WhatsApp e prepara a renovação com antecedência." },
+  { name: "AVCB", status: "expiring", date: "Vence em 28/11/2026", text: "Auto de Vistoria do Corpo de Bombeiros. Perto do vencimento, a RD avisa pelo WhatsApp e prepara a renovação com antecedência." },
   { name: "Treinamento NR-35", status: "ok", date: "Reciclagem: 08/2027", text: "Trabalho em altura. A reciclagem fica no calendário para nenhum trabalhador ficar com o treinamento vencido." },
-  { name: "Laudo de insalubridade", status: "pendente", date: "Aguardando a medição", text: "A avaliação do posto ainda não foi feita. O painel mostra o que falta para a empresa ficar em dia." },
+  { name: "Laudo de insalubridade", status: "pending", date: "Aguardando a medição", text: "A avaliação do posto ainda não foi feita. O painel mostra o que falta para a empresa ficar em dia." },
 ];
-const SHOWCASE_STATUS_LABEL = { ok: "Em dia", vence: "Vence em 30 dias", pendente: "Pendente" };
-const SHOWCASE_STATUS_SYMBOL = { ok: "✓", vence: "◔", pendente: "○" };
+const SHOWCASE_STATUS_LABEL = { ok: "Em dia", expiring: "Vence em 30 dias", pending: "Pendente" };
+const SHOWCASE_STATUS_SYMBOL = { ok: "✓", expiring: "◔", pending: "○" };
 
 // Dashboard-style card, only to explain how documents are organized. Made-up data.
 export function ExamplePanel() {

@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from "react";
 // The shared base (src/scenes3d/base.js) pauses off screen, tilts with the mouse and, with "reduce motion",
 // shows a still image. Without WebGL the CSS contour drawing in the background remains.
 const SCENES = {
-  terreno: () => import("./scenes3d/terrain"),
-  casa: () => import("./scenes3d/house"),
-  rota: () => import("./scenes3d/escapeRoute"),
-  capacete: () => import("./scenes3d/hardHat"),
+  terrain: () => import("./scenes3d/terrain"),
+  house: () => import("./scenes3d/house"),
+  escapeRoute: () => import("./scenes3d/escapeRoute"),
+  hardHat: () => import("./scenes3d/hardHat"),
 };
 
 export default function Scene3D({ scene, className = "", label }) {

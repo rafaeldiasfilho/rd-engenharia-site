@@ -24,14 +24,14 @@ export default function WhatsappQr() {
 
   return (
     <div className="qr-whatsapp">
-      <button type="button" className="qr-whatsapp-button" aria-expanded={open} aria-controls="qr-zap-painel" onClick={() => setOpen((v) => !v)}>
+      <button type="button" className="qr-whatsapp-button" aria-expanded={open} aria-controls="whatsapp-qr-panel" onClick={() => setOpen((v) => !v)}>
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" fill="currentColor">
           <path d="M1 1h6v6H1zm2 2v2h2V3zM11 1h6v6h-6zm2 2v2h2V3zM1 11h6v6H1zm2 2v2h2v-2zM10 10h2v2h-2zm2 2h2v2h-2zm2-2h3v2h-3zm-4 4h2v3h-2zm4 1h3v2h-3z" />
         </svg>
         {open ? "Fechar o QR code" : "Abrir a conversa no celular"}
       </button>
       {open && (
-        <div id="qr-zap-painel" className="qr-whatsapp-panel">
+        <div id="whatsapp-qr-panel" className="qr-whatsapp-panel">
           <img src="/marca/qr-whatsapp.svg" width="196" height="196" alt="QR code que abre a conversa com a RD Engenharia no WhatsApp" />
           <div className="qr-whatsapp-text">
             <p>

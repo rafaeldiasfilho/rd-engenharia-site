@@ -7,13 +7,13 @@ import { DrawingSheet } from "./DrawingSheet.jsx";
 import { Certificate } from "./Certificate.jsx";
 import { Cover } from "./Cover.jsx";
 
-export function SheetByLayout({ x = 0, y = 0, rot = 0, m, area, page = "folha", uid }) {
-  const Layout = m.layout === "prancha" ? DrawingSheet : m.layout === "certificado" ? Certificate : Cover;
+export function SheetByLayout({ x = 0, y = 0, rot = 0, m, area, page = "sheet", uid }) {
+  const Layout = m.layout === "drawingSheet" ? DrawingSheet : m.layout === "certificate" ? Certificate : Cover;
   return (
     <g transform={`translate(${x} ${y}) rotate(${rot})`}>
       <rect x="2" y="3" width="150" height="198" rx="3" fill="#000" opacity="0.1" />
       <rect width="150" height="198" rx="3" fill={SHEET_PAPER} stroke={SHEET_BORDER} />
-      {page === "miolo" ? <InnerPage m={m} area={area} /> : <Layout m={m} area={area} uid={uid} />}
+      {page === "innerPage" ? <InnerPage m={m} area={area} /> : <Layout m={m} area={area} uid={uid} />}
     </g>
   );
 }
@@ -34,12 +34,12 @@ function ReadingPins({ list }) {
 }
 
 const describeSheet = (m, name, page) =>
-  page === "miolo"
+  page === "innerPage"
     ? `Página interna de exemplo de ${name}: ${(m.doc || m.subtitle).toLowerCase()}`
     : `Exemplo ilustrativo de ${name}: ${(m.doc || m.subtitle).toLowerCase()}`;
 
 // The sheet (or the inner page of a cover), with the EXEMPLO stamp and, if requested, the "Como ler" points.
-export function SheetSvg({ m, name, area, page = "folha", pins = null }) {
+export function SheetSvg({ m, name, area, page = "sheet", pins = null }) {
   const uid = useId().replace(/:/g, "");
   return (
     <svg className="sheet-svg" viewBox="0 -10 158 218" role="img" aria-label={describeSheet(m, name, page)} focusable="false">

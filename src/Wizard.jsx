@@ -209,9 +209,9 @@ export default function Wizard() {
               exigido no seu caso.
             </p>
             <div className="quiz-city">
-              <label htmlFor="cidade-quiz">Sua cidade (opcional, vai só na mensagem)</label>
+              <label htmlFor="wizard-city">Sua cidade (opcional, vai só na mensagem)</label>
               <input
-                id="cidade-quiz"
+                id="wizard-city"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Ex.: Ibirá"

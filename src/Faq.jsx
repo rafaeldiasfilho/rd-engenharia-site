@@ -43,7 +43,7 @@ export default function Faq({ items, minFilter = 6, limit = 0 }) {
             {visible.map((f, n) =>
               limit > 0 && !showAll && !terms.length && n >= limit ? null : (
                 <li key={f.q}>
-                  <button type="button" aria-pressed={Math.min(sel, visible.length - 1) === n} aria-controls="faq-resposta" onClick={() => setSel(n)}>
+                  <button type="button" aria-pressed={Math.min(sel, visible.length - 1) === n} aria-controls="faq-answer-panel" onClick={() => setSel(n)}>
                     {f.q}
                   </button>
                 </li>
@@ -53,7 +53,7 @@ export default function Faq({ items, minFilter = 6, limit = 0 }) {
           {(() => {
             const f = visible[Math.min(sel, visible.length - 1)];
             return (
-              <div className="faq-answer" id="faq-resposta" aria-live="polite">
+              <div className="faq-answer" id="faq-answer-panel" aria-live="polite">
                 <h3>{f.q}</h3>
                 <p>{f.a}</p>
                 {f.guide && (

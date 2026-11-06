@@ -6,7 +6,7 @@ import { StatusChip, InnerPageParagraph, InnerPageTable } from "./innerPageParts
 
 // Inner pages with charts, measurements, drawings and flows.
 export const INNER_PAGES_CHARTS = {
-  grafico: {
+  noiseChart: {
     intro: "Ruído medido por função, comparado ao limite de tolerância de 85 dB(A) para 8 horas de trabalho (NR-15, Anexo 1).",
     body: () => {
       const jobs = [
@@ -60,7 +60,7 @@ export const INNER_PAGES_CHARTS = {
       );
     },
   },
-  medicao: {
+  exposureAssessment: {
     intro: "Resultados das avaliações no posto de trabalho e a conclusão segundo a NR-15 (insalubridade) e a NR-16 (periculosidade).",
     body: () => (
       <g>
@@ -99,7 +99,7 @@ export const INNER_PAGES_CHARTS = {
       </g>
     ),
   },
-  fachada: {
+  facadeAnomalies: {
     intro: "Anomalias encontradas na vistoria da fachada, numeradas no desenho, com a prioridade de correção de cada uma.",
     body: () => (
       <g>
@@ -146,7 +146,7 @@ export const INNER_PAGES_CHARTS = {
       </g>
     ),
   },
-  laudo: {
+  photoRecord: {
     intro: "Registro fotográfico da vistoria, com a descrição de cada ponto observado no imóvel.",
     body: () => (
       <g>
@@ -175,7 +175,7 @@ export const INNER_PAGES_CHARTS = {
       </g>
     ),
   },
-  fluxo: {
+  licensingFlow: {
     idx: 2,
     intro: "Etapas do licenciamento ambiental da atividade e do pedido de outorga de uso da água, com a situação de cada uma.",
     body: () => {

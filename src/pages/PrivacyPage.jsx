@@ -53,7 +53,7 @@ export function PrivacyPage() {
         title="Dúvida sobre os seus dados?"
         text="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
         whatsappText="Olá! Tenho uma dúvida sobre a política de privacidade do site."
-        related={[GENERAL_LINKS.lembrete, GENERAL_LINKS.guias, GENERAL_LINKS.quiz]}
+        related={[GENERAL_LINKS.reminder, GENERAL_LINKS.guides, GENERAL_LINKS.quiz]}
       />
     </>
   );

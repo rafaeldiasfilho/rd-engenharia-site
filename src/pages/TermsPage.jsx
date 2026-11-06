@@ -67,7 +67,7 @@ export function TermsPage() {
         title="Ficou alguma dúvida?"
         text="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
         whatsappText="Olá! Tenho uma dúvida sobre os termos de uso do site."
-        related={[GENERAL_LINKS.guias, GENERAL_LINKS.quiz, GENERAL_LINKS.lembrete]}
+        related={[GENERAL_LINKS.guides, GENERAL_LINKS.quiz, GENERAL_LINKS.reminder]}
       />
     </>
   );

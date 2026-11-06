@@ -18,35 +18,35 @@ export const ENVIRONMENT_AND_SURVEY_AREA = {
   items: [
     {
       name: "CAR — Cadastro Ambiental Rural",
-      example: {"title":"CAR","subtitle":"Cadastro ambiental rural","body":"car","layout":"prancha","doc":"Mapa do Imóvel para o CAR","ref":"APP e reserva legal","scale":"1:5.000"},
+      example: {"title":"CAR","subtitle":"Cadastro ambiental rural","body":"car","layout":"drawingSheet","doc":"Mapa do Imóvel para o CAR","ref":"APP e reserva legal","scale":"1:5.000"},
       text:
         "Cadastro eletrônico obrigatório dos imóveis rurais, previsto no Código Florestal, que reúne as informações ambientais da propriedade e é base para a regularização ambiental.",
       who: "Proprietários e possuidores de imóveis rurais.",
     },
     {
       name: "Georreferenciamento de imóvel rural",
-      example: {"title":"MEMORIAL","subtitle":"Georreferenciamento do imóvel","body":"terreno","art":true,"layout":"prancha","doc":"Planta do Imóvel Georreferenciado","ref":"Vértices e confrontações","scale":"1:5.000"},
+      example: {"title":"MEMORIAL","subtitle":"Georreferenciamento do imóvel","body":"georeferencingPlan","art":true,"layout":"drawingSheet","doc":"Planta do Imóvel Georreferenciado","ref":"Vértices e confrontações","scale":"1:5.000"},
       text:
         "Levantamento que define os limites do imóvel com coordenadas oficiais e é certificado junto ao INCRA, exigido em situações como desmembramento e transferência de propriedade.",
       who: "Quem vai vender, dividir ou regularizar um imóvel rural.",
     },
     {
       name: "Topografia",
-      example: {"title":"LEVANTAMENTO","subtitle":"Planta e curvas de nível","body":"curvas","art":true,"layout":"prancha","doc":"Levantamento Planialtimétrico","ref":"Curvas de nível","scale":"1:1.000"},
+      example: {"title":"LEVANTAMENTO","subtitle":"Planta e curvas de nível","body":"contourPlan","art":true,"layout":"drawingSheet","doc":"Levantamento Planialtimétrico","ref":"Curvas de nível","scale":"1:1.000"},
       text:
         "Levantamento planialtimétrico, locação de obras, divisão de glebas, planta cadastral, curvas de nível e cálculo de volume.",
       who: "Quem vai construir, dividir um terreno ou precisa conhecer as medidas e o relevo da área.",
     },
     {
       name: "Licenciamento ambiental e outorga",
-      example: {"title":"LICENÇA","subtitle":"Licenciamento e outorga","body":"fluxo","layout":"capa","doc":"Licenciamento Ambiental e Outorga","ref":"Acompanhamento do processo","client":"empresa","contents":["Atividade e enquadramento","Documentos exigidos","Andamento do processo"]},
+      example: {"title":"LICENÇA","subtitle":"Licenciamento e outorga","body":"licensingFlow","layout":"cover","doc":"Licenciamento Ambiental e Outorga","ref":"Acompanhamento do processo","client":"company","contents":["Atividade e enquadramento","Documentos exigidos","Andamento do processo"]},
       text:
         "Orientação e condução de licenças (prévia, de instalação e de operação) e da outorga de uso da água, conforme a atividade e o órgão responsável.",
       who: "Empreendimentos e atividades que impactam o meio ambiente ou usam recursos hídricos.",
     },
     {
       name: "Gestão de resíduos e gestão ambiental",
-      example: {"title":"PGRS","subtitle":"Plano de gestão de resíduos","body":"residuos","layout":"capa","doc":"Plano de Gerenciamento de Resíduos Sólidos","ref":"PGRS","client":"empresa","contents":["Resíduos gerados","Acondicionamento e destino","Responsáveis e registros"]},
+      example: {"title":"PGRS","subtitle":"Plano de gestão de resíduos","body":"wasteInventory","layout":"cover","doc":"Plano de Gerenciamento de Resíduos Sólidos","ref":"PGRS","client":"company","contents":["Resíduos gerados","Acondicionamento e destino","Responsáveis e registros"]},
       text:
         "PGRS e PGRSS, inventário e manifesto de resíduos e planos de ação ambiental para empresas, clínicas, indústrias e propriedades.",
       who: "Empresas que geram resíduos e precisam comprovar o destino correto.",

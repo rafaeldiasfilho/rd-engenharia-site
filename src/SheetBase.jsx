@@ -24,17 +24,17 @@ export const ISSUE_DATE = "outubro de 2026";
 export const SAMPLE_CAPTION = "Exemplo ilustrativo de documento, não é um documento real.";
 
 const CLIENTS = {
-  empresa: ["Empresa Exemplo Ltda.", "CNPJ 00.000.000/0001-00 · Ibirá/SP"],
-  obra: ["Proprietário Exemplo", "Rua Exemplo, 100 · Ibirá/SP"],
+  company: ["Empresa Exemplo Ltda.", "CNPJ 00.000.000/0001-00 · Ibirá/SP"],
+  construction: ["Proprietário Exemplo", "Rua Exemplo, 100 · Ibirá/SP"],
   rural: ["Sítio Exemplo", "Zona rural · Ibirá/SP"],
 };
 const CLIENT_BY_AREA = {
-  "seguranca-do-trabalho": "empresa",
-  "corpo-de-bombeiros": "empresa",
-  "engenharia-civil": "obra",
+  "seguranca-do-trabalho": "company",
+  "corpo-de-bombeiros": "company",
+  "engenharia-civil": "construction",
   "meio-ambiente-topografia": "rural",
 };
-export const clientFor = (m, area) => CLIENTS[m.client || CLIENT_BY_AREA[area] || "empresa"];
+export const clientFor = (m, area) => CLIENTS[m.client || CLIENT_BY_AREA[area] || "company"];
 
 // Wraps the text into lines of at most `max` characters (SVG does not wrap on its own).
 export function wrapText(text, max) {
