@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import PaginaView, { NaoEncontrada, PaginaImprimir } from "./Paginas.jsx";
 import { achaPagina, achaArea } from "./paginas";
-import "./index.css";
+import "./styles.css";
 import { inject, track } from "@vercel/analytics";
 
 inject();

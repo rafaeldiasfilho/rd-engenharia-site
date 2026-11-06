@@ -6,6 +6,7 @@ import { LiquidNavbar } from "@/components/ui/liquid-glass-navbar";
 import { HalftoneWordmark } from "@/components/ui/halftone-wordmark";
 import { AREAS, GUIAS, URL_AVALIACOES_GOOGLE, ENDERECO, NOTA_GOOGLE } from "./paginas";
 import { zap } from "./contato";
+import { LEGAL_NAME, CNPJ, OPEN_SINCE, TECHNICAL_LEAD, CREA_NUMBER } from "./company";
 import { BotaoBusca } from "./Busca";
 
 export { WHATSAPP, zap } from "./contato";
@@ -493,8 +494,8 @@ export function Rodape() {
           <a className="rodape-logo" href="/" aria-label="RD Engenharia, página inicial">
             <img src="/marca/marca-lockup.webp" width="720" height="396" alt="RD Engenharia, Segurança e Meio Ambiente" loading="lazy" />
           </a>
-          <p className="rodape-marca">RD IBIRA ENGENHARIA, SEGURANCA E MEIO AMBIENTE LTDA.</p>
-          <p>CNPJ 27.839.324/0001-74 · ativo desde 29/05/2017</p>
+          <p className="rodape-marca">{LEGAL_NAME}</p>
+          <p>CNPJ {CNPJ} · ativo desde {OPEN_SINCE}</p>
           <p>
             <a href={URL_AVALIACOES_GOOGLE} target="_blank" rel="noopener noreferrer">
               {ENDERECO}
@@ -506,7 +507,7 @@ export function Rodape() {
               {NOTA_GOOGLE}
             </a>
           </p>
-          <p>Responsável técnico: Rafael Antonio Dias · CREA-SP 5071022821</p>
+          <p>Responsável técnico: {TECHNICAL_LEAD} · {CREA_NUMBER}</p>
         </div>
         <div>
           <h3 className="rodape-titulo">Serviços</h3>
@@ -689,27 +690,9 @@ function useAncora() {
   }, []);
 }
 
-// Brilho que segue o mouse nos cartões com a classe "spot" (só em telas com mouse). Um único ouvinte
-// na página: grava a posição do ponteiro em --mx/--my do cartão, e o CSS desenha o brilho.
-function useHolofote() {
-  useEffect(() => {
-    if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return undefined;
-    const mover = (e) => {
-      const el = e.target.closest && e.target.closest(".spot");
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      el.style.setProperty("--my", `${e.clientY - r.top}px`);
-    };
-    document.addEventListener("pointermove", mover, { passive: true });
-    return () => document.removeEventListener("pointermove", mover);
-  }, []);
-}
-
 export function Casca({ children, atual = "" }) {
   useRevelar();
   useAncora();
-  useHolofote();
   return (
     <>
       <a className="pular" href="#conteudo">

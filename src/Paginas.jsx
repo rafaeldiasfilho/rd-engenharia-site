@@ -15,6 +15,7 @@ import Perguntas from "./Perguntas";
 import Janela from "./Janela";
 import MontarPedido from "./MontarPedido";
 import { AnimatedFolder } from "@/components/ui/3d-folder";
+import { LEGAL_NAME, TRADE_NAME, CNPJ, CREA_NUMBER, PHONE_DISPLAY } from "./company";
 import Cena3D from "./Cena3D";
 
 // Bloco 3D de cada página de área: rótulo, título e texto descrevem a ilustração (não é obra nem cliente real).
@@ -239,7 +240,7 @@ function PaginaArea({ pagina }) {
                 )}
                 <p>
                   <strong>Rafael Antonio Dias</strong>
-                  <span>Engenheiro civil e ambiental · CREA-SP 5071022821</span>
+                  <span>Engenheiro civil e ambiental · {CREA_NUMBER}</span>
                 </p>
               </div>
             </div>
@@ -269,7 +270,7 @@ function PaginaArea({ pagina }) {
         <Secao id="situacoes" n={num()} rotulo="Situações comuns" titulo="Você se reconhece em alguma destas?">
           <ul className="situacoes-lista">
             {pagina.situacoes.map((t) => (
-              <li key={t} className="rev spot">
+              <li key={t} className="rev">
                 <IconeArea slug={pagina.slug} tamanho={26} />
                 <span>{t}</span>
               </li>
@@ -322,7 +323,7 @@ function PaginaArea({ pagina }) {
         </div>
         <ol className="servicos-grade">
           {pagina.itens.map((item, n) => (
-            <li className="servico-cartao rev spot" key={item.nome} id={ancora(item.nome)}>
+            <li className="servico-cartao rev" key={item.nome} id={ancora(item.nome)}>
               {item.exemplo && (
                 <div className="servico-folha" aria-hidden="true">
                   <FolhaSvg m={item.exemplo} nome={item.nome} area={pagina.slug} />
@@ -821,8 +822,7 @@ function PaginaPrivacidade() {
           </p>
           <h2>Contato</h2>
           <p>
-            RD Engenharia Segurança e Meio Ambiente · Rua José Alves de Mello, 770, Centro, Ibirá/SP · WhatsApp (17)
-            99721-1208.
+            {TRADE_NAME} · {ENDERECO} · WhatsApp {PHONE_DISPLAY}.
           </p>
         </div>
       </section>
@@ -891,8 +891,7 @@ function PaginaTermos() {
           <p>Estes termos podem ser atualizados. A versão válida é sempre a publicada nesta página.</p>
           <h2>Contato</h2>
           <p>
-            RD Engenharia Segurança e Meio Ambiente · Rua José Alves de Mello, 770, Centro, Ibirá/SP · WhatsApp (17)
-            99721-1208.
+            {TRADE_NAME} · {ENDERECO} · WhatsApp {PHONE_DISPLAY}.
           </p>
         </div>
       </section>
@@ -1024,12 +1023,12 @@ function PaginaOnde({ pagina }) {
       {/* Antes esta seção só repetia o título da página; agora explica as duas formas de atendimento. */}
       <Secao id="atendimento-regiao" n="01" rotulo="Formas de atendimento" titulo="Como funciona o atendimento.">
         <ul className="formas-grade">
-          <li className="formas-cartao rev spot">
+          <li className="formas-cartao rev">
             <p className="rotulo-mini">Presencial</p>
             <h3>No local, quando o serviço exige.</h3>
             <p>Visitas, medições, levantamentos e vistorias no imóvel, na empresa ou na propriedade rural.</p>
           </li>
-          <li className="formas-cartao rev spot">
+          <li className="formas-cartao rev">
             <p className="rotulo-mini">Online</p>
             <h3>O resto, pelo WhatsApp.</h3>
             <p>Conversa, orçamento, envio de fotos e documentos e acompanhamento, sem precisar sair de casa.</p>
@@ -1124,9 +1123,9 @@ export function PaginaImprimir({ area }) {
         </ul>
         <p className="fd-nota">Lista de orientação geral. Confirmamos com você o que cada caso realmente exige.</p>
         <footer className="fd-rodape">
-          <p>RD IBIRA ENGENHARIA, SEGURANCA E MEIO AMBIENTE LTDA. · CNPJ 27.839.324/0001-74</p>
+          <p>{LEGAL_NAME} · CNPJ {CNPJ}</p>
           <p>
-            {ENDERECO} · WhatsApp (17) 99721-1208
+            {ENDERECO} · WhatsApp {PHONE_DISPLAY}
           </p>
         </footer>
       </main>

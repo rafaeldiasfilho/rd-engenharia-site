@@ -1,3 +1,4 @@
+import { CNPJ, CREA_NUMBER } from "./company";
 // Base comum dos exemplos ilustrativos (folhas, desenhos, painel): cores do papel, marca, dados públicos da
 // RD e clientes fictícios. Nada aqui é de cliente real; o papel é sempre claro (funciona nos dois temas).
 
@@ -15,9 +16,9 @@ export const AZUL = "#2a6fd1";
 export const MARROM = "#8a5a2b";
 export const CARIMBO = "#9b2c2c";
 
-export const RD_CNPJ = "CNPJ 27.839.324/0001-74";
+export const RD_CNPJ = `CNPJ ${CNPJ}`;
 export const RESP = "Eng. Rafael Antonio Dias";
-export const CREA = "CREA-SP 5071022821";
+export const CREA = CREA_NUMBER;
 export const DATA = "outubro de 2026";
 
 export const LEGENDA_EXEMPLO = "Exemplo ilustrativo de documento, não é um documento real.";

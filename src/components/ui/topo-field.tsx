@@ -277,7 +277,7 @@ export function TopoField({
     <canvas
       ref={ref}
       aria-hidden="true"
-      className={`pointer-events-none block h-full w-full ${className ?? ""}`}
+      className={`contour-field ${className ?? ""}`}
       {...props}
     />
   );

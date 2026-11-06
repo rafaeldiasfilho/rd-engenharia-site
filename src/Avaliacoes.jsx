@@ -32,7 +32,7 @@ export default function Avaliacoes() {
         </div>
         <ul className="aval-lista">
           {AVALIACOES.map((a) => (
-            <li key={`${a.nome}-${a.texto.slice(0, 20)}`} className="aval-cartao rev spot">
+            <li key={`${a.nome}-${a.texto.slice(0, 20)}`} className="aval-cartao rev">
               <Estrelas n={a.estrelas || 5} />
               <blockquote>
                 <p>“{a.texto}”</p>

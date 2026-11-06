@@ -15,6 +15,7 @@ import Avaliacoes from "./Avaliacoes";
 import BuscaDocumento from "./Busca";
 import QrWhatsapp from "./QrWhatsapp";
 import { WHATSAPP_PROJETOS } from "./contato";
+import { CREA_NUMBER, PHONE_DISPLAY } from "./company";
 import PilhaEtapas from "./PilhaEtapas";
 import Inclinado3D from "./Inclinado3D";
 import FraseRevela from "./FraseRevela";
@@ -159,7 +160,7 @@ export default function App() {
               const f = FOTOS[n.foto];
               return (
                 <li key={n.slug}>
-                  <a href={`/${n.slug}`} className="card-area spot">
+                  <a href={`/${n.slug}`} className="card-area">
                     <span className="card-area-foto">
                       <img src={caminho(f)} srcSet={srcset(f)} sizes="(min-width: 1100px) 300px, (min-width: 700px) 50vw, 100vw" width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
@@ -209,7 +210,7 @@ export default function App() {
 
       <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
 
-      <section className="sec sec-escura organizamos" id="organizamos" aria-labelledby="org-t">
+      <section className="sec band-section organizamos" id="organizamos" aria-labelledby="org-t">
         <div className="container organizamos-grade">
           <div>
             <header className="sec-cab rev">
@@ -243,7 +244,7 @@ export default function App() {
 
       <ExemplosHome />
 
-      <section className="sec sec-escura" id="como-funciona" aria-labelledby="como-t">
+      <section className="sec band-section" id="como-funciona" aria-labelledby="como-t">
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
@@ -282,7 +283,7 @@ export default function App() {
 
       {/* Contato e "onde atendemos" num bloco só: endereço, horário e região aparecem aqui uma vez
           (o selo do topo e o rodapé são os outros lugares fixos). O fundo de curvas de nível veio junto. */}
-      <section className="bloco-escuro sec-topo" id="contato" aria-labelledby="contato-t">
+      <section className="contact-block sec-topo" id="contato" aria-labelledby="contato-t">
         <TopoField className="sec-topo-campo contato-topo" grid={0} lines={0.4} />
         <div className="container contato-grade">
           <div>
@@ -396,13 +397,13 @@ export default function App() {
             e você conversa direto com quem vai executar.
           </p>
           <div className="pessoas cascata">
-            <article className="rev spot">
+            <article className="rev">
               <span className="pessoa-sigla" aria-hidden="true">
                 RA
               </span>
               <h3>Rafael Antonio Dias</h3>
               <p className="pessoa-cargo">
-                Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
+                Engenheiro civil e ambiental · Especialista em segurança do trabalho · {CREA_NUMBER}
               </p>
               <p className="pessoa-resumo">
                 {FORMACAO.length} formações, entre bacharelados, pós-graduações e curso técnico.
@@ -417,12 +418,12 @@ export default function App() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Icone nome="fa-brands fa-whatsapp" /> (17) 99721-1208
+                  <Icone nome="fa-brands fa-whatsapp" /> {PHONE_DISPLAY}
                 </a>
               </div>
               <Janela aberta={formacao} aoFechar={() => setFormacao(false)} titulo="Rafael Antonio Dias">
                 <p className="pessoa-cargo">
-                  Engenheiro civil e ambiental · Especialista em segurança do trabalho · CREA-SP 5071022821
+                  Engenheiro civil e ambiental · Especialista em segurança do trabalho · {CREA_NUMBER}
                 </p>
                 <ul className="pessoa-formacao">
                   {FORMACAO.map((f) => (
@@ -432,7 +433,7 @@ export default function App() {
                 <p className="pessoa-extra">Também corretor de imóveis e perito grafotécnico.</p>
               </Janela>
             </article>
-            <article className="rev spot">
+            <article className="rev">
               <span className="pessoa-sigla" aria-hidden="true">
                 RF
               </span>

@@ -97,7 +97,6 @@ export function AnimatedFolder({ title, items, countLabel = (n) => `${n} itens`,
         <span className="pasta-fundo" />
         <span className="pasta-aba" />
         <span className="pasta-frente" />
-        <span className="pasta-brilho" />
       </div>
       <ul className="pasta-cartoes" id={`${id}-cartoes`}>
         {leque.map((it, i) => (

@@ -138,7 +138,6 @@ export default function HeroFundo({ chave, rotulo, className = "", children }) {
         )}
       </div>
       <div className="hf-scrim" aria-hidden="true" />
-      <div className="hf-brilho" aria-hidden="true" />
       <div className="container hf-conteudo">{children}</div>
       {s && (
         <div className="container hf-rodape">

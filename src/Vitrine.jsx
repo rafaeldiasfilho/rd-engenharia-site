@@ -138,7 +138,7 @@ function Numero({ alvo, sufixo = "" }) {
   );
 }
 
-// Números ditos pelo dono, em linha, dentro da seção escura "O que organizamos" (antes eram uma faixa
+// Números ditos pelo dono, em linha, dentro da seção "O que organizamos" (antes eram uma faixa
 // própria; juntar as duas encurtou a página inicial).
 export function NumerosLinha() {
   return (
