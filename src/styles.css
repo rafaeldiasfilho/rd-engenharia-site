@@ -6997,40 +6997,6 @@ img {
   mix-blend-mode: normal;
 }
 
-/* Cartões das áreas: com mouse e tela larga, o cartão apontado alarga e mostra mais da foto. A foto tem
-   altura fixa e o cartão uma altura mínima, para a linha não mudar de altura durante o movimento. */
-@media (min-width: 1101px) and (hover: hover) and (pointer: fine) {
-  .escolhas-cards {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-    transition: grid-template-columns 520ms var(--ease);
-  }
-  .escolhas-cards:has(> li:nth-child(1):is(:hover, :focus-within)) {
-    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-  }
-  .escolhas-cards:has(> li:nth-child(2):is(:hover, :focus-within)) {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr) minmax(0, 1fr) minmax(0, 1fr);
-  }
-  .escolhas-cards:has(> li:nth-child(3):is(:hover, :focus-within)) {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.55fr) minmax(0, 1fr);
-  }
-  .escolhas-cards:has(> li:nth-child(4):is(:hover, :focus-within)) {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.55fr);
-  }
-  .card-area {
-    min-height: 440px; /* medido: o cartão estreitado precisa de até 434 px em 1101 px de largura */
-  }
-  .card-area-foto {
-    aspect-ratio: auto;
-    height: 168px;
-  }
-}
-
-@media (min-width: 1101px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
-  .escolhas-cards {
-    transition: none;
-  }
-}
-
 /* Ver o mapa (endereço na seção Contato da página inicial): o mapa só carrega depois do clique. */
 .onde-mapa {
   margin: 18px 0 0;
@@ -8164,19 +8130,20 @@ html.ampliar-aberto { overflow: hidden; }
 .hero-link:hover { color: #fff; }
 .hero-risco { margin: 12px 0 0; font-size: 14px; line-height: 20px; color: #d6d6d6; }
 
-/* Cartões das áreas em grade assimétrica no computador (skill: nada de quatro cartões iguais em fila):
-   a primeira área grande à esquerda, duas em cima à direita e a última larga embaixo. */
+/* Area cards on desktop: zig-zag grid (wide + narrow, then narrow + wide). Every photo has the same height
+   and fills it, so the four cards line up and no card has an empty band. */
 @media (min-width: 1100px) {
   .escolhas-cards {
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .escolhas-cards > li:nth-child(1) { grid-row: 1 / 3; grid-column: 1; }
-  .escolhas-cards > li:nth-child(4) { grid-column: 2 / 4; }
-  .escolhas-cards > li > .card-area { height: 100%; }
-  .escolhas-cards > li:nth-child(1) .card-area-foto { flex: 1; aspect-ratio: auto; min-height: 240px; }
-  .escolhas-cards > li:nth-child(4) .card-area { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .escolhas-cards > li:nth-child(4) .card-area-foto { grid-row: 1 / 8; aspect-ratio: auto; height: 100%; }
+  .escolhas-cards > li:nth-child(1),
+  .escolhas-cards > li:nth-child(4) {
+    grid-column: span 2;
+  }
+  .escolhas-cards .card-area-foto {
+    aspect-ratio: auto;
+    height: 240px;
+  }
 }
 
 /* Selos de confiança: sem cara de cartão, só divisórias finas (skill: cartão só onde a elevação diz algo) */
@@ -8188,13 +8155,6 @@ html.ampliar-aberto { overflow: hidden; }
   border-radius: 0;
   box-shadow: none;
   padding: 4px 0 4px 16px;
-}
-@media (min-width: 1100px) {
-  .escolhas-cards > li:nth-child(4) .card-area-icone {
-    position: static;
-    margin: 20px 0 0 20px;
-    justify-self: start;
-  }
 }
 
 /* Frase que acende palavra por palavra (src/FraseRevela.jsx) */

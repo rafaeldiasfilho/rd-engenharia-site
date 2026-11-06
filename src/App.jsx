@@ -162,7 +162,7 @@ export default function App() {
                 <li key={n.slug}>
                   <a href={`/${n.slug}`} className="card-area">
                     <span className="card-area-foto">
-                      <img src={caminho(f)} srcSet={srcset(f)} sizes="(min-width: 1100px) 300px, (min-width: 700px) 50vw, 100vw" width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
+                      <img src={caminho(f)} srcSet={srcset(f)} sizes={i === 0 || i === 3 ? "(min-width: 1100px) 800px, (min-width: 700px) 50vw, 100vw" : "(min-width: 1100px) 400px, (min-width: 700px) 50vw, 100vw"} width={f.w} height={f.h} alt="" loading="lazy" decoding="async" />
                     </span>
                     <span className="icone-tile card-area-icone">
                       <IconeArea slug={n.slug} tamanho={30} />
