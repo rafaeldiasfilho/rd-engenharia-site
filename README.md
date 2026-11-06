@@ -8,27 +8,25 @@ pedidos de orçamento são feitos pelo WhatsApp: o formulário do site monta a m
 
 ## Tecnologias
 
-React 18 e Vite 5, sem back-end. O site é estático e gera apenas HTML, CSS e JavaScript.
+React 18 e Vite 5. O site é estático (HTML gerado no build para cada página); o único serviço externo é o Supabase,
+usado pela área interna `/admin` e pelo pedido de lembrete de vencimento. Hospedagem na Vercel.
 
 ## Como rodar
 
 ```bash
 npm install
 npm run dev      # servidor de desenvolvimento
-npm run build    # gera a pasta dist/
+npm test         # testes automáticos (Vitest), sem internet e sem banco
+npm run build    # gera a pasta dist/ (build + HTML de cada página)
 npm run preview  # confere o resultado do build
 ```
 
-## Estrutura
+## Documentação
 
-- `src/App.jsx`: conteúdo e seções da página
-- `src/styles.css`: estilos
-- `public/`: favicon, `robots.txt` e `sitemap.xml`
-- `index.html`: metadados de SEO e dados estruturados da empresa
+- `docs/PRD.md`: o que o site faz, regras de negócio e o que acontece em cada falha.
+- `docs/TECH_SPEC.md`: tecnologias, bibliotecas proibidas, estrutura de pastas, banco de dados e chamadas.
+- `claude.md`: instruções para o Claude Code e o mapa de "onde mexer em cada coisa".
 
-## Estrutura do site
+O código é todo em inglês; o texto que o visitante vê é em português.
 
-- Página inicial (`src/App.jsx`) e páginas internas por área, guias, guia "o que preciso?" e privacidade (`src/paginas.js`, `src/Paginas.jsx`). Cada página é gerada como HTML estático no build (`scripts/prerender.mjs`) para o Google ler o conteúdo.
-- Perguntas frequentes em `src/faq.js` (usadas também no JSON-LD).
-- Área interna em `/admin` (`src/admin`): clientes, serviços e vencimentos, com login pelo Supabase. O esquema do banco está em `supabase/schema.sql`. Só e-mails cadastrados na tabela `equipe` acessam os dados.
-- Para testar a área interna sem o banco: `VITE_DEMO=1 npm run dev` (dados só no navegador).
+Para testar a área interna sem o banco: `VITE_DEMO=1 npm run dev` (dados só no navegador).
