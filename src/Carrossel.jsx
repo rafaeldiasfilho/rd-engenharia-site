@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { slidesDe, caminho, srcset, aviso } from "./fotos";
+import Ampliar from "./Ampliar";
 
 // Faixa de imagens no estilo "Fotos" da Apple, sem biblioteca. É o único carrossel do site.
 // - A faixa é CSS scroll-snap: funciona sem JavaScript, com deslizar no toque e roda do mouse, e a
@@ -40,6 +42,7 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
         alt: s.f.alt,
         legenda: s.legenda,
         href: s.href,
+        imgHref: caminho(s.f), // toda foto de carrossel amplia na própria página
         nota: aviso(s.f),
         creditos: true,
         pos: s.pos,
@@ -52,6 +55,8 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
   const faixa = useRef(null);
   const [i, setI] = useState(0);
   const [arrastando, setArrastando] = useState(false);
+  // Foto ampliada na própria página (antes abria em outra aba): { i, el } ou null
+  const [ampliada, setAmpliada] = useState(null);
   const reduz = useRef(false);
   const travaAte = useRef(0); // enquanto a rolagem programada anda, a rolagem não reescreve o contador
   const ultimaAcao = useRef(0); // última interação da pessoa (pausa a troca automática)
@@ -336,7 +341,19 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
                   {s.node ? (
                     s.node
                   ) : s.imgHref ? (
-                    <a href={s.imgHref} target="_blank" rel="noopener noreferrer" draggable={false} aria-label={`Ampliar: ${s.legenda || s.alt}`}>
+                    <a
+                      href={s.imgHref}
+                      draggable={false}
+                      aria-label={`Ampliar: ${s.legenda || s.alt}`}
+                      aria-haspopup="dialog"
+                      onClick={(e) => {
+                        // Sem JavaScript o link abre a imagem; com JavaScript ela amplia aqui mesmo.
+                        e.preventDefault();
+                        parou.current = true;
+                        const lista = slides.filter((x) => x.imgHref && !x.node);
+                        setAmpliada({ i: lista.indexOf(s), el: e.currentTarget.querySelector("img") });
+                      }}
+                    >
                       {img}
                     </a>
                   ) : (
@@ -390,6 +407,16 @@ export default function Carrossel({ chave, itens, rotulo, aspecto = "16 / 10", c
           </div>
         </div>
       )}
+      {ampliada &&
+        createPortal(
+          <Ampliar
+            itens={slides.filter((x) => x.imgHref && !x.node).map((x) => ({ src: x.imgHref, alt: x.alt, legenda: x.legenda }))}
+            indice={ampliada.i}
+            origem={ampliada.el}
+            aoFechar={() => setAmpliada(null)}
+          />,
+          document.body,
+        )}
     </section>
   );
 }

@@ -32,5 +32,5 @@
   --color-primary-foreground: #ffffff;
   --color-accent: var(--verde-claro);
   --color-accent-foreground: var(--tinta);
-  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
 }

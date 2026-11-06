@@ -15,6 +15,39 @@ import Perguntas from "./Perguntas";
 import Janela from "./Janela";
 import MontarPedido from "./MontarPedido";
 import { AnimatedFolder } from "@/components/ui/3d-folder";
+import Cena3D from "./Cena3D";
+
+// Bloco 3D de cada página de área: rótulo, título e texto descrevem a ilustração (não é obra nem cliente real).
+const CENA_AREA = {
+  "meio-ambiente-topografia": {
+    cena: "terreno",
+    rotulo: "Do campo à planta",
+    titulo: "O terreno medido vira curvas de nível.",
+    texto: "No levantamento, cada ponto medido em campo ganha coordenadas e altitude. Com eles desenhamos as curvas de nível, a planta e o memorial que o seu processo pede.",
+    alt: "Ilustração em 3D de um terreno com curvas de nível e pontos levantados",
+  },
+  "engenharia-civil": {
+    cena: "casa",
+    rotulo: "Do projeto à obra",
+    titulo: "Cada etapa resolvida antes de começar.",
+    texto: "No projeto, a casa é pensada etapa por etapa: fundação, paredes, aberturas e telhado. Assim a obra começa com as dúvidas respondidas no papel.",
+    alt: "Ilustração em 3D de uma casa térrea sendo construída por etapas: contrapiso, paredes, janelas e porta, telhado",
+  },
+  "corpo-de-bombeiros": {
+    cena: "rota",
+    rotulo: "Rota de fuga",
+    titulo: "De qualquer sala até a saída.",
+    texto: "No projeto de prevenção, cada ambiente tem rota de fuga, sinalização, iluminação de emergência e extintores no lugar certo. É isso que o Corpo de Bombeiros confere na vistoria.",
+    alt: "Ilustração em 3D da planta de um pavimento com as rotas de fuga se acendendo até a saída e os extintores marcados",
+  },
+  "seguranca-do-trabalho": {
+    cena: "capacete",
+    rotulo: "Proteção no trabalho",
+    titulo: "A proteção certa para cada risco.",
+    texto: "No PGR levantamos os riscos de cada função e indicamos as medidas: primeiro as proteções coletivas, depois os EPIs que ainda forem necessários.",
+    alt: "Ilustração em 3D de um capacete de segurança girando, cercado por anéis de proteção",
+  },
+};
 
 // Bloco que no celular começa recolhido (com um botão para abrir) e no computador fica sempre aberto.
 // Vem aberto no HTML (bom para o Google e para quem não tem JavaScript); fecha depois de montar se a tela é estreita.
@@ -166,8 +199,8 @@ function PaginaArea({ pagina }) {
         <h1 className="display">{pagina.h1}</h1>
         <p className="lead">{pagina.intro}</p>
         <div className="acoes">
-          <BotaoZap className="btn-grande" texto={zapArea} rotulo="Pedir orçamento" />
-          <small>Prazo e valor são informados no orçamento, depois de conhecermos o seu caso.</small>
+          <BotaoZap className="btn-grande" texto={zapArea} rotulo="Pedir orçamento pelo WhatsApp" />
+          <small>Orçamento por escrito e sem compromisso. Prazo e valor são informados depois de conhecermos o seu caso.</small>
         </div>
       </HeroFundo>
 
@@ -210,6 +243,24 @@ function PaginaArea({ pagina }) {
                 </p>
               </div>
             </div>
+          </div>
+        </section>
+      )}
+
+      {CENA_AREA[pagina.slug] && (
+        <section className="faixa-cena" aria-labelledby="cena-t">
+          <div className="container faixa-cena-grade">
+            <div className="faixa-cena-texto rev">
+              <p className="rotulo-mini">{CENA_AREA[pagina.slug].rotulo}</p>
+              <h2 id="cena-t" className="sec-titulo">
+                {CENA_AREA[pagina.slug].titulo}
+              </h2>
+              <p>{CENA_AREA[pagina.slug].texto}</p>
+              <p className="nota-fina">
+                Ilustração em 3D. Arraste com o mouse ou o dedo para girar.
+              </p>
+            </div>
+            <Cena3D cena={CENA_AREA[pagina.slug].cena} className="faixa-cena-3d" rotulo={CENA_AREA[pagina.slug].alt} />
           </div>
         </section>
       )}
@@ -290,7 +341,7 @@ function PaginaArea({ pagina }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
+                  <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
                 </a>
               </div>
             </li>
@@ -785,6 +836,76 @@ function PaginaPrivacidade() {
   );
 }
 
+// Termos de uso: RASCUNHO escrito a partir do que o site já afirma (orçamento pelo WhatsApp, sem preços no
+// site, ART quando exigida, imagens ilustrativas, projetos reais com dados retirados). O dono revisa antes de publicar.
+function PaginaTermos() {
+  return (
+    <>
+      <Topo migalha={[{ rotulo: "Termos de uso" }]} eyebrow="Transparência" titulo="Termos de Uso" />
+      <section className="sec artigo-sec">
+        <div className="container container-leitura artigo">
+          <p className="artigo-abre">
+            Estes termos explicam, de forma simples, como funciona o site da RD Engenharia Segurança e Meio Ambiente.
+            Ao usar o site, você concorda com eles.
+          </p>
+          <h2>Para que serve o site</h2>
+          <p>
+            O site apresenta os serviços da RD Engenharia e ajuda você a descobrir o que o seu caso precisa. Ele não
+            vende serviços diretamente: todo atendimento começa por uma conversa no WhatsApp.
+          </p>
+          <h2>Orçamento e contratação</h2>
+          <p>
+            O site não mostra preços nem prazos fixos, porque cada caso é diferente. Valor, prazo e condições são
+            informados no orçamento, por escrito e sem compromisso, depois de conhecermos o seu caso. O serviço só
+            começa depois que você aprova o orçamento. Os trabalhos que exigem são acompanhados de ART (Anotação de
+            Responsabilidade Técnica) de profissional habilitado no CREA-SP.
+          </p>
+          <h2>Conteúdo informativo</h2>
+          <p>
+            Os guias, as perguntas frequentes e o passo a passo "O que preciso?" trazem orientações gerais. Eles não
+            substituem a análise técnica do seu caso, e normas e prazos dos órgãos públicos podem mudar. Antes de
+            decidir, fale com a gente.
+          </p>
+          <h2>Imagens e exemplos</h2>
+          <p>
+            As fotos marcadas como ilustrativas são de terceiros, usadas conforme a licença de cada uma (veja os{" "}
+            <a href="/creditos">créditos das imagens</a>), e não mostram trabalhos da RD. Os desenhos de projeto da
+            página de engenharia civil são trabalhos reais, com os dados dos clientes retirados. Os documentos de
+            exemplo e as ilustrações interativas são inventados, feitos só para o site.
+          </p>
+          <h2>Direitos sobre o conteúdo</h2>
+          <p>
+            Os textos, a marca e os desenhos próprios do site pertencem à RD Engenharia. Para usar qualquer parte
+            deles, peça autorização pelo WhatsApp.
+          </p>
+          <h2>Links para outros serviços</h2>
+          <p>
+            O site tem links para o WhatsApp, o Google Maps e o Instagram. Ao usá-los, valem os termos e a política de
+            privacidade de cada serviço.
+          </p>
+          <h2>Seus dados</h2>
+          <p>
+            O tratamento dos dados de quem entra em contato está na <a href="/privacidade">política de privacidade</a>.
+          </p>
+          <h2>Mudanças nestes termos</h2>
+          <p>Estes termos podem ser atualizados. A versão válida é sempre a publicada nesta página.</p>
+          <h2>Contato</h2>
+          <p>
+            RD Engenharia Segurança e Meio Ambiente · Rua José Alves de Mello, 770, Centro, Ibirá/SP · WhatsApp (17)
+            99721-1208.
+          </p>
+        </div>
+      </section>
+      <Final
+        titulo="Ficou alguma dúvida?"
+        texto="Pergunte pelo WhatsApp. Respondemos no horário de atendimento, de segunda a sexta, das 7h às 17h."
+        zapTexto="Olá! Tenho uma dúvida sobre os termos de uso do site."
+        relacionadas={[REL_GERAL.guias, REL_GERAL.quiz, REL_GERAL.lembrete]}
+      />
+    </>
+  );
+}
+
 function PaginaCreditos() {
   const grupos = [
     { titulo: "CC0 (Wikimedia Commons)", licenca: "CC0", texto: "Domínio público: uso livre, sem exigência de crédito. Mantemos o autor e a origem por transparência." },
@@ -866,7 +987,7 @@ function PaginaCreditos() {
             <p>
               A marca (logotipo) é da RD Engenharia. Os desenhos de projeto da página de engenharia civil são trabalhos reais da RD, com os dados dos
               clientes retirados. As ilustrações interativas e o modelo de PGR são exemplos inventados, feitos para o
-              site. Os ícones são do Font Awesome Free (licença CC BY 4.0) e a fonte é a IBM Plex Sans (licença SIL
+              site. Os ícones são da Phosphor Icons (licença MIT) e a fonte é a Manrope (licença SIL
               Open Font).
             </p>
           </div>
@@ -1022,6 +1143,7 @@ export default function PaginaView({ pagina }) {
   else if (pagina.tipo === "guias-indice") corpo = <PaginaGuias pagina={pagina} />;
   else if (pagina.tipo === "lembrete") corpo = <PaginaLembrete pagina={pagina} />;
   else if (pagina.tipo === "creditos") corpo = <PaginaCreditos />;
+  else if (pagina.tipo === "termos") corpo = <PaginaTermos />;
   else corpo = <PaginaPrivacidade />;
   return <Casca atual={pagina.slug}>{corpo}</Casca>;
 }

@@ -128,7 +128,7 @@ try {
   fs.writeFileSync(path.join(dist, "index.html"), modelo.replace('<div id="root"></div>', `<div id="root">${renderHome()}</div>`));
 
   const hoje = new Date().toISOString().slice(0, 10);
-  const urls = ["", ...PAGINAS.filter((p) => !["privacidade"].includes(p.tipo)).map((p) => p.slug)];
+  const urls = ["", ...PAGINAS.filter((p) => !["privacidade", "termos"].includes(p.tipo)).map((p) => p.slug)];
   const sitemap =
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls

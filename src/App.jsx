@@ -1,5 +1,4 @@
 import Icone from "./Icone";
-import Aurora from "./Aurora";
 import { useEffect, useState } from "react";
 import { FAQ } from "./faq";
 import { AREAS, URL_AVALIACOES_GOOGLE, URL_COMO_CHEGAR, MAPA_EMBED, NOTA_GOOGLE, ENDERECO } from "./paginas";
@@ -17,6 +16,8 @@ import BuscaDocumento from "./Busca";
 import QrWhatsapp from "./QrWhatsapp";
 import { WHATSAPP_PROJETOS } from "./contato";
 import PilhaEtapas from "./PilhaEtapas";
+import Inclinado3D from "./Inclinado3D";
+import FraseRevela from "./FraseRevela";
 
 // O título de cada cartão vem de AREAS (rotulo), para o nome da área ser o mesmo no site todo.
 const NECESSIDADES = [
@@ -123,21 +124,22 @@ export default function App() {
           </span>
         </a>
         <p className="eyebrow">RD Engenharia · Ibirá/SP</p>
-        <h1 className="display">Engenharia, segurança do trabalho e meio ambiente para a nossa região.</h1>
+        <h1 className="display">Laudos, projetos e licenças em dia para empresas, obras e imóveis rurais.</h1>
         <p className="hero-triade">
           Documentos em dia. Obra regular. <span className="acento">Equipe protegida.</span>
         </p>
         <p className="lead">
-          Laudos, projetos e licenças para empresas, produtores rurais e proprietários de Ibirá e região, presencial e online. Fale direto com o responsável técnico pelo WhatsApp.
+          Engenharia, segurança do trabalho e meio ambiente em Ibirá e região, presencial e online. Você fala direto com o responsável técnico pelo WhatsApp.
         </p>
         <div className="acoes">
           <a className="btn btn-zap btn-grande" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-            <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento
+            <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
           </a>
-          <a className="btn btn-claro btn-grande" href="/o-que-preciso">
-            Não sei o que preciso
+          <a className="link-seta hero-link" href="/o-que-preciso">
+            Não sabe o que precisa? Descubra aqui <span aria-hidden="true">→</span>
           </a>
         </div>
+        <p className="hero-risco">Orçamento por escrito e sem compromisso.</p>
         <p className={`status status-fundo ${atendendo ? "on" : ""}`}>
           <Icone nome="fa-solid fa-circle" />{" "}
           {atendendo === null
@@ -201,12 +203,13 @@ export default function App() {
         </div>
       </div>
 
+      <FraseRevela texto="Todo serviço é assinado por profissional habilitado no CREA-SP, e você conversa direto com quem vai executar." />
+
       <FaixaDocumentos />
 
       <SecoesNav itens={SECOES_HOME} rotulo="Nesta página" />
 
       <section className="sec sec-escura organizamos" id="organizamos" aria-labelledby="org-t">
-        <Aurora />
         <div className="container organizamos-grade">
           <div>
             <header className="sec-cab rev">
@@ -231,7 +234,9 @@ export default function App() {
             <NumerosLinha />
           </div>
           <div className="rev">
-            <PainelExemplo />
+            <Inclinado3D>
+              <PainelExemplo />
+            </Inclinado3D>
           </div>
         </div>
       </section>
@@ -239,7 +244,6 @@ export default function App() {
       <ExemplosHome />
 
       <section className="sec sec-escura" id="como-funciona" aria-labelledby="como-t">
-        <Aurora />
         <div className="container">
           <header className="sec-cab rev">
             <p className="sec-n">
@@ -279,7 +283,6 @@ export default function App() {
       {/* Contato e "onde atendemos" num bloco só: endereço, horário e região aparecem aqui uma vez
           (o selo do topo e o rodapé são os outros lugares fixos). O fundo de curvas de nível veio junto. */}
       <section className="bloco-escuro sec-topo" id="contato" aria-labelledby="contato-t">
-        <Aurora />
         <TopoField className="sec-topo-campo contato-topo" grid={0} lines={0.4} />
         <div className="container contato-grade">
           <div>

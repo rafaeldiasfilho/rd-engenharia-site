@@ -315,10 +315,10 @@ export function Cabecalho({ atual = "" }) {
           Onde atendemos
         </a>
         <a href="/o-que-preciso" aria-current={cur(atual === "o-que-preciso")} onClick={() => setAberto(false)}>
-          Não sei o que preciso
+          Descobrir o que o meu caso precisa
         </a>
         <a className="btn btn-zap" href={zap("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
-          <Icone nome="fa-brands fa-whatsapp" /> Chamar no WhatsApp
+          <Icone nome="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
         </a>
       </nav>
     </header>
@@ -549,6 +549,9 @@ export function Rodape() {
             </li>
             <li>
               <a href="/privacidade">Política de privacidade</a>
+            </li>
+            <li>
+              <a href="/termos-de-uso">Termos de uso</a>
             </li>
             <li>
               <a href="/creditos">Créditos das imagens</a>

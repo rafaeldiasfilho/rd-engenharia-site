@@ -255,7 +255,7 @@ export function HalftoneWordmark({ palavra, className = "", passo = 6, raio = 80
       setPronto(true);
     };
     // Só monta perto da tela (a máscara lê pixels e percorre a grade inteira), fora do carregamento.
-    // Espera também a IBM Plex Sans 700: medir com a fonte reserva desalinharia a palavra.
+    // Espera também a fonte do site (Manrope) no peso 700: medir com a fonte reserva desalinharia a palavra.
     const perto = new IntersectionObserver(
       ([e]) => {
         if (!e?.isIntersecting) return;

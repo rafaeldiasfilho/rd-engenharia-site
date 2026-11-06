@@ -529,6 +529,14 @@ export const PAGINAS = [
     h1: "Política de Privacidade",
   },
   {
+    // RASCUNHO (2026-11-06): texto escrito pela IA a partir do que o site já diz; o dono revisa antes de publicar.
+    tipo: "termos",
+    slug: "termos-de-uso",
+    title: "Termos de Uso | RD Engenharia",
+    description: "Regras de uso do site da RD Engenharia: orçamentos, conteúdo informativo, imagens e direitos.",
+    h1: "Termos de Uso",
+  },
+  {
     tipo: "creditos",
     slug: "creditos",
     title: "Créditos das imagens | RD Engenharia",
