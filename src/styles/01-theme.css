@@ -22,6 +22,7 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --header-h: 64px;
   --nav-h: 48px;
+  --sections-h: 68px; /* height of the "Nesta página" pill band (6 + 56 + 6); used by scroll-padding and the sticky cards */
   --glass-bg: rgba(246, 246, 244, 0.82);
   --img-outline: rgba(0, 0, 0, 0.08);
   --glass-border: rgba(255, 255, 255, 0.7);
