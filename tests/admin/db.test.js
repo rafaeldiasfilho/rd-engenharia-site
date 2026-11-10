@@ -132,6 +132,45 @@ describe("Supabase mode", () => {
     supabase.auth.signInWithPassword = async () => ({ data: null, error: { message: "Invalid login credentials" } });
     const db = await loadDatabase();
     await expect(db.auth.signIn("a@b.com", "errada")).rejects.toThrow("E-mail ou senha incorretos.");
+    supabase.auth.signInWithPassword = async () => ({
+      data: { user: null, session: null },
+      error: { name: "AuthApiError", status: 400, code: "invalid_credentials", message: "Invalid login credentials" },
+    });
+    await expect(db.auth.signIn("a@b.com", "errada")).rejects.toThrow("E-mail ou senha incorretos.");
+  });
+
+  it("says the database cannot be reached when the network fails or the project is paused", async () => {
+    const unreachable = "Não foi possível conectar ao banco de dados agora. Tente de novo em alguns minutos.";
+    const db = await loadDatabase();
+    supabase.auth.signInWithPassword = async () => ({
+      data: { user: null, session: null },
+      error: { name: "AuthRetryableFetchError", status: 0, message: "Failed to fetch" },
+    });
+    await expect(db.auth.signIn("a@b.com", "certa")).rejects.toThrow(unreachable);
+    supabase.auth.signInWithPassword = async () => ({
+      data: { user: null, session: null },
+      error: { name: "AuthApiError", status: 540, message: "Project paused" },
+    });
+    await expect(db.auth.signIn("a@b.com", "certa")).rejects.toThrow(unreachable);
+    supabase.auth.signInWithPassword = async () => {
+      throw new TypeError("Failed to fetch");
+    };
+    await expect(db.auth.signIn("a@b.com", "certa")).rejects.toThrow(unreachable);
+  });
+
+  it("does not blame the password for other refusals", async () => {
+    supabase.auth.signInWithPassword = async () => ({
+      data: { user: null, session: null },
+      error: { name: "AuthApiError", status: 400, code: "email_not_confirmed", message: "Email not confirmed" },
+    });
+    const db = await loadDatabase();
+    await expect(db.auth.signIn("a@b.com", "certa")).rejects.toThrow("Não foi possível entrar agora. Tente de novo em alguns minutos.");
+  });
+
+  it("returns the e-mail of the user who signed in", async () => {
+    supabase.auth.signInWithPassword = async () => ({ data: { user: { email: "equipe@rd.com" }, session: {} }, error: null });
+    const db = await loadDatabase();
+    expect(await db.auth.signIn("equipe@rd.com", "certa")).toEqual({ email: "equipe@rd.com" });
   });
 
   it("returns the signed-in e-mail, or null without a session", async () => {

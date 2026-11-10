@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { ClientForm } from "./ClientForm.jsx";
-import { daysUntil, formatDateBR, todayISO } from "./dates.js";
+import { formatDateBR, todayISO } from "./dates.js";
 import { buildClientWhatsappLink } from "./clientWhatsapp.js";
 import { ServiceForm } from "./ServiceForm.jsx";
-import { SERVICE_STATUS_LABELS } from "./adminRecords.js";
+import { ServiceLine } from "./ServiceLine.jsx";
 
-export function ClientDetail({ client, services, saveClient, deleteClient, saveService, deleteService, goBack }) {
+export function ClientDetail({ client, services, saveClient, deleteClient, saveService, deleteService, renewService, goBack }) {
   const [editing, setEditing] = useState(false);
   const [editingService, setEditingService] = useState(null);
   const ownServices = services.filter((s) => s.cliente_id === client.id);
@@ -127,43 +127,16 @@ export function ClientDetail({ client, services, saveClient, deleteClient, saveS
 
       {ownServices.length ? (
         <ul className="admin-list">
-          {ownServices.map((s) => {
-            const days = daysUntil(s.vencimento);
-            return (
-              <li className="admin-line" key={s.id}>
-                <div>
-                  <strong>{s.tipo}</strong>
-                  <span>
-                    {SERVICE_STATUS_LABELS[s.status]} · {formatDateBR(s.data_realizacao)}
-                    {s.art_numero ? ` · ART ${s.art_numero}` : ""}
-                    {s.valor ? ` · R$ ${Number(s.valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : ""}
-                  </span>
-                  {s.local_servico && <span>{s.local_servico}</span>}
-                  {s.descricao && <span>{s.descricao}</span>}
-                  {s.vencimento && (
-                    <small className={days < 0 && !s.encerrado ? "admin-overdue" : ""}>
-                      Vencimento: {formatDateBR(s.vencimento)}
-                      {s.encerrado ? " · tratado" : days < 0 ? " · vencido" : ` · em ${days} dia(s)`}
-                    </small>
-                  )}
-                </div>
-                <div className="admin-actions">
-                  <button className="btn btn-sec" type="button" onClick={() => setEditingService(s)}>
-                    Editar
-                  </button>
-                  <button
-                    className="btn btn-sec"
-                    type="button"
-                    onClick={() => {
-                      if (window.confirm("Excluir este serviço?")) deleteService(s.id);
-                    }}
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </li>
-            );
-          })}
+          {ownServices.map((s) => (
+            <ServiceLine
+              key={s.id}
+              client={client}
+              service={s}
+              onEdit={() => setEditingService(s)}
+              onDelete={() => deleteService(s.id)}
+              onRenew={renewService}
+            />
+          ))}
         </ul>
       ) : (
         <p className="admin-empty">Nenhum serviço registrado para este cliente.</p>

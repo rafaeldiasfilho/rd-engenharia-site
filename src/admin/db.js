@@ -2,6 +2,8 @@
 // public values below). With VITE_DEMO=1 in development only, it runs in demo mode: data lives in this browser's
 // localStorage, useful for testing the screens without the database.
 
+import { signInErrorMessage } from "./signInErrors.js";
+
 // URL and publishable key of the "RdEngenharia" Supabase project. Both are public by design (they reach the
 // browser anyway); what protects the data are the database access rules (RLS).
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://lmeukcvqltafmjzmtmip.supabase.co";
@@ -89,10 +91,16 @@ async function createSupabase() {
         const { data } = await sb.auth.getSession();
         return data.session ? { email: data.session.user.email } : null;
       },
+      // Wrong credentials, no connection (or a paused project) and other failures get different messages.
       async signIn(email, password) {
-        const { data, error } = await sb.auth.signInWithPassword({ email, password });
-        if (error) throw new Error("E-mail ou senha incorretos.");
-        return { email: data.user.email };
+        let result;
+        try {
+          result = await sb.auth.signInWithPassword({ email, password });
+        } catch (thrownError) {
+          throw new Error(signInErrorMessage(thrownError));
+        }
+        if (result.error) throw new Error(signInErrorMessage(result.error));
+        return { email: result.data.user.email };
       },
       async signOut() {
         await sb.auth.signOut();

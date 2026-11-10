@@ -1,6 +1,80 @@
 // Expiry dates of clients' documents: a wrong day here means a reminder sent late or never.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { addMonths, daysUntil, formatDateBR, monthYear, todayISO } from "../../src/admin/dates.js";
+import {
+  addDays,
+  addMonths,
+  computeRenewalExpiry,
+  daysUntil,
+  formatDateBR,
+  isValidISODate,
+  monthYear,
+  todayISO,
+} from "../../src/admin/dates.js";
+
+describe("isValidISODate", () => {
+  it("accepts real calendar dates written as YYYY-MM-DD", () => {
+    expect(isValidISODate("2026-11-09")).toBe(true);
+    expect(isValidISODate("2028-02-29")).toBe(true);
+  });
+
+  it("rejects impossible dates, other formats and empty values", () => {
+    expect(isValidISODate("2026-02-29")).toBe(false);
+    expect(isValidISODate("2026-02-30")).toBe(false);
+    expect(isValidISODate("2026-13-01")).toBe(false);
+    expect(isValidISODate("31/01/2026")).toBe(false);
+    expect(isValidISODate("2026-1-5")).toBe(false);
+    expect(isValidISODate("")).toBe(false);
+    expect(isValidISODate(null)).toBe(false);
+  });
+});
+
+describe("addDays", () => {
+  it("moves across the end of a month, a year and a leap February", () => {
+    expect(addDays("2026-11-09", 1)).toBe("2026-11-10");
+    expect(addDays("2026-12-31", 1)).toBe("2027-01-01");
+    expect(addDays("2028-02-28", 1)).toBe("2028-02-29");
+    expect(addDays("2027-02-28", 1)).toBe("2027-03-01");
+  });
+
+  it("returns an empty string for an invalid date", () => {
+    expect(addDays("2026-02-30", 1)).toBe("");
+    expect(addDays("", 1)).toBe("");
+  });
+});
+
+describe("computeRenewalExpiry (next expiry when a service is renewed)", () => {
+  it("adds the repeat interval to the current expiry", () => {
+    expect(computeRenewalExpiry("2026-03-15", 12)).toBe("2027-03-15");
+    expect(computeRenewalExpiry("2026-11-09", 36)).toBe("2029-11-09");
+  });
+
+  it("keeps the end of the month: Jan 31 + 1 month is the last day of February", () => {
+    expect(computeRenewalExpiry("2026-01-31", 1)).toBe("2026-02-28");
+    expect(computeRenewalExpiry("2028-01-31", 1)).toBe("2028-02-29");
+    expect(computeRenewalExpiry("2026-03-31", 1)).toBe("2026-04-30");
+    expect(computeRenewalExpiry("2026-12-31", 2)).toBe("2027-02-28");
+    expect(computeRenewalExpiry("2028-02-29", 12)).toBe("2029-02-28");
+  });
+
+  it("accepts the interval as a string (it comes from a form field in demo mode)", () => {
+    expect(computeRenewalExpiry("2026-05-10", "6")).toBe("2026-11-10");
+  });
+
+  it("returns an empty string without a valid expiry", () => {
+    expect(computeRenewalExpiry("", 12)).toBe("");
+    expect(computeRenewalExpiry(null, 12)).toBe("");
+    expect(computeRenewalExpiry("2026-02-30", 12)).toBe("");
+  });
+
+  it("returns an empty string without a whole number of months above zero", () => {
+    expect(computeRenewalExpiry("2026-05-10", "")).toBe("");
+    expect(computeRenewalExpiry("2026-05-10", null)).toBe("");
+    expect(computeRenewalExpiry("2026-05-10", 0)).toBe("");
+    expect(computeRenewalExpiry("2026-05-10", -12)).toBe("");
+    expect(computeRenewalExpiry("2026-05-10", 1.5)).toBe("");
+    expect(computeRenewalExpiry("2026-05-10", "doze")).toBe("");
+  });
+});
 
 describe("addMonths", () => {
   it("adds whole months", () => {

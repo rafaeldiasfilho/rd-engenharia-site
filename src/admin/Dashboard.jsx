@@ -1,62 +1,43 @@
-// Expiry dashboard: overdue and upcoming services, with a WhatsApp reminder button per client.
+// Expiry dashboard: overdue and upcoming services, with a WhatsApp reminder button per client,
+// and the download of the next 12 months of expiries as a calendar file (.ics).
 
 import { useMemo, useState } from "react";
-import { daysUntil, formatDateBR } from "./dates.js";
-import { buildClientWhatsappLink } from "./clientWhatsapp.js";
+import { daysUntil, todayISO } from "./dates.js";
+import { ExpiryRow } from "./ExpiryRow.jsx";
+import { buildExpiryCalendar, selectCalendarExpiries } from "./expiryCalendar.js";
+import { downloadTextFile } from "./fileDownload.js";
 
-export function Dashboard({ clients, services, openClient, markHandled }) {
+export function Dashboard({ clients, services, openClient, markHandled, renewService }) {
   const [windowDays, setWindowDays] = useState(90);
   const byId = useMemo(() => Object.fromEntries(clients.map((c) => [c.id, c])), [clients]);
 
+  // Each entry keeps the database record untouched and the day count beside it.
   const pending = services
     .filter((s) => s.vencimento && !s.encerrado)
-    .map((s) => ({ ...s, days: daysUntil(s.vencimento) }))
+    .map((service) => ({ service, days: daysUntil(service.vencimento) }))
     .sort((a, b) => a.days - b.days);
-  const overdue = pending.filter((s) => s.days < 0);
-  const upcoming = pending.filter((s) => s.days >= 0 && s.days <= windowDays);
+  const overdue = pending.filter((entry) => entry.days < 0);
+  const upcoming = pending.filter((entry) => entry.days >= 0 && entry.days <= windowDays);
+  const hasCalendarExpiries = selectCalendarExpiries(services, todayISO()).length > 0;
 
-  const ExpiryRow = ({ s }) => {
-    const client = byId[s.cliente_id];
-    if (!client) return null;
-    const msg = client.aceita_lembretes
-      ? `Olá, ${client.nome}! Aqui é da RD Engenharia. ${
-          s.days < 0
-            ? `Passando para avisar que o seu documento "${s.tipo}" venceu em ${formatDateBR(s.vencimento)}.`
-            : `Passando para avisar que o seu documento "${s.tipo}" vence em ${formatDateBR(s.vencimento)}${
-                s.days <= 60 ? `, daqui a ${s.days} dia(s)` : ""
-              }.`
-        } A renovação leva um tempo, então vale começar logo. Posso cuidar disso para você?`
-      : `Olá, ${client.nome}! Aqui é da RD Engenharia. Podemos avisar você por WhatsApp quando seus serviços estiverem perto do vencimento, para você não perder o prazo? Se preferir não receber, é só nos dizer.`;
-    const waLink = buildClientWhatsappLink(client.whatsapp || client.telefone, msg);
-    return (
-      <li className="admin-line">
-        <div>
-          <strong>{client.nome}</strong>
-          <span>{s.tipo}</span>
-          {!client.aceita_lembretes && <small>Sem aceite de lembretes registrado. O botão pede a autorização.</small>}
-          <small className={s.days < 0 ? "admin-overdue" : ""}>
-            {s.days < 0 ? `Venceu há ${-s.days} dia(s)` : s.days === 0 ? "Vence hoje" : `Vence em ${s.days} dia(s)`} ·{" "}
-            {formatDateBR(s.vencimento)}
-          </small>
-        </div>
-        <div className="admin-actions">
-          {waLink ? (
-            <a className="btn btn-whatsapp" href={waLink} target="_blank" rel="noopener noreferrer">
-              {client.aceita_lembretes ? "Chamar no WhatsApp" : "Pedir autorização"}
-            </a>
-          ) : (
-            <span className="admin-none">Sem telefone</span>
-          )}
-          <button className="btn btn-sec" type="button" onClick={() => openClient(client.id)}>
-            Abrir cliente
-          </button>
-          <button className="btn btn-sec" type="button" onClick={() => markHandled(s)}>
-            Marcar como tratado
-          </button>
-        </div>
-      </li>
+  const downloadExpiryCalendar = () =>
+    downloadTextFile(
+      "vencimentos.ics",
+      buildExpiryCalendar({ services, clients, todayIso: todayISO(), generatedAt: new Date() }),
+      "text/calendar;charset=utf-8"
     );
-  };
+
+  const renderExpiryRow = ({ service, days }) => (
+    <ExpiryRow
+      key={service.id}
+      service={service}
+      days={days}
+      client={byId[service.cliente_id]}
+      openClient={openClient}
+      markHandled={markHandled}
+      renewService={renewService}
+    />
+  );
 
   return (
     <>
@@ -81,11 +62,7 @@ export function Dashboard({ clients, services, openClient, markHandled }) {
 
       <h2 className="admin-title">Vencidos</h2>
       {overdue.length ? (
-        <ul className="admin-list">
-          {overdue.map((s) => (
-            <ExpiryRow key={s.id} s={s} />
-          ))}
-        </ul>
+        <ul className="admin-list">{overdue.map(renderExpiryRow)}</ul>
       ) : (
         <p className="admin-empty">Nenhum serviço vencido.</p>
       )}
@@ -104,16 +81,20 @@ export function Dashboard({ clients, services, openClient, markHandled }) {
         </label>
       </div>
       {upcoming.length ? (
-        <ul className="admin-list">
-          {upcoming.map((s) => (
-            <ExpiryRow key={s.id} s={s} />
-          ))}
-        </ul>
+        <ul className="admin-list">{upcoming.map(renderExpiryRow)}</ul>
       ) : (
         <p className="admin-empty">
           Nada vencendo nesse período. Ao registrar um serviço, informe de quantos em quantos meses ele se repete
           para aparecer aqui.
         </p>
+      )}
+
+      {hasCalendarExpiries && (
+        <div className="admin-actions admin-backup">
+          <button className="btn btn-sec" type="button" onClick={downloadExpiryCalendar}>
+            Baixar vencimentos dos próximos 12 meses (agenda .ics)
+          </button>
+        </div>
       )}
     </>
   );

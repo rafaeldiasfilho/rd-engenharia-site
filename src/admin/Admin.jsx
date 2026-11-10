@@ -7,7 +7,8 @@ import { Dashboard } from "./Dashboard.jsx";
 import { SiteReminders } from "./SiteReminders.jsx";
 import { emptyClient, emptyService } from "./adminRecords.js";
 import { ClientList } from "./ClientList.jsx";
-import { downloadCSV } from "./csvExport.js";
+import { BackupDownloads } from "./BackupDownloads.jsx";
+import { renewServiceInDatabase } from "./serviceRenewal.js";
 
 export default function Admin() {
   const [db, setDb] = useState(null);
@@ -58,6 +59,7 @@ export default function Admin() {
   };
 
   const client = clients.find((c) => c.id === clientId);
+  const renewService = (s) => runActionAndReload(() => renewServiceInDatabase(db.services, s));
 
   if (!db || user === undefined) return <p className="admin-empty">Carregando...</p>;
   if (db.mode === "unavailable")
@@ -148,6 +150,7 @@ export default function Admin() {
             }
             saveService={(s) => runActionAndReload(() => db.services.save(s))}
             deleteService={(id) => runActionAndReload(() => db.services.remove(id))}
+            renewService={renewService}
           />
         ) : tab === "dashboard" ? (
           <Dashboard
@@ -158,6 +161,7 @@ export default function Admin() {
               setClientId(id);
             }}
             markHandled={(s) => runActionAndReload(() => db.services.save({ ...s, encerrado: true }))}
+            renewService={renewService}
           />
         ) : tab === "reminders" ? (
           <SiteReminders
@@ -195,14 +199,7 @@ export default function Admin() {
               openClient={setClientId}
               newClient={() => setCreatingNew(true)}
             />
-            <div className="admin-actions admin-backup">
-              <button className="btn btn-sec" type="button" onClick={() => downloadCSV("clientes.csv", clients)}>
-                Baixar clientes (CSV)
-              </button>
-              <button className="btn btn-sec" type="button" onClick={() => downloadCSV("servicos.csv", services)}>
-                Baixar serviços (CSV)
-              </button>
-            </div>
+            <BackupDownloads clients={clients} services={services} reminders={reminders} />
           </>
         )}
       </div>
