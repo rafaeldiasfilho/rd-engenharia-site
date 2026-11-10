@@ -118,10 +118,6 @@
 .person-initials {
   background: var(--green);
 }
-.hero-triad .accent {
-  background: none;
-  color: #b8f07c;
-}
 .hw-brand-text {
   background: none;
   color: color-mix(in srgb, var(--ink) 10%, transparent);

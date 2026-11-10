@@ -1,6 +1,6 @@
 // "Atendendo agora" badge on the home page: Monday to Friday, 7:00 to 17:00 in São Paulo.
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { isWithinOfficeHours } from "../src/officeHours.js";
+import { isWithinOfficeHours, officeHoursStatusText } from "../src/officeHours.js";
 
 // São Paulo is UTC-3 all year (no daylight saving time since 2019).
 const atSaoPaulo = (isoLocal) => vi.setSystemTime(new Date(`${isoLocal}-03:00`));
@@ -46,5 +46,19 @@ describe("isWithinOfficeHours", () => {
   it("reports closed when the browser cannot handle the time zone", () => {
     vi.stubGlobal("Intl", { DateTimeFormat: () => { throw new RangeError("Invalid time zone"); } });
     expect(isWithinOfficeHours()).toBe(false);
+  });
+});
+
+describe("officeHoursStatusText", () => {
+  it("shows only the hours before the page runs in the browser", () => {
+    expect(officeHoursStatusText(null)).toBe("Atendimento de segunda a sexta, das 7h às 17h");
+  });
+
+  it("says the team is answering during office hours", () => {
+    expect(officeHoursStatusText(true)).toBe("Atendendo agora. Seg. a sex., das 7h às 17h");
+  });
+
+  it("invites the visitor to send the message now outside office hours", () => {
+    expect(officeHoursStatusText(false)).toBe("Pode mandar a mensagem agora: respondemos no próximo dia útil, a partir das 7h.");
   });
 });

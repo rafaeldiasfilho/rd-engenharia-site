@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { WhatsappButton } from "./layout/WhatsappButton";
+import { setCurrentWhatsappMessage } from "./currentWhatsappMessage.js";
+import { servicesButtonLabel, servicesWhatsappMessage } from "./whatsappMessages";
 
 // During prerender (Node) there is no layout: use useEffect there to avoid a warning.
 const useSafeLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -9,6 +11,9 @@ const shortName = (name) => name.split(/ — | \(/)[0];
 // Select several services of the area and send them all in a single message. The item that enters the message box
 // starts from the tapped chip's position and slides to its place (animation on that element only, without blocking the page).
 // With "reduce motion", it appears directly.
+// The marked services also become the page's current WhatsApp message, so the floating button and the
+// closing button send the same list.
+// area: the area page object (label and whatsappFields are used in the message).
 export default function RequestBuilder({ area, items }) {
   const [selected, setSelected] = useState([]);
   const buttons = useRef({});
@@ -40,9 +45,14 @@ export default function RequestBuilder({ area, items }) {
     );
   }, [selected]);
 
-  const message = selected.length
-    ? `Olá! Gostaria de um orçamento na área de ${area} para: ${selected.join("; ")}.`
-    : `Olá! Gostaria de um orçamento na área de ${area}.`;
+  const message = servicesWhatsappMessage(area, selected);
+  const buttonLabel = servicesButtonLabel(selected.length);
+
+  useEffect(() => {
+    setCurrentWhatsappMessage(selected.length ? { text: message, label: buttonLabel } : null);
+  }, [message, buttonLabel, selected.length]);
+
+  useEffect(() => () => setCurrentWhatsappMessage(null), []);
 
   return (
     <div className="request reveal">
@@ -85,7 +95,7 @@ export default function RequestBuilder({ area, items }) {
             ))}
           </ul>
         )}
-        <WhatsappButton text={message} label={selected.length ? "Enviar pelo WhatsApp" : "Falar no WhatsApp"} />
+        <WhatsappButton text={message} label={buttonLabel} />
       </div>
     </div>
   );

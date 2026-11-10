@@ -8,6 +8,7 @@ import RevealPhrase from "./RevealPhrase";
 import { HOME_SECTIONS } from "./content/home.js";
 import { HomeHero } from "./home/HomeHero.jsx";
 import { HomeAreaCards } from "./home/HomeAreaCards.jsx";
+import { HomeDocumentRequest } from "./home/HomeDocumentRequest.jsx";
 import { HomeFaq, HomeHowItWorks, HomeOrganize } from "./home/HomeSections.jsx";
 import { HomeContact } from "./home/HomeContact.jsx";
 
@@ -16,6 +17,7 @@ export default function App() {
     <Shell current="">
       <HomeHero />
       <HomeAreaCards />
+      <HomeDocumentRequest />
       <RevealPhrase text="Todo serviço é assinado por profissional habilitado no CREA-SP, e você conversa direto com quem vai executar." />
       <DocumentsMarquee />
       <SectionNav items={HOME_SECTIONS} label="Nesta página" />

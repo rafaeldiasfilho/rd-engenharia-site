@@ -6,9 +6,14 @@ import { useEffect, useRef, useState } from "react";
 import { AREAS } from "../content/areas";
 import { whatsappLink } from "../contact";
 import { SearchButton } from "../SearchButton";
+import { useCurrentWhatsappMessage } from "../currentWhatsappMessage.js";
+import { pageWhatsappMessage } from "../whatsappMessages";
 
 // "atual" is the page slug ("" on the home page). Marks the menu item with aria-current.
 export function Header({ current = "" }) {
+  // Quote buttons send the message the visitor built on the page, or the page's default message.
+  const currentMessage = useCurrentWhatsappMessage();
+  const headerWhatsappText = currentMessage?.text || pageWhatsappMessage(current);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const servicesBox = useRef(null);
@@ -201,7 +206,7 @@ export function Header({ current = "" }) {
 
         <a
           className="btn btn-whatsapp top-whatsapp"
-          href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")}
+          href={whatsappLink(headerWhatsappText)}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -225,6 +230,10 @@ export function Header({ current = "" }) {
       </div>
 
       <nav id="mobile-menu" className={`menu-mobile ${mobileOpen ? "open" : ""}`} aria-label="Menu" hidden={!mobileOpen}>
+        <a className="menu-mobile-card" href="/o-que-preciso" aria-current={cur(current === "o-que-preciso")} onClick={() => setMobileOpen(false)}>
+          <strong>Não sabe o nome do documento?</strong>
+          <span>Descubra em poucas perguntas →</span>
+        </a>
         <p className="menu-mobile-title">Serviços</p>
         {AREAS.map((a) => (
           <a key={a.slug} className="menu-mobile-area" href={`/${a.slug}`} aria-current={cur(current === a.slug)} onClick={() => setMobileOpen(false)}>
@@ -238,10 +247,10 @@ export function Header({ current = "" }) {
         <a href="/onde-atendemos" aria-current={cur(inCoverage)} onClick={() => setMobileOpen(false)}>
           Onde atendemos
         </a>
-        <a href="/o-que-preciso" aria-current={cur(current === "o-que-preciso")} onClick={() => setMobileOpen(false)}>
-          Descobrir o que o meu caso precisa
+        <a href="/lembrete-de-vencimento" aria-current={cur(current === "lembrete-de-vencimento")} onClick={() => setMobileOpen(false)}>
+          Lembrete de vencimento
         </a>
-        <a className="btn btn-whatsapp" href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+        <a className="btn btn-whatsapp" href={whatsappLink(headerWhatsappText)} target="_blank" rel="noopener noreferrer">
           <Icon name="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
         </a>
       </nav>

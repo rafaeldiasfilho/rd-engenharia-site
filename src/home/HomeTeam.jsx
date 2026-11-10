@@ -3,6 +3,7 @@ import { useState } from "react";
 import Icon from "../Icon";
 import Dialog from "../Dialog";
 import { WHATSAPP_PROJECTS, whatsappLink } from "../contact";
+import { generalWhatsappMessage, personWhatsappMessage } from "../whatsappMessages";
 import { CREA_NUMBER, PHONE_DISPLAY } from "../company";
 import { EDUCATION } from "../content/home.js";
 
@@ -33,7 +34,7 @@ export function HomeTeam() {
             </button>
             <a
               className="btn btn-sec"
-              href={whatsappLink("Olá Rafael! Gostaria de solicitar um orçamento.")}
+              href={whatsappLink(personWhatsappMessage("Rafael"))}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -60,7 +61,7 @@ export function HomeTeam() {
           <p className="person-role">Técnico em edificações · Projetos e atendimento</p>
           <a
             className="btn btn-sec"
-            href={whatsappLink("Olá! Gostaria de solicitar um orçamento.", WHATSAPP_PROJECTS)}
+            href={whatsappLink(generalWhatsappMessage(), WHATSAPP_PROJECTS)}
             target="_blank"
             rel="noopener noreferrer"
           >

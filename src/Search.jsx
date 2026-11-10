@@ -1,9 +1,8 @@
+// Document search box: shows the options built in searchIndex.js (results, the step-by-step wizard when
+// nothing matched, and WhatsApp last) as an accessible combobox. No search logic here.
 import { useEffect, useId, useRef, useState } from "react";
 import Icon from "./Icon";
-import { whatsappLink } from "./contact";
-import { searchSiteContent } from "./searchIndex.js";
-
-const SUGGESTIONS = ["AVCB", "PGR", "LTCAT", "CAR", "Habite-se", "Georreferenciamento"];
+import { SEARCH_SUGGESTIONS, buildSearchOptions, searchSiteContent } from "./searchIndex.js";
 
 export default function DocumentSearch({ autoFocus = false, onExit, className = "" }) {
   const base = useId().replace(/:/g, "");
@@ -17,18 +16,7 @@ export default function DocumentSearch({ autoFocus = false, onExit, className = 
 
   const results = searchSiteContent(q);
   const text = q.trim();
-  const options = text
-    ? [
-        ...results,
-        {
-          type: "WhatsApp",
-          title: `Perguntar no WhatsApp: “${text}”`,
-          text: results.length ? "Ou fale direto com o responsável técnico." : "Não achamos no site, mas respondemos por lá.",
-          href: whatsappLink(`Olá! Procurei no site por "${text}" e gostaria de saber se vocês fazem.`),
-          external: true,
-        },
-      ]
-    : [];
+  const options = buildSearchOptions(q, results);
   const open = options.length > 0;
 
   const openOption = (op) => {
@@ -111,8 +99,8 @@ export default function DocumentSearch({ autoFocus = false, onExit, className = 
       </p>
       {!text && (
         <p className="search-suggestions">
-          <span>Mais procurados:</span>
-          {SUGGESTIONS.map((s) => (
+          <span>Exemplos:</span>
+          {SEARCH_SUGGESTIONS.map((s) => (
             <button
               key={s}
               type="button"

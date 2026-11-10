@@ -3,6 +3,7 @@
 // Services and documents are together: each card shows the sample sheet of what the client receives.
 import Icon from "../../Icon";
 import { whatsappLink } from "../../contact";
+import { servicesWhatsappMessage } from "../../whatsappMessages";
 import { serviceAnchorId } from "../../searchIndex";
 import { SAMPLE_CAPTION } from "../../SheetBase";
 import { SheetReader } from "../../sheets/SheetReader";
@@ -11,7 +12,8 @@ import { AnimatedFolder } from "../../components/ui/3d-folder";
 import RequestBuilder from "../../RequestBuilder";
 import { FireLicenseComparisonTable, PageSection, twoDigitNumber } from "../pageParts.jsx";
 
-const serviceQuoteLink = (item) => whatsappLink(`Olá! Gostaria de um orçamento para: ${item.name}.`);
+// Quote button of one service card: the same message as the chips with only this service marked.
+const serviceQuoteLink = (page, item) => whatsappLink(servicesWhatsappMessage(page, [item.name]));
 
 export function AreaServices({ page, number }) {
   return (
@@ -36,7 +38,7 @@ export function AreaServices({ page, number }) {
               media: <SheetSvg m={item.example} name={item.name} area={page.slug} />,
               expanded: <SheetReader m={item.example} name={item.name} area={page.slug} />,
               caption: SAMPLE_CAPTION,
-              action: { label: "Pedir orçamento pelo WhatsApp", href: serviceQuoteLink(item) },
+              action: { label: "Pedir orçamento pelo WhatsApp", href: serviceQuoteLink(page, item) },
             }))}
         />
         <div className="folder-band-text">
@@ -63,7 +65,7 @@ export function AreaServices({ page, number }) {
               <p className="item-who">
                 <strong>Para quem:</strong> {item.who}
               </p>
-              <a className="btn btn-sec btn-small" href={serviceQuoteLink(item)} target="_blank" rel="noopener noreferrer">
+              <a className="btn btn-sec btn-small" href={serviceQuoteLink(page, item)} target="_blank" rel="noopener noreferrer">
                 <Icon name="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
               </a>
             </div>
@@ -71,7 +73,7 @@ export function AreaServices({ page, number }) {
         ))}
       </ol>
       <p className="fine-print">As folhas são exemplos ilustrativos, não são documentos reais.</p>
-      {page.items.length > 1 && <RequestBuilder area={page.name} items={page.items} />}
+      {page.items.length > 1 && <RequestBuilder area={page} items={page.items} />}
       {page.slug === "corpo-de-bombeiros" && <FireLicenseComparisonTable />}
     </PageSection>
   );

@@ -14,7 +14,14 @@ export const FIRE_SAFETY_AREA = {
     "Projeto de segurança contra incêndio (PSCIP), AVCB e CLCB para comércios, indústrias e imóveis de Ibirá e região. Peça orçamento pelo WhatsApp.",
   h1: "Projeto de incêndio, AVCB e CLCB",
   intro:
-    "Cuidamos do projeto e da regularização da segurança contra incêndio do seu imóvel junto ao Corpo de Bombeiros do Estado de São Paulo, do enquadramento correto até a documentação final.",
+    "Cuidamos do projeto e da regularização da segurança contra incêndio do seu imóvel, em Ibirá e região, junto ao Corpo de Bombeiros do Estado de São Paulo, do enquadramento correto até a documentação final.",
+  // Blanks of the prefilled WhatsApp message (src/whatsappMessages.js): what the team needs to answer fast.
+  whatsappFields: ["Uso do imóvel (comércio, galpão, escola...):", "Área construída (m²):", "Cidade:"],
+  // Document preselected when this page links to the reminder form (keys in src/content/reminder.js).
+  reminderDocumentKey: "avcb",
+  // Shown under the quote button: what decides cost and time, without prices or deadlines.
+  costDrivers:
+    "O valor e o tempo dependem da área construída, do uso do imóvel e de já existir projeto aprovado. Uma parte do prazo depende do Corpo de Bombeiros.",
   items: [
     {
       name: "PSCIP — Projeto de Segurança Contra Incêndio e Pânico",
@@ -59,7 +66,7 @@ export const FIRE_SAFETY_AREA = {
     },
     {
       q: "Meu AVCB venceu. O que faço?",
-      a: "É preciso renovar a licença antes do vencimento, sempre que possível. Se já venceu, avaliamos a situação do imóvel e conduzimos a regularização. Também é possível pedir um lembrete de vencimento pelo WhatsApp.",
+      a: "É preciso renovar a licença antes do vencimento, sempre que possível. Se já venceu, avaliamos a situação do imóvel e conduzimos a regularização. Também é possível pedir aqui no site um lembrete de vencimento.",
     },
     {
       q: "A RD faz o projeto e acompanha a vistoria?",

@@ -14,7 +14,14 @@ export const WORK_SAFETY_AREA = {
     "PGR, LTCAT, laudos de insalubridade e periculosidade, APR e treinamentos de NRs para empresas de Ibirá e região. Peça orçamento pelo WhatsApp.",
   h1: "Segurança do Trabalho para empresas da região",
   intro:
-    "Elaboramos os programas e laudos exigidos pelas Normas Regulamentadoras para que a sua empresa trabalhe em dia com a lei e, principalmente, com menos risco de acidente. Atendemos comércios, indústrias, fazendas, clínicas e prefeituras.",
+    "Elaboramos os programas e laudos exigidos pelas Normas Regulamentadoras para que a sua empresa trabalhe em dia com a lei e, principalmente, com menos risco de acidente. Atendemos comércios, indústrias, fazendas, clínicas e prefeituras de Ibirá e região.",
+  // Blanks of the prefilled WhatsApp message (src/whatsappMessages.js): what the team needs to answer fast.
+  whatsappFields: ["Ramo da empresa:", "Número de funcionários:", "Cidade:"],
+  // Document preselected when this page links to the reminder form (keys in src/content/reminder.js).
+  reminderDocumentKey: "pgr",
+  // Shown under the quote button: what decides cost and time, without prices or deadlines.
+  costDrivers:
+    "O valor e o tempo dependem do número de funcionários, do ramo da empresa e dos riscos de cada função.",
   items: [
     {
       name: "PGR — Programa de Gerenciamento de Riscos",

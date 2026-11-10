@@ -142,14 +142,6 @@
   }
 }
 
-/* Gradient highlight on the top phrase ("Equipe protegida.") */
-.hero-triad .accent {
-  background: linear-gradient(90deg, #7fe08c, #c9f7a8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 
 
 

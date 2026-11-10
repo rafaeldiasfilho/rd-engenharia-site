@@ -9,12 +9,19 @@ export const ENVIRONMENT_AND_SURVEY_AREA = {
   subject: "imóvel rural e topografia",
   icon: "fa-solid fa-leaf",
   shortText: "CAR, licenciamento, outorga, resíduos, topografia e georreferenciamento.",
-  title: "CAR, Georreferenciamento e Topografia | RD Engenharia",
+  title: "CAR, Georreferenciamento e Topografia em Ibirá | RD Engenharia",
   description:
     "CAR, georreferenciamento de imóvel rural, topografia, licenciamento ambiental, outorga e gestão de resíduos em Ibirá e região.",
   h1: "Meio ambiente, topografia e imóvel rural",
   intro:
-    "Regularização ambiental, levantamentos de terreno e documentação de propriedades rurais e urbanas. Unimos a parte ambiental e a topografia para resolver o processo de ponta a ponta.",
+    "Regularização ambiental, levantamentos de terreno e documentação de propriedades rurais e urbanas em Ibirá e região. Unimos a parte ambiental e a topografia para resolver o processo de ponta a ponta.",
+  // Blanks of the prefilled WhatsApp message (src/whatsappMessages.js): what the team needs to answer fast.
+  whatsappFields: ["Tamanho aproximado da área (hectares ou alqueires):", "Cidade:"],
+  // Document preselected when this page links to the reminder form (keys in src/content/reminder.js).
+  reminderDocumentKey: "car",
+  // Shown under the quote button: what decides cost and time, without prices or deadlines.
+  costDrivers:
+    "O valor e o tempo dependem do tamanho da área, do acesso ao terreno e da documentação do imóvel. Uma parte do prazo depende dos órgãos públicos e do cartório.",
   items: [
     {
       name: "CAR — Cadastro Ambiental Rural",

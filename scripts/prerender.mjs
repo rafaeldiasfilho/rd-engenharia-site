@@ -23,6 +23,11 @@ try {
   // Strips from the template (home) everything specific to the home page.
   // Business entity (ProfessionalService, with hasMap and geo) from index.html: goes on every page.
   const business = (template.match(/<script type="application\/ld\+json">[\s\S]*?<\/script>/) || [""])[0];
+  // Service.provider and Article.publisher point at the business by its "@id", so the build stops if the
+  // business block in index.html loses it (the references would point at nothing).
+  const BUSINESS_ID = `${SITE_URL}/#empresa`;
+  const businessData = JSON.parse(business.replace(/^<script[^>]*>/, "").replace(/<\/script>$/, "") || "{}");
+  if (businessData["@id"] !== BUSINESS_ID) throw new Error(`index.html: the business JSON-LD must have "@id": "${BUSINESS_ID}".`);
   const base = template
     .replace(/<title>[\s\S]*?<\/title>/, "")
     .replace(/<meta\s+name="description"[\s\S]*?\/>/, "")
@@ -33,22 +38,19 @@ try {
 
   for (const page of PAGES) {
     const url = `${SITE_URL}/${page.slug}`;
-    // Middle level of the breadcrumb: areas go under "Serviços", guides under "Guias".
-    const middleLevel =
-      page.type === "area"
-        ? { name: "Serviços", url: `${SITE_URL}/#servicos` }
-        : page.type === "guide"
-          ? { name: "Guias", url: `${SITE_URL}/guias` }
-          : null;
+    const ogImage = `${SITE_URL}/og/${page.slug.replace(/\//g, "-")}.png`;
+    // Breadcrumb with real pages only: Início > page, and guides under the "Guias" index. Areas have no middle
+    // level: "Serviços" is a section of the home page (/#servicos), not a page of its own.
+    const trail = [
+      { name: "Início", url: `${SITE_URL}/` },
+      ...(page.type === "guide" ? [{ name: "Guias", url: `${SITE_URL}/guias` }] : []),
+      { name: page.type === "area" ? page.name : page.h1, url },
+    ];
     const data = [
       {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Início", item: `${SITE_URL}/` },
-          ...(middleLevel ? [{ "@type": "ListItem", position: 2, name: middleLevel.name, item: middleLevel.url }] : []),
-          { "@type": "ListItem", position: middleLevel ? 3 : 2, name: page.type === "area" ? page.name : page.h1, item: url },
-        ],
+        itemListElement: trail.map((step, n) => ({ "@type": "ListItem", position: n + 1, name: step.name, item: step.url })),
       },
     ];
     if (page.type === "area") {
@@ -58,7 +60,7 @@ try {
         name: page.name,
         description: page.description,
         url,
-        provider: { "@type": "ProfessionalService", name: "RD Engenharia Segurança e Meio Ambiente", url: `${SITE_URL}/` },
+        provider: { "@id": BUSINESS_ID },
         areaServed: { "@type": "City", name: "Ibirá" },
       });
       data.push({
@@ -72,14 +74,20 @@ try {
       });
     }
     if (page.type === "guide") {
+      // Dates come from src/content/guides.js (also the "Atualizado em" line and the sitemap lastmod).
+      const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+      if (!isoDate.test(page.published) || !isoDate.test(page.updated)) throw new Error(`${page.slug}: published and updated must be YYYY-MM-DD.`);
       data.push({
         "@context": "https://schema.org",
         "@type": "Article",
         headline: page.h1,
         description: page.description,
+        image: ogImage,
+        datePublished: page.published,
+        dateModified: page.updated,
         mainEntityOfPage: url,
-        author: { "@type": "Organization", name: "RD Engenharia Segurança e Meio Ambiente" },
-        publisher: { "@type": "Organization", name: "RD Engenharia Segurança e Meio Ambiente" },
+        author: { "@type": "Organization", name: "RD Engenharia Segurança e Meio Ambiente", url: `${SITE_URL}/` },
+        publisher: { "@id": BUSINESS_ID },
       });
     }
 
@@ -90,7 +98,7 @@ try {
       `<meta property="og:title" content="${esc(page.title)}" />`,
       `<meta property="og:description" content="${esc(page.description)}" />`,
       `<meta property="og:url" content="${url}" />`,
-      `<meta property="og:image" content="${SITE_URL}/og/${page.slug.replace(/\//g, "-")}.png" />`,
+      `<meta property="og:image" content="${ogImage}" />`,
       ...data.map(jsonScript),
       business,
     ].join("\n    ");
@@ -128,12 +136,17 @@ try {
   // It comes last because the template for the other pages was read from the original index.html above.
   fs.writeFileSync(path.join(dist, "index.html"), template.replace('<div id="root"></div>', `<div id="root">${renderHome()}</div>`));
 
-  const today = new Date().toISOString().slice(0, 10);
-  const urls = ["", ...PAGES.filter((p) => !["privacy", "terms"].includes(p.type)).map((p) => p.slug)];
+  // lastmod only where the date is known and true: each guide's `updated` date. The other pages have no reliable
+  // per-page date (the build date changes on every deploy even when the page does not), and Google ignores lastmod
+  // on sites where it is not consistently accurate, which would also discard the guide dates. So they get none.
+  const sitemapPages = [{ slug: "", type: "home" }, ...PAGES.filter((p) => !["privacy", "terms"].includes(p.type))];
   const sitemap =
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    urls
-      .map((s) => `  <url>\n    <loc>${SITE_URL}/${s}</loc>\n    <lastmod>${today}</lastmod>\n  </url>`)
+    sitemapPages
+      .map((p) => {
+        const lastmod = p.type === "guide" ? `\n    <lastmod>${p.updated}</lastmod>` : "";
+        return `  <url>\n    <loc>${SITE_URL}/${p.slug}</loc>${lastmod}\n  </url>`;
+      })
       .join("\n") +
     `\n</urlset>\n`;
   fs.writeFileSync(path.join(dist, "sitemap.xml"), sitemap);

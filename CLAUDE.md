@@ -8,7 +8,7 @@ Antes de escrever código, leia `docs/PRD.md` (o que o site faz e por quê, regr
 
 - O único canal de atendimento é o **WhatsApp**. Formulários só montam a mensagem e abrem a conversa. A única exceção é o lembrete de vencimento, que grava o pedido no banco. Não criar telefone fixo, e-mail de contato nem "acompanhe seu processo" (foi removido de propósito: o cliente pergunta o andamento pelo WhatsApp).
 - **Sem preços e sem prazos fixos** nos textos. Normas citadas conforme o conhecimento de 2026, sempre com a ressalva de que a equipe confirma cada caso.
-- **Não inventar** informação sobre a empresa, clientes, depoimentos, números, fotos ou avaliações. Se faltar dado, perguntar ao Rafael. Pendentes dele: foto do responsável (`TECHNICAL_LEAD_PHOTO` em `src/content/technicalLead.js`, hoje `null`), fotos e depoimentos reais, revisão dos textos pelo pai, Search Console. A nota do Google (`GOOGLE_RATING` em `src/content/googleAndMaps.js`, 5,0 com 8 avaliações, verificada em 20/10/2026) aparece só como texto, sem nomes, sem textos de avaliações e sem AggregateRating.
+- **Não inventar** informação sobre a empresa, clientes, depoimentos, números, fotos ou avaliações. Se faltar dado, perguntar ao Rafael. Pendentes dele: foto do responsável (`TECHNICAL_LEAD_PHOTO` em `src/content/technicalLead.js`, hoje `null`), fotos reais, revisão dos textos pelo pai, Search Console. A nota do Google (`GOOGLE_RATING` em `src/content/googleAndMaps.js`, 5,0 com 9 avaliações, verificada em 09/11/2026) aparece só como texto, sem AggregateRating nem marcação Review. Os textos de avaliações (`REVIEWS`, mesmo arquivo) são publicados exatamente como estão no Google, só com o primeiro nome e só de clientes (autorização do Rafael em 26/10/2026); avaliações escritas por pessoas da empresa ficam de fora.
 - Projetos de exemplo são **anonimizados** (sem endereço, nome ou matrícula) e levam marca d'água "RD Engenharia – exemplo". Nunca publicar planta de cliente sem anonimizar.
 - Fotos só CC0, domínio público ou Unsplash License, declaradas em `src/content/photoList.js` (alimenta `/creditos`). A Unsplash License não é CC0.
 - Acessibilidade: respeitar `prefers-reduced-motion` e o alto contraste (forced colors), alvos de toque de 44 px, `aria-label`/`aria-pressed` nos controles novos, não depender só de cor.
@@ -49,19 +49,20 @@ node scripts/og.mjs       # refaz as imagens de compartilhamento (public/og/)
 | Equipamentos, projetos de exemplo, cenas 3D | `src/content/equipment.js`, `src/content/projects.js`, `src/content/areaScenes.js` |
 | Textos da página inicial | `src/content/home.js` e os blocos em `src/home/` (a ordem fica em `src/App.jsx`) |
 | Dados da empresa, WhatsApp, Google e mapa | `src/company.js`, `src/contact.js`, `src/content/googleAndMaps.js` |
+| Mensagens prontas do WhatsApp (todas) | `src/whatsappMessages.js`; campos de cada área em `whatsappFields` de `src/content/areas/*.js`; mensagem montada pelo visitante em `src/currentWhatsappMessage.js` |
 | Perguntas frequentes (também no JSON-LD) | `src/faqItems.js` |
 | Fotos e carrosséis | `src/content/photoList.js`, `src/content/photoCarousels.js`; arquivos em `public/fotos/otim/` |
 | Modelos das páginas internas | `src/pages/` (`PageView.jsx` escolhe pelo `type`); seções da página de área em `src/pages/area/` |
 | Cabeçalho, rodapé, barra "Nesta página" | `src/layout/` |
-| Busca por documento | `src/searchIndex.js` (índice e ordem) e `src/Search.jsx` (tela) |
+| Busca por documento | `src/searchIndex.js` (índice e ordem), `src/content/searchSynonyms.js` (palavras ignoradas e sinônimos) e `src/Search.jsx` (tela) |
 | Folhas de exemplo | `src/sheets/` (capa, prancha, certificado), `src/drawings/` (desenhos e páginas internas), `src/SheetBase.jsx` (cores e dados fictícios) |
 | Ilustrações interativas | `src/illustrations/` |
 | Cenas 3D | `src/Scene3D.jsx` e `src/scenes3d/` |
 | Visual (cores, espaçamento, animações) | `src/styles/` (variáveis do tema em `01-theme.css`) |
-| Área interna `/admin` | `src/admin/` (telas, `db.js` para os dados, `dates.js` para vencimentos) |
+| Área interna `/admin` | `src/admin/` (telas, `db.js` para os dados, `dates.js` para vencimentos, `serviceRenewal.js` para renovar, `expiryCalendar.js` para a agenda .ics, `reviewRequest.js` para pedir avaliação) |
 | Envio do lembrete de vencimento | `src/pages/reminderForm.js` (validação) e `src/publicApi/api.js` (envio) |
-| Esquema do banco e políticas de segurança | `supabase/schema.sql` |
-| Redirecionamentos e URLs limpas | `vercel.json` |
+| Esquema do banco e políticas de segurança | `supabase/schema.sql` (o que existe hoje); mudanças preparadas e ainda não aplicadas em `supabase/migrations/` |
+| Redirecionamentos, URLs limpas, cache dos arquivos e política de segurança (CSP, por enquanto só em modo relatório) | `vercel.json`; `tests/securityHeaders.test.js` confere o hash do script do tema |
 | Imagens dos projetos de exemplo | `public/exemplos/<pasta>/*.webp` |
 
 `/cidades` e `/cidades/:slug` redirecionam para `/onde-atendemos` em `vercel.json`. Para adicionar um projeto de exemplo, criar a pasta em `public/exemplos/<pasta>/` com `.webp` anonimizados e acrescentar o objeto em `PROJECTS` (`src/content/projects.js`).

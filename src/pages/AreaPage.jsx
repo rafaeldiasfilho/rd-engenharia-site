@@ -1,6 +1,7 @@
 // Template of the four area pages (/seguranca-do-trabalho, /corpo-de-bombeiros, /engenharia-civil, /meio-ambiente-topografia).
 // Each section lives in src/pages/area/; this file only decides which sections appear and numbers them in order.
 import { AREAS, AREA_OVERVIEW } from "../content/areas";
+import { areaWhatsappMessage } from "../whatsappMessages";
 import { AREA_SCENES } from "../content/areaScenes";
 import { GUIDES } from "../content/guides";
 import { EQUIPMENT } from "../content/equipment";
@@ -21,10 +22,10 @@ const AREA_SECTION_LINKS = [
   { id: "situacoes", label: "Situações comuns" },
   { id: "o-que-fazemos", label: "Serviços" },
   { id: "equipamentos", label: "Equipamentos" },
-  { id: "na-pratica", label: "Na prática" },
-  { id: "atendimento", label: "Atendimento" },
+  { id: "na-pratica", label: "Exemplos" },
+  { id: "atendimento", label: "Como funciona" },
   { id: "duvidas", label: "Dúvidas" },
-  { id: "proximo-passo", label: "Próximo passo" },
+  { id: "proximo-passo", label: "Pedir orçamento" },
 ];
 
 export function AreaPage({ page }) {
@@ -32,7 +33,7 @@ export function AreaPage({ page }) {
   const guides = GUIDES.filter((g) => g.area === page.slug);
   const otherAreas = AREAS.filter((a) => a.slug !== page.slug);
   const related = [...guides.slice(0, 2).map(guideLink), ...otherAreas.map(areaLink)].slice(0, 3);
-  const areaWhatsappText = `Olá! Gostaria de um orçamento na área de ${page.name}.`;
+  const areaWhatsappText = areaWhatsappMessage(page);
   const isCivil = page.slug === "engenharia-civil";
   const equipment = EQUIPMENT[page.slug];
   // Section numbering in the order they appear (01, 02, ...), with no fixed numbers.
@@ -43,16 +44,17 @@ export function AreaPage({ page }) {
     <>
       <AreaHero page={page} areaWhatsappText={areaWhatsappText} />
       <SectionNav items={AREA_SECTION_LINKS} />
-      {overview && <AreaSummary overview={overview} />}
-      {AREA_SCENES[page.slug] && <AreaScene areaScene={AREA_SCENES[page.slug]} />}
+      {overview && <AreaSummary overview={overview} slug={page.slug} />}
+      {/* The situations come before the 3D scene: they are the sentences visitors recognise, and each one opens WhatsApp. */}
       {page.situations && <AreaSituations page={page} number={nextNumber()} areaWhatsappText={areaWhatsappText} />}
+      {AREA_SCENES[page.slug] && <AreaScene areaScene={AREA_SCENES[page.slug]} />}
       <AreaServices page={page} number={nextNumber()} />
       {equipment && <AreaEquipment page={page} equipment={equipment} number={nextNumber()} />}
 
       <PageSection
         id="na-pratica"
         n={nextNumber()}
-        label="Na prática"
+        label="Exemplos"
         title={isCivil ? "Projetos reais, com os dados dos clientes retirados." : "Veja como isso aparece no papel."}
         lead={isCivil ? undefined : "Exemplos ilustrativos para você entender o que entregamos."}
       >

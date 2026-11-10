@@ -14,7 +14,14 @@ export const CIVIL_ENGINEERING_AREA = {
     "Projetos, regularização de obra (as-built e habite-se), laudos, perícias, inspeção predial e gerenciamento de obras em Ibirá e região.",
   h1: "Engenharia civil, projetos e regularização",
   intro:
-    "Da planta ao habite-se: projetos, acompanhamento de obras, regularização de imóveis construídos sem documentação e laudos técnicos, sempre com ART de responsável técnico habilitado no CREA-SP.",
+    "Da planta ao habite-se, em Ibirá e região: projetos, acompanhamento de obras, regularização de imóveis construídos sem documentação e laudos técnicos, sempre com ART de responsável técnico habilitado no CREA-SP.",
+  // Blanks of the prefilled WhatsApp message (src/whatsappMessages.js): what the team needs to answer fast.
+  whatsappFields: ["O que preciso (projeto, regularização, laudo...):", "Cidade:"],
+  // Document preselected when this page links to the reminder form (keys in src/content/reminder.js).
+  reminderDocumentKey: "alvara",
+  // Shown under the quote button: what decides cost and time, without prices or deadlines.
+  costDrivers:
+    "O valor e o tempo dependem do tamanho da obra, dos projetos e documentos que já existem e das exigências da prefeitura. Uma parte do prazo depende da prefeitura e do cartório.",
   items: [
     {
       name: "Projetos arquitetônicos, estruturais e complementares",

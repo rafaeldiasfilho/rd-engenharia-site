@@ -2,9 +2,12 @@
 
 import AreaIcon from "../AreaIcon";
 import { WhatsappButton } from "./WhatsappButton.jsx";
+import { useCurrentWhatsappMessage } from "../currentWhatsappMessage.js";
 
 // Closing block of every inner page, always in the same order: next step, related pages, footer.
+// When the visitor built a message on the page (marked services, wizard result), the button sends it.
 export function PageClosing({ title = "Fale com o responsável técnico.", text, whatsappText, whatsappLabel = "Falar no WhatsApp", related = [] }) {
+  const currentMessage = useCurrentWhatsappMessage();
   return (
     <>
       <section className="sec next" id="proximo-passo" aria-labelledby="next-step-title">
@@ -20,7 +23,7 @@ export function PageClosing({ title = "Fale com o responsável técnico.", text,
               <p className="lead">
                 {text || "Conte o seu caso pelo WhatsApp. A mensagem já vai pronta, sem compromisso. Valor e prazo são informados depois de conhecermos o seu caso."}
               </p>
-              <WhatsappButton className="btn-large" text={whatsappText} label={whatsappLabel} />
+              <WhatsappButton className="btn-large" text={currentMessage?.text || whatsappText} label={currentMessage?.label || whatsappLabel} />
             </div>
           </div>
         </div>

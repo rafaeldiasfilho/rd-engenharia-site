@@ -1,44 +1,207 @@
-// Expiry reminder form (/lembrete-de-vencimento): validates the form and saves the request with sendReminder.
+// Expiry reminder form (/lembrete-de-vencimento). Shows every field error next to its field, saves the request
+// with sendReminder and offers WhatsApp when the document already expired, when sending fails and after success.
+// The rules and the WhatsApp texts live in reminderForm.js; this file only draws the screen and moves the focus.
 
 import { useEffect, useState } from "react";
 import { AREAS } from "../content/areas";
-import { REMINDER_DOCUMENTS, REMINDER_TIPS } from "../content/reminder";
+import { REMINDER_DOCUMENTS } from "../content/reminder";
 import { PageClosing } from "../layout/PageClosing";
+import { WhatsappButton } from "../layout/WhatsappButton";
 import { sendReminder } from "../publicApi/api";
 import { GENERAL_LINKS, PageTop, areaLink } from "./pageParts.jsx";
-import { REMINDER_FORM_ERROR_MESSAGES, buildReminderRequest } from "./reminderForm.js";
+import {
+  INITIAL_REMINDER_FORM, REMINDER_ALREADY_RECEIVED_MESSAGE, REMINDER_FORM_ERROR_MESSAGES, REMINDER_SEND_FAILED_MESSAGE,
+  buildExpiredDocumentWhatsappMessage, buildReminderConfirmWhatsappMessage, buildReminderRequest, buildReminderSendFailedWhatsappMessage,
+  buildReminderSuccessText, buildReminderYearOptions, classifyReminderSendError, collectReminderFieldErrors,
+  readReminderDocumentKeyFromSearch, startAnotherReminderForm,
+} from "./reminderForm.js";
 
 const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-export function ReminderPage({ page }) {
-  const [form, setForm] = useState({ name: "", whatsapp: "", document: REMINDER_DOCUMENTS[0], monthNum: "", year: "", consent: false, site: "" });
-  const [status, setStatus] = useState("idle");
-  const [error, setError] = useState("");
-  // Years computed in the browser (the prerendered HTML does not freeze the site's build year).
-  const [years, setYears] = useState([]);
+// Element that gets the focus when its field is the first one with an error.
+const REMINDER_FIELD_FOCUS_IDS = {
+  name: "reminder-name",
+  whatsapp: "reminder-whatsapp",
+  document: `reminder-document-${REMINDER_DOCUMENTS[0].key}`,
+  expiry: "reminder-expiry-month",
+  consent: "reminder-consent",
+};
+
+const reminderErrorId = (field) => `reminder-${field}-error`;
+
+// aria-invalid and aria-describedby of a field with an error; nothing when the field is fine.
+const invalidFieldAttributes = (field, errorCode) =>
+  errorCode ? { "aria-invalid": "true", "aria-describedby": reminderErrorId(field) } : {};
+
+// Moves the focus to the element with this id after the next render, once its error texts and aria attributes exist.
+function useFocusAfterRender() {
+  const [focusRequest, setFocusRequest] = useState(null);
   useEffect(() => {
-    const currentYear = new Date().getFullYear();
-    setYears(Array.from({ length: 6 }, (_, i) => String(currentYear + i)));
+    if (focusRequest) document.getElementById(focusRequest.id)?.focus();
+  }, [focusRequest]);
+  return (id) => setFocusRequest({ id });
+}
+
+// Error text right under its field; the field points to it with aria-describedby.
+function ReminderFieldError({ field, errorCode }) {
+  if (!errorCode) return null;
+  return (
+    <span id={reminderErrorId(field)} className="error-form reminder-field-error">
+      {REMINDER_FORM_ERROR_MESSAGES[errorCode]}
+    </span>
+  );
+}
+
+// Text field with its error inside the label (6 px under the input). aria-labelledby keeps the
+// error text out of the field's name; the error is read as its description instead.
+function ReminderTextField({ field, label, errorCode, ...inputAttributes }) {
+  return (
+    <label>
+      <span id={`reminder-${field}-label`}>{label}</span>
+      <input id={`reminder-${field}`} aria-labelledby={`reminder-${field}-label`} {...inputAttributes} {...invalidFieldAttributes(field, errorCode)} />
+      <ReminderFieldError field={field} errorCode={errorCode} />
+    </label>
+  );
+}
+
+function ReminderDocumentOptions({ documentKey, errorCode, onChange }) {
+  return (
+    <fieldset className="doc-options">
+      <legend>Qual documento?</legend>
+      {REMINDER_DOCUMENTS.map((reminderDocument) => (
+        <label key={reminderDocument.key} className="doc-option">
+          <input type="radio" name="document" id={`reminder-document-${reminderDocument.key}`} value={reminderDocument.key}
+            checked={documentKey === reminderDocument.key} onChange={onChange} {...invalidFieldAttributes("document", errorCode)} />
+          <span className="doc-option-name">{reminderDocument.label}</span>
+          {documentKey === reminderDocument.key && reminderDocument.tip && <small className="hint-doc">{reminderDocument.tip}</small>}
+        </label>
+      ))}
+      <ReminderFieldError field="document" errorCode={errorCode} />
+    </fieldset>
+  );
+}
+
+// Month and year lists. A month that has passed blocks the request and offers WhatsApp to regularize.
+function ReminderExpiryFields({ form, years, errorCode, onChange }) {
+  const invalidAttributes = invalidFieldAttributes("expiry", errorCode);
+  return (
+    <>
+      <fieldset className="field-month">
+        <legend>Mês do vencimento (se souber)</legend>
+        <div>
+          <select id="reminder-expiry-month" aria-label="Mês" value={form.monthNum} onChange={onChange("monthNum")} {...invalidAttributes}>
+            <option value="">Mês</option>
+            {MONTHS.map((m, i) => (
+              <option key={m} value={String(i + 1).padStart(2, "0")}>{m}</option>
+            ))}
+          </select>
+          <select id="reminder-expiry-year" aria-label="Ano" value={form.year} onChange={onChange("year")} {...invalidAttributes}>
+            <option value="">Ano</option>
+            {years.map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+        </div>
+      </fieldset>
+      {errorCode && (
+        <div className="reminder-expired" data-origin="lembrete-vencido">
+          <ReminderFieldError field="expiry" errorCode={errorCode} />
+          <div className="actions">
+            <WhatsappButton text={buildExpiredDocumentWhatsappMessage(form)} label="Falar pelo WhatsApp" />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// Supabase refused the row or there is no network: the form stays filled and WhatsApp carries what was typed.
+function ReminderSendFailedNotice({ form }) {
+  return (
+    <div id="reminder-send-failed" className="reminder-send-failed" tabIndex={-1} data-origin="lembrete-erro-envio">
+      <p className="error-form">{REMINDER_SEND_FAILED_MESSAGE}</p>
+      <div className="actions">
+        <WhatsappButton text={buildReminderSendFailedWhatsappMessage(form)} label="Enviar pelo WhatsApp" />
+      </div>
+    </div>
+  );
+}
+
+// "Pedido recebido" (request received), also for a request the database already had (HTTP 409).
+// The focus goes to the heading when it appears.
+function ReminderSuccessPanel({ reminder, alreadyReceived, onAnotherDocument }) {
+  return (
+    <div className="notice-ok reminder-success" data-origin="lembrete-confirmar">
+      <h2 id="reminder-success-title" tabIndex={-1}>
+        Pedido recebido
+      </h2>
+      <p>{alreadyReceived ? REMINDER_ALREADY_RECEIVED_MESSAGE : buildReminderSuccessText(reminder)}</p>
+      <WhatsappButton text={buildReminderConfirmWhatsappMessage(reminder)} label="Confirmar pelo WhatsApp" />
+      <button className="btn btn-sec" type="button" onClick={onAnotherDocument}>
+        Avisar sobre outro documento
+      </button>
+      <a className="link-arrow" href="/">
+        Voltar ao início
+      </a>
+    </div>
+  );
+}
+
+export function ReminderPage({ page }) {
+  const [form, setForm] = useState(INITIAL_REMINDER_FORM);
+  const [status, setStatus] = useState("idle"); // "idle" | "sending" | "sent" | "already-received" | "send-failed"
+  const [showFieldErrors, setShowFieldErrors] = useState(false);
+  const [sentReminder, setSentReminder] = useState(null);
+  const [years, setYears] = useState([]);
+  const focusAfterRender = useFocusAfterRender();
+
+  // Read in the browser after hydration: the prerendered HTML has no years (it would freeze the build year)
+  // and keeps the default document; a link such as ?documento=pgr then chooses its document.
+  useEffect(() => {
+    setYears(buildReminderYearOptions(new Date()));
+    const documentKey = readReminderDocumentKeyFromSearch(window.location.search);
+    setForm((prev) => ({ ...prev, documentKey }));
   }, []);
+
+  // After the first try, the errors follow the typing: each one goes away as soon as its field is fixed.
+  const fieldErrors = showFieldErrors ? collectReminderFieldErrors(form, new Date()) : [];
+  const errorOf = (field) => fieldErrors.find((fieldError) => fieldError.field === field)?.code || "";
   const handleChange = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
+
+  // Success screen, for a new request or for one the database already had.
+  const showReceived = (reminder, receivedStatus) => {
+    setSentReminder(reminder);
+    setStatus(receivedStatus);
+    focusAfterRender("reminder-success-title");
+  };
 
   const submit = async (e) => {
     e.preventDefault();
-    setError("");
-    const request = buildReminderRequest(form);
+    if (status === "sending") return;
+    const request = buildReminderRequest(form, new Date());
     if (request.code === "IGNORED_HONEYPOT_FILLED") return; // honeypot field for bots
+    setShowFieldErrors(true);
     if (request.code !== "SUCCESS_REMINDER_READY") {
-      setError(REMINDER_FORM_ERROR_MESSAGES[request.code]);
+      setStatus("idle");
+      focusAfterRender(REMINDER_FIELD_FOCUS_IDS[request.fieldErrors[0].field]);
       return;
     }
     setStatus("sending");
     try {
       await sendReminder(request.reminder);
-      setStatus("ok");
-    } catch {
-      setStatus("idle");
-      setError("Não foi possível enviar agora. Tente de novo ou chame a RD pelo WhatsApp.");
+      showReceived(request.reminder, "sent");
+    } catch (sendError) {
+      if (classifyReminderSendError(sendError) === "SUCCESS_REMINDER_ALREADY_RECEIVED") return showReceived(request.reminder, "already-received");
+      setStatus("send-failed");
+      focusAfterRender("reminder-send-failed");
     }
+  };
+
+  const startAnotherReminder = () => {
+    setForm(startAnotherReminderForm);
+    setShowFieldErrors(false);
+    setStatus("idle");
+    focusAfterRender(REMINDER_FIELD_FOCUS_IDS.document);
   };
 
   return (
@@ -52,81 +215,30 @@ export function ReminderPage({ page }) {
       <section className="sec" aria-label="Formulário do lembrete">
         <div className="container reminder-grid">
           <div>
-          {status === "ok" ? (
-            <div className="notice-ok" role="status">
-              <h2>Pedido recebido</h2>
-              <p>
-                Obrigado! Guardamos o seu pedido e vamos avisar você pelo WhatsApp antes do vencimento. Se quiser
-                desistir a qualquer momento, é só nos dizer.
-              </p>
-              <a className="btn btn-sec" href="/">
-                Voltar ao início
-              </a>
-            </div>
+          {status === "sent" || status === "already-received" ? (
+            <ReminderSuccessPanel reminder={sentReminder} alreadyReceived={status === "already-received"} onAnotherDocument={startAnotherReminder} />
           ) : (
             <form className="form-public" onSubmit={submit} noValidate>
-              <label>
-                <span>Seu nome</span>
-                <input value={form.name} onChange={handleChange("name")} autoComplete="name" maxLength={120} required />
-              </label>
-              <label>
-                <span>WhatsApp com DDD</span>
-                <input
-                  value={form.whatsapp}
-                  onChange={handleChange("whatsapp")}
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="(17) 99999-9999"
-                  required
-                />
-              </label>
-              <fieldset className="doc-options">
-                <legend>Qual documento?</legend>
-                {REMINDER_DOCUMENTS.map((d) => (
-                  <label key={d} className="doc-option">
-                    <input type="radio" name="document" value={d} checked={form.document === d} onChange={handleChange("document")} />
-                    <span className="doc-option-name">{d}</span>
-                    {form.document === d && REMINDER_TIPS[d] && <small className="hint-doc">{REMINDER_TIPS[d]}</small>}
-                  </label>
-                ))}
-              </fieldset>
-              <fieldset className="field-month">
-                <legend>Mês do vencimento (se souber)</legend>
-                <div>
-                  <select aria-label="Mês" value={form.monthNum} onChange={handleChange("monthNum")}>
-                    <option value="">Mês</option>
-                    {MONTHS.map((m, i) => (
-                      <option key={m} value={String(i + 1).padStart(2, "0")}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
-                  <select aria-label="Ano" value={form.year} onChange={handleChange("year")}>
-                    <option value="">Ano</option>
-                    {years.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </fieldset>
+              <ReminderTextField field="name" label="Seu nome" errorCode={errorOf("name")} value={form.name} onChange={handleChange("name")}
+                autoComplete="name" maxLength={120} required />
+              <ReminderTextField field="whatsapp" label="WhatsApp com DDD" errorCode={errorOf("whatsapp")} value={form.whatsapp}
+                onChange={handleChange("whatsapp")} inputMode="tel" autoComplete="tel" placeholder="(17) 99999-9999" required />
+              <ReminderDocumentOptions documentKey={form.documentKey} errorCode={errorOf("document")} onChange={handleChange("documentKey")} />
+              <ReminderExpiryFields form={form} years={years} errorCode={errorOf("expiry")} onChange={handleChange} />
               <label className="is-hidden" aria-hidden="true">
                 <span>Não preencha este campo</span>
                 <input tabIndex={-1} autoComplete="off" value={form.site} onChange={handleChange("site")} />
               </label>
               <label className="consent">
-                <input type="checkbox" checked={form.consent} onChange={handleChange("consent")} />
+                <input id="reminder-consent" type="checkbox" checked={form.consent} onChange={handleChange("consent")}
+                  {...invalidFieldAttributes("consent", errorOf("consent"))} />
                 <span>
                   Autorizo a RD Engenharia a me enviar lembretes por WhatsApp sobre o vencimento deste documento. Posso
                   pedir a exclusão dos meus dados quando quiser. Veja a <a href="/privacidade">política de privacidade</a>.
                 </span>
               </label>
-              {error && (
-                <p className="error-form" role="alert">
-                  {error}
-                </p>
-              )}
+              <ReminderFieldError field="consent" errorCode={errorOf("consent")} />
+              {status === "send-failed" && <ReminderSendFailedNotice form={form} />}
               <button className="btn btn-whatsapp btn-large" type="submit" disabled={status === "sending"}>
                 {status === "sending" ? "Enviando..." : "Quero ser avisado"}
               </button>

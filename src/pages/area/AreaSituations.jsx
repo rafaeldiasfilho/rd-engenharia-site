@@ -1,6 +1,9 @@
 // "Situações comuns" section of an area page, with the way out to the wizard or WhatsApp.
+// Each situation is in the visitor's own words, so tapping it opens WhatsApp with that sentence.
 import AreaIcon from "../../AreaIcon";
+import Icon from "../../Icon";
 import { whatsappLink } from "../../contact";
+import { situationWhatsappMessage } from "../../whatsappMessages";
 import { PageSection } from "../pageParts.jsx";
 
 export function AreaSituations({ page, number, areaWhatsappText }) {
@@ -10,7 +13,12 @@ export function AreaSituations({ page, number, areaWhatsappText }) {
         {page.situations.map((t) => (
           <li key={t} className="reveal">
             <AreaIcon slug={page.slug} size={26} />
-            <span>{t}</span>
+            <a className="situation-link" href={whatsappLink(situationWhatsappMessage(page, t))} target="_blank" rel="noopener noreferrer">
+              {t}
+            </a>
+            <span className="situation-action" aria-hidden="true">
+              <Icon name="fa-brands fa-whatsapp" /> Falar sobre isso
+            </span>
           </li>
         ))}
       </ul>

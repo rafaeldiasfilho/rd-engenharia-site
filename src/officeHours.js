@@ -15,3 +15,12 @@ export const isWithinOfficeHours = () => {
     return false;
   }
 };
+
+// Text of the office hours line. isOpenNow is null before the page runs in the browser (prerender):
+// then only the hours are shown. Outside office hours the text invites the visitor to send the message
+// now, because the team answers on the next working day.
+export function officeHoursStatusText(isOpenNow) {
+  if (isOpenNow === null) return "Atendimento de segunda a sexta, das 7h às 17h";
+  if (isOpenNow) return "Atendendo agora. Seg. a sex., das 7h às 17h";
+  return "Pode mandar a mensagem agora: respondemos no próximo dia útil, a partir das 7h.";
+}

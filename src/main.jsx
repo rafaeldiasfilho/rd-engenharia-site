@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import PageView, { NotFound } from "./pages/PageView.jsx";
 import { PrintPage } from "./pages/PrintPage.jsx";
+import { ErrorBoundary } from "./ErrorBoundary.jsx";
 import { findPage } from "./content/pages";
 import { findArea } from "./content/areas";
 import "./styles.css";
@@ -50,12 +51,19 @@ if (slug === "admin") {
 } else if (printArea) {
   ReactDOM.hydrateRoot(root, <PrintPage area={printArea} />);
 } else if (root.dataset.error) {
-  ReactDOM.hydrateRoot(root, <NotFound />);
+  ReactDOM.hydrateRoot(
+    root,
+    <ErrorBoundary>
+      <NotFound />
+    </ErrorBoundary>
+  );
 } else if (page) {
   ReactDOM.hydrateRoot(
     root,
     <React.StrictMode>
-      <PageView page={page} />
+      <ErrorBoundary>
+        <PageView page={page} />
+      </ErrorBoundary>
     </React.StrictMode>
   );
 } else if (root.hasChildNodes()) {
@@ -63,13 +71,17 @@ if (slug === "admin") {
   ReactDOM.hydrateRoot(
     root,
     <React.StrictMode>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </React.StrictMode>
   );
 } else {
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </React.StrictMode>
   );
 }

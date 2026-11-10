@@ -6,6 +6,7 @@ import StepStack from "../StepStack";
 import Tilt3D from "../Tilt3D";
 import { ExamplePanel, NumbersLine } from "../Showcase";
 import { whatsappLink } from "../contact";
+import { generalWhatsappMessage } from "../whatsappMessages";
 import { FAQ } from "../faqItems";
 import { STEPS } from "../content/home.js";
 
@@ -60,7 +61,7 @@ export function HomeHowItWorks() {
         <StepStack
           steps={STEPS}
           firstAction={
-            <a className="btn btn-whatsapp btn-small" href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer">
+            <a className="btn btn-whatsapp btn-small" href={whatsappLink(generalWhatsappMessage())} target="_blank" rel="noopener noreferrer">
               <Icon name="fa-brands fa-whatsapp" /> Começar agora
             </a>
           }

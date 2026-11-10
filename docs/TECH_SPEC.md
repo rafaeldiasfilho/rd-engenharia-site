@@ -10,14 +10,14 @@ Read together with [PRD.md](PRD.md). Update this file whenever a table, an API c
 | Language | JavaScript (ES modules, JSX); TypeScript only in the 4 files in `src/components/ui/`. All identifiers, comments and logs in English |
 | UI | React 18.3.1 + react-dom, functional components and hooks |
 | Build | Vite 5.4.x + `@vitejs/plugin-react`; static prerender in `scripts/prerender.mjs` |
-| Styles | Plain CSS: `src/styles.css` imports the 20 ordered parts of `src/styles/` (later parts override earlier ones; theme variables in `01-theme.css`); self-hosted Manrope in `public/fonts/` |
+| Styles | Plain CSS: `src/styles.css` imports the 21 ordered parts of `src/styles/` (later parts override earlier ones; theme variables in `01-theme.css`); self-hosted Manrope in `public/fonts/` |
 | 3D | three 0.170.0, lazy-loaded per scene (`src/scenes3d/`) |
 | Icons | `@phosphor-icons/react`, wrapped by `src/Icon.jsx` |
 | Database and auth | Supabase (Postgres + RLS + Auth). `@supabase/supabase-js` 2.x only in `/admin`; the public site uses plain `fetch` |
 | Analytics | `@vercel/analytics` (WhatsApp click event) |
 | Share images | `@resvg/resvg-js` in `scripts/og.mjs` → `public/og/` (committed) |
 | Tests | Vitest 2.1.9 (`npm test`), Node environment, mocks only |
-| Hosting | Vercel, Git deploys from `main`; clean URLs, redirects and headers in `vercel.json` |
+| Hosting | Vercel, Git deploys from `main`; clean URLs, redirects and headers in `vercel.json` (security headers, a report-only content security policy with the hash of the inline theme script, one-year cache for `/assets`, one week for fonts and images) |
 
 **Forbidden** (removed on purpose or never wanted):
 - Tailwind CSS, shadcn runtime helpers (`cn()`, `clsx`, `tailwind-merge`): removed in the 2026-11-06 cleanup.
@@ -56,9 +56,13 @@ Read together with [PRD.md](PRD.md). Update this file whenever a table, an API c
   /publicApi           api.js (public Supabase calls with fetch)
   /scenes3d            base.js (mountScene, WebGL check) + one file per scene
   /components/ui       3d-folder.tsx, contour-field.tsx, halftone-wordmark.tsx, liquid-glass-navbar.tsx (adapted third-party)
-  /styles              20 ordered CSS parts, imported by styles.css
+  /styles              21 ordered CSS parts, imported by styles.css
   company.js           legal company facts (single source)
   contact.js           WhatsApp numbers and whatsappLink()
+  whatsappMessages.js  every prefilled WhatsApp message (first line = where the visitor came from; area blanks)
+  currentWhatsappMessage.js  message the visitor built on the page (marked services, wizard result), sent by the
+                       floating, header and closing buttons
+  OfficeHoursStatus.jsx, ErrorBoundary.jsx   office hours line; render-error fallback with the WhatsApp button
   faqItems.js          FAQ (also injected as JSON-LD by vite.config.js)
   searchIndex.js       search index and ranking; Search.jsx and SearchButton.jsx are the screens
   wizardResult.js      wizard result and WhatsApp message; Wizard.jsx is the screen
@@ -70,6 +74,7 @@ Read together with [PRD.md](PRD.md). Update this file whenever a table, an API c
 ```
 
 Page types (`page.type` in `src/content/pages.js`): `area`, `guide`, `location`, `quiz`, `guide-index`, `reminder`, `privacy`, `terms`, `credits`.
+Browser storage: `localStorage` `tema` (theme) and the admin demo data (`rd_demo_*`); `sessionStorage` `rd_wizard_answers` (wizard progress, this tab only).
 Kept in Portuguese on purpose: URL slugs and section anchors (`#contato`), `public/` folder and file names, Supabase table/column names and values, analytics keys and values, `localStorage` keys. Everything else in the code is English.
 
 ## 3. Database schema (summary)
@@ -85,6 +90,8 @@ Supabase project "RdEngenharia". Source of truth: `supabase/schema.sql` (size an
 
 Function `eh_equipe()` (security definer): true when the JWT e-mail is in `equipe`. Executable by `authenticated` only.
 
+Prepared and NOT applied (`supabase/migrations/`, each file says what it does and how to roll it back): `eventos_site` (insert-only count of WhatsApp clicks and reminder requests, no personal data) with `ping()`; and the reminder protection (same number and document refused for 24 hours with HTTP 409, a flood cap, and the `^55` + 10 or 11 digits check). Apply only with the owner's OK, then update `supabase/schema.sql` and this section.
+
 ## 4. API contracts
 
 There is no own backend. The only calls are to Supabase.
@@ -95,13 +102,17 @@ There is no own backend. The only calls are to Supabase.
 - Body: `{ "nome", "whatsapp" (digits, with 55), "documento", "vencimento" ("YYYY-MM-DD", last day of the month, or null), "consentimento": true }`.
 - Response: `201` with no body → resolves. Any non-2xx → throws `Error("Reminder request failed: HTTP <status>")`. Network error → rejects.
 - Code-side names are English (`name, whatsapp, document, expiry, consent`); the mapping to Portuguese columns happens only here.
-- The request is built and validated by `buildReminderRequest(form)` in `src/pages/reminderForm.js`, which returns
-  `IGNORED_HONEYPOT_FILLED`, `ERROR_INVALID_WHATSAPP`, `ERROR_NAME_TOO_SHORT`, `ERROR_CONSENT_MISSING` or
-  `SUCCESS_REMINDER_READY` with the `reminder` to send.
+- The request is built and validated by `buildReminderRequest(form, today)` in `src/pages/reminderForm.js`. It returns
+  `{ code, fieldErrors }`: `code` is the first error in screen order or `IGNORED_HONEYPOT_FILLED` / `SUCCESS_REMINDER_READY`
+  (with the `reminder` to send); `fieldErrors` lists every field error (`ERROR_NAME_TOO_SHORT`, `ERROR_INVALID_WHATSAPP`,
+  `ERROR_DOCUMENT_NOT_CHOSEN`, `ERROR_DOCUMENT_ALREADY_EXPIRED`, `ERROR_CONSENT_MISSING`). WhatsApp numbers are normalised
+  to `^55\d{10,11}$`. `classifyReminderSendError(error)` turns an `HTTP 409` (duplicate, once the prepared migration is
+  applied) into `SUCCESS_REMINDER_ALREADY_RECEIVED`; any other failure is `ERROR_REMINDER_SEND_FAILED`.
+- `?documento=<key>` preselects the document (`buildReminderPageHref(key)` in `src/content/reminder.js`).
 
 ### Internal (`src/admin/db.js` → `openDatabase()`)
 Returns `{ mode: "supabase" | "demo" | "unavailable", auth, clients, services, reminders }`.
-- `auth.session()` → `{ email }` or `null`; `auth.signIn(email, password)` → `{ email }` or throws "E-mail ou senha incorretos."; `auth.signOut()`.
+- `auth.session()` → `{ email }` or `null`; `auth.signIn(email, password)` → `{ email }`, or throws "E-mail ou senha incorretos." (invalid credentials) or a connection message (network failure, paused or unreachable database; codes in `src/admin/signInErrors.js`); `auth.signOut()`.
 - Each table (`clients` → `clientes` ordered by `nome`; `services` → `servicos` and `reminders` → `lembretes_site`, newest first): `list()`, `save(item)` (upsert; empty strings become `null`; no `id` means insert), `remove(id)`. Supabase errors are thrown as `Error(message)`.
 
 ### Configuration
@@ -113,7 +124,7 @@ Returns `{ mode: "supabase" | "demo" | "unavailable", auth, clients, services, r
 ```bash
 npm install
 npm run dev        # development server
-npm test           # unit tests (Vitest), no network: 79 tests in 11 files
+npm test           # unit tests (Vitest), no network: 242 tests in 20 files
 npm run build      # vite build + prerender: 19 pages in the sitemap + 4 print pages, home, 404, admin shell, sitemap.xml, llms.txt
 npm run preview    # serve dist/
 node scripts/og.mjs   # regenerate the share images in public/og/
@@ -121,4 +132,4 @@ node scripts/og.mjs   # regenerate the share images in public/og/
 
 Daily cycle (owner's method): read the PRD → update this file if a table or API changes → build the change in a small isolated file → `npm test` and `npm run build` until both pass → review `git diff --cached` → owner approves before any push to `main`.
 
-Files still over ~200 lines (known): single stateful components (`Carousel.jsx`, `PhotoViewer.jsx`, `Wizard.jsx`, `layout/Header.jsx`), the adapted third-party components in `components/ui/`, `scripts/generate-whatsapp-qr.mjs` (QR encoder) and the CSS parts (up to ~650 lines).
+Files still over ~200 lines (known): `pages/ReminderPage.jsx` (275), `content/guides.js` (296, all eight guides), single stateful components (`Carousel.jsx`, `PhotoViewer.jsx`, `Wizard.jsx` (402), `layout/Header.jsx`), the adapted third-party components in `components/ui/`, `scripts/generate-whatsapp-qr.mjs` (QR encoder) and the CSS parts (up to ~650 lines).

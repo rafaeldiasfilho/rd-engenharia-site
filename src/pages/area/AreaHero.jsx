@@ -3,6 +3,7 @@ import AreaIcon from "../../AreaIcon";
 import HeroBackground from "../../HeroBackground";
 import { Breadcrumb } from "../../layout/Breadcrumb";
 import { WhatsappButton } from "../../layout/WhatsappButton";
+import { OfficeHoursStatus } from "../../OfficeHoursStatus.jsx";
 
 export function AreaHero({ page, areaWhatsappText }) {
   return (
@@ -18,8 +19,9 @@ export function AreaHero({ page, areaWhatsappText }) {
         <p className="lead">{page.intro}</p>
         <div className="actions">
           <WhatsappButton className="btn-large" text={areaWhatsappText} label="Pedir orçamento pelo WhatsApp" />
-          <small>Orçamento por escrito e sem compromisso. Prazo e valor são informados depois de conhecermos o seu caso.</small>
+          <small>{page.costDrivers ? `${page.costDrivers} ` : ""}Orçamento por escrito e sem compromisso.</small>
         </div>
+        <OfficeHoursStatus className="hero-status" />
       </HeroBackground>
     </>
   );

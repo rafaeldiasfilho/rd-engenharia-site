@@ -1,7 +1,7 @@
 import { REVIEWS, GOOGLE_RATING, GOOGLE_REVIEWS_URL } from "./content/googleAndMaps";
 
-// Google reviews strip on the home page. The rating and the total come from NOTA_GOOGLE; the cards only
-// appear for the reviews listed in AVALIACOES (real texts, copied from Google by Rafael).
+// Google reviews strip on the home page. The rating and the total come from GOOGLE_RATING; the cards only
+// appear for the reviews listed in REVIEWS (real texts, exactly as on Google, first names only).
 // With no list, the strip does not appear: the rating and the Google link are already at the top and in the contact section.
 const Stars = ({ n = 5 }) => (
   <span className="review-stars" role="img" aria-label={`${n} de 5 estrelas`}>

@@ -43,22 +43,32 @@ export const PROFILES = [
   },
 ];
 
+// area: slug of the area page. service: anchor id of the matching service card on that page, the same
+// id that serviceAnchorId(item.name) gives in src/searchIndex.js (checked by tests/wizardResult.test.js).
 export const RESULTS = {
-  pgr: { name: "PGR (Programa de Gerenciamento de Riscos)", area: "seguranca-do-trabalho", text: "Exigido, em regra, de empresas com empregados." },
-  ltcat: { name: "LTCAT e PPP", area: "seguranca-do-trabalho", text: "Documenta os agentes nocivos e serve de base para a aposentadoria especial." },
-  unhealthinessReport: { name: "Laudo de insalubridade", area: "seguranca-do-trabalho", text: "Avalia se há direito ao adicional por exposição a agentes nocivos." },
-  hazardReport: { name: "Laudo de periculosidade", area: "seguranca-do-trabalho", text: "Avalia atividades de risco acentuado, como inflamáveis e eletricidade." },
-  nrTrainings: { name: "Treinamentos de NRs", area: "seguranca-do-trabalho", text: "Capacitações como NR-35, NR-10 e NR-33, conforme a atividade." },
-  fireLicense: { name: "AVCB ou CLCB (Corpo de Bombeiros)", area: "corpo-de-bombeiros", text: "Verificamos qual licença se aplica ao seu imóvel." },
-  municipalPermit: { name: "Alvará e documentação na prefeitura", area: "engenharia-civil", text: "Alvará de construção ou de funcionamento, conforme o caso." },
-  wastePlan: { name: "Plano de gerenciamento de resíduos (PGRS/PGRSS)", area: "meio-ambiente-topografia", text: "Comprova o destino correto dos resíduos gerados." },
-  georeferencing: { name: "Georreferenciamento do imóvel rural", area: "meio-ambiente-topografia", text: "Em regra, exigido para desmembrar ou transferir imóvel rural." },
-  car: { name: "CAR (Cadastro Ambiental Rural)", area: "meio-ambiente-topografia", text: "Cadastro obrigatório dos imóveis rurais." },
-  waterUseGrant: { name: "Outorga de uso da água", area: "meio-ambiente-topografia", text: "Pode ser necessária para captar água de poço, represa ou rio." },
-  topographicSurvey: { name: "Levantamento topográfico", area: "meio-ambiente-topografia", text: "Medidas, relevo e divisão do terreno." },
-  environmentalLicense: { name: "Licenciamento ambiental", area: "meio-ambiente-topografia", text: "Indicamos qual licença ou dispensa se aplica à atividade." },
-  buildingDesign: { name: "Projetos e ART", area: "engenharia-civil", text: "Projeto arquitetônico, estrutural e acompanhamento da obra." },
-  buildingRegularization: { name: "Regularização de obra (as-built e habite-se)", area: "engenharia-civil", text: "Levantamento do construído e documentação na prefeitura." },
-  technicalReports: { name: "Laudo de vistoria ou avaliação de imóvel", area: "engenharia-civil", text: "Parecer técnico formal para venda, financiamento ou seguro." },
-  buildingInspection: { name: "Inspeção predial e laudo de patologias", area: "engenharia-civil", text: "Diagnóstico de trincas, infiltrações e problemas estruturais." },
+  pgr: { name: "PGR (Programa de Gerenciamento de Riscos)", area: "seguranca-do-trabalho", service: "servico-pgr-programa-de-gerenciamento-de-riscos", text: "Exigido, em regra, de empresas com empregados." },
+  ltcat: { name: "LTCAT e PPP", area: "seguranca-do-trabalho", service: "servico-ltcat-e-ppp", text: "Documenta os agentes nocivos e serve de base para a aposentadoria especial." },
+  unhealthinessReport: { name: "Laudo de insalubridade", area: "seguranca-do-trabalho", service: "servico-laudo-de-insalubridade-nr-15-e-de-periculosidade", text: "Avalia se há direito ao adicional por exposição a agentes nocivos." },
+  hazardReport: { name: "Laudo de periculosidade", area: "seguranca-do-trabalho", service: "servico-laudo-de-insalubridade-nr-15-e-de-periculosidade", text: "Avalia atividades de risco acentuado, como inflamáveis e eletricidade." },
+  nrTrainings: { name: "Treinamentos de NRs", area: "seguranca-do-trabalho", service: "servico-treinamentos-de-nrs", text: "Capacitações como NR-35, NR-10 e NR-33, conforme a atividade." },
+  fireLicense: { name: "AVCB ou CLCB (Corpo de Bombeiros)", area: "corpo-de-bombeiros", service: "servico-avcb-auto-de-vistoria-do-corpo-de-bombeiros", text: "Verificamos qual licença se aplica ao seu imóvel." },
+  municipalPermit: { name: "Alvará e documentação na prefeitura", area: "engenharia-civil", service: "servico-regularizacao-de-obra-e-habite-se", text: "Alvará de construção ou de funcionamento, conforme o caso." },
+  wastePlan: { name: "Plano de gerenciamento de resíduos (PGRS/PGRSS)", area: "meio-ambiente-topografia", service: "servico-gestao-de-residuos-e-gestao-ambiental", text: "Comprova o destino correto dos resíduos gerados." },
+  georeferencing: { name: "Georreferenciamento do imóvel rural", area: "meio-ambiente-topografia", service: "servico-georreferenciamento-de-imovel-rural", text: "Em regra, exigido para desmembrar ou transferir imóvel rural." },
+  car: { name: "CAR (Cadastro Ambiental Rural)", area: "meio-ambiente-topografia", service: "servico-car-cadastro-ambiental-rural", text: "Cadastro obrigatório dos imóveis rurais." },
+  waterUseGrant: { name: "Outorga de uso da água", area: "meio-ambiente-topografia", service: "servico-licenciamento-ambiental-e-outorga", text: "Pode ser necessária para captar água de poço, represa ou rio." },
+  topographicSurvey: { name: "Levantamento topográfico", area: "meio-ambiente-topografia", service: "servico-topografia", text: "Medidas, relevo e divisão do terreno." },
+  environmentalLicense: { name: "Licenciamento ambiental", area: "meio-ambiente-topografia", service: "servico-licenciamento-ambiental-e-outorga", text: "Indicamos qual licença ou dispensa se aplica à atividade." },
+  buildingDesign: { name: "Projetos e ART", area: "engenharia-civil", service: "servico-projetos-arquitetonicos-estruturais-e-complement", text: "Projeto arquitetônico, estrutural e acompanhamento da obra." },
+  buildingRegularization: { name: "Regularização de obra (as-built e habite-se)", area: "engenharia-civil", service: "servico-regularizacao-de-obra-e-habite-se", text: "Levantamento do construído e documentação na prefeitura." },
+  technicalReports: { name: "Laudo de vistoria ou avaliação de imóvel", area: "engenharia-civil", service: "servico-laudos-e-pericias", text: "Parecer técnico formal para venda, financiamento ou seguro." },
+  buildingInspection: { name: "Inspeção predial e laudo de patologias", area: "engenharia-civil", service: "servico-inspecao-predial-e-laudos-de-patologias", text: "Diagnóstico de trincas, infiltrações e problemas estruturais." },
 };
+
+// Secondary option of the first screen ("Alguém me pediu um documento e não sei qual é"): opens WhatsApp
+// with this message instead of the questions.
+export const WIZARD_UNKNOWN_DOCUMENT_MESSAGE = [
+  "Olá! Vim pelo passo a passo do site.",
+  "Me pediram um documento e não sei qual é.",
+  "Posso mandar a foto do pedido?",
+].join("\n");

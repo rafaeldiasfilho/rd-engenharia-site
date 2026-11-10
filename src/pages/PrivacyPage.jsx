@@ -16,9 +16,11 @@ export function PrivacyPage() {
           </p>
           <h2>Quais dados coletamos</h2>
           <p>
-            Quando você preenche o formulário de orçamento ou usa o guia "O que preciso?", as informações digitadas
-            (como nome, cidade e a descrição do serviço) são usadas apenas para montar uma mensagem de WhatsApp. Elas
-            são enviadas por você, ao clicar no botão, diretamente para o nosso número, e não ficam guardadas no site.
+            Quando você preenche o formulário de orçamento ou usa o passo a passo "O que preciso?", as informações
+            digitadas (como nome, cidade e a descrição do serviço) são usadas apenas para montar uma mensagem de
+            WhatsApp. Elas são enviadas por você, ao clicar no botão, diretamente para o nosso número. As respostas do
+            passo a passo ficam guardadas só nesta aba do navegador, para você poder voltar sem perder o que respondeu,
+            e somem quando a aba é fechada. Nada vai para a RD até você enviar a mensagem.
           </p>
           <h2>Lembrete de vencimento</h2>
           <p>
