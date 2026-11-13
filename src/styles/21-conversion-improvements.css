@@ -232,3 +232,15 @@
     margin-top: 20px;
   }
 }
+
+/* Real projects as portrait slides (3:4, same slides as the Instagram posts): narrower strip so the
+   neighbours stay in view and the active slide fits the screen height. */
+.carousel-3d.carousel-portrait {
+  --sw: 72%;
+}
+
+@media (min-width: 900px) {
+  .carousel-3d.carousel-portrait {
+    --sw: 34%;
+  }
+}

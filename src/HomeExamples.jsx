@@ -16,15 +16,15 @@ function Civil() {
     <div className="home-civil">
       <Carousel
         items={projectSlides(true)}
-        label="Desenhos de projetos reais de engenharia civil"
-        aspect="4 / 3"
-        className="carousel-projects carousel-3d"
+        label="Projetos e regularizações reais de engenharia civil"
+        aspect="3 / 4"
+        className="carousel-projects carousel-3d carousel-portrait"
       />
-      <p className="fine-print">Projetos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem para ampliar.</p>
+      <p className="fine-print">Projetos e regularizações reais, com os dados dos clientes retirados. Toque ou clique numa imagem para ampliar.</p>
       <HowToReadSheet />
       <p className="center">
         <a className="btn btn-sec" href="/engenharia-civil#na-pratica">
-          Ver o projeto completo
+          Ver todos os desenhos
         </a>
       </p>
     </div>

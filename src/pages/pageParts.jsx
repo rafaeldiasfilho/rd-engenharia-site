@@ -119,13 +119,12 @@ export function ProjectExamples() {
     <div>
       <Carousel
         items={projectSlides()}
-        label="Desenhos de projetos reais de residências"
-        aspect="4 / 3"
-        className="carousel-projects carousel-3d"
+        label="Desenhos de projetos e regularizações reais"
+        aspect="3 / 4"
+        className="carousel-projects carousel-3d carousel-portrait"
       />
       <p className="fine-print">
-        Projetos arquitetônicos reais, com os dados dos clientes retirados e marca d'água. Toque ou clique numa imagem
-        para ampliar.
+        Projetos e regularizações reais, com os dados dos clientes retirados. Toque ou clique numa imagem para ampliar.
       </p>
       <HowToReadSheet />
       <div className="actions">
