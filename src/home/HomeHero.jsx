@@ -1,5 +1,6 @@
-// Home page hero: Google rating badge, title, quote button and the office hours status.
+// Home page hero: Google rating badge, title, quote button, the office hours status and a strip with the four areas.
 import Icon from "../Icon";
+import { HomeHeroAreaStrip } from "./HomeHeroAreaStrip";
 import HeroBackground from "../HeroBackground";
 import { whatsappLink } from "../contact";
 import { GOOGLE_RATING, GOOGLE_REVIEWS_URL } from "../content/googleAndMaps";
@@ -33,6 +34,7 @@ export function HomeHero() {
       </div>
       <p className="hero-risk">Você fala direto com o responsável técnico. Orçamento por escrito e sem compromisso.</p>
       <OfficeHoursStatus />
+      <HomeHeroAreaStrip />
     </HeroBackground>
   );
 }
