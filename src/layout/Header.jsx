@@ -1,4 +1,5 @@
-// Site header: logo, areas menu, search button, WhatsApp and the full-screen mobile menu.
+// Site header: logo, areas menu (list plus a photo of the highlighted area), search button, WhatsApp
+// and the full-screen mobile menu.
 
 import Icon from "../Icon";
 import AreaIcon from "../AreaIcon";
@@ -6,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { AREAS } from "../content/areas";
 import { whatsappLink } from "../contact";
 import { SearchButton } from "../SearchButton";
+import { ServicesMenuPreview } from "./ServicesMenuPreview.jsx";
 import { useCurrentWhatsappMessage } from "../currentWhatsappMessage.js";
 import { pageWhatsappMessage } from "../whatsappMessages";
 
@@ -27,6 +29,8 @@ export function Header({ current = "" }) {
   const [pill, setPill] = useState({ x: 0, w: 0, on: false, jump: true });
 
   const inServices = AREAS.some((a) => a.slug === current);
+  // Area whose photo shows beside the list: the current area page, else the first area.
+  const [highlightedAreaSlug, setHighlightedAreaSlug] = useState(inServices ? current : AREAS[0].slug);
   const inGuides = current === "guias" || current.startsWith("guias/");
   const inCoverage = current === "onde-atendemos";
   const cur = (v) => (v ? "page" : undefined);
@@ -170,24 +174,31 @@ export function Header({ current = "" }) {
                 <p className="menu-panel-title">Serviços</p>
                 <p className="menu-panel-sub">{AREAS.length} áreas, presencial e online em Ibirá e região</p>
               </div>
-              <ul>
-                {AREAS.map((a) => (
-                  <li key={a.slug}>
-                    <a href={`/${a.slug}`} aria-current={cur(current === a.slug)} className="menu-item-area">
-                      <span className="icon-tile">
-                        <AreaIcon slug={a.slug} size={22} />
-                      </span>
-                      <span>
-                        <strong>{a.name}</strong>
-                        <small>{a.shortText}</small>
-                      </span>
-                      <svg className="menu-arrow-item" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-                        <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <div className="menu-panel-body">
+                <ul>
+                  {AREAS.map((a) => (
+                    <li key={a.slug}>
+                      <a
+                        href={`/${a.slug}`}
+                        aria-current={cur(current === a.slug)}
+                        className="menu-item-area"
+                        data-highlighted={highlightedAreaSlug === a.slug || undefined}
+                        onPointerEnter={() => setHighlightedAreaSlug(a.slug)}
+                        onFocus={() => setHighlightedAreaSlug(a.slug)}
+                      >
+                        <span>
+                          <strong>{a.name}</strong>
+                          <small>{a.shortText}</small>
+                        </span>
+                        <svg className="menu-arrow-item" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                          <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <ServicesMenuPreview highlightedAreaSlug={highlightedAreaSlug} />
+              </div>
               <a className="menu-panel-footer" href="/o-que-preciso" aria-current={cur(current === "o-que-preciso")}>
                 <span>Não sabe qual área?</span>
                 <strong>Descubra o que o seu caso precisa</strong>

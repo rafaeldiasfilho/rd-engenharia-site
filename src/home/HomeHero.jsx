@@ -1,40 +1,65 @@
-// Home page hero: Google rating badge, title, quote button, the office hours status and a strip with the four areas.
+// Home page hero: one full-bleed photo, the title, one line of support, the quote button, a quiet
+// link for visitors who do not know what they need, and the Google rating as plain text.
+// Entrance (src/styles/22-hero-redesign.css): the photo opens from a small centred frame on the light
+// page colour, then the header and the texts fade in, one after the other. CSS only, so it already
+// runs on the prerendered HTML; "reduce motion" shows everything at once.
 import Icon from "../Icon";
-import { HomeHeroAreaStrip } from "./HomeHeroAreaStrip";
-import HeroBackground from "../HeroBackground";
 import { whatsappLink } from "../contact";
 import { GOOGLE_RATING, GOOGLE_REVIEWS_URL } from "../content/googleAndMaps";
-import { OfficeHoursStatus } from "../OfficeHoursStatus.jsx";
+import { slidesFor } from "../content/photoCarousels";
+import { photoNotice, photoPath, srcset } from "../photos";
 import { generalWhatsappMessage } from "../whatsappMessages";
 
-// The quote button must fit the first screen of small phones (375 x 548 visible in Safari):
-// one short lead under the title, the reassurance under the button.
+// The first photo of the home carousel (also the old hero's first photo, so the file stays cached).
+const [HOME_HERO_SLIDE] = slidesFor("home");
+
 export function HomeHero() {
+  const homeHeroPhoto = HOME_HERO_SLIDE ? HOME_HERO_SLIDE.f : null;
   return (
-    <HeroBackground setKey="home" label="As quatro áreas de atuação da RD Engenharia, em fotos ilustrativas" className="hero-home">
-      <a className="badge-top" href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
-        <span className="badge-top-stars" aria-hidden="true">
-          ★★★★★
-        </span>
-        <span>{GOOGLE_RATING}</span>
-        <span className="badge-top-arrow" aria-hidden="true">
-          →
-        </span>
-      </a>
-      <p className="eyebrow">RD Engenharia · Ibirá/SP</p>
-      <h1 className="display">Laudos, projetos e licenças em dia para empresas, obras e imóveis rurais.</h1>
-      <p className="lead">Engenharia, segurança do trabalho e meio ambiente em Ibirá e região, presencial e online.</p>
-      <div className="actions">
-        <a className="btn btn-whatsapp btn-large" href={whatsappLink(generalWhatsappMessage())} target="_blank" rel="noopener noreferrer">
-          <Icon name="fa-brands fa-whatsapp" /> Pedir orçamento pelo WhatsApp
-        </a>
-        <a className="link-arrow hero-link" href="/o-que-preciso">
-          Não sabe o que precisa? Descubra aqui <span aria-hidden="true">→</span>
+    <section className="hero-reveal" aria-labelledby="home-hero-title">
+      {homeHeroPhoto && (
+        <div className="hero-reveal-media">
+          <img
+            src={photoPath(homeHeroPhoto)}
+            srcSet={srcset(homeHeroPhoto)}
+            sizes="100vw"
+            width={homeHeroPhoto.w}
+            height={homeHeroPhoto.h}
+            alt={homeHeroPhoto.alt}
+            fetchpriority="high"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
+      )}
+      <div className="container hero-reveal-content">
+        <h1 id="home-hero-title" className="hero-reveal-title">
+          Laudos, projetos e licenças em dia.
+        </h1>
+        <p className="hero-reveal-lead">Fale direto com o responsável técnico, presencial ou online, em Ibirá e região.</p>
+        <div className="hero-reveal-actions">
+          <a className="btn btn-whatsapp btn-large btn-arrow" href={whatsappLink(generalWhatsappMessage())} target="_blank" rel="noopener noreferrer">
+            <Icon name="fa-brands fa-whatsapp" />
+            <span>
+              Pedir orçamento<span className="sr-only"> pelo WhatsApp</span>
+            </span>
+            <span className="btn-arrow-icon" aria-hidden="true">
+              →
+            </span>
+          </a>
+          <a className="hero-reveal-link" href="/o-que-preciso">
+            Não sabe o que precisa?
+          </a>
+        </div>
+        <a className="hero-reveal-proof" href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer">
+          <span aria-hidden="true">★</span> {GOOGLE_RATING}
         </a>
       </div>
-      <p className="hero-risk">Você fala direto com o responsável técnico. Orçamento por escrito e sem compromisso.</p>
-      <OfficeHoursStatus />
-      <HomeHeroAreaStrip />
-    </HeroBackground>
+      {homeHeroPhoto && (
+        <p className="container hero-reveal-credit">
+          {photoNotice(homeHeroPhoto)} <a href="/creditos">Créditos</a>
+        </p>
+      )}
+    </section>
   );
 }
