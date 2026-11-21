@@ -107,7 +107,7 @@
 }
 
 .menu > a,
-.menu-services > button {
+.menu-dropdown > button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -128,7 +128,7 @@
 
 @media (pointer: fine) {
   .menu > a,
-  .menu-services > button {
+  .menu-dropdown > button {
     min-height: 38px;
   }
 }
@@ -155,11 +155,11 @@
   transition: transform 200ms var(--ease);
 }
 
-.menu-services > button[aria-expanded="true"] .arrow-menu {
+.menu-dropdown > button[aria-expanded="true"] .arrow-menu {
   transform: rotate(180deg);
 }
 
-.menu-services {
+.menu-dropdown {
   position: relative;
 }
 

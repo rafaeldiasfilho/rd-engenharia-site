@@ -1,0 +1,341 @@
+/* Editorial type and header (2026-11-21):
+   1. Fraunces (SIL Open Font License, public/fonts/fraunces-OFL.txt) for page and section titles, light
+      weight, no italics; Manrope stays for everything else.
+   2. Header: menu centred on desktop, 14 px; transparent with white text over the home hero photo.
+   3. The three header panels: dark translucent glass, 16 px corners, fade and short rise on open; the
+      open menu stands out and the other items dim. */
+
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(/fonts/fraunces-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+}
+
+/* ===== Titles ===== */
+
+h1,
+h2,
+.display,
+.display-m,
+.sec-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+}
+
+/* ===== Header ===== */
+
+.menu {
+  font-size: 0.875rem;
+}
+
+.top-whatsapp,
+.search-button {
+  font-size: 0.875rem;
+}
+
+/* Exactly centred from 1100 px; between 900 and 1099 px it sits between the logo and the buttons, because
+   the centred menu would touch the search button there. */
+.menu-dropdown > button {
+  font-size: inherit;
+}
+
+@media (min-width: 900px) and (max-width: 1099px) {
+  .brand {
+    margin-right: 0;
+  }
+  .menu {
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 1100px) {
+  .top-inner {
+    position: relative;
+  }
+  .menu {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+  }
+}
+
+.top {
+  transition: background-color 300ms var(--ease), border-color 300ms var(--ease), box-shadow 300ms var(--ease);
+}
+
+.top[data-over-hero] {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+  box-shadow: none;
+  color: #fff;
+}
+
+.top[data-over-hero] .brand-name small {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.top[data-over-hero] .menu {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.top[data-over-hero] .menu > a,
+.top[data-over-hero] .menu-dropdown > button {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.top[data-over-hero] .menu-pill {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.top[data-over-hero] .search-button,
+.top[data-over-hero] .menu-button {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+/* The header's action becomes a white pill with dark text over the photo */
+.top[data-over-hero] .top-whatsapp {
+  background: #fff;
+  color: var(--green-dark);
+}
+
+/* While a panel is open: the open menu stands out, the other items dim */
+.menu[data-menu-open] > .menu-dropdown:not([data-open]) > button,
+.menu[data-menu-open] > a {
+  opacity: 0.55;
+}
+
+.menu > a,
+.menu-dropdown > button {
+  transition: color 300ms var(--ease), opacity 250ms var(--ease-out);
+}
+
+/* ===== Panels ===== */
+
+/* Positioned under the centred menu (not under each button), so every panel stays on screen */
+.menu-dropdown {
+  position: static;
+}
+
+.menu-panel {
+  top: calc(100% + 12px);
+  left: 50%;
+  translate: -50% 0;
+  width: min(620px, calc(100vw - 32px));
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(10, 20, 14, 0.8);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  animation: menu-panel-in 250ms var(--ease-out);
+}
+
+.menu-panel-guides {
+  width: min(380px, calc(100vw - 32px));
+}
+
+.menu-panel-coverage {
+  width: min(500px, calc(100vw - 32px));
+}
+
+@keyframes menu-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menu-panel-title,
+.menu-panel-sub,
+.menu-panel li a small {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.menu-panel li a {
+  color: #fff;
+}
+
+.menu-panel li a[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-panel li a:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.menu-arrow-item {
+  color: var(--lime);
+}
+
+.menu-panel-footer {
+  margin: 8px -8px -8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0 0 16px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.menu-panel-footer strong {
+  color: var(--lime);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-panel-footer:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+}
+
+/* Services: list on the left, photo of the highlighted area on the right */
+.menu-panel-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 8px;
+}
+
+.menu-item-area {
+  gap: 12px;
+}
+
+.menu-panel li a[data-highlighted] .menu-arrow-item {
+  opacity: 1;
+  transform: none;
+}
+
+.menu-preview {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  border-radius: 10px;
+  background: var(--green-dark);
+}
+
+.menu-preview img,
+.menu-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-preview img {
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity var(--t-color) var(--ease), transform var(--t-move) var(--ease);
+}
+
+.menu-preview img[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Guides: short compact list */
+.menu-compact {
+  display: grid;
+  gap: 2px;
+}
+
+.menu-panel .menu-compact a {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+/* Coverage: two photo cards, caption over a dark gradient at the bottom */
+.menu-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.menu-panel .menu-card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 220px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--green-dark);
+  isolation: isolate;
+}
+
+.menu-card img {
+  z-index: -2;
+  transition: transform var(--t-move) var(--ease);
+}
+
+.menu-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(0deg, rgba(5, 14, 9, 0.88) 0%, rgba(5, 14, 9, 0) 62%);
+}
+
+.menu-card-caption {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+}
+
+.menu-panel .menu-card-caption small {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-panel .menu-card:hover {
+    background: var(--green-dark);
+  }
+  .menu-card:hover img {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-panel {
+    animation: none;
+  }
+  .menu-preview img,
+  .menu-card img {
+    transform: none;
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .menu-preview,
+  .menu-card img,
+  .menu-card::after {
+    display: none;
+  }
+  .menu-panel-body {
+    grid-template-columns: 1fr;
+  }
+  .menu-panel .menu-card {
+    min-height: 0;
+  }
+}
