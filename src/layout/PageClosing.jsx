@@ -1,30 +1,47 @@
-// Closing block of the inner pages: WhatsApp call and related links.
+// Closing block of the inner pages: WhatsApp call over a full-width photo, then the related links.
 
 import AreaIcon from "../AreaIcon";
 import { WhatsappButton } from "./WhatsappButton.jsx";
 import { useCurrentWhatsappMessage } from "../currentWhatsappMessage.js";
+import { buildClosingBandPhoto } from "./closingBandPhoto.js";
+import { photoPath, srcset } from "../photos";
 
 // Closing block of every inner page, always in the same order: next step, related pages, footer.
 // When the visitor built a message on the page (marked services, wizard result), the button sends it.
-export function PageClosing({ title = "Fale com o responsável técnico.", text, whatsappText, whatsappLabel = "Falar no WhatsApp", related = [] }) {
+// The "next step" band is a photo with the glass button, like the page heroes. With motion allowed the photo
+// stays fixed behind the page and the band works as a window onto it (src/styles/24-editorial-site.css).
+export function PageClosing({ current = "", title = "Fale com o responsável técnico.", text, whatsappText, whatsappLabel = "Falar no WhatsApp", related = [] }) {
   const currentMessage = useCurrentWhatsappMessage();
+  const closingPhoto = buildClosingBandPhoto(current);
   return (
     <>
-      <section className="sec next" id="proximo-passo" aria-labelledby="next-step-title">
-        <div className="container">
-          <p className="sec-n">
-            <span>→</span> Próximo passo
-          </p>
-          <div className="next-grid reveal">
-            <h2 id="next-step-title" className="sec-title">
+      <section className="next-band" id="proximo-passo" aria-labelledby="next-step-title">
+        <div className="next-band-frame">
+          <div className="next-band-stage">
+            {closingPhoto && (
+              <img
+                className="next-band-photo"
+                src={photoPath(closingPhoto)}
+                srcSet={srcset(closingPhoto)}
+                sizes="100vw"
+                width={closingPhoto.w}
+                height={closingPhoto.h}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
+            )}
+          </div>
+          <div className="container next-band-content">
+            <p className="next-band-kicker">Próximo passo</p>
+            <h2 id="next-step-title" className="next-band-title">
               {title}
             </h2>
-            <div>
-              <p className="lead">
-                {text || "Conte o seu caso pelo WhatsApp. A mensagem já vai pronta, sem compromisso. Valor e prazo são informados depois de conhecermos o seu caso."}
-              </p>
-              <WhatsappButton className="btn-large" text={currentMessage?.text || whatsappText} label={currentMessage?.label || whatsappLabel} />
-            </div>
+            <p className="next-band-lead">
+              {text || "Conte o seu caso pelo WhatsApp. A mensagem já vai pronta, sem compromisso. Valor e prazo são informados depois de conhecermos o seu caso."}
+            </p>
+            <WhatsappButton variant="glass" text={currentMessage?.text || whatsappText} label={currentMessage?.label || whatsappLabel} />
           </div>
         </div>
       </section>

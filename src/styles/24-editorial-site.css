@@ -1,0 +1,338 @@
+/* Editorial look on the rest of the site (2026-11-21), following the home hero:
+   1. Area page heroes: the home hero layout ("plain" variant, no line-to-full-screen entrance).
+   2. Intro block under the area hero.
+   3. Closing band ("Próximo passo"): full-width photo with the glass button, revealed from behind the
+      content above as the page scrolls (CSS only: a clipped frame holds a fixed stage).
+   4. Inner page tops without photo: same spacing scale, shorter line length.
+   5. Buttons: the arrow at the end of every WhatsApp button.
+   6. Search dialog: the dark glass of the header panels.
+   7. Home area cards: caption over a dark gradient on the photo (tablets and up; phones keep the rows).
+   8. Page to page: short fade with blur (cross-document View Transitions; ignored where unsupported). */
+
+/* ===== 1. Area page heroes ===== */
+
+.hero-reveal-plain .hero-reveal-inner {
+  gap: var(--hero-space-5);
+}
+
+.hero-reveal-plain .hero-reveal-title {
+  max-width: 16ch;
+  font-size: clamp(2.25rem, 5vw, 4.25rem);
+  text-wrap: balance;
+}
+
+.hero-reveal-crumbs .breadcrumb {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.hero-reveal-crumbs .breadcrumb a,
+.hero-reveal-crumbs .breadcrumb li + li::before {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.hero-reveal-crumbs .breadcrumb [aria-current="page"] {
+  color: #fff;
+}
+
+.hero-reveal-credit a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-reveal-plain .hero-reveal-crumbs {
+    animation: hero-reveal-rise 500ms var(--ease-out) both;
+  }
+  .hero-reveal-plain .hero-reveal-title {
+    animation-delay: 80ms;
+  }
+  .hero-reveal-plain .hero-reveal-lead {
+    animation-delay: 160ms;
+  }
+  .hero-reveal-plain .btn-glass {
+    animation-delay: 240ms;
+  }
+  .hero-reveal-plain .hero-reveal-scroll {
+    animation-delay: 320ms;
+  }
+}
+
+/* ===== 2. Intro under the area hero ===== */
+
+.area-intro {
+  padding-block: clamp(40px, 6vw, 72px) clamp(24px, 4vw, 40px);
+}
+
+.area-intro-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 24px clamp(32px, 6vw, 88px);
+  align-items: end;
+}
+
+.area-intro .lead {
+  max-width: 60ch;
+  margin: 0;
+}
+
+.area-intro-note {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 820px) {
+  .area-intro-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== 3. Closing band ===== */
+
+.next-band {
+  --next-band-h: clamp(440px, 72svh, 680px);
+  position: relative;
+}
+
+.next-band-frame {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: var(--next-band-h);
+  overflow: hidden;
+  clip-path: inset(0); /* also clips the fixed photo stage below, which makes the window effect */
+  background: var(--green-dark);
+  color: #fff;
+}
+
+.next-band-stage {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+}
+
+.next-band-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.next-band-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(7, 24, 11, 0.45) 0%, rgba(7, 24, 11, 0.55) 50%, rgba(7, 24, 11, 0.85) 100%);
+}
+
+.next-band-content {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 24px;
+  padding-block: clamp(48px, 8vw, 96px);
+}
+
+.next-band-kicker {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.next-band-title {
+  max-width: 16ch;
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.05;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.next-band-lead {
+  max-width: 46ch;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* With motion allowed the photo stage is fixed to the whole screen and the band works as a window onto it:
+   the photo seems to wait behind the page while the text scrolls in with the band. */
+@media (prefers-reduced-motion: no-preference) {
+  .next-band-stage {
+    position: fixed;
+    inset: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .next-band-photo,
+  .next-band-stage::after {
+    display: none;
+  }
+  .next-band-stage {
+    position: absolute;
+    inset: 0;
+    height: auto;
+  }
+}
+
+/* ===== 4. Inner page tops without photo ===== */
+
+.hero-inner {
+  padding: clamp(24px, 4vw, 40px) 0 clamp(48px, 7vw, 88px);
+}
+
+.hero-inner .display-m {
+  max-width: 18ch;
+}
+
+.hero-inner .lead {
+  max-width: 56ch;
+  margin-top: 24px;
+}
+
+.hero-inner .actions {
+  margin-top: 40px;
+}
+
+/* ===== 5. Arrow at the end of the WhatsApp buttons ===== */
+
+.btn .btn-arrow-icon {
+  margin-left: 2px;
+}
+
+/* ===== 6. Search dialog in dark glass ===== */
+
+.search-dialog {
+  --paper: transparent;
+  --surface: rgba(255, 255, 255, 0.06);
+  --ink: #fff;
+  --muted: rgba(255, 255, 255, 0.66);
+  --line: rgba(255, 255, 255, 0.14);
+  --green-light: rgba(255, 255, 255, 0.1);
+  --accent: var(--lime);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(10, 20, 14, 0.86);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  color: #fff;
+}
+
+.search-dialog input {
+  color: #fff;
+}
+
+.search-dialog input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== 7. Home area cards: caption over the photo ===== */
+
+@media (min-width: 601px) {
+  .choices-cards .card-area {
+    justify-content: flex-end;
+    min-height: 320px;
+    padding: 0 56px 24px 0;
+    border-radius: 16px;
+    background: var(--green-dark);
+    color: #fff;
+    isolation: isolate;
+  }
+  .choices-cards .card-area-photo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    height: auto;
+    aspect-ratio: auto;
+  }
+  .choices-cards .card-area-photo img {
+    transition: transform var(--t-move) var(--ease);
+  }
+  .choices-cards .card-area::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(0deg, rgba(5, 14, 9, 0.9) 0%, rgba(5, 14, 9, 0.35) 55%, rgba(5, 14, 9, 0) 80%);
+  }
+  .choices-cards .card-area-icon {
+    display: none;
+  }
+  .choices-cards .card-area-n,
+  .choices-cards .card-area small {
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .choices-cards .card-area strong {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 2vw, 1.875rem);
+    letter-spacing: -0.02em;
+  }
+  .choices-cards .card-area-arrow {
+    color: var(--lime);
+  }
+}
+
+@media (min-width: 601px) and (hover: hover) and (pointer: fine) {
+  .choices-cards .card-area:hover .card-area-photo img {
+    transform: scale(1.04);
+  }
+}
+
+@media (min-width: 1100px) {
+  .choices-cards .card-area-photo {
+    height: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .choices-cards .card-area::after {
+    display: none;
+  }
+}
+
+/* ===== 8. Page to page: short fade with blur ===== */
+
+@view-transition {
+  navigation: auto;
+  types: page-change;
+}
+
+@keyframes page-change-out {
+  to {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes page-change-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+/* Only page changes animate here; the theme switch keeps its own circle (the default cross-fade of the
+   root stays off, src/styles/17-round7-content-review.css). */
+html:active-view-transition-type(page-change)::view-transition-old(root) {
+  animation: page-change-out 220ms var(--ease-out) both;
+}
+
+html:active-view-transition-type(page-change)::view-transition-new(root) {
+  animation: page-change-in 320ms var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

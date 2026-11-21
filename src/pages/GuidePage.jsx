@@ -93,6 +93,7 @@ export function GuidePage({ page }) {
         </div>
       </section>
       <PageClosing
+        current={page.slug}
         title="Quer isso resolvido para o seu caso?"
         whatsappText={`Olá! Li o guia do site e gostaria de um orçamento para: ${page.service}.`}
         whatsappLabel="Pedir orçamento deste serviço"

@@ -221,11 +221,13 @@
   }
 }
 
+/* The line-to-full-screen entrance is only for the home page; the area pages use the "plain" variant
+   (src/styles/24-editorial-site.css), where only the texts rise in. */
 @media (prefers-reduced-motion: no-preference) {
-  .hero-reveal-media {
+  .hero-reveal:not(.hero-reveal-plain) .hero-reveal-media {
     animation: hero-reveal-open 1400ms var(--hero-reveal-ease) both;
   }
-  .hero-reveal-media::before {
+  .hero-reveal:not(.hero-reveal-plain) .hero-reveal-media::before {
     animation: hero-reveal-line 1400ms linear both;
   }
   .hero-reveal-title,
@@ -234,7 +236,7 @@
   .hero-reveal-scroll {
     animation: hero-reveal-rise 500ms var(--ease-out) both;
   }
-  body:has(.hero-reveal) .top {
+  body:has(.hero-reveal:not(.hero-reveal-plain)) .top {
     animation: hero-reveal-fade 500ms var(--ease-out) 1450ms both;
   }
   .hero-reveal-title {

@@ -10,7 +10,7 @@ Read together with [PRD.md](PRD.md). Update this file whenever a table, an API c
 | Language | JavaScript (ES modules, JSX); TypeScript only in the 4 files in `src/components/ui/`. All identifiers, comments and logs in English |
 | UI | React 18.3.1 + react-dom, functional components and hooks |
 | Build | Vite 5.4.x + `@vitejs/plugin-react`; static prerender in `scripts/prerender.mjs` |
-| Styles | Plain CSS: `src/styles.css` imports the 23 ordered parts of `src/styles/` (later parts override earlier ones; theme variables in `01-theme.css`); self-hosted Manrope (text) and Fraunces (page and section titles, SIL OFL licence in `public/fonts/fraunces-OFL.txt`) in `public/fonts/` |
+| Styles | Plain CSS: `src/styles.css` imports the 24 ordered parts of `src/styles/` (later parts override earlier ones; theme variables in `01-theme.css`); self-hosted Manrope (text) and Fraunces (page and section titles, SIL OFL licence in `public/fonts/fraunces-OFL.txt`) in `public/fonts/` |
 | 3D | three 0.170.0, lazy-loaded per scene (`src/scenes3d/`) |
 | Icons | `@phosphor-icons/react`, wrapped by `src/Icon.jsx` |
 | Database and auth | Supabase (Postgres + RLS + Auth). `@supabase/supabase-js` 2.x only in `/admin`; the public site uses plain `fetch` |

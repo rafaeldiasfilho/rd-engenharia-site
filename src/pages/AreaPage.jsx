@@ -9,7 +9,7 @@ import { SectionNav } from "../layout/SectionNav";
 import { PageClosing } from "../layout/PageClosing";
 import { Illustration } from "../Illustrations";
 import Faq from "../Faq";
-import { AreaHero } from "./area/AreaHero.jsx";
+import { AreaHero, AreaIntro } from "./area/AreaHero.jsx";
 import { AreaSummary } from "./area/AreaSummary.jsx";
 import { AreaScene } from "./area/AreaScene.jsx";
 import { AreaSituations } from "./area/AreaSituations.jsx";
@@ -44,6 +44,7 @@ export function AreaPage({ page }) {
     <>
       <AreaHero page={page} areaWhatsappText={areaWhatsappText} />
       <SectionNav items={AREA_SECTION_LINKS} />
+      <AreaIntro page={page} />
       {overview && <AreaSummary overview={overview} slug={page.slug} />}
       {/* The situations come before the 3D scene: they are the sentences visitors recognise, and each one opens WhatsApp. */}
       {page.situations && <AreaSituations page={page} number={nextNumber()} areaWhatsappText={areaWhatsappText} />}
@@ -67,7 +68,7 @@ export function AreaPage({ page }) {
         <Faq items={page.faq} />
       </PageSection>
 
-      <PageClosing whatsappText={areaWhatsappText} related={related} />
+      <PageClosing current={page.slug} whatsappText={areaWhatsappText} related={related} />
     </>
   );
 }

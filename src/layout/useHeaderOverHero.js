@@ -1,4 +1,4 @@
-// On the home page the header is transparent while it sits over the full-screen hero photo, and gets its
+// On the home and area pages the header is transparent while it sits over the full-screen hero photo, and gets its
 // normal glass background once the hero has scrolled away. Starts "over the hero" so the prerendered HTML
 // already has the transparent header (no flash on load).
 
@@ -12,11 +12,11 @@ function readHeaderHeight() {
   return Number.isFinite(headerHeightValue) && headerHeightValue > 0 ? headerHeightValue : FALLBACK_HEADER_HEIGHT;
 }
 
-export function useHeaderOverHero(isHomePage) {
-  const [headerIsOverHero, setHeaderIsOverHero] = useState(isHomePage);
+export function useHeaderOverHero(pageHasPhotoHero) {
+  const [headerIsOverHero, setHeaderIsOverHero] = useState(pageHasPhotoHero);
 
   useEffect(() => {
-    if (!isHomePage) {
+    if (!pageHasPhotoHero) {
       setHeaderIsOverHero(false);
       return undefined;
     }
@@ -32,7 +32,7 @@ export function useHeaderOverHero(isHomePage) {
     });
     heroObserver.observe(homeHero);
     return () => heroObserver.disconnect();
-  }, [isHomePage]);
+  }, [pageHasPhotoHero]);
 
   return headerIsOverHero;
 }

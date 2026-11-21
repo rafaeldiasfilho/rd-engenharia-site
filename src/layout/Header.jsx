@@ -23,7 +23,8 @@ export function Header({ current = "" }) {
   const menuButton = useRef(null);
   const menu = useRef(null);
   const [pill, setPill] = useState({ x: 0, w: 0, on: false, jump: true });
-  const headerIsOverHero = useHeaderOverHero(current === "");
+  // Transparent over the full-screen photo of the home page and of the area pages.
+  const headerIsOverHero = useHeaderOverHero(current === "" || AREAS.some((a) => a.slug === current));
 
   const inServices = AREAS.some((a) => a.slug === current);
   const inGuides = current === "guias" || current.startsWith("guias/");
